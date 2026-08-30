@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-detail\components\comment-list\comment-item\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-detail\components\comment-list\comment-item\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -62,10 +62,8 @@ import type { CommentItemProps } from "./types"
 
 defineOptions({ name: "CommentItem" })
 
-// 定义 props
 const { data, status, postAuthor, isShowEditBtn = false, isAdmin = false } = defineProps<CommentItemProps>()
 
-// 事件
 const emit = defineEmits<{
     (event: "reply", commentID: string): void
     (event: "delete", commentID: string): void
@@ -85,7 +83,6 @@ const {
 
 // 是否显示回复按钮
 const isShowReplyBtn = computed(() => {
-    // 登录状态
     if (isLogin.value && status === CommentStatusCode.Open) {
         return true
     }
@@ -99,17 +96,17 @@ const handleReply = () => {
 
 // 是否显示删除按钮
 const isShowDeleteBtn = computed(() => {
-    // 是否为自己的评论
+    // 自己的评论
     if (userData.value.user.id === data.user_info.id) {
         return true
     }
 
-    // 是否为文章作者
+    // 文章作者
     if (postAuthor === userData.value.user.id && isLogin.value) {
         return true
     }
 
-    // 是否为管理员
+    // 管理员
     if (isLogin.value && userData.value.user.role === RoleName.Administrator) {
         return true
     }
@@ -117,9 +114,7 @@ const isShowDeleteBtn = computed(() => {
     return false
 })
 
-// 处理删除评论
 const handleDelete = async () => {
-    // 删除评论
     await deleteComment(data.id)
 
     emit("delete", data.id)
@@ -127,12 +122,12 @@ const handleDelete = async () => {
 
 // 是否显示置顶按钮
 const isShowPinnedBtn = computed(() => {
-    // 是否为文章作者
+    // 文章作者
     if (isLogin.value && postAuthor === userData.value.user.id) {
         return true
     }
 
-    // 是否为管理员
+    // 管理员
     if (isLogin.value && userData.value.user.role === RoleName.Administrator) {
         return true
     }
@@ -142,13 +137,12 @@ const isShowPinnedBtn = computed(() => {
 
 // 评论作者是否为文章作者
 const isPostAuthorCode = computed(() => {
-    // 是否为文章作者
     return data.post_author === data.user_id ? CommentIsPostAuthorCode.IsPostAuthor : CommentIsPostAuthorCode.NotIsPostAuthor
 })
 
-// 是否显示置顶按钮
+// 置顶按钮文案
 const pinnedText = computed(() => {
-    // 是否为文章作者
+    // 文章作者的评论可切换置顶状态
     if (isPostAuthorCode.value === CommentIsPostAuthorCode.IsPostAuthor) {
         return data.is_pinned === CommentPinnedCode.IsPinned ? "取消置顶" : "置顶"
     }
@@ -157,16 +151,13 @@ const pinnedText = computed(() => {
 })
 
 const handlePinned = async () => {
-    // 更新请求参数
     const req: UpdateCommentRequest = {
         id: data.id,
         is_pinned: data.is_pinned === CommentPinnedCode.IsPinned ? CommentPinnedCode.NotIsPinned : CommentPinnedCode.IsPinned,
     }
 
-    // 更新评论
     await updateComment(req)
 
-    // 置顶成功
     emit("pinned", data.id, req.is_pinned!)
 }
 
@@ -185,7 +176,6 @@ const handleEdit = (comment: CommentItemProps["data"]) => {
 }
 
 .header-container {
-    // 网格布局
     display: grid;
     grid-template-columns: auto auto 1fr;
     grid-template-rows: auto;
@@ -231,7 +221,7 @@ const handleEdit = (comment: CommentItemProps["data"]) => {
     text-align: center;
     position: absolute;
     width: 70px;
-    transform-origin: bottom right; // 以右下角为旋转中心,只需要计算 top 值, right 等于0
+    transform-origin: bottom right; // 以右下角为旋转中心, 只需要计算 top 值, right 等于 0
     transform: rotate(45deg);
     // top 等于 width 乘以 sin(45deg) 再减去 height 的高度
     top: 28px;
@@ -239,11 +229,6 @@ const handleEdit = (comment: CommentItemProps["data"]) => {
     font-size: 14px;
     font-weight: 700;
 }
-// @include respond-to("pc") {
-// }
-
-// @include respond-to("pad") {
-// }
 
 @include respond-to("phone") {
     .header-id {

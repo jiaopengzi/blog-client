@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\stores\editor-defaults.ts
+ * FilePath    : blog-client-nuxt\src\stores\editor-defaults.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -290,7 +290,7 @@ export function saveWechatCaptchaDefaults(defaults: WechatCaptchaDefaults): void
 
 /**
  * 从 localStorage 读取 PowerBi 默认值.
- * @returns PowerBiDefaults 或 null(键不存在或解析失败时)
+ * @returns PowerBiDefaults 或 null (键不存在或解析失败时)
  */
 export function loadPowerBiDefaults(): PowerBiDefaults | null {
     const raw = localStorage.getItem(LocalStorageKey.EditorDefaultsPowerBi)
@@ -304,7 +304,7 @@ export function loadPowerBiDefaults(): PowerBiDefaults | null {
 
 /**
  * 从 localStorage 读取 Vim 默认值.
- * @returns VimDefaults 或 null(键不存在或解析失败时).
+ * @returns VimDefaults 或 null (键不存在或解析失败时)
  */
 export function loadVimDefaults(): VimDefaults | null {
     const raw = localStorage.getItem(LocalStorageKey.EditorDefaultsVim)
@@ -324,7 +324,7 @@ export function loadVimDefaults(): VimDefaults | null {
 
 /**
  * 从 localStorage 读取 WechatCaptcha 默认值.
- * @returns WechatCaptchaDefaults 或 null(键不存在或解析失败时)
+ * @returns WechatCaptchaDefaults 或 null (键不存在或解析失败时)
  */
 export function loadWechatCaptchaDefaults(): WechatCaptchaDefaults | null {
     const raw = localStorage.getItem(LocalStorageKey.EditorDefaultsWechatCaptcha)

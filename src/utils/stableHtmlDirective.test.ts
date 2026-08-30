@@ -1,16 +1,16 @@
-/**
- * FilePath    : blog-client\src\utils\stableHtmlDirective.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\stableHtmlDirective.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 测试 stableHtmlDirective.ts 中的函数，确保在增量更新 innerHTML 时正确收集、同步和恢复已加载的 img 元素，避免重建造成的闪烁。
+ * Description : stableHtmlDirective 的单元测试
  */
 
 import { describe, expect, it } from "vitest"
 
 import { collectLoadedImages, restoreLoadedImages, syncImgAttributes } from "./stableHtmlDirective"
 
-// 创建一个模拟已加载完成的 img 元素（jsdom 不实际加载图片，需手动 mock 属性）
+// 创建一个模拟已加载完成的 img 元素(happy-dom 不实际加载图片, 需手动 mock 属性)
 function makeLoadedImg(src: string, attrs: Record<string, string> = {}): HTMLImageElement {
     const img = document.createElement("img")
     img.src = src

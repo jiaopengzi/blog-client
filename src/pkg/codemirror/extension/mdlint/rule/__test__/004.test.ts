@@ -1,9 +1,9 @@
-/**
- * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\rule\__test__\004.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\mdlint\rule\__test__\004.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 测试 rule002 - 检测行长度超过指定阈值
+ * Description : 测试 rule004 - 检测代码块围栏闭合
  */
 
 import { describe, expect, it } from "vitest"
@@ -12,7 +12,6 @@ import type { DocLike } from "../../types"
 import { id, run } from "../004"
 import { makeDoc } from "./utils"
 
-// 测试规则 004: 检测代码块是否成对闭合
 describe("rule004 - 代码块围栏闭合检测", () => {
     it("成对闭合时不返回诊断", () => {
         const doc = makeDoc(["```", "code", "```"])

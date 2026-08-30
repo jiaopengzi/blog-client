@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-item-search\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-item-search\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -23,7 +23,7 @@
                 {{ postData.seo_description }}
             </p>
 
-            <!-- 底部：分类 + 元信息 -->
+            <!-- 底部: 分类 + 元信息 -->
             <div class="footer">
                 <!-- 分类标签 -->
                 <div class="categories" v-if="postData.categories && postData.categories.length > 0">
@@ -67,43 +67,36 @@ const {
 } = defineProps<{
     postData: PostResPagination
     highlight?: Record<string, string[]> // 高亮内容
-    highlightKey?: string // 高亮的key
+    highlightKey?: string // 高亮的 key
 }>()
 
-// 事件
 const emit = defineEmits<{
     (event: "postId", val: string): void
 }>()
 
-// 点击文章
 const postId = (val: string) => {
     emit("postId", val)
 }
 
-// 是否有缩略图
 const hasThumbnail = computed(() => Boolean(postData.thumbnail?.trim()))
 
 // 标题首字母作为缩略图 fallback
 const fallbackInitial = computed(() => postData.post_title?.trim().slice(0, 1).toUpperCase() || "P")
 
-// 根据 highlightKey 获取高亮内容
 const highlightText = computed(() => {
-    // 如果没有高亮内容，返回空字符串
+    // 如果没有高亮内容, 返回空字符串
     if (!highlight || Object.keys(highlight).length === 0) {
         return ""
     }
 
-    // 获取高亮内容
     const key = highlightKey || "post_title"
     const highlights = highlight[key] || []
     return highlights.length > 0 ? highlights[0] : ""
 })
 
-// 显示的文本，如果有高亮内容，则显示高亮内容，否则显示文章标题
+// 显示的文本, 如果有高亮内容则显示高亮内容, 否则显示文章标题
 const displayText = computed(() => {
-    // 获取文章标题
     const title = postData.post_title || ""
-    // 如果有高亮内容，则返回高亮内容，否则返回文章标题
     return highlightText.value ? highlightText.value : title
 })
 </script>
@@ -120,7 +113,7 @@ const displayText = computed(() => {
         background-color 0.25s ease;
 
     &:hover {
-        // 用 inset box-shadow 模拟左侧高亮描边，不影响外框 border
+        // 用 inset box-shadow 模拟左侧高亮描边, 不影响外框 border
         box-shadow: inset 3px 0 0 var(--jpz-color-primary);
         background-color: var(--jpz-bg-color-hover, var(--jpz-bg-color));
 

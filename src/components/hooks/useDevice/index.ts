@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\hooks\useDevice\index.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useDevice\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -15,7 +15,7 @@ import { DeviceType, useDeviceStore } from "@/stores/device"
  * 根据设备类型返回不同的配置
  */
 export const useDevice = () => {
-    // 设备类型
+    // 设备 store
     const deviceStore = useDeviceStore()
 
     const { device } = storeToRefs(deviceStore)
@@ -27,8 +27,6 @@ export const useDevice = () => {
 
     // 分页布局
     const paginationLayout = computed(() => {
-        // return device.value === DeviceType.PHONE ? "total, prev, pager, next" : "total, prev, pager, next, jumper, sizes"
-        // return device.value === DeviceType.PHONE ? "total, prev, pager, next, sizes" : "total, prev, pager, next, jumper, sizes"
         return device.value === DeviceType.PHONE ? "prev, pager, next" : "total, prev, pager, next, jumper, sizes"
     })
 

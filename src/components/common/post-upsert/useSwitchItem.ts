@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\common\post-upsert\useSwitchItem.ts
+ * FilePath    : blog-client-nuxt\src\components\common\post-upsert\useSwitchItem.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -114,7 +114,7 @@ export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
     // 付费角色开关项
     const { rolePaidList, initRolePaidManagement, updateRolePaidList } = usePayRolesSwitchItem(
         postInfoForm,
-        postInfoForm.post_type === PostType.Page, // 如果是页面类型，则默认开启
+        postInfoForm.post_type === PostType.Page, // 如果是页面类型, 则默认开启
         postUpsertSwitchColor,
     )
 

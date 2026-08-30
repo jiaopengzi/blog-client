@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\utils\footerStatistics.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\footerStatistics.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -140,6 +140,64 @@ export const extractGoogleAnalyticsMeasurementIds = (scriptStr: string | undefin
     }
 
     return Array.from(measurementIds)
+}
+
+/**
+ * 从统计脚本中提取百度统计 site id.
+ *
+ * @param scriptStr 统计脚本字符串.
+ * @returns 提取后的 site id 列表.
+ */
+export const extractBaiduAnalyticsSiteIds = (scriptStr: string | undefined): string[] => {
+    if (!scriptStr) {
+        return []
+    }
+
+    const siteIds = new Set<string>()
+    const siteIdRegex = /hm\.baidu\.com\/hm\.js\?([0-9a-f]+)/g
+
+    for (const match of scriptStr.matchAll(siteIdRegex)) {
+        const siteId = match[1]
+        if (siteId) {
+            siteIds.add(siteId)
+        }
+    }
+
+    return Array.from(siteIds)
+}
+
+/**
+ * 剥离脚本串中已被 @nuxt/scripts 识别接管的 GA/百度统计 script 块, 返回剩余未知内容.
+ * 剩余内容非空时仍走原字符串注入通道(后台可能配置其它自定义统计脚本, 保持兼容).
+ *
+ * @param scriptStr 统计脚本字符串.
+ * @param gaIds 已识别的 GA measurement id 列表.
+ * @param baiduIds 已识别的百度 site id 列表.
+ * @returns 剥离已知统计块并清理注释/空白后的剩余内容(无剩余时为空字符串).
+ */
+export const stripKnownAnalyticsScriptBlocks = (scriptStr: string | undefined, gaIds: string[], baiduIds: string[]): string => {
+    if (!scriptStr) {
+        return ""
+    }
+
+    const knownPatterns = [/gtag\s*\(/, /dataLayer/, /googletagmanager/, /_hmt/]
+    const isKnownBlock = (block: string): boolean => {
+        if (gaIds.some((id) => block.includes(id))) {
+            return true
+        }
+
+        if (baiduIds.some((id) => block.includes(id))) {
+            return true
+        }
+
+        return knownPatterns.some((pattern) => pattern.test(block))
+    }
+
+    const residual = scriptStr.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, (block) => {
+        return isKnownBlock(block) ? "" : block
+    })
+
+    return residual.replace(/<!--[\s\S]*?-->/g, "").trim()
 }
 
 /**

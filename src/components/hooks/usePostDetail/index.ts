@@ -1,20 +1,21 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useHome\index.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 首页 hooks
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\usePostDetail\index.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 文章详情 hooks
  */
 
 import { storeToRefs } from "pinia"
 import { type Reactive, type Ref, watch } from "vue"
-import { useRouter } from "vue-router"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { type QueryParamsOptions } from "@/api/request"
 import { PostDetailType } from "@/components/common/post-detail"
-import { queryKey as queryKeyUpsert } from "@/components/common/post-upsert"
-import { EditorStateManager } from "@/components/editor"
+// Nuxt 适配: 仅需 queryKey 常量, 直接指向 types 文件 (避免引入 post-upsert 编辑器组件树)
+import { queryKey as queryKeyUpsert } from "@/components/common/post-upsert/types"
+// Nuxt 适配 (feature02): 直接指向 state 文件, 避免引入编辑器 barrel (Editor/index.vue/CodeMirror/工具栏组件树) 进入 SSR 图
+import { EditorStateManager } from "@/components/editor/state"
 import { RouteNames } from "@/router"
 import { useBreadcrumbStore } from "@/stores/breadcrumb"
 import { useOptionsStore } from "@/stores/options"
@@ -24,11 +25,11 @@ import { useRootUtils } from "../useRootUtils"
 import { useGetData } from "./api"
 
 /**
- * @description: 在正文已经可展示后, 再异步执行非首屏关键副作用, 避免阻塞详情正文先出现。
- * @param tasks 需要延后执行的任务列表。
+ * @description: 在正文已经可展示后, 再异步执行非首屏关键副作用, 避免阻塞详情正文先出现
+ * @param tasks 需要延后执行的任务列表
  * @return {void}
  */
-const runPostDetailSideEffects = (tasks: Array<Promise<unknown>>): void => {
+export const runPostDetailSideEffects = (tasks: Array<Promise<unknown>>): void => {
     if (tasks.length === 0) {
         return
     }
@@ -54,12 +55,15 @@ export function usePostDetail(
     const { is_remove_first_h1 } = storeToRefs(optionsStore)
 
     const router = useRouter()
+    const route = useRoute()
 
-    // 字符串类型的key
+    // 字符串类型的 key
     const stringKeys: StringKeys<ViewPostByIDRequest>[] = ["post_id"]
 
     const options: Reactive<QueryParamsOptions<ViewPostByIDRequest>> = {
         stringKeys,
+        // Nuxt 适配: /p/[id] 的 post_id 来自路径参数, updateQueryParams 清空时保留
+        persistKeys: ["post_id"],
         hash: hash.value, // 文章标题 hash 值
     }
 
@@ -79,6 +83,9 @@ export function usePostDetail(
     const {
         postMeta, // 文章元数据
         isPasswordPost, // 是否是密码保护文章
+        applyPostData, // 应用文章数据(feature02: SSR/客户端共用入口)
+        setIsPasswordPost, // 设置密码保护标记(feature02: 页面 SSR 数据流驱动)
+        latestViewCount, // 最近一次接口返回的浏览量(feature02: 水合后回填)
         copyright, // 版权信息
         prevNext, // 上一篇和下一篇文章信息
         updatedAt, // 更新时间
@@ -127,9 +134,13 @@ export function usePostDetail(
     // 更新文章详情(不使用监控路由更新)
     const updatePostDetail = async (id: string, password: string = "") => {
         queryParams.post_id = id
-        if (detailType.value === PostDetailType.Post) {
+        if (detailType.value === PostDetailType.Post && route.name === "post") {
             clearParamsExcept(["post_id"])
-            await updateRouterPush()
+            // Nuxt 适配: 已在文章路由 /p/:id 上时, 无需再经首页 query 中转 (避免 legacy 301 重定向循环)
+            const onPostRoute = route.name === "post" && String(route.params.id ?? "") === String(id)
+            if (!onPostRoute) {
+                await updateRouterPush()
+            }
         }
         await updateByRoute(password)
         void updateHeadInfo().catch((error) => {
@@ -158,9 +169,9 @@ export function usePostDetail(
             default:
                 routeName = RouteNames.PostWrite
         }
-        // 编辑文章
+        // Nuxt 适配: admin 子页为 [...slug] catch-all, SPA 命名路由不存在, 改按路径跳转
         router.push({
-            name: routeName,
+            path: `/admin/${routeName}`,
             query: { [queryKeyUpsert.ID]: val },
         })
     }
@@ -185,6 +196,10 @@ export function usePostDetail(
         updateByRoute, // 通过路由更新数据
         clearParamsExcept, // 清空除了指定参数的查询条件
         updatePostDetail, // 更新文章详情
+        applyPostData, // 应用文章数据(feature02: SSR/客户端共用入口)
+        setIsPasswordPost, // 设置密码保护标记(feature02: 页面 SSR 数据流驱动)
+        latestViewCount, // 最近一次接口返回的浏览量(feature02: 水合后回填)
+        updateBreadcrumb, // 更新面包屑(feature02: 客户端水合后同步)
         manager, // 详情页状态管理器
         state, // 编辑器状态
         postMeta, // 文章元数据
@@ -198,5 +213,8 @@ export function usePostDetail(
         editPost, // 编辑文章
         setPostLike, // 设置文章点赞
         setPostStar, // 设置文章收藏
+        getPrevNext, // 获取上一篇和下一篇文章信息(feature02: prop 驱动流程补拉)
+        updatePostInteraction, // 更新文章交互状态(feature02: prop 驱动流程补拉)
+        runPostDetailSideEffects, // 详情副作用统一入口(feature02: prop 驱动流程复用)
     }
 }

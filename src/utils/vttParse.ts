@@ -1,20 +1,20 @@
-/**
- * @FilePath     : \blog-client\src\utils\vttParse.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 字幕解析器
+/*
+ * FilePath    : blog-client-nuxt\src\utils\vttParse.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 字幕解析器
  */
 
 import { parseTimeSegments } from "@/utils/dateTime"
 
 /**
- * @description: 解析vtt文件 得到字幕数组
- * @param url: 字幕文件地址
- * @return {Array<{ start: number; end: number; text: string }>} 字幕数组 start: 开始时间(秒) end: 结束时间(秒) text: 字幕文本
+ * @description: 解析 vtt 文件得到字幕数组
+ * @param url 字幕文件地址
+ * @return {Array<{ start: number; end: number; text: string }>} 字幕数组, start: 开始时间(秒), end: 结束时间(秒), text: 字幕文本
  */
 export const parseVTT = (function () {
-    // 正则表达式匹配字幕(vtt文件)
+    // 正则表达式匹配字幕(vtt 文件)
     const regex = /(\d{2}):(\d{2}):(\d{2})\.(\d{3}) --> (\d{2}):(\d{2}):(\d{2})\.(\d{3})\s+([\s\S]*?)(?=\r?\n\r?\n|\r?\n*$)/g
 
     return async function parseVTT(url: string): Promise<Array<{ start: number; end: number; text: string }>> {
@@ -36,26 +36,26 @@ export const parseVTT = (function () {
 })()
 
 /**
- * 校验给定的字符串是否符合 WebVTT 格式。
+ * 校验给定的字符串是否符合 WebVTT 格式
  *
- * @param {string} content - 要校验的字符串内容。
- * @returns {[boolean, string]} - 返回一个元组，包含校验结果和错误信息。
- *   - 第一个元素是布尔值，表示是否符合 WebVTT 格式。
- *   - 第二个元素是字符串，包含错误信息，如果符合格式则为空字符串。
+ * @param {string} content - 要校验的字符串内容
+ * @returns {[boolean, string]} - 返回一个元组, 包含校验结果和错误信息
+ *   - 第一个元素是布尔值, 表示是否符合 WebVTT 格式
+ *   - 第二个元素是字符串, 包含错误信息, 如果符合格式则为空字符串
  *
- * 校验规则：
- * 1. 内容不能为空。
- * 2. 如果只有一行，必须以 "WEBVTT" 开头。
- * 3. 如果有多行，第一行必须以 "WEBVTT" 开头。
- * 4. 去掉 NOTE 和 STYLE 块后，内容必须包含时间表达式。
- * 5. 时间表达式必须包含 "-->"，并且时间格式必须为 hh:mm:ss.mmm、mm:ss.mmm 或 ss.mmm。
- * 6. 每个时间表达式后必须有字幕内容，不能为空。
+ * 校验规则:
+ * 1. 内容不能为空
+ * 2. 如果只有一行, 必须以 "WEBVTT" 开头
+ * 3. 如果有多行, 第一行必须以 "WEBVTT" 开头
+ * 4. 去掉 NOTE 和 STYLE 块后, 内容必须包含时间表达式
+ * 5. 时间表达式必须包含 "-->", 并且时间格式必须为 hh:mm:ss.mmm、mm:ss.mmm 或 ss.mmm
+ * 6. 每个时间表达式后必须有字幕内容, 不能为空
  */
 export const isWebvtt = (function () {
     // 匹配 NOTE 和 STYLE 块
     const reNoteStyle = /(NOTE[\s\S]*?(\r?\n){2}|STYLE[\s\S]*?(\r?\n){2})/g
 
-    // 匹配时间表达式,中间符号 --> 在后续判断 支持的时间格式包括 hh:mm:ss.mmm, mm:ss.mmm, ss.mmm
+    // 匹配时间表达式, 中间符号 --> 在后续判断, 支持的时间格式包括 hh:mm:ss.mmm, mm:ss.mmm, ss.mmm
     const reTimeExpression = /\b(?:\d{2}:)?(?:\d{2}:)?\d{2}\.\d{3}.*(?:\d{2}:)?(?:\d{2}:)?\d{2}\.\d{3}\b|.*-->.*/g
 
     // 匹配时间格式 hh:mm:ss.mmm, mm:ss.mmm, ss.mmm
@@ -67,7 +67,7 @@ export const isWebvtt = (function () {
             return [false, "字幕内容不能为空"]
         }
 
-        // 如果只有一行，则判断是否为 WEBVTT 开头
+        // 如果只有一行, 则判断是否为 WEBVTT 开头
         if (content.split("\n").length === 1) {
             if (content.startsWith("WEBVTT")) {
                 return [true, ""]

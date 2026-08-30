@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\common\pay-content\types.ts
+ * FilePath    : blog-client-nuxt\src\components\common\pay-content\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -15,16 +15,16 @@ export enum ContentPayType {
 }
 
 export interface PayContentProps {
-    postId?: string // 文章ID
+    postId?: string // 文章 ID
     isAdminVideo?: boolean // 是否使用管理员视频接口
     videoToc?: PostVideoTocTree[] // 付费视频目录
-    contentPayType?: ContentPayType // 内容费类型
+    contentPayType?: ContentPayType // 内容付费类型
     isPaid?: boolean // 是否付费阅读
     payStrategy?: PayStrategy // 付费策略
     payRoles?: string[] // 付费角色
-    price?: string // 价格(单位：分)
+    price?: string // 价格(单位: 分)
     loading?: boolean // 加载状态
     markdown: string
-    hasMaterial?: boolean // 付费视频标签内是否携带资料内容（由服务端 has-material 属性传递）
+    hasMaterial?: boolean // 付费视频标签内是否携带资料内容(由服务端 has-material 属性传递)
     onlyMarkdown?: boolean // 仅渲染 markdown 内容
 }

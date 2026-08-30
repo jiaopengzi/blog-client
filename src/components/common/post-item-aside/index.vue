@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\post-item-aside\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 单个边栏文章组件
+ * FilePath    : blog-client-nuxt\src\components\common\post-item-aside\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 单个边栏文章组件
 -->
 
 <template>
@@ -51,12 +51,10 @@ const postMeta = computed(() => {
     return data
 })
 
-// 事件
 const emit = defineEmits<{
     (event: "postId", val: string): void
 }>()
 
-// 点击文章
 const postId = (val: string) => {
     emit("postId", val)
 }
@@ -109,7 +107,7 @@ const postId = (val: string) => {
     line-height: 2em;
     display: -webkit-box;
     line-clamp: 2;
-    -webkit-line-clamp: 2; // 限制行数为2
+    -webkit-line-clamp: 2; // 限制行数为 2
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;

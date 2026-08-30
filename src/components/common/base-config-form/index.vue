@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\base-config-form\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 配置表单-基础组件
+ * FilePath    : blog-client-nuxt\src\components\common\base-config-form\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 配置表单-基础组件
 -->
 
 <template>
@@ -110,12 +110,8 @@ defineExpose({
 <style lang="scss" scoped>
 .config-form {
     width: 100%;
-    // border-bottom: 1px solid var(--jpz-border-color);
     padding: 20px;
     background-color: var(--jpz-bg-color);
-    // .el-input {
-    //     --el-input-width: 220px;
-    // }
     border-radius: 6px;
     box-shadow: var(--jpz-box-shadow-light);
 }

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\dateTime.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 格式化时间
+/*
+ * FilePath    : blog-client-nuxt\src\utils\dateTime.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 格式化时间
  */
 
 /**
@@ -19,12 +19,12 @@ export function formatTime(
     formatStr: string = "YYYY-MM-DD HH:mm:ss",
     addHours = 0, // 默认不增加小时
 ): string {
-    // 如果时间戳为空,则返回空字符串
+    // 如果时间戳为空, 则返回空字符串
     if (Timestamp === "") {
         return ""
     }
 
-    // 将时间戳转换为 Date 对象,默认会转换为本地时间
+    // 将时间戳转换为 Date 对象, 默认会转换为本地时间
     const dateTime = new Date(Timestamp)
 
     // 将 Date 对象的时间调整为 UTC 时间
@@ -59,9 +59,9 @@ export function formatDurationTime(duration: number): string {
     const days = Math.floor(duration / 60 / 60 / 24) // 计算天数
     const hours = Math.floor((duration / 60 / 60) % 24) // 计算小时数
     const minutes = Math.floor((duration / 60) % 60) // 计算分钟数
-    const seconds = Math.floor(duration % 60) // 计算秒数，并向下取整
+    const seconds = Math.floor(duration % 60) // 计算秒数, 并向下取整
 
-    // 将小时、分钟和秒数补全为两位
+    // 将小时, 分钟和秒数补全为两位
     const hoursStr = hours.toString().padStart(2, "0")
     const minutesStr = minutes.toString().padStart(2, "0")
     const secondsStr = seconds.toString().padStart(2, "0")
@@ -79,9 +79,9 @@ export function formatDurationTime(duration: number): string {
 }
 
 /**
- * @description: 格式化持续时间为友好显示（最多展示两个最大单位）
+ * @description: 格式化持续时间为友好显示(最多展示两个最大单位)
  * @param seconds 秒数
- * @return 友好显示字符串，0 返回空
+ * @return 友好显示字符串, 0 返回空
  */
 export function displayDurationTime(seconds: number): string {
     if (seconds <= 0) return ""
@@ -103,7 +103,7 @@ export function displayDurationTime(seconds: number): string {
 /**
  * @description: 将时间字符串转换为秒数
  * @param time 时间字符串 格式为 hh:mm:ss.sss
- * @return  {number} 秒数(三位小数,即毫秒)
+ * @return  {number} 秒数(三位小数, 即毫秒)
  */
 export function parseTime(time: string): number {
     const [hours, minutes, seconds] = time.split(":")
@@ -116,7 +116,7 @@ export function parseTime(time: string): number {
  * @param minutes 分钟
  * @param seconds 秒
  * @param milliseconds 毫秒
- * @return  {number} 秒数(三位小数,即毫秒)
+ * @return  {number} 秒数(三位小数, 即毫秒)
  */
 export function parseTimeSegments(hours: string, minutes: string, seconds: string, milliseconds: string): number {
     return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds) + parseInt(milliseconds) / 1000
@@ -129,7 +129,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
 
 /**
  * 格式化 Date 为本地 ISO 字符串
- * 输出格式：YYYY-MM-DDTHH:mm:ss±HH:MM (匹配 el-date-picker value-format="YYYY-MM-DDTHH:mm:ssZ")
+ * 输出格式: YYYY-MM-DDTHH:mm:ss±HH:MM (匹配 el-date-picker value-format="YYYY-MM-DDTHH:mm:ssZ")
  */
 export const formatLocalISO = (date: Date): string => {
     const offset = -date.getTimezoneOffset()

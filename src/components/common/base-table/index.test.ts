@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\common\base-table\index.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\base-table\index.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -36,8 +36,8 @@ vi.mock("element-plus", async (importOriginal) => {
 
 vi.mock("@/components/hooks/useDevice", () => ({
     /**
-     * @description: 固定分页布局, 避免测试依赖设备状态.
-     * @return 包含固定分页布局的设备信息.
+     * @description: 固定分页布局, 避免测试依赖设备状态
+     * @return 包含固定分页布局的设备信息
      */
     useDevice: () => ({
         paginationLayout: computed(() => "total, prev, pager, next"),
@@ -50,10 +50,10 @@ vi.mock("@/utils/confirm", () => ({
 }))
 
 /**
- * @description: 更新表格选择集.
- * @param row 当前行.
- * @param selected 是否选中.
- * @return 最新选择集.
+ * @description: 更新表格选择集
+ * @param row 当前行
+ * @param selected 是否选中
+ * @return 最新选择集
  */
 const updateSelection = (row: TableData, selected?: boolean): TableData[] => {
     const isSelected = tableSelection.value.includes(row)
@@ -80,10 +80,10 @@ const ElTableStub = defineComponent({
     },
     emits: ["selection-change", "sort-change"],
     /**
-     * @description: 提供 BaseTable 依赖的最小表格实例能力.
-     * @param props 组件属性.
-     * @param context setup 上下文.
-     * @return 渲染函数.
+     * @description: 提供 BaseTable 依赖的最小表格实例能力
+     * @param props 组件属性
+     * @param context setup 上下文
+     * @return 渲染函数
      */
     setup(props, { emit, slots, expose }) {
         watch(
@@ -133,10 +133,10 @@ const SwitchGroupStub = defineComponent({
     },
     emits: ["update-status"],
     /**
-     * @description: 渲染最小切换器桩.
-     * @param _props 组件属性.
-     * @param context setup 上下文.
-     * @return 渲染函数.
+     * @description: 渲染最小切换器桩
+     * @param _props 组件属性
+     * @param context setup 上下文
+     * @return 渲染函数
      */
     setup(_props, { slots }) {
         return () => h("div", { class: "switch-group-stub" }, slots.default?.())
@@ -147,10 +147,10 @@ const ElButtonStub = defineComponent({
     name: "ElButton",
     emits: ["click"],
     /**
-     * @description: 渲染按钮桩并透传点击事件.
-     * @param _props 组件属性.
-     * @param context setup 上下文.
-     * @return 渲染函数.
+     * @description: 渲染按钮桩并透传点击事件
+     * @param _props 组件属性
+     * @param context setup 上下文
+     * @return 渲染函数
      */
     setup(_props, { emit, slots }) {
         return () =>
@@ -175,10 +175,10 @@ const ElInputStub = defineComponent({
     },
     emits: ["update:modelValue"],
     /**
-     * @description: 渲染输入框桩, 支持 v-model.
-     * @param props 组件属性.
-     * @param context setup 上下文.
-     * @return 渲染函数.
+     * @description: 渲染输入框桩, 支持 v-model
+     * @param props 组件属性
+     * @param context setup 上下文
+     * @return 渲染函数
      */
     setup(props, { emit }) {
         return () =>
@@ -194,8 +194,8 @@ const ElPaginationStub = defineComponent({
     name: "ElPagination",
     emits: ["update:current-page", "update:page-size"],
     /**
-     * @description: 提供可触发分页事件的桩组件.
-     * @return 渲染函数.
+     * @description: 提供可触发分页事件的桩组件
+     * @return 渲染函数
      */
     setup() {
         return () => h("div", { class: "el-pagination-stub" })
@@ -212,10 +212,10 @@ const ElCheckboxGroupStub = defineComponent({
     },
     emits: ["update:modelValue", "change"],
     /**
-     * @description: 渲染宫格选择组桩.
-     * @param _props 组件属性.
-     * @param context setup 上下文.
-     * @return 渲染函数.
+     * @description: 渲染宫格选择组桩
+     * @param _props 组件属性
+     * @param context setup 上下文
+     * @return 渲染函数
      */
     setup(_props, { slots }) {
         return () => h("div", { class: "el-checkbox-group-stub" }, slots.default?.())
@@ -225,8 +225,8 @@ const ElCheckboxGroupStub = defineComponent({
 const ElCheckboxStub = defineComponent({
     name: "ElCheckbox",
     /**
-     * @description: 渲染复选框桩.
-     * @return 渲染函数.
+     * @description: 渲染复选框桩
+     * @return 渲染函数
      */
     setup() {
         return () => h("div", { class: "el-checkbox-stub" })
@@ -236,10 +236,10 @@ const ElCheckboxStub = defineComponent({
 const ElDialogStub = defineComponent({
     name: "ElDialog",
     /**
-     * @description: 渲染对话框桩并保留插槽.
-     * @param _props 组件属性.
-     * @param context setup 上下文.
-     * @return 渲染函数.
+     * @description: 渲染对话框桩并保留插槽
+     * @param _props 组件属性
+     * @param context setup 上下文
+     * @return 渲染函数
      */
     setup(_props, { slots }) {
         return () => h("div", { class: "el-dialog-stub" }, [slots.header?.(), slots.default?.()])
@@ -247,10 +247,10 @@ const ElDialogStub = defineComponent({
 })
 
 /**
- * @description: 生成基础分页数据.
- * @param records 数据行.
- * @param total 总数.
- * @return 分页对象.
+ * @description: 生成基础分页数据
+ * @param records 数据行
+ * @param total 总数
+ * @return 分页对象
  */
 const createPagination = (records: TableData[], total: number = records.length): Pagination<TableData> => ({
     records,
@@ -262,8 +262,8 @@ const createPagination = (records: TableData[], total: number = records.length):
 })
 
 /**
- * @description: 生成默认列配置.
- * @return 表格列数组.
+ * @description: 生成默认列配置
+ * @return 表格列数组
  */
 const createColumns = (): TableColumn[] => [
     {
@@ -273,8 +273,8 @@ const createColumns = (): TableColumn[] => [
 ]
 
 /**
- * @description: 生成默认数据行.
- * @return 数据行数组.
+ * @description: 生成默认数据行
+ * @return 数据行数组
  */
 const createRows = (): TableData[] =>
     [
@@ -283,19 +283,19 @@ const createRows = (): TableData[] =>
     ] as TableData[]
 
 /**
- * @description: 获取最近一次事件载荷.
- * @param wrapper 组件包装器.
- * @param eventName 事件名.
- * @return 最近一次事件参数.
+ * @description: 获取最近一次事件载荷
+ * @param wrapper 组件包装器
+ * @param eventName 事件名
+ * @return 最近一次事件参数
  */
 const getLastEmission = (wrapper: ReturnType<typeof mount>, eventName: string) => {
     return wrapper.emitted(eventName)?.at(-1)
 }
 
 /**
- * @description: 挂载 BaseTable 并注入通用桩.
- * @param props 覆盖属性.
- * @return 组件包装器.
+ * @description: 挂载 BaseTable 并注入通用桩
+ * @param props 覆盖属性
+ * @return 组件包装器
  */
 const mountComponent = (props: Record<string, unknown> = {}) => {
     return mount(BaseTable, {
@@ -307,8 +307,8 @@ const mountComponent = (props: Record<string, unknown> = {}) => {
         global: {
             directives: {
                 /**
-                 * @description: 为测试提供空的单双击指令实现.
-                 * @return void.
+                 * @description: 为测试提供空的单双击指令实现
+                 * @return void
                  */
                 "single-dbl-click": () => void 0,
             },

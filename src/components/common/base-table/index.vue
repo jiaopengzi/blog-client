@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\base-table\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 基础表格
+ * FilePath    : blog-client-nuxt\src\components\common\base-table\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 基础表格
 -->
 
 <template>
@@ -59,6 +59,7 @@
             :is-show-user-email="props.isShowUserEmail"
             :is-show-user-display-name="props.isShowUserDisplayName"
             :is-show-cursor-pointer="props.isShowCursorPointer"
+            :img-single-click-view-post="props.imgSingleClickViewPost"
             :row-operation-text="props.rowOperationText"
             :tags-item-max-height="props.tagsItemMaxHeight"
             :markdown-preview-max-height="props.markdownPreviewMaxHeight"
@@ -187,7 +188,7 @@ const gridCellStyle = computed(() => ({
  * @return void.
  */
 const handleGridCellSizeChange = (value: number | number[]) => {
-    emit("update-grid-cell-size", Array.isArray(value) ? value[0] : value)
+    emit("update-grid-cell-size", Array.isArray(value) ? (value[0] ?? 0) : value)
 }
 
 /**
@@ -232,6 +233,24 @@ const {
 </script>
 
 <style scoped lang="scss">
+// 260828-7: 新增/编辑弹窗统一限高——表单过长(用户/订单/通知等)时不再撑满视口,
+// body 内部滚动; 保存/提交的顶部提示信息不再被弹窗遮挡
+.add-item-dialog,
+.edit-item-dialog {
+    :deep(.el-dialog) {
+        display: flex;
+        flex-direction: column;
+        max-height: 80vh;
+        margin-top: 10vh !important; // 对齐 center 布局下的顶部留白, 保证提示条可见
+    }
+
+    :deep(.el-dialog__body) {
+        overflow-y: auto;
+        flex: 1;
+        min-height: 0;
+    }
+}
+
 .container {
     margin: 10px;
 }

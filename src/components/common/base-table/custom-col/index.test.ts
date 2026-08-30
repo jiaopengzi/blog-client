@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\common\base-table\custom-col\index.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\base-table\custom-col\index.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -27,10 +27,10 @@ let currentRow: Record<string, unknown> = {}
 const ElTableColumnStub = defineComponent({
     name: "ElTableColumn",
     /**
-     * 提供带 row scope 的最小列桩组件.
-     * @param _props - 组件属性.
-     * @param context - setup 上下文.
-     * @returns 渲染函数.
+     * 提供带 row scope 的最小列桩组件
+     * @param _props - 组件属性
+     * @param context - setup 上下文
+     * @returns 渲染函数
      */
     setup(_props, { slots }) {
         return () => h("div", { class: "el-table-column-stub" }, slots.default?.({ row: currentRow }))
@@ -46,9 +46,9 @@ const TagItemStub = defineComponent({
         },
     },
     /**
-     * 渲染最小标签桩, 便于断言输出顺序.
-     * @param props - 组件属性.
-     * @returns 渲染函数.
+     * 渲染最小标签桩, 便于断言输出顺序
+     * @param props - 组件属性
+     * @returns 渲染函数
      */
     setup(props) {
         return () => h("span", { class: "tag-item-stub" }, (props.tagData as PostTag).name)
@@ -56,8 +56,8 @@ const TagItemStub = defineComponent({
 })
 
 /**
- * 生成用于排序渲染测试的标签数据.
- * @returns 未排序的标签数组.
+ * 生成用于排序渲染测试的标签数据
+ * @returns 未排序的标签数组
  */
 function createTags(): PostTag[] {
     return [

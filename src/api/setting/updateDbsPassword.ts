@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\setting\updateDbsPassword.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 更新数据库密码
+/*
+ * FilePath    : blog-client-nuxt\src\api\setting\updateDbsPassword.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 更新数据库密码
  */
 
 import { request, routerGroup } from "@/api/request"

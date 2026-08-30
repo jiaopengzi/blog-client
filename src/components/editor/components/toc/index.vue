@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\editor\components\toc\index.vue
+ * FilePath    : blog-client-nuxt\src\components\editor\components\toc\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -42,8 +42,8 @@ const tocRef = useTemplateRef("tocRef")
 const activeMarkerRef = useTemplateRef("activeMarkerRef")
 
 /**
- * resetHeadingHighlight 清理当前目录激活态和 marker 样式.
- * @returns 无返回值.
+ * resetHeadingHighlight 清理当前目录激活态和 marker 样式
+ * @returns 无返回值
  */
 const resetHeadingHighlight = (): void => {
     if (!tocRef.value || !activeMarkerRef.value) return
@@ -104,7 +104,6 @@ watch(
 #toc {
     padding: 0 1em;
     // 添加不同缩进和样式
-    // border: 1px solid var(--jpz-border-color);
     background-color: var(--jpz-bg-color);
     border-radius: 5px;
     position: relative;
@@ -125,7 +124,6 @@ watch(
 
     .toc-item {
         line-height: 2;
-        // font-weight: 500;
         color: var(--jpz-color-primary);
 
         &.toc-active {

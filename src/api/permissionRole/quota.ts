@@ -1,9 +1,9 @@
-/**
- * FilePath    : blog-client\src\api\permissionRole\quota.ts
+/*
+ * FilePath    : blog-client-nuxt\src\api\permissionRole\quota.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * @Description  : 权限配额 API
+ * Description : 权限配额 API
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -31,8 +31,8 @@ export function getPermissionQuotaAPI(requestData: GetPermissionQuotaRequest): R
 }
 
 /**
- * 检查上传配额，配额耗尽时弹出警告并返回 true
- * @returns true 表示上传被阻止，false 表示可以继续
+ * 检查上传配额, 配额耗尽时弹出警告并返回 true
+ * @returns true 表示上传被阻止, false 表示可以继续
  */
 export async function checkQuotaBlocked(permissionName: string, label: string): Promise<boolean> {
     try {
@@ -44,7 +44,7 @@ export async function checkQuotaBlocked(permissionName: string, label: string): 
             return true
         }
     } catch {
-        // 配额查询失败，继续上传，由后端校验
+        // 配额查询失败, 继续上传, 由后端校验
     }
     return false
 }

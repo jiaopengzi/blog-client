@@ -1,0 +1,428 @@
+<!--
+ * FilePath    : blog-client-nuxt\src\components\views\admin\component\main\user-view\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 所有用户列表
+-->
+
+<template>
+    <section>
+        <BaseTable
+            :pagination="pagination"
+            :table-column="cols"
+            :route-name="RouteNames.UserView"
+            :add-item-dialog-visible="addItemDialogVisible"
+            :edit-item-dialog-visible="editItemDialogVisible"
+            :is-show-delete-all="true"
+            :is-show-search="true"
+            :search-str="search"
+            :is-show-edit="true"
+            :loading-delete="loadingDelete"
+            :delete-confirm-message="deleteConfirmMessage"
+            height="calc(100vh - 270px)"
+            @update-current-page="updateCurrentPage"
+            @update-page-size="updatePageSize"
+            @edit-row="editRow"
+            @delete-rows="handleDeleteRows"
+            @update-search="updateSearch"
+            @run-search="runSearch"
+            @add-item-update-dialog-visible="addItemUpdateDialogVisible"
+            @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
+        >
+            <template #btns>
+                <el-button type="primary" @click="toggleAddDialog"> 新增 </el-button>
+            </template>
+            <template #category>
+                <!-- v-for 循环 userCountGroupByRole 生成按钮 -->
+                <div class="category-group">
+                    <el-button
+                        v-for="item in userCountGroupByRole"
+                        :key="item.role_name"
+                        :class="{ active: item.role_name === activeRole }"
+                        @click="handleUserCountByRole(item.role_name)"
+                    >
+                        {{ roleDisplay(item.role_name) }} ({{ item.user_count }})
+                    </el-button>
+                </div>
+            </template>
+
+            <!-- 新增弹窗 -->
+            <template #add-item-title>
+                <span class="dialog-title">新增用户</span>
+            </template>
+
+            <template #add-item>
+                <div class="dialog-add">
+                    <AddUser :roles="roles" @add-user-status="handleAddStatus" />
+                </div>
+            </template>
+
+            <!-- 编辑弹窗 -->
+            <template #edit-item-title>
+                <span class="dialog-title">编辑用户</span>
+            </template>
+
+            <template #edit-item>
+                <div class="dialog-edit">
+                    <EditUser :roles="roles" :edit-user-data="editUserByAdminForm" @edit-user-status="handleEditStatus" />
+                </div>
+            </template>
+        </BaseTable>
+    </section>
+</template>
+
+<script lang="ts" setup>
+import { onBeforeMount, reactive, ref, watch } from "vue"
+
+import { type Role } from "@/api/permissionRole/role"
+import { type QueryParamsRecord } from "@/api/request"
+import { ResponseCode } from "@/api/response"
+import { deleteUserAPI, type DeleteUserRequest } from "@/api/user/deleteUser"
+import { getUserCountGroupByRoleAPI, type UserCountGroupByRole } from "@/api/user/getUserCountGroupByRole"
+import { getUsersAPI, type GetUsersRequest, type User } from "@/api/user/getUsers"
+import type { TableColumn, TableData } from "@/components/common/base-table"
+import BaseTable from "@/components/common/base-table/index.vue"
+import { useBaseTable } from "@/components/hooks/useBaseTable"
+import { useParams } from "@/components/hooks/useParams"
+import { RouteNames } from "@/router"
+import { usePermissionRoleStore } from "@/stores/permissionRole"
+import { formatTime } from "@/utils/dateTime"
+import { adminMenuItemMap } from "@/components/views/admin/component/aside"
+import AddUser from "@/components/views/admin/component/main/user-view/component/add-user"
+import { type EditUserByAdminForm } from "@/components/views/admin/component/main/user-view/component/edit-user"
+import EditUser from "@/components/views/admin/component/main/user-view/component/edit-user"
+
+defineOptions({ name: RouteNames.UserView })
+
+useHead({
+    title: adminMenuItemMap[RouteNames.UserView].text,
+})
+
+const cols: TableColumn[] = reactive([
+    {
+        prop: "id",
+        label: "ID",
+        sortable: true,
+        minWidth: 180,
+        align: "center",
+        isCopyText: true,
+    },
+    {
+        prop: "img",
+        label: "头像",
+        minWidth: 100,
+        align: "center",
+        isImg: true,
+    },
+    {
+        prop: "user_name",
+        label: "用户名",
+        sortable: true,
+        minWidth: 150,
+        align: "center",
+        isCopyText: true,
+    },
+    {
+        prop: "user_display_name",
+        label: "昵称",
+        sortable: true,
+        minWidth: 180,
+        align: "center",
+        isCopyText: true,
+    },
+    {
+        prop: "user_email",
+        label: "邮箱",
+        sortable: true,
+        minWidth: 180,
+        align: "center",
+        isCopyText: true,
+    },
+    {
+        prop: "role",
+        label: "角色",
+        sortable: true,
+        minWidth: 140,
+        align: "center",
+    },
+    {
+        prop: "disable_expires_at",
+        label: "禁用到期时间",
+        sortable: true,
+        minWidth: 180,
+        align: "center",
+        isTest: true,
+        formatter: (row: TableData) => getDisableExpiresTime(row),
+    },
+    {
+        prop: "post",
+        label: "文章",
+        sortable: true,
+        minWidth: 80,
+        align: "center",
+    },
+    {
+        prop: "created_at",
+        label: "注册时间",
+        sortable: true,
+        minWidth: 180,
+        align: "center",
+    },
+])
+
+const AllRoleName = "AllRole"
+const activeRole = ref(AllRoleName)
+
+// url query key
+enum queryKey {
+    RoleName = "role_name",
+    KeyWord = "key_word",
+}
+
+const queryParams: GetUsersRequest = reactive({} as GetUsersRequest)
+
+const stringKeys: StringKeys<GetUsersRequest>[] = ["role_name", "key_word"]
+
+const numberKeys: NumberKeys<GetUsersRequest>[] = ["current_page", "page_size"]
+
+// 不需要请求的参数
+const noRequestKeys: QueryParamsRecord<queryKey> = { [queryKey.RoleName]: AllRoleName }
+
+const getDisableExpiresTime = (row: TableData) => {
+    if ("disable_expires_at" in row) {
+        // 如果 disable_expires_at 为 null 则视为未禁用
+        if (row.disable_expires_at === null) {
+            return "未禁用"
+        }
+
+        // 如果 disable_expires_at 的 Valid 为 false 则视为未禁用
+        if ("Valid" in row.disable_expires_at && row.disable_expires_at.Valid === false) {
+            return "未禁用"
+        }
+
+        if ("Time" in row.disable_expires_at && row.disable_expires_at.Time !== null) {
+            const now = new Date()
+            const disableExpiresAt = new Date(row.disable_expires_at.Time)
+            // 如果禁用过期时间小于当前时间则视为未禁用
+            if (disableExpiresAt < now) {
+                return "未禁用"
+            }
+            return formatTime(row.disable_expires_at.Time.toString())
+        }
+    }
+}
+
+// 待编辑的用户表单数据
+const editUserByAdminForm = reactive<EditUserByAdminForm>({
+    editUserID: "",
+    userName: "",
+    email: "",
+    disableExpiresAt: {
+        Time: null,
+        Valid: false,
+    },
+    password: "",
+    roleName: "",
+    nickName: "",
+    sex: "男",
+    description: "",
+})
+
+const editRow = (index: number, row: TableData) => {
+    // 通过 in 检查缩小 row 类型, 访问字段 ts 不会报错
+    if ("disable_expires_at" in row) {
+        // 如果 disable_expires_at 为 null 则视为未禁用
+        if (row.disable_expires_at === null) {
+            editUserByAdminForm.disableExpiresAt = {
+                Time: null,
+                Valid: false,
+            }
+
+            editUserByAdminForm.editUserID = row.id.toString()
+            editUserByAdminForm.userName = row.user_name
+            editUserByAdminForm.email = row.user_email
+            editUserByAdminForm.password = ""
+            editUserByAdminForm.nickName = row.user_display_name
+            editUserByAdminForm.roleName = row.role
+            return
+        }
+
+        // 如果 disable_expires_at 的 Valid 为 false 则视为未禁用
+        if ("Valid" in row.disable_expires_at && row.disable_expires_at.Valid === false) {
+            editUserByAdminForm.disableExpiresAt = {
+                Time: null,
+                Valid: false,
+            }
+            editUserByAdminForm.editUserID = row.id.toString()
+            editUserByAdminForm.userName = row.user_name
+            editUserByAdminForm.email = row.user_email
+            editUserByAdminForm.password = ""
+            editUserByAdminForm.nickName = row.user_display_name
+            editUserByAdminForm.roleName = row.role
+            return
+        }
+
+        if ("Time" in row.disable_expires_at && "Valid" in row.disable_expires_at && row.disable_expires_at.Valid === true) {
+            editUserByAdminForm.disableExpiresAt = {
+                Time: row.disable_expires_at.Time,
+                Valid: row.disable_expires_at.Valid,
+            }
+            editUserByAdminForm.editUserID = row.id.toString()
+            editUserByAdminForm.userName = row.user_name
+            editUserByAdminForm.email = row.user_email
+            editUserByAdminForm.password = ""
+            editUserByAdminForm.nickName = row.user_display_name
+            editUserByAdminForm.roleName = row.role
+        }
+    }
+    toggleEditDialog()
+}
+
+// 按角色分组的用户统计数据
+const userCountGroupByRole = ref<UserCountGroupByRole[]>([])
+
+// 获取角色列表
+const roles = ref<Role[]>([]) // 不包含全部角色
+const rolesALL = ref<Role[]>([]) // 包含全部角色
+
+function getRoles() {
+    const permissionRoleStore = usePermissionRoleStore()
+    const res = permissionRoleStore.getSystemRoles
+    const newRole = { role_name: AllRoleName, permission_names: [], description: "全部" }
+    roles.value = res.roles
+    rolesALL.value = [newRole, ...res.roles]
+}
+
+// 获取按角色分组的用户数量
+async function getUserCountGroupByRole() {
+    await getUserCountGroupByRoleAPI().then((res) => {
+        if (res.data.code === ResponseCode.GetUserCountGroupByRolesSuccess) {
+            const rolesALL = res.data.data
+            const total = rolesALL.reduce((prev, cur) => {
+                return prev + cur.user_count
+            }, 0)
+            const newRole = { role_name: AllRoleName, user_count: total }
+            userCountGroupByRole.value = [newRole, ...rolesALL]
+        }
+    })
+}
+
+// 根据角色名称获取角色描述
+function roleDisplay(role: string) {
+    const roleObj = rolesALL.value.find((item) => item.role_name === role)
+    return roleObj ? roleObj.description : role
+}
+
+const {
+    addItemDialogVisible,
+    editItemDialogVisible,
+    search,
+    toggleAddDialog,
+    toggleEditDialog,
+    pagination,
+    updateCurrentPage,
+    updatePageSize,
+    updateSearch,
+    addStatus,
+    editStatus,
+    addItemUpdateDialogVisible,
+    editItemUpdateDialogVisible,
+    deleteRows,
+    updateRouterPush, // 更新查询参数和路由
+    loadingDelete,
+} = useBaseTable<User, GetUsersRequest, DeleteUserRequest>({
+    routeName: RouteNames.UserView,
+    viewAPI: getUsersAPI,
+    viewResCode: ResponseCode.UserGetAllSuccess,
+    queryParams,
+    deleteAPI: deleteUserAPI,
+    deleteResCode: ResponseCode.UserDeleteSuccess,
+    options: { stringKeys, numberKeys, noRequestKeys, enablePaginationStorage: true },
+})
+
+// 用户删除确认提示信息
+const deleteConfirmMessage = "删除用户将同时删除该用户的所有文章、上传的文件、视频、评论、点赞、收藏、订单等关联数据, 且无法恢复, 是否确认删除?"
+
+const handleDeleteRows = async (rows: TableData[]) => {
+    await deleteRows(rows)
+    await getUserCountGroupByRole()
+}
+
+const handleAddStatus = async (status: boolean) => {
+    await addStatus(status)
+    await getUserCountGroupByRole()
+}
+
+const handleEditStatus = async (status: boolean) => {
+    await editStatus(status)
+    await getUserCountGroupByRole()
+}
+
+const updateData = async () => {
+    delete queryParams.current_page
+    delete queryParams.page_size
+    await updateRouterPush()
+}
+
+const runSearch = async () => {
+    await updateData()
+}
+
+const handleUserCountByRole = async (role: string) => {
+    activeRole.value = role
+    // 更新查询参数以触发路由跳转
+    Object.assign(queryParams, {
+        [queryKey.RoleName]: role,
+        [queryKey.KeyWord]: search.value,
+    })
+
+    await updateData()
+}
+
+// 将 params 解析回对应的响应式变量中 (不需要请求)
+const parseParamsNotLoaded = () => {
+    const { role_name } = queryParams
+
+    if (role_name) {
+        activeRole.value = role_name
+    }
+}
+
+watch(
+    () => queryParams,
+    () => {
+        parseParamsNotLoaded()
+    },
+    { deep: true },
+)
+
+// 在加载前将 params 解析回对应的响应式变量中
+useParams(queryParams, pagination, search)
+
+onBeforeMount(async () => {
+    getRoles()
+    await getUserCountGroupByRole()
+
+    const { role_name } = queryParams
+
+    if (role_name) {
+        activeRole.value = role_name
+    }
+})
+</script>
+
+<style scoped lang="scss">
+.dialog-title {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.dialog-add,
+.dialog-edit {
+    width: 100%;
+    // 水平居中
+    display: flex;
+    justify-content: center;
+}
+</style>

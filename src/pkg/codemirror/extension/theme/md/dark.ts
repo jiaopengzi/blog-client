@@ -1,5 +1,8 @@
-/**
- * FilePath    : blog-client\src\pkg\codemirror\extension\theme\md\dark.ts
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\theme\md\dark.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
  * Description : markdown 暗黑主题
  */
 
@@ -30,7 +33,7 @@ export const markdownDarkStyles: CreateThemeOptions["styles"] = [
     { tag: t.strong, fontWeight: "700", color: "#c9d1d9" },
     { tag: t.emphasis, fontStyle: "italic", color: "#c9d1d9" },
 
-    // 链接（柔和一些）
+    // 链接(柔和一些)
     { tag: t.link, color: "#79c0ff", textDecoration: "underline" },
     { tag: t.url, color: "#79c0ff" },
 

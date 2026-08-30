@@ -1,16 +1,17 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-password\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-password\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 密码保护文章
 -->
+
 <template>
     <div>
         <el-card class="post-password-card" shadow="hover">
             <div class="post-password-card-content">
                 <div class="post-password-card-title">该文章受密码保护，请输入查看密码。</div>
-                <!-- 用form包裹密码输入, 参考如下 -->
+                <!-- 用 form 包裹密码输入, 参考如下 -->
                 <!-- https://www.chromium.org/developers/design-documents/create-amazing-password-forms/ -->
                 <form @submit.prevent="submitPassword" class="form-password">
                     <el-input v-model="password" type="password" placeholder="请输入文章密码" class="post-password-input" />
@@ -29,10 +30,10 @@ import { MessageUtil } from "@/utils/message"
 defineOptions({ name: "PostPassword" })
 
 const { isSubmitting = false } = defineProps<{
-    isSubmitting?: boolean // 是否显示loading
+    isSubmitting?: boolean // 是否显示 loading
 }>()
 
-// 事件
+// 事件声明
 const emit = defineEmits<{
     (event: "password", val: string): void
 }>()
@@ -53,13 +54,13 @@ const checkPassword = () => {
         return false
     }
 
-    // 密码不能少于6位
+    // 密码不能少于 6 位
     if (password.value.trim().length < 6) {
         MessageUtil.error("密码不能少于6位")
         return false
     }
 
-    // 密码不能大约64位
+    // 密码不能大于 64 位
     if (password.value.trim().length > 64) {
         MessageUtil.error("密码不能大于64位")
         return false
@@ -106,11 +107,6 @@ const submitPassword = () => {
         }
     }
 }
-// @include respond-to("pc") {
-// }
-
-// @include respond-to("pad") {
-// }
 
 @include respond-to("phone") {
     .post-password-card {

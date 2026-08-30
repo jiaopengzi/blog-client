@@ -1,15 +1,15 @@
-/**
- * @FilePath     : \blog-client\src\api\permissionRole\role.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 角色相关
+/*
+ * FilePath    : blog-client-nuxt\src\api\permissionRole\role.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 角色相关
  */
 
 import { type UpsertPermissionRoleRequest } from "@/api/permissionRole/upsertPermissionRole"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
-import { PermissionNames } from "@/stores/permissionRole"
+import { PermissionNames } from "@/api/permissionRole/permissionNames"
 
 // 不作为 role_name 唯一约束
 export enum RoleName {

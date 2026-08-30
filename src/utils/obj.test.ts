@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\obj.test.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 对象相关工具函数测试
+/*
+ * FilePath    : blog-client-nuxt\src\utils\obj.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 对象相关工具函数测试
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -32,20 +32,20 @@ interface PgSqlDateTime {
 }
 
 interface UpsertPostForm {
-    id: string // 文章ID
+    id: string // 文章 ID
     post_author: string // 文章作者
     post_content: string // 文章内容
     post_title: string // 文章标题
-    post_status: PostStatusCode // 文章状态 0 草稿 1 待审核 2 私密 3 定时发布 4 已发布 5 过期 6 回收站
+    post_status: PostStatusCode // 文章状态, 1 草稿 2 私密 3 定时 4 密码 5 发布 6 过期
     post_password: string // 文章密码
-    comment_status: CommentStatusCode // 评论是否开启 0 关闭 1 开启
+    comment_status: CommentStatusCode // 评论是否开启, 1 关闭 2 开启
     price: string // 价格
-    seo_title: string // SEO标题
-    seo_keywords: string // SEO关键词
-    seo_description: string // SEO描述
+    seo_title: string // SEO 标题
+    seo_keywords: string // SEO 关键词
+    seo_description: string // SEO 描述
     slug: string // 别名
     thumbnail: string // 缩略图
-    category_ids: string[] // 分类id
+    category_ids: string[] // 分类 id
     tag_names: string[] // 标签
     pay_roles: string[] // 付费角色
     post_push_time: PgSqlDateTime // 发布时间

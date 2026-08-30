@@ -1,16 +1,16 @@
-/**
- * @FilePath     : \blog-client\src\api\permissionRole\upsertPermissionRole.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 插入或更新角色权限
+/*
+ * FilePath    : blog-client-nuxt\src\api\permissionRole\upsertPermissionRole.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 插入或更新角色权限
  */
 
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
-import { PermissionNames } from "@/stores/permissionRole"
+import { PermissionNames } from "@/api/permissionRole/permissionNames"
 
-//  插入或更新角色权限 请求参数
+// 插入或更新角色权限请求参数
 export interface UpsertPermissionRoleRequest {
     permission_name: PermissionNames // 权限名称
     role_name: string // 角色名称
@@ -18,7 +18,7 @@ export interface UpsertPermissionRoleRequest {
     limit_period: number // 限制周期(秒数)
 }
 
-// 更新列表角色权限
+// 插入或更新角色权限
 export function upsertPermissionRoleAPI(requestData: UpsertPermissionRoleRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/role/upsert-permission-role"
     return request({

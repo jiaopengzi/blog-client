@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\customElementsMount\LoginView.ts
+ * FilePath    : blog-client-nuxt\src\customElementsMount\LoginView.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -12,7 +12,7 @@ import { createPinia } from "pinia"
 import LoginView from "@/components/common/login-view"
 import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
 
-import { Names } from "../customElements"
+import { Names } from "../customElements/constants"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
 
 export interface LoginViewState {

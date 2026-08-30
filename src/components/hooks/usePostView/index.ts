@@ -1,12 +1,10 @@
 /*
- * FilePath    : blog-client\src\components\hooks\usePostView\index.ts
+ * FilePath    : blog-client-nuxt\src\components\hooks\usePostView\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 文章查看 hooks
  */
-
-import { useRouter } from "vue-router"
 
 import { Target } from "@/api/common"
 import { PostStatusCode, PostType } from "@/api/post/common"
@@ -27,7 +25,7 @@ export function usePostView() {
 
     // 检查文章状态是否合法可查看
     const checkPostStatus = async (postID: string): Promise<boolean> => {
-        // 边界情况,postID 为空
+        // 边界情况, postID 为空
         if (!postID) {
             router.push({ name: RouteNames.NotFound })
             return false
@@ -57,7 +55,7 @@ export function usePostView() {
                 return false
             }
 
-            // 如果是私密文章且当前用户不是作者，则不能前台查看
+            // 如果是私密文章且当前用户不是作者, 则不能前台查看
             if (postData.post_status === PostStatusCode.Private && postData.author_info.id !== userStore.data.user.id.toString()) {
                 MessageUtil.warning("非自己的私密状态不能前台查看")
                 return false

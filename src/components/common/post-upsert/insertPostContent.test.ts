@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\common\post-upsert\insertPostContent.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\post-upsert\insertPostContent.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -13,9 +13,9 @@ import { PostType, type PostResPaginationByAdmin } from "@/api/post/common"
 import { createPostLinkInsertText } from "./insertPostContent"
 
 /**
- * createPostRow 生成插入链接测试所需的后台文章或页面行.
- * @param row - 文章或页面行局部字段.
- * @returns 可传给链接生成函数的列表行.
+ * createPostRow 生成插入链接测试所需的后台文章或页面行
+ * @param row - 文章或页面行局部字段
+ * @returns 可传给链接生成函数的列表行
  */
 function createPostRow(row: Partial<PostResPaginationByAdmin>): PostResPaginationByAdmin {
     return row as PostResPaginationByAdmin

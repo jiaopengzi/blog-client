@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\stores\device.ts
+ * FilePath    : blog-client-nuxt\src\stores\device.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -8,8 +8,6 @@
 
 import { acceptHMRUpdate, defineStore } from "pinia"
 
-// import { MessageUtil } from "@/utils/message"
-
 // 设备类型
 export enum DeviceType {
     PC = "pc",
@@ -17,11 +15,13 @@ export enum DeviceType {
     PHONE = "phone",
 }
 
-// 获取设备类型
+// 获取设备类型 (SSR 守卫: 服务端无 window, 默认桌面端, 客户端 hydration 后校准 —— 计划 1.6)
 export function getDeviceType(): DeviceType {
+    if (typeof window === "undefined") {
+        return DeviceType.PC
+    }
+
     const width = window.innerWidth
-    // console.log("============>window.innerWidth", window.innerWidth)
-    // MessageUtil.success(`w:${window.innerWidth}`, 0)
 
     if (width >= 1219) {
         return DeviceType.PC
@@ -38,11 +38,12 @@ export interface DeviceStore {
     windowWidth: number // 窗口宽度
 }
 
-// 创建设备信息
+// 创建设备信息 (SSR 守卫: 默认窗口宽度 1920, 客户端再校准)
 function createDeviceStore(): DeviceStore {
+    const windowWidth = typeof window !== "undefined" ? window.innerWidth : 1920
     return {
         device: getDeviceType(),
-        windowWidth: window.innerWidth,
+        windowWidth,
     }
 }
 
@@ -67,18 +68,19 @@ export const useDeviceStore = defineStore("device", {
             this.device = getDeviceType()
         },
 
-        // 设置窗口宽度
+        // 设置窗口宽度 (SSR 守卫)
         updateWindowWidth() {
+            if (typeof window === "undefined") return
             this.windowWidth = window.innerWidth
         },
 
         /**
          * 根据设备类型截断文本
          * @param text 文本内容
-         * @param pcLength PC 端最大长度，默认18
-         * @param padLength PAD 端最大长度，默认15
-         * @param phoneLength PHONE 端最大长度，默认12
-         * @param suffix 后缀，默认"..."
+         * @param pcLength PC 端最大长度, 默认 40
+         * @param padLength PAD 端最大长度, 默认 15
+         * @param phoneLength PHONE 端最大长度, 默认 12
+         * @param suffix 后缀, 默认 "..."
          * @returns 截断后的文本
          */
         truncateText(text: string, pcLength: number = 40, padLength: number = 15, phoneLength: number = 12, suffix: string = "..."): string {
@@ -99,7 +101,7 @@ export const useDeviceStore = defineStore("device", {
     },
 })
 
-// 允许开发环境下进行热更新 HMR(Hot Module Replacement)
+// 允许开发环境下进行热更新 HMR (Hot Module Replacement)
 if (import.meta.hot) {
     import.meta.hot.accept(acceptHMRUpdate(useDeviceStore, import.meta.hot))
 }

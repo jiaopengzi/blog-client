@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\wechat-captcha\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\wechat-captcha\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { mountVideoPlayerOnCustomElements } from "@/customElementsMount/VideoPlayer"
-import { Names } from "@/customElements/registerCustomElements"
+import { Names } from "@/customElements/constants"
 import { MessageUtil } from "@/utils/message"
 import { nextTick, onMounted, ref, watch } from "vue"
 
@@ -71,8 +71,8 @@ const setContentRef = (el: HTMLElement | null) => {
 }
 
 /**
- * @description: 基于文章 ID 生成验证码缓存 key, 避免不同文章复用同一验证码时串数据.
- * @return {string} 文章级缓存 key, 若 postId 缺失则返回空字符串.
+ * @description: 基于文章 ID 生成验证码缓存 key, 避免不同文章复用同一验证码时串数据
+ * @return {string} 文章级缓存 key, 若 postId 缺失则返回空字符串
  */
 const getStorageKey = (): string => {
     if (!postId.trim()) return ""
@@ -80,8 +80,8 @@ const getStorageKey = (): string => {
 }
 
 /**
- * @description: 读取当前文章的验证码缓存状态.
- * @return {boolean} 当前文章是否已完成验证.
+ * @description: 读取当前文章的验证码缓存状态
+ * @return {boolean} 当前文章是否已完成验证
  */
 const getCachedVerifiedState = (): boolean => {
     const storageKey = getStorageKey()
@@ -90,7 +90,7 @@ const getCachedVerifiedState = (): boolean => {
 }
 
 /**
- * @description: 缓存当前文章的验证成功状态.
+ * @description: 缓存当前文章的验证成功状态
  * @return {void}
  */
 const cacheVerifiedState = (): void => {
@@ -106,7 +106,7 @@ const mountNestedCustomElements = (): void => {
 }
 
 /**
- * @description: 校验用户输入的验证码, 成功后解锁并缓存当前文章状态.
+ * @description: 校验用户输入的验证码, 成功后解锁并缓存当前文章状态
  * @return {void}
  */
 const handleVerify = (): void => {

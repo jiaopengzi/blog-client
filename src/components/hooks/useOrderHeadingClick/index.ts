@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\hooks\useOrderHeadingClick\index.ts
+ * FilePath    : blog-client-nuxt\src\components\hooks\useOrderHeadingClick\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -15,8 +15,10 @@ function getOrderPostId(row: OrderGetByIDRes): string | undefined {
         return undefined
     }
 
+    // noUncheckedIndexedAccess 下 items[0] 类型为 T | undefined, 经长度守卫后仍无法收窄,
+    // 用可选链保持原业务语义 (items 长度为 1 时必取到首项)
     const item = row.items[0]
-    if (item.product_type !== ProductType.Post || !item.related_id) {
+    if (item?.product_type !== ProductType.Post || !item?.related_id) {
         return undefined
     }
 

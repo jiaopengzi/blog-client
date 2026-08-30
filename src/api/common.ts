@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\common.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 公用类型定义
+/*
+ * FilePath    : blog-client-nuxt\src\api\common.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 公用类型定义
  */
 
 // postgresql 日期时间 格式
@@ -32,9 +32,9 @@ export interface SendTestEmailRequest {
 
 // 验证码用途
 export enum CaptchaPurpose {
-    Register = "Register", // 验证码用途：注册
-    ResetPassword = "ResetPassword", // 验证码用途：重置密码
-    BindEmail = "BindEmail", // 验证码用途：绑定邮箱
+    Register = "Register", // 验证码用途: 注册
+    ResetPassword = "ResetPassword", // 验证码用途: 重置密码
+    BindEmail = "BindEmail", // 验证码用途: 绑定邮箱
 }
 
 // 社交登录方式

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\regexPatterns.test.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 正则表达式测试
+/*
+ * FilePath    : blog-client-nuxt\src\utils\regexPatterns.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 统一正则表达式的单元测试
  */
 
 import { describe, expect, it } from "vitest"

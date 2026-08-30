@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\switch-group\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 开关组件 
+ * FilePath    : blog-client-nuxt\src\components\common\switch-group\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 开关组件
 -->
 
 <template>

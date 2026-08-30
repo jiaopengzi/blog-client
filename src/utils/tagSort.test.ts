@@ -1,9 +1,9 @@
-/**
- * FilePath    : blog-client\src\utils\tagSort.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\tagSort.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : tagSort 工具测试
+ * Description : 标签与分类排序工具的单元测试
  */
 
 import { describe, expect, it } from "vitest"

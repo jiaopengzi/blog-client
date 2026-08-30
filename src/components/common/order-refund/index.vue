@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\order-refund\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\order-refund\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -48,11 +48,10 @@ import type { OrderRefundForm } from "./types"
 defineOptions({ name: "OrderRefund" })
 
 const { orderId, availableRefundAmount } = defineProps<{
-    orderId: string // 订单总金额
+    orderId: string // 订单 ID
     availableRefundAmount: number // 可退款金额
 }>()
 
-// 事件
 const emit = defineEmits<{
     (event: "refund-submit-success"): void // 退款提交成功
 }>()
@@ -73,7 +72,7 @@ const rules: FormRules<OrderRefundRequest> = {
         { required: true, message: "请填写退款金额", trigger: "blur" },
         {
             validator: (rule, value, callback) => {
-                // 判断数字需要大于0且小于等于可退款金额
+                // 判断数字需要大于 0
                 if (value === "" || value <= 0) {
                     callback(new Error("退款金额必须大于0"))
                 } else {
@@ -124,12 +123,12 @@ h4 {
 
     .captcha-section {
         width: 100%;
-        // 输入框和按钮在同一行，按钮占用实际宽度，剩余给输入框
+        // 输入框和按钮在同一行, 按钮占用实际宽度, 剩余给输入框
         display: flex;
         align-items: center;
         gap: 10px;
         .email-code {
-            flex: 1; // 输入框占据剩余空间
+            flex: 1;
         }
         .btn-captcha {
             width: 120px;

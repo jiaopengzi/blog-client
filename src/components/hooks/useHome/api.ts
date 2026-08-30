@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useHome\api.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 数据请求
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useHome\api.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 数据请求
  */
 
 import { reactive } from "vue"
@@ -21,6 +21,16 @@ import { useStatusStore } from "@/stores/status"
 
 import type { ViewPostReqKey } from "./types"
 
+// 后端按 "URL 转义形态" 的 slug 匹配 (中文标签/分类的 slug 在库中即存为 %E5%A4%9A... 形式):
+// 路径参数经 vue-router 解码为明文, 直接请求会被后端视为未命中而返回全量;
+// 已含 %XX 转义的值 (如标签云 API 返回的 slug) 保持原样, 避免二次转义
+const normalizeSlug = (value: string | undefined): string | undefined => {
+    if (!value) {
+        return value
+    }
+    return /%[0-9A-Fa-f]{2}/.test(value) ? value : encodeURIComponent(value)
+}
+
 export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
     const pagination = reactive<Pagination<PostResPagination>>(getEmptyPagination<PostResPagination>()) // 分页数据
 
@@ -32,7 +42,7 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
 
     // 获取分页
     async function getPaginate(req: ViewPostRequest): Promise<Pagination<PostResPagination>> {
-        // 遍历 options.NoRequest 中的参数，如果 req 中的参数值等于 options.NoRequest 中的值则删除,不请求
+        // 遍历 options.noRequestKeys 中的参数, 如果 req 中的参数值与其相等则删除该参数, 不参与请求
         for (const key in options?.noRequestKeys) {
             if (key in req && req[key as ViewPostReqKey] === options.noRequestKeys[key as ViewPostReqKey]) {
                 delete req[key as ViewPostReqKey]
@@ -46,8 +56,12 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
             req.post_tags = options?.post_tags
         }
 
-        // 获取标签列表
-        const res = await viewPostAPI(req)
+        // 请求文章列表
+        const res = await viewPostAPI({
+            ...req,
+            post_category_slug: normalizeSlug(req.post_category_slug),
+            post_tag_slug: normalizeSlug(req.post_tag_slug),
+        })
         if (res.data.code === ResponseCode.PostViewSuccess) {
             return res.data.data
         }
@@ -77,9 +91,9 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
         }
     }
 
-    // 推荐文章
+    // 月份归档统计
     async function getPostCountByMonth() {
-        // 获取标签列表
+        // 请求月度文章数量统计
         const res = await getPostCountByMonthAPI()
         if (res.data.code === ResponseCode.PostCountByMonthSuccess) {
             // 清空现有的 monthArchiveProps

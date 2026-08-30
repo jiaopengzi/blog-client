@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\common\order-remark\hooks.ts
+ * FilePath    : blog-client-nuxt\src\components\common\order-remark\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -19,9 +19,9 @@ export function useOrderRemark(formRef: Ref<FormInstance | null>, formRemark: Re
 
     // 执行备注更新
     const runRemark = async () => {
-        isRemarkBtnLoading.value = true // 禁用按钮
+        isRemarkBtnLoading.value = true
         if (!formRef || !formRef.value) {
-            isRemarkBtnLoading.value = false // 启用按钮
+            isRemarkBtnLoading.value = false
             return
         }
 
@@ -33,7 +33,6 @@ export function useOrderRemark(formRef: Ref<FormInstance | null>, formRemark: Re
                     remark_admin: formRemark.value.remark_admin,
                 }
 
-                // 调用API
                 const res = await updateOrderAdminAPI(req)
                 if (res.data.code === ResponseCode.OrderUpdateRemarkSuccess) {
                     MessageUtil.success("备注已保存，请耐心等待后端处理。", 3000)
@@ -47,9 +46,9 @@ export function useOrderRemark(formRef: Ref<FormInstance | null>, formRemark: Re
                     MessageUtil.error(msg, 3000)
                 }
 
-                isRemarkBtnLoading.value = false // 启用按钮
+                isRemarkBtnLoading.value = false
             } else {
-                isRemarkBtnLoading.value = false // 启用按钮
+                isRemarkBtnLoading.value = false
                 return
             }
         })

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\common\poster-share\types.ts
+ * FilePath    : blog-client-nuxt\src\components\common\poster-share\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -8,7 +8,7 @@
 
 // 海报元素类型
 export type PosterProps = {
-    logoSrc: string // logo图片地址
+    logoSrc: string // logo 图片地址
     imgSrc: string // 图片地址
     titleText: string // 标题文字
     urlText: string // 链接文字

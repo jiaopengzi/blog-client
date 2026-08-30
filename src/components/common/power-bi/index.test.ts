@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\common\power-bi\index.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\power-bi\index.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -64,7 +64,9 @@ describe("PowerBi", () => {
         expect(wrapper.find("iframe.power-bi-iframe").attributes("tabindex")).toBe("-1")
         expect(wrapper.find("button.power-bi-fullscreen-btn").attributes("type")).toBe("button")
         expect(wrapper.find(".power-bi-mask").exists()).toBe(true)
-        expect(wrapper.find(".power-bi-mask").attributes("style")).toContain("background-color: rgb(255, 255, 255)")
+        // happy-dom 适配: style 序列化保留原始写法 "#ffffff"(jsdom 会规范化为 rgb() 形式), 两种形态任一命中
+        const maskStyle = wrapper.find(".power-bi-mask").attributes("style") ?? ""
+        expect(maskStyle.includes("background-color: #ffffff") || maskStyle.includes("background-color: rgb(255, 255, 255)")).toBe(true)
         expect(wrapper.text()).not.toContain("不是有效的 Power BI 地址")
     })
 

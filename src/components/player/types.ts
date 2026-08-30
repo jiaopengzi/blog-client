@@ -1,42 +1,38 @@
-/**
- * @FilePath     : \blog-client\src\components\player\types.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 视频组件类型定义
+/*
+ * FilePath    : blog-client-nuxt\src\components\player\types.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 视频组件类型定义
  */
 
-// 播放状态
+// 媒体类型
 export enum MediaTypes {
     HLS = "hls",
     MP4 = "mp4",
     WEBM = "webm",
-    // DASH = 'dash',
-    // OGG = 'ogg',
-    // YOUTUBE = 'youtube',
-    // BILIBILI = 'bilibili',
 }
 
 // 播放状态
 export enum PlayStatus {
-    PLAYING = "playing", // 播放中
-    PAUSED = "paused", // 暂停
-    STOPPED = "stopped", // 停止
-    BUFFERING = "buffering", // 缓冲中
-    ENDED = "ended", // 播放结束
-    ERROR = "error", // 播放错误
+    PLAYING = "playing",
+    PAUSED = "paused",
+    STOPPED = "stopped",
+    BUFFERING = "buffering",
+    ENDED = "ended",
+    ERROR = "error",
 }
 
 // 播放质量
 export enum PlayLevelLabel {
-    ULTRA_HD_8K = "8k", // 8K 超高清
-    ULTRA_HD_4K = "4k", // 4K 超高清
-    QHD_2K = "2k", // 2K QHD
-    FULL_HD_1080P = "1080p", // 1080p 全高清
-    HD_720P = "720p", // 720p 高清
-    SD_480P = "480p", // 480p 标清
-    LD_360P = "360p", // 360p 低清
-    LOW_240P = "240p", // 240p 超低清
+    ULTRA_HD_8K = "8k",
+    ULTRA_HD_4K = "4k",
+    QHD_2K = "2k",
+    FULL_HD_1080P = "1080p",
+    HD_720P = "720p",
+    SD_480P = "480p",
+    LD_360P = "360p",
+    LOW_240P = "240p",
 }
 
 // 播放速度
@@ -48,25 +44,24 @@ export enum PlaybackRate {
     MEDIUM_FAST = 1.25,
     FAST = 1.5,
     FASTER = 2,
-    // VERY_FAST = 4,
 }
 
 export interface PlayLevel {
-    level: PlayLevelLabel // 播放质量
-    allLevels: Record<string, number> // 所有可用的播放质量
+    level: PlayLevelLabel
+    allLevels: Record<string, number>
 }
 
 export interface Volume {
-    volume: number // 音量
-    muted: boolean // 是否静音
+    volume: number
+    muted: boolean
     lastVolume: number // 静音前的音量
 }
 
 // 播放进度
 export interface PlayProgress {
-    currentTime: number // 当前播放时间（以秒为单位）
-    duration: number // 总时长（以秒为单位）
-    buffered?: number // 缓冲进度（以秒为单位）
+    currentTime: number // 当前播放时间 (以秒为单位)
+    duration: number // 总时长 (以秒为单位)
+    buffered?: number // 缓冲进度 (以秒为单位)
     isDragging: boolean // 是否正在拖拽进度条
 }
 
@@ -100,7 +95,7 @@ export enum Language {
     "th-TH" = "ไทย",
     "vi-VN" = "Tiếng Việt",
     "id-ID" = "Bahasa Indonesia",
-    "disabled" = "禁用",
+    disabled = "禁用",
 }
 
 // 语言约束类型
@@ -108,12 +103,11 @@ export type LanguageKey = keyof typeof Language
 
 // 字幕
 export interface SubtitlesItem {
-    label: string // 字幕标签，例如 'English', '中文', 'Español' 等
-    src: string // 字幕文件的URL
+    label: string // 字幕标签, 例如 'English', '中文', 'Español' 等
+    src: string // 字幕文件的 URL
 }
 
 // 定义 disabled 字幕
-// export const DisabledSubtitles: { [language: string]: SubtitlesItem } = {
 export const DisabledSubtitles: Partial<Record<LanguageKey, SubtitlesItem>> = {
     disabled: {
         label: Language.disabled,
@@ -123,97 +117,65 @@ export const DisabledSubtitles: Partial<Record<LanguageKey, SubtitlesItem>> = {
 
 // 字幕状态
 export interface Subtitles {
-    availableSubtitles?: Partial<Record<LanguageKey, SubtitlesItem>> // 可用字幕列表,字幕语言，例如 'en', 'zh', 'es' 等
-    selectedSubtitlesLanguage?: LanguageKey // 当前选择的字幕的语言 key 默认值 disabled
+    availableSubtitles?: Partial<Record<LanguageKey, SubtitlesItem>> // 可用字幕列表, 字幕语言例如 'en', 'zh', 'es' 等
+    selectedSubtitlesLanguage?: LanguageKey // 当前选择的字幕语言 key, 默认值 disabled
 }
 
 // 位置
 export interface Position {
-    x: number | string // 水平位置，可以是像素值（例如 100）或百分比字符串（例如 '50%'）
-    y: number | string // 垂直位置，可以是像素值（例如 100）或百分比字符串（例如 '50%'）
+    x: number | string // 水平位置, 可以是像素值 (例如 100) 或百分比字符串 (例如 '50%')
+    y: number | string // 垂直位置, 可以是像素值 (例如 100) 或百分比字符串 (例如 '50%')
 }
 
 // 文字水印
 export interface TextWatermark {
-    content: string // 水印内容，例如 'Sample Watermark'
-    style?: Partial<CSSStyleDeclaration> // 水印样式
+    content: string // 水印内容, 例如 'Sample Watermark'
+    style?: Partial<CSSStyleDeclaration>
 }
 
 // logo 水印
 export interface LogoWatermark {
     imgUrl: string // logo 的 URL 地址
-    style?: Partial<CSSStyleDeclaration> // logo 的样式
+    style?: Partial<CSSStyleDeclaration>
 }
 
 // 播放器尺寸
 export interface PlayerSize {
-    width: number // 播放器宽度（像素）
-    height: number // 播放器高度（像素）
+    width: number // 播放器宽度 (像素)
+    height: number // 播放器高度 (像素)
 }
 
 export interface PlayerState {
-    // 定时器 ID
     timerId: number | null
-    // 媒体类型
     mediaType: MediaTypes
-    // 视频 ID
     videoID: string
-    // 视频地址
     src: string
-    // 海报
     poster: string
-    // 播放状态
     playStatus: PlayStatus
-    // 播放进度
     playProgress: PlayProgress
-    // 网页全屏状态
     isWebFullScreen: boolean
-    // 全屏状态
     isFullScreen: boolean
-    // 播放质量
     playLevel: PlayLevel
-    // 播放速度
     playbackRate: PlaybackRate
-    // 音量
     volume: Volume
-    // 是否显示控制栏
     showControlBar: boolean
-    // 使用 video 默认 controls
     useVideoControls: boolean
-    // 播放器尺寸
     size: PlayerSize
-    // 字幕
     subtitles: Subtitles
-    // 本地视频字幕 URL
     localVideoSubtitlesURLs: string[]
-    // 画中画
     isPictureInPicture: boolean
-    // 是否为移动端
     isMobile: boolean
-    // 文字水印
     textWatermark: TextWatermark
-    // logo 水印
     logoWatermark: LogoWatermark
-    // 是否循环播放
     isLoop: boolean
-    // 是否自动播放
     autoPlay: boolean
-    // 是否用户输入
     isUserInput: boolean
-    // 是否为 iphone
     isIphone: boolean
-    // 是否开启快捷键
     isShortcutKey: boolean
-    // 是否展示错误信息
     showError: boolean
-    // 错误信息
     errMsg: string
-    // 是否为管理员
     isAdmin: boolean
-    // 是否有目录
     hasToc: boolean
-    // 是否显示目录
     isShowToc: boolean
-    // postId 视频所属的文章 ID
-    postId: string
+    postId: string // 视频所属的文章 ID
 }

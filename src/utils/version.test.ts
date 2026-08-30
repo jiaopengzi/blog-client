@@ -1,16 +1,15 @@
-/**
- * FilePath    : blog-client\src\utils\version.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\version.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 单测
+ * Description : 变更日志版本提取的单元测试
  */
 
 import { describe, expect, it } from "vitest"
 
 import { extractLatestDevChangelogVersionDate, extractLatestProChangelogVersionDate } from "./version"
 
-// 提取最新变更日志中的版本和日期
 describe("extractLatestDevChangelogVersionDate - 提取最新变更日志中的版本和日期", () => {
     it("提取带 v 前缀且包含链接的版本和日期", () => {
         const changelog = `
@@ -86,7 +85,6 @@ describe("extractLatestDevChangelogVersionDate - 提取最新变更日志中的�
     })
 })
 
-// 提取最新变更日志中的生产环境版本和日期
 describe("extractLatestProChangelogVersionDate - 提取最新变更日志中的生产环境版本和日期", () => {
     it("提取带 v 前缀且包含链接的稳定版本和日期", () => {
         const changelog = `

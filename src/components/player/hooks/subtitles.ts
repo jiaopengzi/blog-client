@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\player\hooks\subtitles.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\player\hooks\subtitles.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -70,18 +70,15 @@ export function getSubtitleCueStyle(cue: VTTCue): CSSProperties {
     }
 }
 
-// 字幕 hook
 export function useSubtitles(localPlayerState: Reactive<PlayerState>) {
-    // 是否显示字幕选择
     const isShowSubtitles = computed(() => {
         if (localPlayerState.subtitles && localPlayerState.subtitles.selectedSubtitlesLanguage) {
-            // 判断 subtitles.value.selectedSubtitlesLanguage 是否在 DisabledSubtitles keys 中, 如果在则不显示字幕, 否则显示字幕
+            // 选中语言在 DisabledSubtitles 中则不显示字幕, 否则显示字幕
             return !Object.keys(DisabledSubtitles).includes(localPlayerState.subtitles.selectedSubtitlesLanguage as LanguageKey)
         }
         return false
     })
 
-    // 字幕 src
     const subtitlesSrc = computed(() => {
         if (localPlayerState.subtitles && localPlayerState.subtitles.availableSubtitles && localPlayerState.subtitles.selectedSubtitlesLanguage) {
             const availableSubtitles = {
@@ -94,7 +91,6 @@ export function useSubtitles(localPlayerState: Reactive<PlayerState>) {
         return ""
     })
 
-    // 字幕语言
     const srclang = computed(() => {
         if (localPlayerState.subtitles && localPlayerState.subtitles.selectedSubtitlesLanguage) {
             return localPlayerState.subtitles.selectedSubtitlesLanguage
@@ -102,7 +98,6 @@ export function useSubtitles(localPlayerState: Reactive<PlayerState>) {
         return ""
     })
 
-    // 字幕 label
     const subtitlesLabel = computed(() => {
         if (localPlayerState.subtitles && localPlayerState.subtitles.availableSubtitles && localPlayerState.subtitles.selectedSubtitlesLanguage) {
             const availableSubtitles = {

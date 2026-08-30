@@ -1,10 +1,11 @@
 <!--
- * FilePath    : blog-client\src\components\common\qr-code\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\qr-code\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 二维码组件
 -->
+
 <template>
     <div class="qr-code">
         <img ref="imgRef" :src="qrCodeUrl" v-if="qrCodeUrl" />
@@ -23,7 +24,7 @@ const { options = {} } = defineProps<{
     options?: QRCodeOptions
 }>()
 
-// 事件
+// 事件声明
 const emit = defineEmits<{
     (event: "qr-code-complete"): void // 二维码渲染完成
 }>()
@@ -64,8 +65,8 @@ const qrCodeOptions = computed(() => {
 })
 
 /**
- * 去掉二维码中心图片后返回新的配置.
- * 当带 image 的二维码在移动端卡住时, 通过移除 image 进行兜底.
+ * 去掉二维码中心图片后返回新的配置
+ * 当带 image 的二维码在移动端卡住时, 通过移除 image 进行兜底
  */
 function createOptionsWithoutImage(option: QRCodeOptions): QRCodeOptions {
     const nextOptions = { ...option }
@@ -74,8 +75,8 @@ function createOptionsWithoutImage(option: QRCodeOptions): QRCodeOptions {
 }
 
 /**
- * 释放旧的二维码图片 URL.
- * 避免多次重试生成时残留无用的 Blob URL.
+ * 释放旧的二维码图片 URL
+ * 避免多次重试生成时残留无用的 Blob URL
  */
 function revokeQrCodeUrl(): void {
     if (!qrCodeUrl.value) {
@@ -87,8 +88,8 @@ function revokeQrCodeUrl(): void {
 }
 
 /**
- * 为异步二维码生成增加超时控制.
- * 超时后抛错, 让上层进入无 image 的兜底分支.
+ * 为异步二维码生成增加超时控制
+ * 超时后抛错, 让上层进入无 image 的兜底分支
  */
 function withTimeout<T>(promise: Promise<T>, timeout: number, message: string): Promise<T> {
     return new Promise<T>((resolve, reject) => {
@@ -109,8 +110,8 @@ function withTimeout<T>(promise: Promise<T>, timeout: number, message: string): 
 }
 
 /**
- * 触发二维码完成事件.
- * 确保在正常 onload, 图片失败或超时兜底时都只触发一次.
+ * 触发二维码完成事件
+ * 确保在正常 onload, 图片失败或超时兜底时都只触发一次
  */
 function completeQrCode(): void {
     if (isQrCodeCompleted.value) {
@@ -126,8 +127,8 @@ function completeQrCode(): void {
 }
 
 /**
- * 使用指定配置生成二维码图片 URL.
- * 每次尝试都创建新实例, 避免前一次卡住的实例影响后续兜底.
+ * 使用指定配置生成二维码图片 URL
+ * 每次尝试都创建新实例, 避免前一次卡住的实例影响后续兜底
  */
 async function generateQrCodeUrl(option: QRCodeOptions): Promise<string> {
     const instance = new QRCodeStyling(option)
@@ -136,8 +137,8 @@ async function generateQrCodeUrl(option: QRCodeOptions): Promise<string> {
 }
 
 /**
- * 生成二维码图片 URL.
- * 先尝试使用完整配置生成, 如果因为中心图片卡住或失败, 则自动移除 image 重试.
+ * 生成二维码图片 URL
+ * 先尝试使用完整配置生成, 如果因为中心图片卡住或失败, 则自动移除 image 重试
  */
 async function renderQrCodeUrl(): Promise<void> {
     isQrCodeCompleted.value = false

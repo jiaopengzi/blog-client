@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\membership\userAdjust.ts
+ * FilePath    : blog-client-nuxt\src\api\membership\userAdjust.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -27,7 +27,7 @@ export interface MembershipUserAdjustResponse {
     updated_at: string
 }
 
-// membershipUserAdjustAPI 管理员人工处理会员。
+// membershipUserAdjustAPI 管理员人工处理会员
 export function membershipUserAdjustAPI(requestData: MembershipUserAdjustRequest): ResPromise<Res<MembershipUserAdjustResponse>> {
     const urlStr = routerGroup + "/membership/user-adjust"
     return request({

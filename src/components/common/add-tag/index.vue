@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\add-tag\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 添加标签
+ * FilePath    : blog-client-nuxt\src\components\common\add-tag\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 添加标签
 -->
 
 <template>
@@ -53,12 +53,10 @@ const InputRef = useTemplateRef<InstanceType<typeof ElInput>>("InputRef")
 const isShowAllTag = ref(false)
 
 const handleClose = (tag: string) => {
-    // 根据 tag 的值,从 dynamicTags 获取该 tag 的索引 index 移除该 tag
+    // 根据 tag 的值, 从 dynamicTags 获取该 tag 的索引 index 并移除该 tag
     const newTags = [...dynamicTags.value]
     newTags.splice(newTags.indexOf(tag), 1)
 
-    // 根据 tag 的值,从 dynamicTags 中删除该 tag 使用 filter ,大型数据量时不推荐使用
-    // const newTags = dynamicTags.value.filter((item) => item !== tag)
     emit("update-tag-list", newTags)
 }
 
@@ -75,9 +73,9 @@ const showInput = () => {
 interface TagValidationResult {
     /** 是否验证通过 */
     valid: boolean
-    /** 错误信息（验证失败时） */
+    /** 错误信息(验证失败时) */
     error?: string
-    /** 解析后的标签数组（验证成功时） */
+    /** 解析后的标签数组(验证成功时) */
     tags?: string[]
 }
 
@@ -131,7 +129,7 @@ const handleInputConfirm = () => {
     // 验证并解析标签
     const result = validateAndParseTags(rawValue)
 
-    // 验证失败，显示错误信息并保持输入框聚焦
+    // 验证失败, 显示错误信息并保持输入框聚焦
     if (!result.valid) {
         MessageUtil.warning(result.error!)
         inputVisible.value = true
@@ -141,7 +139,7 @@ const handleInputConfirm = () => {
         return
     }
 
-    // 验证通过，处理标签
+    // 验证通过, 处理标签
     const parsedTags = result.tags!
     if (parsedTags.length === 0) {
         inputVisible.value = false

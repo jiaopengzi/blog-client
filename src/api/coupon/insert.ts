@@ -1,9 +1,9 @@
 /*
- * FilePath    : blog-client\src\api\coupon\insert.ts
+ * FilePath    : blog-client-nuxt\src\api\coupon\insert.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description :
+ * Description : 插入优惠券
  */
 
 import { request, routerGroup } from "@/api/request"

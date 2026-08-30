@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\month-archive\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 月度归档
+ * FilePath    : blog-client-nuxt\src\components\common\month-archive\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 月度归档
 -->
 
 <template>
@@ -16,7 +16,7 @@
         </div>
         <div v-else class="table">
             <el-table
-                :max-height="400"
+                :max-height="tableMaxHeight"
                 :data="postList"
                 :show-header="true"
                 header-row-class-name="header-month-archive-row"
@@ -35,7 +35,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, onMounted, ref } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
 
@@ -47,10 +47,20 @@ const { postList } = defineProps<{
     postList: MonthArchiveData[]
 }>()
 
-// 事件
 const emit = defineEmits<{
     (event: "PostByMonth", val: MonthArchiveData): void
 }>()
+
+// feature01(02-plan) 水合修复: el-table 的 max-height 在 SSR 直出为内联样式,
+// 而客户端首帧渲染为空样式, 产生 hydration style mismatch;
+// 水合期(挂载前)不传 max-height, 挂载后再恢复 400, 与服务端首帧一致.
+const isMounted = ref(false)
+onMounted(() => {
+    isMounted.value = true
+})
+
+// tableMaxHeight 水合期返回 undefined, 挂载后返回 400
+const tableMaxHeight = computed(() => (isMounted.value ? 400 : undefined))
 
 // 是否没有数据
 const noData = computed(() => {

@@ -1,13 +1,16 @@
-/**
- * @FilePath     : \blog-client\src\utils\eventEmitter.ts
- * @Description  : 事件触发器 EventEmitter 类 参考袁老师的文章 https://fe.duyiedu.com/p/t_pc/goods_pc_detail/goods_detail/course_2hzyLq1i84ydVnT200svNMYPFVH
+/*
+ * FilePath    : blog-client-nuxt\src\utils\eventEmitter.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : 事件触发器 EventEmitter 类, 参考袁老师的文章 https://fe.duyiedu.com/p/t_pc/goods_pc_detail/goods_detail/course_2hzyLq1i84ydVnT200svNMYPFVH
  */
 
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 
 // 定义一个事件触发器类
 export class EventEmitter<T extends string> {
-    // 声明一个 Map，键是事件名称，值是一组监听函数
+    // 声明一个 Map, 键是事件名称, 值是一组监听函数
     private events: Map<T, Set<Function>>
 
     constructor() {
@@ -50,7 +53,7 @@ export class EventEmitter<T extends string> {
     emit(event: T, ...args: unknown[]) {
         // 如果 events Map 中有这个事件
         if (this.events.has(event)) {
-            // 对事件的 Set 中的每一个监听器执行处理函数，传入的参数为 'args'
+            // 对事件的 Set 中的每一个监听器执行处理函数, 传入的参数为 'args'
             this.events.get(event)!.forEach((listener) => {
                 listener(...args)
             })

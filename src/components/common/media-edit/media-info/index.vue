@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\media-edit\media-info\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\media-edit\media-info\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
+import type { FormInstance, FormRules } from "element-plus"
 import { reactive, ref, useTemplateRef } from "vue"
 
 import { handleResErr, ResponseCode } from "@/api/response"
@@ -63,24 +63,21 @@ import { MessageUtil } from "@/utils/message"
 
 import type { MediaInfoProps } from "./types"
 
-// 定义组件名称
 defineOptions({ name: "MediaInfo" })
 
-// props
 const { data } = defineProps<{
     data: MediaInfoProps // 编辑媒体数据
 }>()
 
-// emits
 const emit = defineEmits<{
     (event: "edit-media-status", value: boolean): void // 编辑Media状态
 }>()
 
-// 表单label位置 top | left | right
-const labelPosition = ref("left")
+// 表单 label 位置 top | left | right
+const labelPosition = ref<"top" | "left" | "right">("left")
 
 // 表单大小 '' | 'large' | 'default' | 'small'
-const formSize = ref("default")
+const formSize = ref<"" | "default" | "large" | "small">("default")
 
 const mediaInfoRef = useTemplateRef<FormInstance>("mediaInfoRef")
 
@@ -89,7 +86,7 @@ const mediaInfo = reactive<MediaInfoProps>(data)
 
 /**
  * @description: 表单校验规则
- * @return  FormRules<MediaInfoProps> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
+ * @return FormRules<MediaInfoProps> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
  */
 const rulesEditMedia = reactive<FormRules<MediaInfoProps>>({
     file_name_display: [{ required: true, message: "请输入文件名", trigger: "blur" }],
@@ -97,7 +94,6 @@ const rulesEditMedia = reactive<FormRules<MediaInfoProps>>({
 
 const loadingEditMedia = ref(false)
 
-// 提交表单
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     // 如果校验不通过直接返回

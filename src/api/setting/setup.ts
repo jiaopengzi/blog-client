@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\setting\setup.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 设置数据库
+/*
+ * FilePath    : blog-client-nuxt\src\api\setting\setup.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 设置数据库
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -22,9 +22,9 @@ export interface ESSetupRequest {
     addresses: string[] // 地址列表
     user: string // 用户名
     password: string // 密码
-    index_prefix: string // 表前缀
+    index_prefix: string // 索引前缀
     ca_cert: string // CA 证书(可选)
-    use_ca_cert: boolean // 是否使用CA认证(可选)
+    use_ca_cert: boolean // 是否使用 CA 认证(可选)
 }
 
 export interface RedisNodeSetupRequest {
@@ -36,12 +36,12 @@ export interface RedisNodeSetupRequest {
 }
 
 export interface SetupRequest {
-    pgsql: PgsqlSetupRequest // pgsql配置
-    redis: RedisNodeSetupRequest[] // redis配置
-    es: ESSetupRequest // es配置
+    pgsql: PgsqlSetupRequest // pgsql 配置
+    redis: RedisNodeSetupRequest[] // redis 配置
+    es: ESSetupRequest // es 配置
 }
 
-// 检测验证码是否正确
+// 提交站点初始化配置
 export function setupAPI(requestData: SetupRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/setup"
     return request({

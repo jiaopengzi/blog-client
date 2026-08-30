@@ -1,11 +1,13 @@
-/**
- * @FilePath     : \blog-client\src\utils\confirm.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 确认框逻辑
+/*
+ * FilePath    : blog-client-nuxt\src\utils\confirm.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 确认框逻辑
  */
 
+// Nuxt 适配: ElMessage/ElMessageBox 显式导入(原项目由 unplugin auto-import 提供)
+import { ElMessage, ElMessageBox } from "element-plus"
 import { MsgTitle, MsgType } from "@/components/common"
 
 /**

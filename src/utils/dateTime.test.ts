@@ -1,6 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\dateTime.test.ts
- * @Description  : formatLocalISO 工具函数测试
+/*
+ * FilePath    : blog-client-nuxt\src\utils\dateTime.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : dateTime 的单元测试
  */
 
 import { describe, expect, it } from "vitest"

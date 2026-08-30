@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useAccountFormValidation\rules.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 生成校验规则
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useAccountFormValidation\rules.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 生成校验规则
  */
 
 import type { FormItemRule } from "element-plus"
@@ -12,11 +12,7 @@ import { RegexPatterns } from "@/utils/regexPatterns"
 
 import type { ValidatorFunc } from "./type"
 
-/**
- * @description: 表单校验规则
- * @return  FormRules<loginForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
- */
-
+// trigger: 'blur' 表示失去焦点时校验, 'change' 表示值改变时校验
 /**
  * @description: 创建登录名校验规则
  * @param validatorFunc 自定义校验函数
@@ -97,7 +93,7 @@ export function createEmailRules(validatorFunc?: ValidatorFunc): FormItemRule[] 
 
 /**
  * @description: 创建验证码校验规则
- * @param validatorFactory 自定义校验函数
+ * @param validatorFunc 自定义校验函数
  * @return {FormItemRule[]} 校验规则
  */
 export function createCaptchaRules(validatorFunc?: ValidatorFunc): FormItemRule[] {
@@ -114,7 +110,7 @@ export function createCaptchaRules(validatorFunc?: ValidatorFunc): FormItemRule[
 }
 
 /**
- * @description: 创建新密码校验规则
+ * @description: 创建确认密码校验规则
  * @param validatorFunc 自定义校验函数
  * @return {FormItemRule[]} 校验规则
  */

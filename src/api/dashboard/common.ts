@@ -1,9 +1,9 @@
 /*
- * FilePath    : blog-client\src\api\pay\common.ts
+ * FilePath    : blog-client-nuxt\src\api\dashboard\common.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 支付共用内容
+ * Description : 面板共用枚举与类型
  */
 
 // 趋势类别

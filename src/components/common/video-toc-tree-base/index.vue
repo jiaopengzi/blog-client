@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\video-toc-tree-base\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\video-toc-tree-base\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -9,7 +9,7 @@
     <div class="custom-tree-container">
         <el-tree
             ref="treeRef"
-            :props="{ class: customNodeClass }"
+            :props="{ class: () => customNodeClass }"
             style="width: 100%"
             :data="localTreeList"
             node-key="id"
@@ -52,7 +52,8 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue"
 
-import type { TableData } from "@/components/common/base-table"
+// Nuxt 适配: 仅需 TableData 类型, 直接指向 types(避免引入 base-table 组件树)
+import type { TableData } from "@/components/common/base-table/types"
 import SelectMedia from "@/components/common/media-select/index.vue"
 
 import VideoTocItem from "../video-toc-item"
@@ -61,7 +62,6 @@ import type { Data, Node, Tree, TreeProps } from "./types"
 
 defineOptions({ name: "VideoTocTreeBase" })
 
-// 定义 props
 const {
     treeList = [], // 目录树数据
     draggable = true, // 是否可拖拽
@@ -71,7 +71,6 @@ const {
     currentNodeKey, // 当前选中节点的 key
 } = defineProps<TreeProps>()
 
-// 事件
 const emit = defineEmits<{
     (event: "tree-update", val: Tree[], videoFileIdHashList: string[]): void // 目录树更新
     (event: "video-select", val: Data): void // 选择视频文件
@@ -100,9 +99,9 @@ const emitTreeUpdate = () => {
     emit("tree-update", localTreeList.value, fileIdHashList)
 }
 
-// 添加子章节（插入到当前章节的 children 中）
+// 添加子章节(插入到当前章节的 children 中)
 const appendChildChapter = (data: Data) => {
-    // 动态计算id
+    // 动态计算 id
     const id = calcMaxId(localTreeList.value) + 1
 
     const newChild: Tree = { id, label: "章节", is_chapter: true, children: [] }
@@ -114,7 +113,7 @@ const appendChildChapter = (data: Data) => {
     emitTreeUpdate()
 }
 
-// 添加平行章节（同级章节，插入到当前节点之后）
+// 添加平行章节(同级章节, 插入到当前节点之后)
 const appendSiblingChapter = (node: Node, data: Data) => {
     const id = calcMaxId(localTreeList.value) + 1
     const newSibling: Tree = { id, label: "章节", is_chapter: true, children: [] }
@@ -131,7 +130,7 @@ const appendSiblingChapter = (node: Node, data: Data) => {
 const removeNode = (node: Node, data: Data) => {
     const parent = node.parent
 
-    // 如果是根节点，且只有一个节点，触发删除根节点事件
+    // 如果是根节点, 且只有一个节点, 触发删除根节点事件
     if (parent?.data.length === 1 && localTreeList.value.length === 1) {
         emit("delete-root")
     }

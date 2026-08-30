@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\uploadFileCommon.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 上传文件公共方法
+/*
+ * FilePath    : blog-client-nuxt\src\utils\uploadFileCommon.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 上传文件公共方法
  */
 
 import { MultiThreadSplitter, type RequestStrategy, UploadController, UploadControllerEvents, type UploadFileSuccessInfo } from "@/utils/chunkUpload"
@@ -28,23 +28,16 @@ export const uploadFileCommon = async <T extends RequestStrategy>(
         })
 
         uploadController.on(UploadControllerEvents.END, (info: UploadFileSuccessInfo) => {
-            // const msg = `上传成功：${info.fileName}`
-            // const msg = `上传成功1`
-            // MessageUtil.success( msg, 5000)
             resolve(info.fileUrl)
         })
 
         uploadController.on(UploadControllerEvents.ERROR, (error: Error) => {
-            // 处理错误
-            // console.error(error)
             MessageUtil.error(error.message, 6000)
             reject(error)
         })
 
-        // 初始化UploadController
+        // 初始化 UploadController
         uploadController.init(isEncrypt, !isNoFree).catch((error) => {
-            // 处理错误
-            // console.error(error)
             reject(error)
         })
     })

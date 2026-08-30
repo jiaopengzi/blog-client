@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\hooks\usePagination\usePagination.ts
+ * FilePath    : blog-client-nuxt\src\components\hooks\usePagination\usePagination.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -35,7 +35,7 @@ export function usePagination<T, K extends PaginationRequest>(
 
         await updateRouterPush()
 
-        // 如果是自动更新分页数据，则调用更新分页数据方法
+        // 如果是自动更新分页数据, 则调用更新分页数据方法
         if (isAutoUpdate) {
             await updatePaginate()
         }
@@ -50,13 +50,13 @@ export function usePagination<T, K extends PaginationRequest>(
 
         await updateRouterPush()
 
-        // 如果是自动更新分页数据，则调用更新分页数据方法
+        // 如果是自动更新分页数据, 则调用更新分页数据方法
         if (isAutoUpdate) {
             await updatePaginate()
         }
     }
 
-    //  更新分页数据
+    // 更新分页数据
     const updatePaginate = async (): Promise<void> => {
         const data = await paginateAPI(queryParams as K)
         if (!data || data.total === 0) {

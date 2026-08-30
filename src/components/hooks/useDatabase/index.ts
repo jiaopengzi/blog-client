@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useDatabase\index.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 数据库 hooks
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useDatabase\index.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 数据库 hooks
  */
 
 import { type Reactive, type Ref } from "vue"
@@ -111,7 +111,7 @@ export function useDatabase<K extends SetupRequest>(
                 es: esDataRequest,
             }
 
-            // 从参数校验成功，即请求开始，计时开始能包含请求中网络延迟的时间
+            // 从参数校验成功, 即请求开始, 计时开始能包含请求中网络延迟的时间
             const timer = setInterval(() => {
                 waitSeconds.value++
             }, 1000)

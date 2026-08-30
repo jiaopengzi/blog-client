@@ -1,3 +1,11 @@
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\pay-video\hooks.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : 付费视频 hooks 的单元测试
+ */
+
 import { ref } from "vue"
 import { describe, expect, it, vi } from "vitest"
 

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\upload\updateFile.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 更新文件
+/*
+ * FilePath    : blog-client-nuxt\src\api\upload\updateFile.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 更新文件
  */
 
 import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
@@ -16,7 +16,7 @@ export interface UpdateFileRequest {
     description: string // 描述
     is_free: boolean // 是否免费
     is_video: boolean // 是否为视频
-    is_generate_hls: boolean // 是否生成HLS
+    is_generate_hls: boolean // 是否生成 HLS
 }
 
 export function updateFileAPI(req: UpdateFileRequest): ResPromise<Res<StreamsStatusRes>> {

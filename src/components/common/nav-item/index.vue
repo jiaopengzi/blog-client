@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\nav-item\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\nav-item\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -14,7 +14,7 @@
         <span class="right link-text" v-if="item.text_position === 'right'">{{ item.text }}</span>
     </a>
 
-    <!-- 使用router-link -->
+    <!-- 使用 router-link -->
     <router-link v-if="item.RouteName" :to="{ name: item.RouteName }" class="link">
         <span class="left link-text" v-if="item.text_position === 'left'">{{ item.text }}</span>
         <j-icon v-if="item.iconKey" :name="item.iconKey" :custom-class="`my-icon ${item.customClass}`" />

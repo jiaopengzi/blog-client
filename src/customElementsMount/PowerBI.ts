@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\customElementsMount\PowerBI.ts
+ * FilePath    : blog-client-nuxt\src\customElementsMount\PowerBI.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -10,7 +10,7 @@ import { createApp, h } from "vue"
 
 import PowerBi from "@/components/common/power-bi"
 
-import { Attributes, Names } from "../customElements"
+import { Attributes, Names } from "../customElements/constants"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
 
 // 定义 PowerBI 组件状态接口

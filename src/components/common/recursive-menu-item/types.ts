@@ -1,14 +1,14 @@
-/**
- * @FilePath     : \blog-client\src\components\common\recursive-menu-item\types.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 类型定义
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\recursive-menu-item\types.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 类型定义
  */
 
 import { Target } from "@/api/common"
 import { IconKeys } from "@/components/common/icons"
-import { PermissionNames } from "@/stores/permissionRole"
+import { PermissionNames } from "@/api/permissionRole/permissionNames"
 
 // 菜单项接口定义无需 index 属性
 export interface MenuItem {

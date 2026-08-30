@@ -1,15 +1,15 @@
 /*
- * FilePath    : blog-client\src\api\helper\getStreamIDsStatus.ts
+ * FilePath    : blog-client-nuxt\src\api\helper\getStreamIDsStatus.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 获取streamID状态
+ * Description : 获取 streamID 状态
  */
 
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
-// StreamIds 请求参数
+// 流信息
 export interface StreamInfo {
     name: string
     id: string

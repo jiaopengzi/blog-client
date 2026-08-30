@@ -1,6 +1,9 @@
-/**
- * FilePath    : blog-client\src\utils\cssValidator.test.ts
- * Description : css 校验器单元测试
+/*
+ * FilePath    : blog-client-nuxt\src\utils\cssValidator.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : cssValidator 的单元测试
  */
 
 import { describe, expect, it } from "vitest"

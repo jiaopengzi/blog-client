@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\editor\utils\css-inline.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\editor\utils\css-inline.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -55,19 +55,7 @@ export function getCssStyleRules(cssStyleSheets: [CSSStyleSheet, number][]): CSS
  * 微信公众平台编辑器明确不支持或会被过滤的 CSS 属性黑名单
  * 这些属性在内联样式中会被移除或忽略, 即使写在 style 里也无效
  */
-export const WechatCssBlackList: readonly string[] = [
-    // "position",
-    "border-image",
-    // "font-family",
-    // "font-style",
-    // "font-variant",
-    // "font-kerning",
-    // "font-stretch",
-    // "font-language-override",
-    // "font-language-override",
-    // "font-size-adjust",
-    // "font-optical-sizing",
-]
+export const WechatCssBlackList: readonly string[] = ["border-image"]
 
 // 全局白名单(暂时为空)
 export const WechatCssAllWhiteList: readonly string[] = []
@@ -76,9 +64,9 @@ export const WechatCssAllWhiteList: readonly string[] = []
 export const WechatCssPreCodeWhiteList: readonly string[] = ["font-family", "font-size", "line-height", "color", "background-color", "padding", "margin"]
 
 /**
- * @description: 检查 CSS 属性和值在是否在微信公众平台编辑器中的黑名单中
- * @param property CSS属性名
- * @param value CSS属性值
+ * @description: 检查 CSS 属性和值是否在微信公众平台编辑器中的黑名单中
+ * @param property CSS 属性名
+ * @param value CSS 属性值
  * @returns 若属性在黑名单中则返回 true, 否则 false
  */
 export function isWechatCssBlackListProperty(property: string, value: string): boolean {
@@ -128,12 +116,12 @@ export function filterInvalidComputedStyles(el: HTMLElement | SVGElement, proper
 }
 
 /**
- * applyBorderLonghandsFromComputedStyle 从 computedStyle 中提取可见的 border 长写值写入克隆节点。
- * 仅处理 inlineStyleRecord 中存在 border 简写属性的对应边, 避免无边框元素写入多余的 0px none。
- * 调用 normalizeValue 消除浏览器缩放产生的分数像素。
- * @param clonedEl 克隆的目标节点, 用于写入内联样式。
- * @param inlineStyleRecord 匹配 CSS 规则的属性字典, 用于检测存在哪些 border 简写。
- * @param computedStyle 原始节点的计算样式, 作为长写值的唯一数据源。
+ * applyBorderLonghandsFromComputedStyle 从 computedStyle 中提取可见的 border 长写值写入克隆节点
+ * 仅处理 inlineStyleRecord 中存在 border 简写属性的对应边, 避免无边框元素写入多余的 0px none
+ * 调用 normalizeValue 消除浏览器缩放产生的分数像素
+ * @param clonedEl 克隆的目标节点, 用于写入内联样式
+ * @param inlineStyleRecord 匹配 CSS 规则的属性字典, 用于检测存在哪些 border 简写
+ * @param computedStyle 原始节点的计算样式, 作为长写值的唯一数据源
  */
 export function applyBorderLonghandsFromComputedStyle(
     clonedEl: HTMLElement | SVGElement,
@@ -189,16 +177,16 @@ export function applyBorderLonghandsFromComputedStyle(
 }
 
 /**
- * applyInlineStylesToElement 将原始元素的计算样式应用为克隆元素的内联样式(两阶段)。
+ * applyInlineStylesToElement 将原始元素的计算样式应用为克隆元素的内联样式(两阶段)
  * Phase 1: 写入非简写属性, 跳过 isShorthand 中的简写及 heading 的 border longhand,
- *   避免 reset 与特定规则之间的迭代顺序导致级联覆盖错误。
- * Phase 2: 由 applyBorderLonghandsFromComputedStyle 以 computedStyle 为数据源统一下发 border 长写值。
- *   对 heading 额外强制展开 border, 解决 var() 导致 CSSOM 简写为空的问题。
- * @param originalEl 原始元素(用于读取 computedStyle 和判断 heading)。
- * @param clonedEl 克隆元素(用于写入 inline style)。
- * @param matchedRules 克隆元素匹配到的 CSS 规则列表。
- * @param computedStyle 过滤后的计算样式对象。
- * @param applyContext 内联样式应用过程中的缓存上下文。
+ *   避免 reset 与特定规则之间的迭代顺序导致级联覆盖错误
+ * Phase 2: 由 applyBorderLonghandsFromComputedStyle 以 computedStyle 为数据源统一下发 border 长写值
+ *   对 heading 额外强制展开 border, 解决 var() 导致 CSSOM 简写为空的问题
+ * @param originalEl 原始元素(用于读取 computedStyle 和判断 heading)
+ * @param clonedEl 克隆元素(用于写入 inline style)
+ * @param matchedRules 克隆元素匹配到的 CSS 规则列表
+ * @param computedStyle 过滤后的计算样式对象
+ * @param applyContext 内联样式应用过程中的缓存上下文
  */
 export function applyInlineStylesToElement(
     originalEl: HTMLElement | SVGElement,
@@ -240,7 +228,7 @@ export function applyInlineStylesToElement(
         }
 
         if (/^border-(top|right|bottom|left)-width$/.test(property)) {
-            clonedEl.style.setProperty(property, cssStyleValue)
+            clonedEl.style.setProperty(property, cssStyleValue ?? null)
             return
         }
 
@@ -253,7 +241,7 @@ export function applyInlineStylesToElement(
         if (cssStyleValue !== computedStyleValue && !notUseComputedStyleValues.includes(cssStyleValue)) {
             clonedEl.style.setProperty(property, computedStyleValue)
         } else {
-            clonedEl.style.setProperty(property, cssStyleValue)
+            clonedEl.style.setProperty(property, cssStyleValue ?? null)
         }
     })
 
@@ -267,7 +255,7 @@ export function applyInlineStylesToElement(
         WechatCssAllWhiteList.forEach((property) => {
             const cssStyleValue = computedStyle[property]
             if (cssStyleValue) {
-                clonedEl.style.setProperty(property, cssStyleValue)
+                clonedEl.style.setProperty(property, cssStyleValue ?? null)
             }
         })
     }
@@ -306,7 +294,7 @@ export function getInlineStyleRecord(
                 const cssStyleValue = rule.style.getPropertyValue(property)
 
                 // 含 var() 的简写属性(如 border-bottom: 2px solid var(--xxx))在 CSSOM 中 getPropertyValue 返回空,
-                // 但仍需保留其键名, 以便 applyBorderLonghandsFromComputedStyle 从 computedStyle 展开长写值。
+                // 但仍需保留其键名, 以便 applyBorderLonghandsFromComputedStyle 从 computedStyle 展开长写值
                 if (!cssStyleValue) {
                     if (isShorthand(property)) {
                         inlineStyleRecord[property] = ""
@@ -491,7 +479,7 @@ export function getRelevantComputedStyleProperties(
 
             propertySet.add(property)
 
-            // 将简写属性展开为对应长写, 确保 filterInvalidComputedStyles 通过 getComputedStyle 读到长写值。
+            // 将简写属性展开为对应长写, 确保 filterInvalidComputedStyles 通过 getComputedStyle 读到长写值
             const longhands = getLonghands(property)
             if (longhands.length > 0) {
                 longhands.forEach((longhand) => propertySet.add(longhand))
@@ -552,8 +540,8 @@ export async function processInlineStyleQueue(
 
         const { originalEl, clonedEl } = currentPair
 
-        // 在原始节点上做 CSS 选择器匹配, 而非克隆节点。
-        // 克隆节点在离屏容器中丢失了 #preview 等祖先上下文, 导致后代选择器(如 #preview h1)匹配失败。
+        // 在原始节点上做 CSS 选择器匹配, 而非克隆节点
+        // 克隆节点在离屏容器中丢失了 #preview 等祖先上下文, 导致后代选择器(如 #preview h1)匹配失败
         const matchedRules = getMatchedCssStyleRules(originalEl, cssStyleRules, applyContext)
         const relevantProperties = getRelevantComputedStyleProperties(originalEl, matchedRules, applyContext)
         const computedStyle = filterInvalidComputedStyles(originalEl, relevantProperties)

@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\utils.ts
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\mdlint\utils.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -100,7 +100,6 @@ export function validateNoSurroundingContent(ctx: SurroundingContext) {
  * @return void
  */
 export function validateEmptyContent(ctx: SingleLineContext) {
-    // 解构参数
     const { doc, openLine, openFromIndex, openLength, closeMatchIndex, tagName, diagnostics, sourceId } = ctx
 
     // 提取标签内内容
@@ -109,7 +108,6 @@ export function validateEmptyContent(ctx: SingleLineContext) {
     const innerEnd = closeMatchIndex
     const inner = lineText.slice(innerStart, innerEnd)
 
-    // 检查内容是否为空
     if (inner.trim() !== "") {
         diagnostics.push({
             from: doc.line(openLine).from + innerStart,
@@ -127,7 +125,6 @@ export function validateEmptyContent(ctx: SingleLineContext) {
  * @return void
  */
 export function validateBlankLinesForPair(ctx: PairContext) {
-    // 解构参数
     const { doc, lineCount, openLine, closeLine, tagName, openFrom, openTo, closeFrom, closeTo, diagnostics, sourceId } = ctx
 
     // 检查开始标签前一行
@@ -154,7 +151,7 @@ export function validateBlankLinesForPair(ctx: PairContext) {
  */
 export function validateSingleLineForPair(ctx: PairContext) {
     const { openLine, closeLine, tagName, openFrom, closeTo, diagnostics, sourceId } = ctx
-    // 调用方负责判断该 tag 是否属于单行要求，此处仅检查是否为单行
+    // 调用方负责判断该 tag 是否属于单行要求, 此处仅检查是否为单行
     if (openLine !== closeLine) {
         diagnostics.push({
             from: openFrom,

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\post\viewRecommendedPost.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 推荐文章
+/*
+ * FilePath    : blog-client-nuxt\src\api\post\viewRecommendedPost.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 推荐文章
  */
 
 import { request, routerGroup } from "@/api/request"

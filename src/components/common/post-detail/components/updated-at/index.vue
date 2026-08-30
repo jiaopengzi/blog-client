@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-detail\components\updated-at\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-detail\components\updated-at\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -22,7 +22,6 @@ import { type UpdatedAtProps } from "./types.ts"
 
 defineOptions({ name: "DetailUpdatedAt" })
 
-// 定义 props
 const { data } = defineProps<{
     data: UpdatedAtProps
 }>()
@@ -48,13 +47,6 @@ const isShow = computed(() => {
         margin-right: 10px;
     }
 }
-
-// @include respond-to("pc") {
-// }
-
-// @include respond-to("pad") {
-
-// }
 
 @include respond-to("phone") {
     .updated-at-container {

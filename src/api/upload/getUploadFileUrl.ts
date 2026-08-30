@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\upload\getUploadFileUrl.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 获取上传文件的 url
+/*
+ * FilePath    : blog-client-nuxt\src\api\upload\getUploadFileUrl.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 获取上传文件的 url
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -33,7 +33,7 @@ export function getUploadFileUrlAvatarAPI(requestData: GetUploadFileUrlRequest):
     })
 }
 
-// 编辑器上传文件获取上传文件的 url
+// 编辑器上传文件时获取上传文件的 url
 export function getUploadFileUrlEditorAPI(requestData: GetUploadFileUrlRequest): ResPromise<Res<string>> {
     const urlStr = routerGroup + "/upload/editor/get-upload-file-url"
     return request({

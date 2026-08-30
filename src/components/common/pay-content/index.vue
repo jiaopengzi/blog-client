@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\pay-content\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\pay-content\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -42,7 +42,10 @@
         </div>
     </div>
     <div class="paid" v-if="isShowContent">
-        <PostVideo v-if="!onlyMarkdown" :post-id="postId" :is-admin-video="isAdminVideo" :toc="videoToc" :is-paid="isPaid" />
+        <!-- bug02(260829-05 二轮): 已解锁分支的剧集按"有效解锁态"传入; 合集未收费 (price=0) 时
+             isPaid 为 false 但内容已直接展示, 若传裸 isPaid, 剧集会按媒体库 is_free 混合显示
+             锁/播放 icon, 与"整个合集可免费观看"矛盾; 未解锁预览分支仍传 isPaid=false 保留 icon -->
+        <PostVideo v-if="!onlyMarkdown" :post-id="postId" :is-admin-video="isAdminVideo" :toc="videoToc" :is-paid="isShowContent" />
         <template v-for="(item, index) in contentParts" :key="index">
             <div v-if="item.type === 'html'" v-stable-html="item.content"></div>
 
@@ -65,9 +68,10 @@ import { computed, onMounted, watch } from "vue"
 import { PayStrategy } from "@/api/post/common"
 import JIcon, { IconKeys } from "@/components/common/icons"
 import PowerBi from "@/components/common/power-bi/index.vue"
-import { EditorStateManager } from "@/components/editor"
+import { EditorStateManager } from "@/components/editor/state"
 import VideoPlayer, { type PlayerState } from "@/components/player"
-import { Names, parseHtmlToContentParts } from "@/customElements"
+import { Names } from "@/customElements/constants"
+import { parseHtmlToContentParts } from "@/customElements/parseHtml"
 import { type PowerBIState } from "@/customElementsMount/PowerBI"
 import { usePermissionRoleStore } from "@/stores/permissionRole"
 import { fenToYuan } from "@/utils/amount"
@@ -77,7 +81,6 @@ import { ContentPayType, type PayContentProps } from "./types.ts"
 
 defineOptions({ name: "PayContent" })
 
-// 定义 props
 const {
     postId = "",
     isAdminVideo = false,
@@ -93,7 +96,6 @@ const {
     onlyMarkdown = false,
 } = defineProps<PayContentProps>()
 
-// 事件
 const emit = defineEmits<{
     (event: "pay-single", val: ContentPayType): void
     (event: "pay-vip", val: ContentPayType): void
@@ -119,7 +121,7 @@ const stateManager = new EditorStateManager()
 // 角色权限
 const permissionRoleStore = usePermissionRoleStore()
 
-// 监听 markdown 内容变化，并更新 stateManager 的状态以重新渲染内容
+// 监听 markdown 内容变化, 并更新 stateManager 的状态以重新渲染内容
 watch(
     () => markdown,
     (newVal) => {
@@ -130,7 +132,7 @@ watch(
     { immediate: true },
 )
 
-// 将 stateManager 渲染的 HTML 解析为内容片段，以正确渲染 power-bi、video-player 等 Vue 组件
+// 将 stateManager 渲染的 HTML 解析为内容片段, 以正确渲染 power-bi、video-player 等 Vue 组件
 const contentParts = computed(() => {
     const html = stateManager.getState().html
     if (!html) return []
@@ -152,7 +154,7 @@ const hasVideoMaterial = computed(() => {
     return isVideoContent.value && hasMaterial
 })
 
-// 支付策略状态计算，简化后续逻辑判断
+// 支付策略状态计算, 简化后续逻辑判断
 const payStrategyState = computed(() => {
     const canBuySingle = payStrategy === PayStrategy.Buy || payStrategy === PayStrategy.All
     const canBuyVip = payStrategy === PayStrategy.VIP || payStrategy === PayStrategy.All

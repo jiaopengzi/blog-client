@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\style.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 样式工具类
+/*
+ * FilePath    : blog-client-nuxt\src\utils\style.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 样式工具类
  */
 
 import { type ImgFit } from "@/components/common"
@@ -25,17 +25,17 @@ export function setTheme(theme: string) {
 }
 
 /**
- * @description:   获取元素的样式值
- * @param element  目标元素
+ * @description: 获取元素的样式值
+ * @param element 目标元素
  * @param property 样式属性
- * @return         样式值
+ * @return 样式值
  */
 export function getComputedStyleValue(element: HTMLElement, property: string): number {
     return parseFloat(getComputedStyle(element).getPropertyValue(property))
 }
 
 /**
- * @description: 设置css变量
+ * @description: 设置 css 变量
  * @param element 目标元素
  * @param variableName 变量名称
  * @param value 变量值
@@ -45,7 +45,7 @@ export function setCSSVariable(element: HTMLElement, variableName: string, value
 }
 
 /**
- * @description: 获取css变量值
+ * @description: 获取 css 变量值
  * @param element 目标元素
  * @param variableName 变量名称
  * @return 变量值
@@ -56,34 +56,34 @@ export function getCSSVariableValue(element: HTMLElement, variableName: string):
 
 /**
  * @description: 图片样式
- * @param width 宽度 默认50px
- * @param height 高度 默认50px
- * @param imgFit 图片填充方式 默认cover
- * @return    图片样式
+ * @param width 宽度, 默认 50px
+ * @param height 高度, 默认 50px
+ * @param imgFit 图片填充方式, 默认 cover
+ * @return 图片样式
  */
 export function imgStyle(width: number | undefined, height: number | undefined, imgFit: ImgFit | undefined): Record<string, string> {
     return {
-        width: width ? `${width}px` : "50px", // 宽度
-        height: height ? `${height}px` : "50px", // 高度
-        "object-fit": imgFit ? imgFit : "cover", // 图片填充方式
+        width: width ? `${width}px` : "50px",
+        height: height ? `${height}px` : "50px",
+        "object-fit": imgFit ? imgFit : "cover",
     }
 }
 
 /**
  * @description: 图标样式
- * @param fontSize 字体大小 默认40px
+ * @param fontSize 字体大小, 默认 40px
  * @return 图标样式
  */
 export function iconStyle(fontSize: number | undefined): Record<string, string> {
     return {
-        "font-size": fontSize ? `${fontSize}px` : "40px", // 字体大小
+        "font-size": fontSize ? `${fontSize}px` : "40px",
     }
 }
 
 /**
- * @description: 按选择器列表拆分文本, 忽略字符串, 括号和属性选择器内部的逗号.
- * @param selectorText 选择器文本.
- * @return 拆分后的选择器数组.
+ * @description: 按选择器列表拆分文本, 忽略字符串, 括号和属性选择器内部的逗号
+ * @param selectorText 选择器文本
+ * @return 拆分后的选择器数组
  */
 function splitSelectorList(selectorText: string): string[] {
     const selectors: string[] = []
@@ -165,9 +165,9 @@ function splitSelectorList(selectorText: string): string[] {
 }
 
 /**
- * @description: 将默认主题根选择器改写为仅命中默认 light 和 dark 预设.
- * @param selector 单个选择器文本.
- * @return 改写后的选择器数组.
+ * @description: 将默认主题根选择器改写为仅命中默认 light 和 dark 预设
+ * @param selector 单个选择器文本
+ * @return 改写后的选择器数组
  */
 function rewriteDefaultThemeRootSelector(selector: string): string[] {
     const trimmedSelector = selector.trim()
@@ -188,9 +188,9 @@ function rewriteDefaultThemeRootSelector(selector: string): string[] {
 }
 
 /**
- * @description: 改写单段规则头部中的主题根选择器, 保留原有缩进与尾部空白.
- * @param preludeSegment 规则头部文本.
- * @return 改写后的规则头部文本.
+ * @description: 改写单段规则头部中的主题根选择器, 保留原有缩进与尾部空白
+ * @param preludeSegment 规则头部文本
+ * @return 改写后的规则头部文本
  */
 function rewriteThemePreludeSegment(preludeSegment: string): string {
     const trimmedPrelude = preludeSegment.trim()
@@ -211,10 +211,10 @@ function rewriteThemePreludeSegment(preludeSegment: string): string {
 }
 
 /**
- * @description: 解析作用域根选择器的真实变体列表.
- * /md 页面会把 .md-page-preview 展开为 web 和 wechat 两个局部根节点, 以便在不污染主站的前提下提升优先级.
- * @param scopeSelector 传入的逻辑作用域选择器.
- * @return 可实际写入 CSS 的作用域选择器列表.
+ * @description: 解析作用域根选择器的真实变体列表
+ * /md 页面会把 .md-page-preview 展开为 web 和 wechat 两个局部根节点, 以便在不污染主站的前提下提升优先级
+ * @param scopeSelector 传入的逻辑作用域选择器
+ * @return 可实际写入 CSS 的作用域选择器列表
  */
 function resolveScopeSelectorVariants(scopeSelector: string): string[] {
     if (scopeSelector === mdPreviewScopeSelectorAlias) {
@@ -225,20 +225,20 @@ function resolveScopeSelectorVariants(scopeSelector: string): string[] {
 }
 
 /**
- * @description: 判断当前选择器是否已经包含最终作用域根, 避免重复展开.
- * @param selector 单个选择器文本.
- * @param scopeSelector 逻辑作用域选择器.
- * @return 是否已包含最终作用域根.
+ * @description: 判断当前选择器是否已经包含最终作用域根, 避免重复展开
+ * @param selector 单个选择器文本
+ * @param scopeSelector 逻辑作用域选择器
+ * @return 是否已包含最终作用域根
  */
 function hasResolvedScopeSelector(selector: string, scopeSelector: string): boolean {
     return resolveScopeSelectorVariants(scopeSelector).some((variant) => selector.includes(variant))
 }
 
 /**
- * @description: 将逻辑作用域选择器替换为真实作用域根列表.
- * @param selector 单个选择器文本.
- * @param scopeSelector 逻辑作用域选择器.
- * @return 展开后的选择器数组.
+ * @description: 将逻辑作用域选择器替换为真实作用域根列表
+ * @param selector 单个选择器文本
+ * @param scopeSelector 逻辑作用域选择器
+ * @return 展开后的选择器数组
  */
 function expandScopeSelectorAlias(selector: string, scopeSelector: string): string[] {
     const scopeSelectorVariants = resolveScopeSelectorVariants(scopeSelector)
@@ -251,10 +251,10 @@ function expandScopeSelectorAlias(selector: string, scopeSelector: string): stri
 }
 
 /**
- * @description: 将单个选择器限制到指定作用域, 并兼容 #preview, html, body, :root 等根选择器.
- * @param selector 单个选择器文本.
- * @param scopeSelector 作用域根选择器.
- * @return 限定后的单个选择器文本数组.
+ * @description: 将单个选择器限制到指定作用域, 并兼容 #preview, html, body, :root 等根选择器
+ * @param selector 单个选择器文本
+ * @param scopeSelector 作用域根选择器
+ * @return 限定后的单个选择器文本数组
  */
 function scopeSingleSelector(selector: string, scopeSelector: string): string[] {
     const trimmedSelector = selector.trim()
@@ -293,10 +293,10 @@ function scopeSingleSelector(selector: string, scopeSelector: string): string[] 
 }
 
 /**
- * @description: 为规则头部追加作用域根选择器, 保留原有缩进与尾部空白.
- * @param preludeSegment 规则头部文本.
- * @param scopeSelector 作用域根选择器.
- * @return 增加作用域后的规则头部文本.
+ * @description: 为规则头部追加作用域根选择器, 保留原有缩进与尾部空白
+ * @param preludeSegment 规则头部文本
+ * @param scopeSelector 作用域根选择器
+ * @return 增加作用域后的规则头部文本
  */
 function scopePreludeSegment(preludeSegment: string, scopeSelector: string): string {
     const trimmedPrelude = preludeSegment.trim()
@@ -317,9 +317,9 @@ function scopePreludeSegment(preludeSegment: string, scopeSelector: string): str
 }
 
 /**
- * @description: 将管理员自定义主题中的默认根选择器限制为 light 和 dark 默认预设.
- * @param cssContent 自定义 CSS 文本.
- * @return 改写后的 CSS 文本.
+ * @description: 将管理员自定义主题中的默认根选择器限制为 light 和 dark 默认预设
+ * @param cssContent 自定义 CSS 文本
+ * @return 改写后的 CSS 文本
  */
 export function scopeCustomThemeCss(cssContent: string): string {
     let result = ""
@@ -349,10 +349,10 @@ export function scopeCustomThemeCss(cssContent: string): string {
 }
 
 /**
- * @description: 将普通 CSS 规则递归限制到指定作用域, 并保留 @media, @supports 等 at-rule 结构.
- * @param cssContent 原始 CSS 文本.
- * @param scopeSelector 作用域根选择器.
- * @return 限定作用域后的 CSS 文本.
+ * @description: 将普通 CSS 规则递归限制到指定作用域, 并保留 @media, @supports 等 at-rule 结构
+ * @param cssContent 原始 CSS 文本
+ * @param scopeSelector 作用域根选择器
+ * @return 限定作用域后的 CSS 文本
  */
 export function scopeCssToSelector(cssContent: string, scopeSelector: string): string {
     let result = ""
@@ -395,8 +395,19 @@ export function scopeCssToSelector(cssContent: string, scopeSelector: string): s
 }
 
 /**
- * @description: 设置自定义样式
- * @param cssId 样式ID
+ * 构建最终生效的自定义 CSS 文本(去注释 + 主题选择器作用域化 + 修剪空白)
+ * 纯字符串处理(无 DOM 依赖), SSR 与客户端均可执行, 供 useHead 直出与 setCustomStyle 共用
+ * @param cssContent 原始自定义 CSS 内容
+ * @returns 处理后的 CSS 文本(内容为空时返回空字符串)
+ */
+export const buildCustomCss = (cssContent: string): string => {
+    return scopeCustomThemeCss(removeCommentsSafe(cssContent)).trim()
+}
+
+/**
+ * @description: 设置自定义样式(客户端命令式注入, 保留给需要手动注入的场景;
+ *               常规站点自定义 CSS 已由 app.vue 的 useHead 响应式直出承接)
+ * @param cssId 样式 ID
  * @param cssContent 样式内容
  */
 export const setCustomStyle = (cssId: string, cssContent: string) => {
@@ -406,15 +417,14 @@ export const setCustomStyle = (cssId: string, cssContent: string) => {
         oldStyle.remove()
     }
 
-    // 移除注释并修剪空白
-    cssContent = scopeCustomThemeCss(removeCommentsSafe(cssContent)).trim()
+    const finalCss = buildCustomCss(cssContent)
 
     // 如果为空则不添加
-    if (!cssContent) return
+    if (!finalCss) return
 
     // 添加新的自定义样式
     const style = document.createElement("style")
     style.id = cssId
-    style.textContent = cssContent
+    style.textContent = finalCss
     document.head.appendChild(style)
 }

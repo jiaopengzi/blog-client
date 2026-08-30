@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\common\post-upsert\formHandler.ts
+ * FilePath    : blog-client-nuxt\src\components\common\post-upsert\formHandler.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -31,11 +31,11 @@ export async function handleSubmit<T extends InsertPostRequest | UpdatePostReque
 
     await formEl.validate((valid, fields) => {
         if (valid) {
-            // 将 postInfoForm 解析到 InsertPostRequest，排除 price 字段
+            // 将 postInfoForm 解析到 InsertPostRequest, 排除 price 字段
             const { price, ...rest } = postInfoForm
             Object.assign(req, rest)
 
-            // 价格需要乘以 100 以适应后端整数，并转换为 string
+            // 价格需要乘以 100 以适应后端整数, 并转换为 string
             if (typeof price !== "undefined" && price !== null) {
                 req.price = (price * 100).toFixed(0).toString()
             }
@@ -125,7 +125,7 @@ export async function handleSubmit<T extends InsertPostRequest | UpdatePostReque
         }
     }
 
-    // 如果包含 id 字段，且不为空，则为更新请求
+    // 如果包含 id 字段, 且不为空, 则为更新请求
     if ("id" in req && req.id) {
         return req as T
     }

@@ -1,34 +1,20 @@
 <!--
- * FilePath    : blog-client\src\components\common\head-tag\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\head-tag\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 生成网站头部信息
+ * Description : 生成网站头部信息 (Nuxt 适配: unhead 由 Nuxt 接管, Head 组件改为 useHead 实现)
 -->
 
 <template>
-    <Head>
-        <title>{{ headData.title }}</title>
-        <meta v-if="headData.description" name="description" :content="headData.description" />
-        <meta v-if="headData.keywords" name="keywords" :content="headData.keywords" />
-        <meta v-if="headData.type" property="og:type" :content="headData.type" />
-        <meta v-if="headData.locale" property="og:locale" :content="headData.locale" />
-        <meta v-if="headData.title" property="og:title" :content="headData.title" />
-        <meta v-if="headData.author" property="og:author" :content="headData.author" />
-        <meta v-if="headData.image" property="og:image" :content="headData.image" />
-        <meta v-if="headData.siteName" property="og:site_name" :content="headData.siteName" />
-        <meta v-if="headData.description" property="og:description" :content="headData.description" />
-        <meta v-if="headData.url" property="og:url" :content="headData.url" />
-        <meta v-if="headData.releaseDate" property="og:release_date" :content="headData.releaseDate" />
-    </Head>
+    <!-- Nuxt 适配: 不渲染 DOM, head 内容经 useHead 写入 -->
 </template>
-<script lang="ts" setup>
-import { Head } from "@unhead/vue/components"
 
+<script lang="ts" setup>
 import { type HeadProps } from "./types"
+
 defineOptions({ name: "HeadTag" })
 
-// 定义 props
 const {
     headData = {
         title: "home",
@@ -40,4 +26,28 @@ const {
 } = defineProps<{
     headData?: HeadProps
 }>()
+
+// Nuxt 适配: 对应原 <Head> 子节点 (title/meta), 改为 useHead 响应式写入
+useHead(() => {
+    const d = headData
+    type HeadMeta = { name: string; content: string } | { property: string; content: string }
+    const meta: (HeadMeta | null)[] = [
+        d.description ? { name: "description", content: d.description } : null,
+        d.keywords ? { name: "keywords", content: d.keywords } : null,
+        d.type ? { property: "og:type", content: d.type } : null,
+        d.locale ? { property: "og:locale", content: d.locale } : null,
+        d.title ? { property: "og:title", content: d.title } : null,
+        d.author ? { property: "og:author", content: d.author } : null,
+        d.image ? { property: "og:image", content: d.image } : null,
+        d.siteName ? { property: "og:site_name", content: d.siteName } : null,
+        d.description ? { property: "og:description", content: d.description } : null,
+        d.url ? { property: "og:url", content: d.url } : null,
+        d.releaseDate ? { property: "og:release_date", content: d.releaseDate } : null,
+    ]
+
+    return {
+        title: d.title,
+        meta: meta.filter((m): m is HeadMeta => m !== null),
+    }
+})
 </script>

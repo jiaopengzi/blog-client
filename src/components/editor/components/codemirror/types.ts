@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\editor\components\codemirror\types.ts
+ * FilePath    : blog-client-nuxt\src\components\editor\components\codemirror\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -31,7 +31,7 @@ export interface CmCommand {
 export interface MarkdownHeadingLine {
     index: number // markdown 标题索引
     markdownHeading: string // markdown 标题
-    markdownLineNumber: number // markdown行号
+    markdownLineNumber: number // markdown 行号
 }
 
 export interface CodeEditorProps {

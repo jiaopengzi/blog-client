@@ -1,3 +1,11 @@
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\hls\index.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : hls 自定义 loader 的单元测试
+ */
+
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 import * as encrypt from "@/utils/encrypt"

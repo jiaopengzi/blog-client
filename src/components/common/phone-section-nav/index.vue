@@ -1,11 +1,16 @@
 <!--
- * FilePath    : bf\c:\Desktop\blog-client\src\components\common\phone-section-nav\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\phone-section-nav\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 由于原生的 Tabs 组件在 phone 端导航效果表现不佳, 因此自定义了一个适用于手机端的分区导航组件;
-                 该组件支持水平滚动, 适合在手机屏幕较小的情况下使用.
-                 用户可以通过点击不同的导航项来切换不同的内容区域, 提供更好的用户体验.
+ * Description : 手机端分区导航组件
+-->
+
+<!--
+ * 补充说明:
+ * 由于原生的 Tabs 组件在 phone 端导航效果表现不佳, 因此自定义了一个适用于手机端的分区导航组件;
+ * 该组件支持水平滚动, 适合在手机屏幕较小的情况下使用.
+ * 用户可以通过点击不同的导航项来切换不同的内容区域, 提供更好的用户体验.
 -->
 
 <template>

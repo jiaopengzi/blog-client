@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-meta\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-meta\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -96,11 +96,11 @@ const {
     isSetTimeMargin = false,
 } = defineProps<{
     meta: PostMetaProps
-    isHideTimeIcon?: boolean // 是否隐藏时间图标，默认 false
-    isSetTimeMargin?: boolean // 是否设置时间边距，默认 false
+    isHideTimeIcon?: boolean // 是否隐藏时间图标, 默认 false
+    isSetTimeMargin?: boolean // 是否设置时间边距, 默认 false
 }>()
 
-// 事件
+// 事件声明
 const emit = defineEmits<{
     (event: "post-id", val: string): void
     (event: "author-user-name", val: string): void
@@ -116,7 +116,7 @@ const metaData = computed(() => {
     return {
         ...meta,
         is_show_read_time: meta.is_show_read_time || false,
-        avatar_size: meta.avatar_size || 24, // 头像大小，默认 24px
+        avatar_size: meta.avatar_size || 24, // 头像大小, 默认 24px
         post_id: meta.post_id || "",
         author_id: meta.author_id || "",
     }
@@ -157,9 +157,9 @@ const takeTime = computed(() => {
     let readTime = 0
     if (metaData.value.words_count) {
         const wordsCount = Number(metaData.value.words_count)
-        readTime = wordsCount / 200 // 200字/分钟
+        readTime = wordsCount / 200 // 200 字/分钟
     }
-    // 小于 1 分钟, 显示小于1分钟; 大于 1 分钟, 小于 60 分钟, 显示分钟和秒; 大于 60 分钟, 显示小时和分钟
+    // 小于 1 分钟, 显示小于 1 分钟; 大于 1 分钟, 小于 60 分钟, 显示分钟和秒; 大于 60 分钟, 显示小时和分钟
     if (readTime < 1) {
         return "小于1分钟"
     } else if (readTime < 60) {
@@ -185,7 +185,6 @@ const takeTime = computed(() => {
 
 <style lang="scss" scoped>
 .title-container {
-    // 居中
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -206,14 +205,12 @@ const takeTime = computed(() => {
 }
 
 .meta-container {
-    // width: 100%;
     // 靠左显示
     display: flex;
     justify-content: flex-start;
 }
 
 .meta {
-    // width: 100%;
     // 只显示一行, 每个子元素宽度自适应
     display: grid;
     grid-auto-flow: column;
@@ -223,7 +220,7 @@ const takeTime = computed(() => {
 }
 
 .meta-item {
-    // 这里不设置字体大小，使用媒体查询设置
+    // 这里不设置字体大小, 使用媒体查询设置
     color: var(--jpz-text-color-placeholder);
     line-height: 1.5;
     display: grid;
@@ -246,7 +243,7 @@ const takeTime = computed(() => {
     background: transparent;
 }
 
-// 覆盖头像和沉浸阅读固定宽度，让内容自适应
+// 覆盖头像和沉浸阅读固定宽度, 让内容自适应
 .meta-avatar,
 .meta-immersion-read {
     grid-template-columns: auto;
@@ -338,7 +335,7 @@ const takeTime = computed(() => {
         display: none;
     }
 
-    // 使用等宽字体; 禁止断行, 保证 meta 始终在一行内显示.
+    // 使用等宽字体; 禁止断行, 保证 meta 始终在一行内显示
     .meta-text {
         font-family: monospace;
         white-space: nowrap;
@@ -352,7 +349,7 @@ const takeTime = computed(() => {
         margin-right: 6px;
     }
 
-    // 建议 5: 固定 meta-container 最小高度, 防止头像降级为 initials 时行高抖动.
+    // 建议 5: 固定 meta-container 最小高度, 防止头像降级为 initials 时行高抖动
     .meta-container {
         min-height: 24px;
     }
@@ -365,11 +362,11 @@ const takeTime = computed(() => {
     }
 }
 
-// **注意 meta-date-set-margin 和 meta-date-hide-icon 要放在最后面，避免被覆盖**
+// 注意: meta-date-set-margin 和 meta-date-hide-icon 要放在最后面, 避免被覆盖
 
-// 隐藏时间图标样式
+// 时间边距样式
 .meta-date-set-margin {
-    // 在文章列表时间, 将 margin-right 加大, 让间距更明显
+    // 在文章列表中, 将时间的 margin-right 加大, 让间距更明显
     margin-right: 32px;
 }
 
@@ -378,7 +375,7 @@ const takeTime = computed(() => {
     // 让 date 自适应宽度
     grid-template-columns: auto;
 
-    // 不显示时间的icon
+    // 不显示时间的 icon
     :deep(.meta-icon-time) {
         display: none;
     }

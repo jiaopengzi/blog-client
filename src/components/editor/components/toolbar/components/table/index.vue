@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\editor\components\toolbar\components\table\index.vue
+ * FilePath    : blog-client-nuxt\src\components\editor\components\toolbar\components\table\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -44,12 +44,10 @@ import { type TableRowCol } from "./types"
 
 defineOptions({ name: "BarTable" })
 
-// 定义 props
 const { icon } = defineProps<{
-    icon: IconKeys // 预览内容
+    icon: IconKeys // 图标名称
 }>()
 
-// 子组件 传参
 const emit = defineEmits<{
     (e: "table-row-col", tableRowCol: TableRowCol): void
 }>()
@@ -58,14 +56,14 @@ const emit = defineEmits<{
 const row = ref(3)
 const col = ref(3)
 
-// 表格行列数变化
-const handleRowChange = (value: number) => {
-    row.value = value
+// 表格行数变化
+const handleRowChange = (value: number | undefined) => {
+    row.value = value ?? row.value
 }
 
-// 表格行列数变化
-const handleColChange = (value: number) => {
-    col.value = value
+// 表格列数变化
+const handleColChange = (value: number | undefined) => {
+    col.value = value ?? col.value
 }
 
 // 插入表格

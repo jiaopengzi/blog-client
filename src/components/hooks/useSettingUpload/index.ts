@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\hooks\useSettingUpload\hooks.ts
+ * FilePath    : blog-client-nuxt\src\components\hooks\useSettingUpload\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

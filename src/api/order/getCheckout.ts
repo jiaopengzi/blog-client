@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\order\getCheckout.ts
+ * FilePath    : blog-client-nuxt\src\api\order\getCheckout.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -31,9 +31,9 @@ export function getOrderCheckoutAPI(): ResPromise<Res<OrderCheckoutRes>> {
     })
 }
 
-// 按照订单id获取订单详情请求参数
+// 按照订单 id 获取订单结算信息请求参数
 export interface GetCheckoutByOrderIdRequest {
-    id: string // 订单ID
+    id: string // 订单 ID
 }
 
 // 获取订单结算信息

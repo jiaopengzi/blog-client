@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\post\interaction.ts
+ * FilePath    : blog-client-nuxt\src\api\post\interaction.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -11,7 +11,7 @@ import type { Res, ResPromise } from "@/api/response"
 
 // 交互请求
 export interface InteractionRequest {
-    post_id: string // 文章ID
+    post_id: string // 文章 ID
 }
 
 // 交互结果

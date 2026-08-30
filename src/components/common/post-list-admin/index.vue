@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-list-admin\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-list-admin\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -43,7 +43,7 @@
             </template>
 
             <template #category v-if="showAdvancedPostAdminTools">
-                <!-- v-for 循环 postCountGroup生成 按钮 -->
+                <!-- v-for 循环 postCountGroup 生成按钮 -->
                 <div ref="categoryRef" class="category-group">
                     <el-button
                         v-for="item in postCountGroup"
@@ -130,7 +130,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useHead } from "@unhead/vue"
+import { ElMessage } from "element-plus"
 import { computed, reactive, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 import { Target } from "@/api/common"
@@ -157,6 +157,7 @@ import { fenToYuan, yuanToFen } from "@/utils/amount"
 import { confirmCommon } from "@/utils/confirm"
 import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
+import { invalidateSsrRenderCache } from "@/utils/ssrCache"
 
 import { useAPI } from "./api"
 import { generateCols } from "./cols"
@@ -287,13 +288,16 @@ const {
 })
 
 const handleDeleteRows = async (rows: TableData[]) => {
-    await deleteRows(rows)
+    const deleted = await deleteRows(rows)
+    if (deleted) {
+        // feature01(260829-08): 删除文章/自定义页后立即清空 swr 渲染缓存,
+        // 避免已删除内容在 /p/** /page/** 与列表页 SSR 缓存窗口期内仍然可见
+        await invalidateSsrRenderCache()
+    }
     if (showPostAdminMutationTools.value) {
         await getPostCountStatus()
     }
 }
-
-// 更新查询参数
 
 // 处理 postCountGroup 点击事件
 const handlePostCountByGroup = async (item: PostCountGroupItem) => {
@@ -317,7 +321,6 @@ const handlePostCountByGroup = async (item: PostCountGroupItem) => {
 
     if (item.group === queryKey.PostStatus) {
         queryParams[queryKey.PostStatus] = Number(item.key)
-        // Object.assign(queryParams, { [queryKey.PostStatus]: item.key })
     }
 
     if (item.group === queryKey.IsPinned) {
@@ -521,7 +524,7 @@ const handleSelection = async (rows: TableData[]) => {
 // 监控 postOperationSelect 更改
 watch(postOperationSelect, async (newVal) => {
     if (newVal) {
-        // 更新 postStatusOperationList 状态更改为 newVal
+        // 将 postStatusOperationList 状态更改为 newVal
         postStatusOperationList.value = postStatusOperationList.value.map((item) => {
             item.post_status = newVal
             return item
@@ -544,14 +547,15 @@ const writeText = computed(() => {
 
 // 写文章
 const write = () => {
-    router.push({ name: writeRouteName })
+    // Nuxt 适配: admin 子页为 [...slug] catch-all, SPA 路由名不存在, 改路径跳转
+    router.push({ path: `/admin/${writeRouteName}` })
 }
 
 // 编辑文章
 const editRow = (index: number, row: TableData) => {
-    // 编辑文章
+    // Nuxt 适配: admin 子页为 [...slug] catch-all, SPA 路由名不存在, 改路径跳转
     router.push({
-        name: writeRouteName,
+        path: `/admin/${writeRouteName}`,
         query: { [queryKeyUpsert.ID]: row.id },
     })
 }
@@ -561,7 +565,6 @@ useParams(queryParams, pagination, search)
 
 // 将 params 解析回对应的响应式变量中(不需要请求)
 const parseParamsNotLoaded = () => {
-    // 在加载前将 params 解析回对应的响应式变量中
     const { post_author, post_status, year, month, custom_filed, custom_filed_min, custom_filed_max, is_pinned, is_recommended } = queryParams
 
     if (post_author && post_author === userStore.getUserID) {
@@ -591,7 +594,7 @@ watch(
     () => queryParams,
     () => {
         parseParamsNotLoaded()
-        // 如果包含 post_type 则移除，避免出现在路由中，在请求参数中已经单独处理了
+        // 如果包含 post_type 则移除, 避免出现在路由中, 在请求参数中已经单独处理了
         if (queryParams.post_type) {
             delete queryParams.post_type
         }
@@ -601,7 +604,6 @@ watch(
 
 // 将 params 解析回对应的响应式变量中(需要请求)
 const parseParamsHasLoaded = () => {
-    // 在加载前将 params 解析回对应的响应式变量中
     const { post_author, post_category_id, post_tag_id } = queryParams
 
     // 清空原有的数据
@@ -644,7 +646,7 @@ const parseParamsHasLoaded = () => {
     }
 }
 
-// 当 pagination.records 有数据时，解析 params,只需要执行一次
+// 当 pagination.records 有数据时, 解析 params, 只需要执行一次
 watch(
     () => pagination.records,
     (newRecords) => {
@@ -669,7 +671,6 @@ const onViewPost = (postID: string) => {
 .custom-filter {
     display: flex;
     align-items: center;
-    // margin-right: 10px;
 
     .custom-filter-item {
         margin-right: 10px;
@@ -679,7 +680,6 @@ const onViewPost = (postID: string) => {
 .custom-fields {
     display: flex;
     align-items: center;
-    // margin-right: 10px;
 
     .custom-fields-item {
         span {

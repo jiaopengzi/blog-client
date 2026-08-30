@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-detail\components\prev-next\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-detail\components\prev-next\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -46,10 +46,8 @@ import type { PrevNextProps } from "./types"
 
 defineOptions({ name: "DetailPrevNext" })
 
-// 定义 props
 const { data } = defineProps<{ data: PrevNextProps }>()
 
-// 事件
 const emit = defineEmits<{
     (event: "post-id", id: string): void
 }>()
@@ -66,7 +64,6 @@ const isShowNext = computed(() => {
     return false
 })
 
-// 事件处理函数
 const handleClick = (id: string) => {
     emit("post-id", id)
 }
@@ -98,7 +95,7 @@ const handleClick = (id: string) => {
     height: 100px;
     display: flex;
     align-items: center;
-    justify-content: flex-start; // 左对齐
+    justify-content: flex-start;
     padding-left: 10px;
     margin-right: 10px;
 }
@@ -119,13 +116,10 @@ const handleClick = (id: string) => {
     font-size: 14px;
     color: var(--jpz-text-color-secondary);
     margin-bottom: 10px;
-    // 手型光标
     cursor: pointer;
-    // 颜色变化的过渡效果
     transition: color 0.3s ease;
 }
 
-// 鼠标移入时的样式
 .text-prev:hover,
 .text-next:hover {
     color: var(--jpz-text-color-primary);
@@ -151,12 +145,6 @@ const handleClick = (id: string) => {
     line-height: 100px; // 垂直居中
     padding-left: 20px;
 }
-
-// @include respond-to("pc") {
-// }
-
-// @include respond-to("pad") {
-// }
 
 @include respond-to("phone") {
     .content {

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\user\registerAdmin.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 注册管理员
+/*
+ * FilePath    : blog-client-nuxt\src\api\user\registerAdmin.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 注册管理员
  */
 
 import { request, routerGroup } from "@/api/request"

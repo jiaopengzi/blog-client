@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\order\getByID.ts
+ * FilePath    : blog-client-nuxt\src\api\order\getByID.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -11,12 +11,12 @@ import type { Res, ResPromise } from "@/api/response"
 
 import type { OrderGetByIDRes } from "./common"
 
-// 按照订单id获取订单详情请求参数
+// 按照订单 id 获取订单详情请求参数
 export interface OrderGetByIDRequest {
-    id: string // 订单ID
+    id: string // 订单 ID
 }
 
-// 按照订单id获取订单详情响应
+// 按照订单 id 获取订单详情响应
 export function getByIDAPI(requestData: OrderGetByIDRequest): ResPromise<Res<OrderGetByIDRes>> {
     const urlStr = routerGroup + "/order/get-by-id"
     return request({
@@ -26,7 +26,7 @@ export function getByIDAPI(requestData: OrderGetByIDRequest): ResPromise<Res<Ord
     })
 }
 
-// 按照订单id获取订单详情响应(管理员)
+// 按照订单 id 获取订单详情响应(管理员)
 export function getByIDAdminAPI(requestData: OrderGetByIDRequest): ResPromise<Res<OrderGetByIDRes>> {
     const urlStr = routerGroup + "/order/get-by-id-admin"
     return request({

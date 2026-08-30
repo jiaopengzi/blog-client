@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\utils\script.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\script.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -7,22 +7,22 @@
  */
 
 /**
- * 脚本加载选项.
+ * 脚本加载选项
  */
 export interface LoadScriptFromStringOptions {
     /**
-     * 为本次插入的 script 节点附加的自定义属性.
+     * 为本次插入的 script 节点附加的自定义属性
      */
     scriptAttributes?: Record<string, string>
 }
 
 /**
  * 将传入的 HTML 字符串中的 <script> 标签按顺序处理并执行
- * 返回一个 Promise，表示所有脚本是否成功加载和执行
+ * 返回一个 Promise, 表示所有脚本是否成功加载和执行
  *
  * @param htmlString 包含脚本标签的 HTML 字符串
  * @param options 脚本加载选项
- * @returns Promise<boolean> 所有脚本成功加载和执行则为 true，否则为 false
+ * @returns Promise<boolean> 所有脚本成功加载和执行则为 true, 否则为 false
  */
 export async function loadScriptFromString(htmlString: string, options: LoadScriptFromStringOptions = {}): Promise<boolean> {
     // 创建一个临时容器解析 HTML
@@ -32,7 +32,7 @@ export async function loadScriptFromString(htmlString: string, options: LoadScri
     // 查找所有脚本标签
     const scripts = Array.from(container.querySelectorAll("script")) as HTMLScriptElement[]
 
-    // 按顺序处理每个脚本，但对带 async 属性的外链脚本不会阻塞后续执行
+    // 按顺序处理每个脚本, 但对带 async 属性的外链脚本不会阻塞后续执行
     const loadPromises: Promise<boolean>[] = []
 
     try {
@@ -48,7 +48,7 @@ export async function loadScriptFromString(htmlString: string, options: LoadScri
                 // 避免重复加载同一 src
                 if (document.querySelector(`script[src="${src}"]`)) continue
 
-                // 外链脚本：创建新的脚本元素加载
+                // 外链脚本: 创建新的脚本元素加载
                 const p = new Promise<boolean>((resolve, reject) => {
                     const s = document.createElement("script")
                     if (isModule) s.type = "module"
@@ -72,15 +72,15 @@ export async function loadScriptFromString(htmlString: string, options: LoadScri
                 })
 
                 if (isAsync) {
-                    // 不阻塞后续脚本，但记录 Promise 以便最终判断是否都成功
+                    // 不阻塞后续脚本, 但记录 Promise 以便最终判断是否都成功
                     loadPromises.push(p)
                 } else {
-                    // 同步等待（按顺序执行）
+                    // 同步等待(按顺序执行)
                     // eslint-disable-next-line no-await-in-loop
                     await p
                 }
             } else {
-                // 内联脚本：直接创建并插入以执行
+                // 内联脚本: 直接创建并插入以执行
                 const s = document.createElement("script")
                 if (isModule) s.type = "module"
                 for (const a of Array.from(script.attributes)) s.setAttribute(a.name, a.value)
@@ -120,18 +120,18 @@ export async function loadScriptFromString(htmlString: string, options: LoadScri
         try {
             container.remove()
         } catch {
-            // 忽略容器清理异常.
+            // 忽略容器清理异常
         }
         return false
     }
 }
 
 /**
- * 为脚本节点附加自定义属性, 便于后续查询或清理.
+ * 为脚本节点附加自定义属性, 便于后续查询或清理
  *
- * @param scriptElement 需要附加属性的脚本节点.
- * @param attributes 自定义属性集合.
- * @returns void.
+ * @param scriptElement 需要附加属性的脚本节点
+ * @param attributes 自定义属性集合
+ * @returns void
  */
 function applyScriptAttributes(scriptElement: HTMLScriptElement, attributes?: Record<string, string>): void {
     if (!attributes) {
@@ -143,10 +143,10 @@ function applyScriptAttributes(scriptElement: HTMLScriptElement, attributes?: Re
     }
 }
 
-// 在处理内联脚本前，先验证语法
+// 在处理内联脚本前, 先验证语法
 function isValidJavaScript(code: string): boolean {
     try {
-        // 使用 new Function 而非 eval 来验证语法，避免执行代码
+        // 使用 new Function 而非 eval 来验证语法, 避免执行代码
         const fn = new Function(code)
         void fn
         return true

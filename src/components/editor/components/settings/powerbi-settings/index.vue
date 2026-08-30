@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\editor\components\settings\powerbi-settings\index.vue
+ * FilePath    : blog-client-nuxt\src\components\editor\components\settings\powerbi-settings\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -27,12 +27,12 @@ import type { PowerBiDefaults } from "@/stores/editor-defaults"
 defineOptions({ name: "PowerbiSettings" })
 
 const props = defineProps<{
-    /** 初始值，来自 loadPowerBiDefaults() */
+    /** 初始值, 来自 loadPowerBiDefaults() */
     initialValues: PowerBiDefaults | null
 }>()
 
 const emit = defineEmits<{
-    /** 校验通过后发送保存数据；data 为 null 表示清空（所有字段为空） */
+    /** 校验通过后发送保存数据; data 为 null 表示清空(所有字段为空) */
     (event: "save", data: PowerBiDefaults | null): void
     (event: "cancel"): void
 }>()
@@ -45,7 +45,7 @@ const rules = reactive<FormRules>({
     maskcolor: [{ pattern: /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/, message: "请输入有效的 HEX 颜色值，例如 #fff 或 #ffffff", trigger: "blur" }],
 })
 
-// 当父组件更新 initialValues 时，回填表单并清除校验状态
+// 当父组件更新 initialValues 时, 回填表单并清除校验状态
 watch(
     () => props.initialValues,
     (val) => {
@@ -55,7 +55,7 @@ watch(
     { immediate: true },
 )
 
-/** 校验通过后 emit save，空值时 emit null（触发 clear） */
+/** 校验通过后 emit save, 空值时 emit null(触发 clear) */
 const handleSave = async () => {
     const formEl = formRef.value
     if (!formEl) return

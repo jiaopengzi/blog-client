@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\stores\breadcrumb.ts
+ * FilePath    : blog-client-nuxt\src\stores\breadcrumb.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -88,7 +88,7 @@ export const useBreadcrumbStore = defineStore("breadcrumb", {
     },
 })
 
-// 允许开发环境下进行热更新 HMR(Hot Module Replacement)
+// 允许开发环境下进行热更新 HMR (Hot Module Replacement)
 if (import.meta.hot) {
     import.meta.hot.accept(acceptHMRUpdate(useBreadcrumbStore, import.meta.hot))
 }

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\user\getUsers.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 获取用户信息
+/*
+ * FilePath    : blog-client-nuxt\src\api\user\getUsers.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 获取用户列表
  */
 
 import { type PgSqlDateTime } from "@/api/common"
@@ -17,11 +17,11 @@ export interface GetUsersRequest extends PaginationRequest {
     role_name?: string // 角色
 }
 
-// 获取用户信息 api 函数
+// 获取用户列表
 export async function getUsersAPI(
-    requestData: GetUsersRequest = { current_page: 1, page_size: 10 }, // 设置默认值,
-    width: number = 30, // 默认值 50px
-    height: number = 30, // 默认值 50px
+    requestData: GetUsersRequest = { current_page: 1, page_size: 10 }, // 分页参数默认值
+    width: number = 30, // 默认值 30px
+    height: number = 30, // 默认值 30px
     imgFit: ImgFit = ImgFit.Cover,
 ): ResPromise<Res<Pagination<User>>> {
     const urlStr = routerGroup + "/user/view"
@@ -30,7 +30,7 @@ export async function getUsersAPI(
         method: "post",
         data: requestData,
     })
-    // 在这里使用 map 函数来转换每个用户对象
+    // 使用 map 转换每个用户对象
     if (response.data.code === ResponseCode.UserGetAllSuccess) {
         response.data.data.records = response.data.data.records.map((user: User) => formatUser(user, width, height, imgFit))
         return response
@@ -68,7 +68,7 @@ export function formatUser({ user_avatar, created_at, ...user }: User, width: nu
         user_avatar: user_avatar || "",
     }
 
-    // 如果 user_avatar 不为空，添加 img 属性
+    // 如果 user_avatar 不为空, 添加 img 属性
     if (user_avatar) {
         formattedUser.img = {
             url: user_avatar,
@@ -81,7 +81,7 @@ export function formatUser({ user_avatar, created_at, ...user }: User, width: nu
     return formattedUser
 }
 
-// 默认的 UserInfo 空对象
+// 默认的用户分页空对象
 export function emptyUsers(): Pagination<User> {
     return {
         total: 0,

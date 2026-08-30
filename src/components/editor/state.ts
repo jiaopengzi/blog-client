@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\editor\core\state.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 编辑器状态管理
+/*
+ * FilePath    : blog-client-nuxt\src\components\editor\state.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 编辑器状态管理
  */
 
 import type { Completion } from "@codemirror/autocomplete"
@@ -26,27 +26,27 @@ export class EditorStateManager {
 
     // 初始化为默认状态
     constructor(options: EditorStateOptions = {}) {
-        this.state = reactive(createDefaultEditorState(options)) // 响应式对象
+        this.state = reactive(createDefaultEditorState(options))
     }
 
     // 获取滚动条隐藏的 html 字符串
     getScrollHideHtmlStr(): string {
-        return renderMarkdownDocument(this.state.scrollHideViewStr, this.state.isRemoveFirstH1).html // markdown 转 html
+        return renderMarkdownDocument(this.state.scrollHideViewStr, this.state.isRemoveFirstH1).html
     }
 
     // 更新编辑器 store
     updateState(markdownSrc: string): void {
-        this.state.editorContent = htmlHandleUtf8BOM(markdownSrc) // 去除 BOM 头 和 windows 换行符)
+        this.state.editorContent = htmlHandleUtf8BOM(markdownSrc) // 去除 BOM 头和 windows 换行符
         const renderedDocument = renderMarkdownDocument(this.state.editorContent, this.state.isRemoveFirstH1)
 
-        this.state.html = renderedDocument.html // markdown 转 html
+        this.state.html = renderedDocument.html
         this.state.tocMarkdown = getMarkdownHeadingLines(this.state.editorContent) // 通过正则获取 markdown 文件的目录
-        this.state.tocHtml = renderedDocument.tocHtml // 获取 html 目录
-        this.state.imgUrls = renderedDocument.imgUrls // 获取图片链接
+        this.state.tocHtml = renderedDocument.tocHtml
+        this.state.imgUrls = renderedDocument.imgUrls
         this.state.headingShowCurrentIndex = getSafeHeadingCurrentIndex(this.state.headingShowCurrentIndex, this.state.tocHtml.length)
     }
 
-    // 设置滚动条隐藏的编辑器view 字符串
+    // 设置滚动条隐藏的编辑器 view 字符串
     setScrollHideViewStr(scrollHideViewStr: string): void {
         this.state.scrollHideViewStr = scrollHideViewStr
     }
@@ -72,12 +72,12 @@ export class EditorStateManager {
         this.state.initDocIsEmpty = initDocIsEmpty
     }
 
-    // 设置是否显示目录
+    // 设置是否显示编辑器
     setEditorShow(editorShow: boolean): void {
         this.state.editorShow = editorShow
     }
 
-    // 切换是否显示目录
+    // 切换是否显示编辑器
     toggleEditorShow(): void {
         this.state.editorShow = !this.state.editorShow
     }
@@ -92,7 +92,7 @@ export class EditorStateManager {
         this.state.previewShow = !this.state.previewShow
     }
 
-    // 设置同步滚动状态
+    // 切换同步滚动状态
     setIsSyncScroll(): void {
         this.state.isSyncScroll = !this.state.isSyncScroll
     }
@@ -144,7 +144,8 @@ export class EditorStateManager {
 
     // 通过 url 获取编辑器内容
     async getEditorContentFromUrl(url: string): Promise<void> {
-        const res = await request.get(url)
+        // Nuxt 适配: 统一请求层为函数形态 (ofetch), 无 axios 实例快捷方法
+        const res = await request({ url, method: "get" })
         this.updateState(res.data)
     }
 
@@ -209,9 +210,9 @@ export class EditorStateManager {
     }
 
     /**
-     * setVimImePort 设置 Vim 输入法切换服务端口.
-     * @param vimImePort - 本地输入法服务监听端口.
-     * @returns 无返回值.
+     * setVimImePort 设置 Vim 输入法切换服务端口
+     * @param vimImePort - 本地输入法服务监听端口
+     * @returns 无返回值
      */
     setVimImePort(vimImePort: number): void {
         this.state.vimImePort = vimImePort
@@ -232,7 +233,7 @@ export class EditorStateManager {
         this.state.mode = mode
     }
 
-    // set mentions
+    // 设置 mentions 补全列表
     setMentions(mentions: Completion[]): void {
         this.state.mentions = mentions
     }
@@ -242,7 +243,7 @@ export class EditorStateManager {
         return this.state
     }
 
-    // 销毁编辑器状态
+    // 重置编辑器状态为默认值
     destroy(): void {
         this.state = createDefaultEditorState()
     }

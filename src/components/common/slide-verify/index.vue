@@ -1,14 +1,14 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\slide-verify\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 滑块验证
+ * FilePath    : blog-client-nuxt\src\components\common\slide-verify\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 滑块验证
 -->
 
 <template>
     <div class="page" v-if="show_slide_verify && imgs.length > 0">
-        <!-- @touchmove.prevent.stop 阻止触摸事件传播并阻止默认行为。确保滑动验证码不会导致页面滑动。 -->
+        <!-- @touchmove.prevent.stop 阻止触摸事件传播并阻止默认行为, 确保滑动验证码不会导致页面滑动 -->
         <div class="verify-main" @touchmove.prevent.stop>
             <h4>
                 <span class="title">拖动下方滑块完成拼图</span>
@@ -51,7 +51,7 @@ import { useOptionsStore } from "@/stores/options"
 
 defineOptions({ name: "SlideVerify" })
 
-// 拿到华东解锁图片列表
+// 获取滑动验证解锁图片列表
 const optionsStore = useOptionsStore()
 const { show_slide_verify, slide_verify_imgs } = storeToRefs(optionsStore)
 
@@ -74,7 +74,6 @@ const emit = defineEmits<{
 // 重新验证
 const onAgain = () => {
     msg.value = "请再试一次吧~"
-    // 刷新
     block.value?.refresh()
 }
 
@@ -94,13 +93,6 @@ const onFail = () => {
 const onRefresh = () => {
     msg.value = "滑块已重置，请重试！"
 }
-
-// 点击按钮刷新
-// const handleClick = () => {
-//     // 刷新
-//     block.value?.refresh();
-//     msg.value = "";
-// };
 
 // 关闭滑块验证 传参
 const closeMe = () => {
@@ -124,7 +116,6 @@ const closeMe = () => {
         color: #333;
         text-align: center;
         display: flex;
-        // justify-content: space-between;
         align-items: center;
         background-color: var(--jpz-bg-color);
 

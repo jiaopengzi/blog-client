@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\common\base-config-form\commonRules.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 基础校验规则
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\base-config-form\commonRules.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 基础校验规则
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -44,7 +44,7 @@ export const uploadRules: FormRules = {
     ],
 }
 
-// 前缀校验 结尾为'_'且长度不超过50,不包含空格
+// 前缀校验: 结尾为 '_' 且长度不超过 50, 不包含空格
 export const prefixValidatorFunc = (rule: any, value: any, callback: any) => {
     if (!value.endsWith("_") || value.length > 50 || /\s/.test(value)) {
         callback(new Error("前缀必须以'_'结尾,长度不超过50,不包含空格"))
@@ -55,7 +55,7 @@ export const prefixValidatorFunc = (rule: any, value: any, callback: any) => {
 
 // urlList 校验 以逗号分隔的 url 列表, 每个 url 必须以 http 或 https 开头
 // 例如: http://localhost:9200,https://localhost:9200
-// 同时判断逗号是否合法,不能有空格
+// 同时判断逗号是否合法, 不能有空格
 export const urlListValidatorFunc = (rule: any, value: any, callback: any) => {
     // 判断是否有空格
     if (value.includes(" ")) {
@@ -92,7 +92,7 @@ export const urlListValidatorFunc = (rule: any, value: any, callback: any) => {
     callback()
 }
 
-// url校验 必须以http或https开头
+// url 校验: 必须以 http 或 https 开头
 export const urlValidatorFunc = (rule: any, value: any, callback: any) => {
     if (!value.startsWith("http://") && !value.startsWith("https://")) {
         callback(new Error("url必须以http或https开头"))
@@ -101,7 +101,7 @@ export const urlValidatorFunc = (rule: any, value: any, callback: any) => {
     }
 }
 
-// imageURL校验 必须以http或https开头,判断是否为图片,可以为空
+// imageURL 校验: 必须以 http 或 https 开头, 判断是否为图片, 可以为空
 export const imageURLRequiredValidatorFunc = (rule: any, value: any, callback: any) => {
     if (value === "") {
         callback()
@@ -120,7 +120,7 @@ export const cssValidatorFunc = (rule: any, value: any, callback: any) => {
     if (isValid) {
         callback()
     } else {
-        // 只显示errors的最后一条信息
+        // 只显示 errors 的最后一条信息
         if (errors.length === 0) {
             callback(new Error("意外的 CSS 语法错误"))
             return
@@ -135,7 +135,7 @@ export const jsonValidatorFunc = (rule: any, value: any, callback: any) => {
     if (isValid) {
         callback()
     } else {
-        // 只显示errors的最后一条信息
+        // 只显示 errors 的最后一条信息
         if (errors.length === 0) {
             callback(new Error("意外的 JSON 语法错误"))
             return

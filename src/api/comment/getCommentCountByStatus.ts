@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\comment\getCommentCountByStatus.ts
+ * FilePath    : blog-client-nuxt\src\api\comment\getCommentCountByStatus.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

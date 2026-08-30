@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useMedia\formatter.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 格式化显示
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useMedia\formatter.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 格式化显示
  */
 
 import type { TableData } from "@/components/common/base-table"
@@ -33,7 +33,7 @@ export const formatterVideoIsEncrypt = (row: TableData) => {
     }
 }
 
-// 格式化是否生成HLS
+// 格式化是否生成 HLS
 export const formatterVideoIsHLS = (row: TableData) => {
     if ("is_generate_hls" in row && isVideo(row.file_type)) {
         if (row.is_generate_hls) {

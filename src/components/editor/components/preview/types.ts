@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\editor\components\preview\types.ts
+ * FilePath    : blog-client-nuxt\src\components\editor\components\preview\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -10,7 +10,7 @@ import { PayStrategy, type PostVideoTocTree } from "@/api/post/common"
 
 import { CommandsKey } from "../../command"
 
-// defineExpose 导出的 ref 类型，供父组件通过 useTemplateRef 访问
+// defineExpose 导出的 ref 类型, 供父组件通过 useTemplateRef 访问
 export interface HtmlPreviewRef {
     root: HTMLElement | null // 当前可见的预览根节点
     hasPreparedCopyCache: boolean // 是否存在有效的预复制缓存
@@ -28,7 +28,7 @@ export interface ViewCommand {
     time: Date | null
 }
 
-// 空间换时间，缓存已处理的 HTML 内容和版本号，以避免重复处理相同版本的内容
+// 空间换时间, 缓存已处理的 HTML 内容和版本号, 以避免重复处理相同版本的内容
 export interface PreparedCopyCache {
     html: string
     version: number
@@ -52,7 +52,7 @@ export interface PreviewProps {
     headingShowCurrentIndex?: number // 当前展示的标题的索引
     isWatchMouse?: boolean // 是否监听鼠标事件
 
-    scrollMethod?: ScrollMethod // 滚动方法;
+    scrollMethod?: ScrollMethod // 滚动方法
 
     root?: ScrollContainer
     rootMargin?: string
@@ -62,8 +62,8 @@ export interface PreviewProps {
     isPaid?: boolean // 是否付费阅读
     payStrategy?: PayStrategy // 付费策略
     payRoles?: string[] // 付费角色
-    price?: string // 价格(单位：分)
-    postId?: string // 文章ID
+    price?: string // 价格(单位: 分)
+    postId?: string // 文章 ID
     isAdminVideo?: boolean // 是否使用管理员视频接口
     videoToc?: PostVideoTocTree[] // 付费视频目录
 }

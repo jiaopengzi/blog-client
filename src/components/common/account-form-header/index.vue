@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\account-form-header\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 账号相关表单头部
+ * FilePath    : blog-client-nuxt\src\components\common\account-form-header\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 账号相关表单头部
 -->
 
 <template>
@@ -32,7 +32,12 @@
 
 <script lang="ts" setup>
 import { computed } from "vue"
-import type { RouteLocationAsPathGeneric, RouteLocationAsRelativeGeneric } from "vue-router"
+
+// Nuxt 适配: vue-router 非直接依赖, prop 类型用结构类型替代 RouteLocationAs* 类型
+type RouterLinkToProp = string | Record<string, unknown>
+
+// H7(品牌资产统一): 站点配置缺失时的兜底图使用内置品牌 Logo, 不再回落到占位图
+import brandLogo from "@/assets/img/logo-jiaopengzi-162-50.png"
 
 import { useOptionsStore } from "@/stores/options"
 
@@ -41,8 +46,6 @@ defineOptions({ name: "AccountFormHeader" })
 const {
     title,
     alt = "www.jiaopengzi.com",
-    // 注意: Vite 的 import.meta.url 结合 new URL() 方法来解析图片路径。确保在开发和生产环境中都能正确解析路径。
-    // imgSrc = new URL("@/assets/img/logo-jiaopengzi-162-50.png", import.meta.url).href,
     imgSrc,
     aTag,
     routerLinkTo,
@@ -56,13 +59,12 @@ const {
         target?: string
     }
 
-    routerLinkTo?: string | RouteLocationAsRelativeGeneric | RouteLocationAsPathGeneric
+    routerLinkTo?: RouterLinkToProp
 }>()
 
 const optionsStore = useOptionsStore()
 const logo = optionsStore.getLogo
-// const imgSrcAc = computed(() => imgSrc || logo || new URL("@/assets/img/logo-jiaopengzi-162-50.png", import.meta.url).href)
-const imgSrcAc = computed(() => imgSrc || logo || "./demo-logo.svg")
+const imgSrcAc = computed(() => imgSrc || logo || brandLogo)
 </script>
 
 <style lang="scss" scoped>
@@ -83,7 +85,6 @@ const imgSrcAc = computed(() => imgSrc || logo || "./demo-logo.svg")
 
 a {
     color: var(--jpz-text-color-primary);
-    // text-decoration: underline;
 }
 
 .logo {

@@ -1,3 +1,11 @@
+/*
+ * FilePath    : blog-client-nuxt\src\api\post\common.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : getPostDisplayTime 的单元测试
+ */
+
 import { describe, expect, it } from "vitest"
 
 import { getPostDisplayTime, type PostResCommon, PostStatusCode } from "./common"

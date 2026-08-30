@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\player\state.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 视频组件状态管理
+/*
+ * FilePath    : blog-client-nuxt\src\components\player\state.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 视频组件状态管理
  */
 
 import { reactive } from "vue"
@@ -40,15 +40,15 @@ export class PlayerStateManager {
     /**
      * 创建播放器状态管理器实例
      * @constructor
-     * @param {PlayerState} [initialState] - 初始播放器状态，默认为默认状态
+     * @param {PlayerState} [initialState] - 初始播放器状态, 默认为默认状态
      */
     constructor(initialState: PlayerState = createDefaultPlayerState()) {
-        this.state = reactive(initialState) // 响应式对象
+        this.state = reactive(initialState)
     }
 
     /**
      * 获取当前播放状态是否为播放中
-     * @returns {boolean} 如果当前播放状态为播放中，则返回 true，否则返回 false
+     * @returns {boolean} 如果当前播放状态为播放中，则返回 true, 否则返回 false
      */
     get isPlaying(): boolean {
         return this.state.playStatus === PlayStatus.PLAYING
@@ -56,7 +56,7 @@ export class PlayerStateManager {
 
     /**
      * 获取当前播放状态是否为暂停
-     * @returns {boolean} 如果当前播放状态为暂停，则返回 true，否则返回 false
+     * @returns {boolean} 如果当前播放状态为暂停，则返回 true, 否则返回 false
      */
     get isPaused(): boolean {
         return this.state.playStatus === PlayStatus.PAUSED
@@ -64,7 +64,7 @@ export class PlayerStateManager {
 
     /**
      * 获取当前播放状态是否为停止
-     * @returns {boolean} 如果当前播放状态为停止，则返回 true，否则返回 false
+     * @returns {boolean} 如果当前播放状态为停止，则返回 true, 否则返回 false
      */
     get isStopped(): boolean {
         return this.state.playStatus === PlayStatus.STOPPED
@@ -72,7 +72,7 @@ export class PlayerStateManager {
 
     /**
      * 获取当前播放状态是否为缓冲中
-     * @returns {boolean} 如果当前播放状态为缓冲中，则返回 true，否则返回 false
+     * @returns {boolean} 如果当前播放状态为缓冲中，则返回 true, 否则返回 false
      */
     get isBuffering(): boolean {
         return this.state.playStatus === PlayStatus.BUFFERING
@@ -120,7 +120,7 @@ export class PlayerStateManager {
 
     /**
      * 设置音量
-     * @param {number} newVolume - 新的音量值，范围为 0 到 100
+     * @param {number} newVolume - 新的音量值, 范围为 0 到 100
      */
     setVolume(newVolume: number): void {
         this.state.volume.lastVolume = this.state.volume.volume
@@ -138,7 +138,7 @@ export class PlayerStateManager {
 
     /**
      * 切换静音状态
-     * 如果当前未静音，则将音量设置为 0 并标记为静音
+     * 如果当前未静音, 则将音量设置为 0 并标记为静音
      */
     toggleMute(): void {
         this.state.volume.muted = !this.state.volume.muted
@@ -204,14 +204,14 @@ export class PlayerStateManager {
     }
 
     /**
-     * 设置当前播放时间。
+     * 设置当前播放时间
      */
     setCurrentTime(currentTime: number): void {
         this.state.playProgress.currentTime = currentTime
     }
 
     /**
-     * 设置视频总时长。
+     * 设置视频总时长
      */
     setDuration(duration: number): void {
         this.state.playProgress.duration = duration
@@ -225,14 +225,14 @@ export class PlayerStateManager {
     }
 
     /**
-     * 设置是否正在拖动进度条。
+     * 设置是否正在拖动进度条
      */
     setIsDragging(isDragging: boolean): void {
         this.state.playProgress.isDragging = isDragging
     }
 
     /**
-     * 快进 10 秒。
+     * 快进 10 秒
      */
     fastForward(): void {
         if (this.state.playProgress.currentTime + 10 >= this.state.playProgress.duration) {
@@ -243,7 +243,7 @@ export class PlayerStateManager {
     }
 
     /**
-     * 快退 10 秒。
+     * 快退 10 秒
      */
     rewind(): void {
         if (this.state.playProgress.currentTime - 10 <= 0) {
@@ -254,7 +254,7 @@ export class PlayerStateManager {
     }
 
     /**
-     * 切换全屏状态。
+     * 切换全屏状态
      */
     toggleFullScreen(): void {
         this.state.isFullScreen = !this.state.isFullScreen
@@ -264,14 +264,14 @@ export class PlayerStateManager {
     }
 
     /**
-     * 设置全屏状态。
+     * 设置全屏状态
      */
     setIsFullScreen(isFullScreen: boolean): void {
         this.state.isFullScreen = isFullScreen
     }
 
     /**
-     * 切换网页全屏状态。
+     * 切换网页全屏状态
      */
     toggleWebFullScreen(): void {
         this.state.isWebFullScreen = !this.state.isWebFullScreen
@@ -281,14 +281,14 @@ export class PlayerStateManager {
     }
 
     /**
-     * 设置网页全屏状态。
+     * 设置网页全屏状态
      */
     setIsWebFullScreen(isWebFullScreen: boolean): void {
         this.state.isWebFullScreen = isWebFullScreen
     }
 
     /**
-     * 退出全屏模式。
+     * 退出全屏模式
      */
     exitFullScreen(): void {
         this.state.isFullScreen = false
@@ -305,7 +305,7 @@ export class PlayerStateManager {
 
     /**
      * 设置所有可用的播放质量选项。
-     * @param {Record<string, number>} allLevels - 一个包含所有可用播放质量选项的对象，键为质量标签，值为对应的分辨率。
+     * @param {Record<string, number>} allLevels - 一个包含所有可用播放质量选项的对象, 键为质量标签, 值为对应的分辨率
      * 例如: { "1080p": 1080, "720p": 720, "480p": 480 }
      */
     setPlayLevelAllLevels(allLevels: Record<string, number>): void {
@@ -314,39 +314,39 @@ export class PlayerStateManager {
 
     /**
      * 设置播放速率
-     * @param {PlaybackRate} playbackRate - 播放速率，必须是 PlaybackRate 枚举中的一个值
+     * @param {PlaybackRate} playbackRate - 播放速率, 必须是 PlaybackRate 枚举中的一个值
      */
     setPlaybackRate(playbackRate: PlaybackRate): void {
         this.state.playbackRate = playbackRate
     }
 
     /**
-     *  切换控制栏的显示与隐藏状态。
-     *  如果当前控制栏是显示状态，则切换为隐藏状态；如果当前是隐藏状态，则切换为显示状态。
+     *  切换控制栏的显示与隐藏状态
+     *  如果当前控制栏是显示状态, 则切换为隐藏状态; 如果当前是隐藏状态, 则切换为显示状态
      */
     toggleControlBar(): void {
         this.state.showControlBar = !this.state.showControlBar
     }
 
     /**
-     * 切换是否使用浏览器默认的视频控件。
+     * 切换是否使用浏览器默认的视频控件
      */
     toggleVideoControls(): void {
         this.state.useVideoControls = !this.state.useVideoControls
     }
 
     /**
-     * 设置播放器尺寸。
-     * @param {number} width - 播放器宽度，单位为像素。
-     * @param {number} height - 播放器高度，单位为像素。
+     * 设置播放器尺寸
+     * @param {number} width - 播放器宽度, 单位为像素
+     * @param {number} height - 播放器高度, 单位为像素
      */
     setSize(width: number, height: number): void {
         this.state.size = { width, height }
     }
 
     /**
-     * 设置当前选择的字幕语言。
-     * @param {LanguageKey} language - 选择的字幕语言键，例如
+     * 设置当前选择的字幕语言
+     * @param {LanguageKey} language - 选择的字幕语言键, 例如
      */
     setSelectedSubtitlesLanguage(language: LanguageKey): void {
         this.state.subtitles.selectedSubtitlesLanguage = language
@@ -354,7 +354,7 @@ export class PlayerStateManager {
 
     /**
      * 设置可用字幕列表。
-     * @param {Partial<Record<LanguageKey, SubtitlesItem>>} availableSubtitles - 包含可用字幕的对象，键为语言键，值为字幕项
+     * @param {Partial<Record<LanguageKey, SubtitlesItem>>} availableSubtitles - 包含可用字幕的对象, 键为语言键, 值为字幕项
      */
     setAvailableSubtitles(availableSubtitles: Partial<Record<LanguageKey, SubtitlesItem>>): void {
         this.state.subtitles.availableSubtitles = availableSubtitles
@@ -369,15 +369,15 @@ export class PlayerStateManager {
     }
 
     /**
-     * 根据当前视频的哈希 ID 自动设置字幕。
-     * 如果当前视频 ID 为空，则不进行任何操作。
-     * 否则，调用 createSubtitlesByVideoHashId 方法根据视频哈希 ID 获取字幕信息，并更新播放器状态中的字幕。
+     * 根据当前视频的哈希 ID 自动设置字幕
+     * 如果当前视频 ID 为空, 则不进行任何操作
+     * 否则, 调用 createSubtitlesByVideoHashId 方法根据视频哈希 ID 获取字幕信息, 并更新播放器状态中的字幕
      */
     setSubtitlesByVideoHashIdAuto(): void {
         if (!this.state.videoID) return
         // 根据视频 hash ID 和字幕语言列表创建字幕对象
         createSubtitlesByVideoHashId(this.state.videoID, this.state).then((subtitles) => {
-            this.setSubtitles(subtitles) // 设置字幕
+            this.setSubtitles(subtitles)
         })
     }
 
@@ -396,83 +396,83 @@ export class PlayerStateManager {
     }
 
     /**
-     * 切换目录显示状态。
+     * 切换目录显示状态
      */
     toggleIsShowToc(): void {
         this.state.isShowToc = !this.state.isShowToc
     }
 
     /**
-     * 切换画中画模式。
+     * 切换画中画模式
      */
     togglePictureInPicture(): void {
         this.state.isPictureInPicture = !this.state.isPictureInPicture
     }
 
     /**
-     * 设置是否为移动设备。
-     * 该方法用于更新播放器状态中的 isMobile 属性，以便根据设备类型调整播放器行为。
+     * 设置是否为移动设备
+     * 该方法用于更新播放器状态中的 isMobile 属性, 以便根据设备类型调整播放器行为
      *
-     * @param {boolean} isMobile - 如果为 true，则表示当前设备为移动设备，否则为 false。
+     * @param {boolean} isMobile - 如果为 true, 则表示当前设备为移动设备, 否则为 false
      */
     setIsMobile(isMobile: boolean): void {
         this.state.isMobile = isMobile
     }
 
     /**
-     * 设置文本水印。
-     * @param {TextWatermark} textWatermark - 包含水印内容和样式的对象。
+     * 设置文本水印
+     * @param {TextWatermark} textWatermark - 包含水印内容和样式的对象
      */
     setTextWatermark(textWatermark: TextWatermark): void {
         this.state.textWatermark = textWatermark
     }
 
     /**
-     * 设置 logo 水印。
-     * @param {LogoWatermark} logoWatermark - 包含 logo URL 和样式的对象。
+     * 设置 logo 水印
+     * @param {LogoWatermark} logoWatermark - 包含 logo URL 和样式的对象
      */
     setLogoWatermark(logoWatermark: LogoWatermark): void {
         this.state.logoWatermark = logoWatermark
     }
 
     /**
-     * 切换循环播放状态。
+     * 切换循环播放状态
      */
     toggleLoop(): void {
         this.state.isLoop = !this.state.isLoop
     }
 
     /**
-     * 切换自动播放状态。
+     * 切换自动播放状态
      */
     toggleAutoPlay(): void {
         this.state.autoPlay = !this.state.autoPlay
     }
 
     /**
-     * 设置用户输入状态。
-     * 该方法用于标记播放器状态中的 isUserInput 属性，以指示当前操作是否由用户直接触发。
-     * 这对于区分用户操作和程序自动操作非常重要，例如在设置播放进度时。
+     * 设置用户输入状态
+     * 该方法用于标记播放器状态中的 isUserInput 属性, 以指示当前操作是否由用户直接触发
+     * 这对于区分用户操作和程序自动操作非常重要, 例如在设置播放进度时
      *
-     * @param {boolean} flag - 如果为 true，则表示当前操作由用户触发；如果为 false，则表示非用户触发。
+     * @param {boolean} flag - 如果为 true, 则表示当前操作由用户触发; 如果为 false, 则表示非用户触发
      */
     setUserInput(flag: boolean): void {
         this.state.isUserInput = flag
     }
 
     /**
-     * 设置是否为 iPhone 设备。
-     * 该方法用于更新播放器状态中的 isIphone 属性，以便根据设备类型调整播放器行为。
+     * 设置是否为 iPhone 设备
+     * 该方法用于更新播放器状态中的 isIphone 属性, 以便根据设备类型调整播放器行为
      *
-     * @param {boolean} isIphone - 如果为 true，则表示当前设备为 iPhone，否则为 false。
+     * @param {boolean} isIphone - 如果为 true, 则表示当前设备为 iPhone, 否则为 false
      */
     setIsIphone(isIphone: boolean): void {
         this.state.isIphone = isIphone
     }
 
     /**
-     * 切换是否启用快捷键功能。
-     * 如果当前启用，则禁用快捷键功能；如果当前禁用，则启用快捷键功能。
+     * 切换是否启用快捷键功能
+     * 如果当前启用, 则禁用快捷键功能; 如果当前禁用, 则启用快捷键功能
      */
     toggleShortcutKey(): void {
         this.state.isShortcutKey = !this.state.isShortcutKey
@@ -480,16 +480,16 @@ export class PlayerStateManager {
 
     /**
      * 设置是否启用快捷键功能。
-     * @param {boolean} isShortcutKey - 如果为 true，则启用快捷键功能；如果为 false，则禁用快捷键功能。
+     * @param {boolean} isShortcutKey - 如果为 true, 则启用快捷键功能; 如果为 false, 则禁用快捷键功能
      */
     setShortcutKey(isShortcutKey: boolean): void {
         this.state.isShortcutKey = isShortcutKey
     }
 
     /**
-     * 清除所有创建的本地视频字幕 URL, 避免内存泄漏。
-     * 调用此方法将撤销所有通过 URL.createObjectURL 创建的本地字幕 URL, 并清空本地字幕 URL 列表。
-     * 该方法在播放器销毁或不再需要本地字幕时应被调用，以释放资源。
+     * 清除所有创建的本地视频字幕 URL, 避免内存泄漏
+     * 调用此方法将撤销所有通过 URL.createObjectURL 创建的本地字幕 URL, 并清空本地字幕 URL 列表
+     * 该方法在播放器销毁或不再需要本地字幕时应被调用, 以释放资源
      */
     clearLocalVideoSubtitlesURLs(): void {
         if (this.state.localVideoSubtitlesURLs && this.state.localVideoSubtitlesURLs.length > 0) {
@@ -499,9 +499,9 @@ export class PlayerStateManager {
     }
 
     /**
-     * 启动一个定时器，定期执行回调
+     * 启动一个定时器, 定期执行回调
      * @param callback 回调函数
-     * @param interval 执行间隔，单位毫秒，默认 5000ms
+     * @param interval 执行间隔, 单位毫秒, 默认 5000ms
      */
     startTimer(callback: () => void | Promise<void>, interval: number = 5000): void {
         this.stopTimer() // 避免重复启动
@@ -541,24 +541,24 @@ export class PlayerStateManager {
     }
 
     /**
-     * 设置是否展示错误信息。
-     * @param {boolean} flag - 如果为 true，则展示错误信息；如果为 false，则隐藏错误信息。
+     * 设置是否展示错误信息
+     * @param {boolean} flag - 如果为 true, 则展示错误信息; 如果为 false, 则隐藏错误信息
      */
     setShowError(flag: boolean): void {
         this.state.showError = flag
     }
 
     /**
-     * 设置错误信息内容。
-     * @param {string} msg - 错误信息内容字符串。
+     * 设置错误信息内容
+     * @param {string} msg - 错误信息内容字符串
      */
     setErrMsg(msg: string): void {
         this.state.errMsg = msg
     }
 
     /**
-     * 设置是否为管理员。
-     * @param {boolean} flag - 如果为 true，则表示当前用户为管理员，否则为非管理员。
+     * 设置是否为管理员
+     * @param {boolean} flag - 如果为 true, 则表示当前用户为管理员, 否则为非管理员
      */
     setIsAdmin(flag: boolean): void {
         this.state.isAdmin = flag
@@ -581,8 +581,8 @@ export class PlayerStateManager {
     }
 
     /**
-     * 销毁播放器状态管理器实例，清理资源并重置状态。
-     * 调用此方法后，播放器状态将恢复为默认状态。
+     * 销毁播放器状态管理器实例, 清理资源并重置状态
+     * 调用此方法后, 播放器状态将恢复为默认状态
      */
     destroy(): void {
         this.clearLocalVideoSubtitlesURLs()

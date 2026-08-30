@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\order\refund.ts
+ * FilePath    : blog-client-nuxt\src\api\order\refund.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -13,7 +13,7 @@ import type { Res, ResPromise } from "@/api/response"
 // 订单退款请求参数
 export interface OrderRefundRequest {
     id: string // 订单ID
-    refund_amount: string // 退款金额，单位为分
+    refund_amount: string // 退款金额, 单位为分
     reason: string // 退款原因
     captcha: string // 验证码
 }

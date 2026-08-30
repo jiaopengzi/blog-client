@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\product-list\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\product-list\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -14,23 +14,27 @@
             <el-table-column prop="title" label="产品">
                 <template #default="{ row }">
                     <div class="product-title-wrap">
-                        <div v-if="row.product_type === ProductType.Post && row.related_id" class="product-title post-link" @click="handleTitleClick(row)">
+                        <div
+                            v-if="row.product_type === ProductType.Post && row.related_id"
+                            class="product-title post-link"
+                            @click="handleTitleClick(row as OrderItemRes)"
+                        >
                             {{ row.title }}
                         </div>
                         <div v-else class="product-title">{{ row.title }}</div>
-                        <div class="product-type" v-if="row.product_type">{{ getProductTypeLabel(row) }}</div>
+                        <div class="product-type" v-if="row.product_type">{{ getProductTypeLabel(row as OrderItemRes) }}</div>
                     </div>
                 </template>
             </el-table-column>
             <el-table-column prop="price" label="价格" align="center">
-                <template #default="{ row }">{{ fenToYuan(row.price, true) }}</template>
+                <template #default="{ row }">{{ fenToYuan((row as OrderItemRes).price, true) }}</template>
             </el-table-column>
             <el-table-column prop="quantity" label="数量" align="center" />
             <el-table-column v-if="shouldShowDetailColumn" prop="description" label="产品明细" min-width="260">
                 <template #default="{ row }">
                     <div class="product-detail-cell">
                         <div class="product-description" v-if="row.description">{{ row.description }}</div>
-                        <div class="account-key-items" v-if="hasAccountKeyItems(row)">
+                        <div class="account-key-items" v-if="hasAccountKeyItems(row as OrderItemRes)">
                             <div class="account-key-title">账号密钥内容</div>
                             <ul class="account-key-list">
                                 <li v-for="(item, index) in row.account_key_items" :key="`${row.product_id}-${index}`">
@@ -38,7 +42,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <span class="product-empty" v-if="!row.description && !hasAccountKeyItems(row)">暂无明细</span>
+                        <span class="product-empty" v-if="!row.description && !hasAccountKeyItems(row as OrderItemRes)">暂无明细</span>
                     </div>
                 </template>
             </el-table-column>

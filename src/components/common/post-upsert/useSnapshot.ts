@@ -1,9 +1,9 @@
 /*
- * FilePath    : blog-client\src\components\common\post-upsert\useSnapshot.ts
+ * FilePath    : blog-client-nuxt\src\components\common\post-upsert\useSnapshot.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 数据快照，用于跟踪文章编辑状态
+ * Description : 数据快照, 用于跟踪文章编辑状态
  */
 
 import { type Reactive, reactive, ref, watch } from "vue"

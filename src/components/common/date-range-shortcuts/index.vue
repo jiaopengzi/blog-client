@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\date-range-shortcuts\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\date-range-shortcuts\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -61,7 +61,7 @@ const shortcutList = computed(() => shortcuts ?? defaultShortcuts)
 /** 当前激活的快捷标签 */
 const activeLabel = ref("")
 
-/** 将字符串解析为 Date，空串返回 null */
+/** 将字符串解析为 Date, 空串返回 null */
 const parseDate = (val: string | undefined): Date | null => {
     if (!val) return null
     const d = new Date(val)

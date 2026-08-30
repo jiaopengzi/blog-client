@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\layout\aside\post-tag\hooks.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\layout\aside\post-tag\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -16,10 +16,10 @@ import { useStatusStore } from "@/stores/status"
 import { sortPostTagsByCount } from "@/utils/tagSort"
 
 /**
- * 按当前页面口径对标签列表排序.
- * @param tags - 待排序的标签列表.
- * @param isAdmin - 是否使用管理员口径.
- * @returns 新的排序结果, 不修改原始数组.
+ * 按当前页面口径对标签列表排序
+ * @param tags - 待排序的标签列表
+ * @param isAdmin - 是否使用管理员口径
+ * @returns 新的排序结果, 不修改原始数组
  */
 export function sortPostTagsByActiveCount(tags: PostTag[], isAdmin: boolean): PostTag[] {
     const countKey = isAdmin ? "post_count_admin" : "post_count"
@@ -27,9 +27,9 @@ export function sortPostTagsByActiveCount(tags: PostTag[], isAdmin: boolean): Po
 }
 
 /**
- * 获取文章标签数据.
- * @param isAdmin - 是否使用管理员标签口径.
- * @returns 标签列表与加载方法.
+ * 获取文章标签数据
+ * @param isAdmin - 是否使用管理员标签口径
+ * @returns 标签列表与加载方法
  */
 export function usePostTagData(isAdmin: boolean) {
     const statusStore = useStatusStore()
@@ -38,7 +38,7 @@ export function usePostTagData(isAdmin: boolean) {
 
     const topNAPI = isAdmin ? viewPostTagTopNAdminAPI : viewPostTagTopNAPI
 
-    // 获取分页用户
+    // 获取标签 TopN
     const getTagTopN = async () => {
         // 获取标签列表
         await topNAPI().then((res) => {

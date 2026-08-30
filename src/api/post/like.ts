@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\post\like.ts
+ * FilePath    : blog-client-nuxt\src\api\post\like.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -11,7 +11,7 @@ import type { Res, ResPromise } from "@/api/response"
 
 // 点赞请求
 export interface PostLikeRequest {
-    post_id: string // 文章ID
+    post_id: string // 文章 ID
     like: boolean // 点赞或取消点赞
 }
 

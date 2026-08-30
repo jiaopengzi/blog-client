@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\icons\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 图标组件
+ * FilePath    : blog-client-nuxt\src\components\common\icon-select\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 图标选择弹窗组件
 -->
 
 <template>
@@ -28,7 +28,6 @@ import { IconKeys } from "@/components/common/icons"
 
 defineOptions({ name: "IconSelect" })
 
-// 定义 props, 默认值为不显示 false
 const { isShow = false } = defineProps<{
     isShow?: boolean // 是否显示
 }>()
@@ -57,7 +56,7 @@ const handleClick = (iconKey: IconKeys) => {
 
 <style scoped lang="scss">
 .container-icon {
-    // 使用网格布局，每行显示 10 个图标
+    // 使用网格布局, 每行显示 10 个图标
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     gap: 10px;

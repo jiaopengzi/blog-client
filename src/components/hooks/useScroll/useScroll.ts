@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useScroll\useScroll.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 滚动事件监听
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useScroll\useScroll.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 滚动事件监听
  */
 
 import { onMounted, onUnmounted, unref } from "vue"
@@ -28,12 +28,12 @@ const getScrollPosition = (container: ScrollContainer): number => {
  * @return 验证后的容器
  */
 const validContainer = (container: ScrollContainer): Window | HTMLElement => {
-    // 如果容器是 null 或 undefined，则返回 window
+    // 如果容器是 null 或 undefined, 则返回 window
     if (!container) {
         return window
     }
 
-    // 如果容器是 window，则直接返回 window
+    // 如果容器是 window, 则直接返回 window
     if (container === window) {
         return window
     }
@@ -53,7 +53,7 @@ const validContainer = (container: ScrollContainer): Window | HTMLElement => {
 /**
  * @description 监听滚动事件
  * @param handler 滚动事件回调函数
- * @param container 滚动容器 Window 或 HTMLElement(可选,默认为 window)
+ * @param container 滚动容器 Window 或 HTMLElement (可选, 默认为 window)
  */
 export function useScroll(handler: ScrollHandler, container?: ScrollContainer) {
     let lastPosition = 0
@@ -66,7 +66,7 @@ export function useScroll(handler: ScrollHandler, container?: ScrollContainer) {
         const currentTimestamp = performance.now()
         const direction: Direction = currentPosition > lastPosition ? "down" : "up"
 
-        // 计算滚动速度（像素/秒）
+        // 计算滚动速度 (像素/秒)
         const deltaTime = currentTimestamp - lastTimestamp
         const deltaPosition = Math.abs(currentPosition - lastPosition)
         const speed = (deltaPosition / deltaTime) * 1000

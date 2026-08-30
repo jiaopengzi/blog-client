@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\common\comment-post-item\types.ts
+ * FilePath    : blog-client-nuxt\src\components\common\comment-post-item\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -9,6 +9,6 @@
 import { type CommentPostRes } from "@/api/comment/common"
 
 export interface PostProps {
-    post: CommentPostRes // 用户信息
+    post: CommentPostRes // 文章信息
     isAdmin?: boolean // 是否为管理员查看
 }

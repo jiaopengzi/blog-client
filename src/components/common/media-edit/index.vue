@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\media-edit\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 编辑媒体
+ * FilePath    : blog-client-nuxt\src\components\common\media-edit\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 编辑媒体
 -->
 
 <template>
@@ -38,15 +38,12 @@ import MediaShow, { type MediaShowProps } from "./media-show"
 import SubtitlesInfo from "./subtitles-info"
 import type { EditMediaProps } from "./types"
 
-// 定义组件名称
 defineOptions({ name: "EditMedia" })
 
-// props
 const { editMediaData } = defineProps<{
     editMediaData: EditMediaProps // 编辑媒体数据
 }>()
 
-// emits
 const emit = defineEmits<{
     (event: "edit-media-status", value: boolean): void // 编辑Media状态
     (event: "update-subtitles", language: string): void // 更新字幕
@@ -81,12 +78,11 @@ const mediaShow = reactive<MediaShowProps>({} as MediaShowProps)
 // 是否是视频文件
 const isVideoFile = ref(isVideo(editMediaData.file_type))
 
-// 计算属性：根据 isVideoFile 的值设置布局样式
+// 根据 isVideoFile 的值设置布局样式
 const layoutClass = computed(() => {
     return isVideoFile.value ? "edit-media-page video-layout" : "edit-media-page no-video-layout"
 })
 
-// 更新表单数据
 const updateForm = (data: EditMediaProps) => {
     isVideoFile.value = isVideo(data.file_type)
     hashId.value = editMediaData.file_name.split(".")[0]!
@@ -110,11 +106,11 @@ const updateForm = (data: EditMediaProps) => {
     Object.assign(mediaShow, rest)
 }
 
-// 监控 props.editUserData 变化 更新页面数据
+// 监控 props.editMediaData 变化, 更新页面数据
 watch(
     () => editMediaData,
     (newVal) => {
-        updateForm(newVal) // 更新表单数据
+        updateForm(newVal)
     },
     {
         // 立即执行

@@ -1,6 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\common\media-edit\subtitles-info\__tests__\index.test.ts
- * @Description  : SubtitlesInfo 组件测试, 覆盖本地字幕文件选择功能
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\media-edit\subtitles-info\__tests__\index.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : SubtitlesInfo 组件测试, 覆盖本地字幕文件选择功能
  */
 
 import ElementPlus from "element-plus"

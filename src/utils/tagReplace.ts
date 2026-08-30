@@ -1,12 +1,12 @@
-/**
- * FilePath    : blog-client\src\utils\tagReplace.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\tagReplace.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 标签替换工具
  */
 
-// 定义不允许替换的标签(如 script、style 等可能引起安全问题的标签)
+// 不允许替换的标签(如 script、style 等可能引起安全问题的标签)
 const RESTRICTED_TAGS = ["script", "style", "iframe", "frame", "object"] as const
 type RestrictedTag = (typeof RESTRICTED_TAGS)[number]
 

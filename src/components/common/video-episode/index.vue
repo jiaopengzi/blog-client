@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\video-episode\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\video-episode\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -32,10 +32,8 @@ import { type VideoEpisodeProps } from "./types.ts"
 
 defineOptions({ name: "VideoEpisode" })
 
-// 定义 props
 const { isPaid, episodeList, currentVideoOrder = 1 } = defineProps<VideoEpisodeProps>()
 
-// 事件
 const emit = defineEmits<{
     (event: "video-select", val: PostVideoTocTree): void
 }>()
@@ -49,8 +47,8 @@ const treeVideoOrders = ref<number[]>([])
 // hooks
 const { videoTotal, covertToMap } = useVideoTocTree(localTreeList)
 
-// 所有集数均为免费时，等同于已付费效果（不显示锁/解锁图标）
-// 基于 treeMap 中的真实视频节点判断（排除章节节点）
+// 所有集数均为免费时, 等同于已付费效果(不显示锁/解锁图标)
+// 基于 treeMap 中的真实视频节点判断(排除章节节点)
 const allFree = computed(() => {
     const videoNodes = Object.values(treeMap.value)
     return videoNodes.length > 0 && videoNodes.every((item) => item.is_free)
@@ -79,7 +77,7 @@ watch(
 )
 
 const orderDisplay = (order: number) => {
-    // 根据总数决定前面补0的位数
+    // 根据总数决定前面补 0 的位数
     const totalDigits = videoTotal.value ? videoTotal.value.toString().length : 1
     return order.toString().padStart(totalDigits, "0")
 }
@@ -183,9 +181,9 @@ const isCurrentEpisode = (item?: PostVideoTocTree) => {
     transition: all 0.3s ease;
 }
 
-/* 
-参考：https://css-loaders.com/bars/
-HTML: <div class="active-animation"></div> 
+/*
+参考: https://css-loaders.com/bars/
+HTML: <div class="active-animation"></div>
 */
 .active-animation {
     position: absolute;

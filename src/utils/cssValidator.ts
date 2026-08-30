@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\utils\cssValidator.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\cssValidator.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -65,7 +65,7 @@ export function isValidCSS(css: string): CSSValidationResult {
         for (const e of braceErrors) result.errors.push(e)
     }
 
-    // 逐行解析並检查关键规则
+    // 逐行解析并检查关键规则
     const lines = withoutComments.split(/\r?\n/)
     let depth = 0
 
@@ -178,7 +178,7 @@ export function isValidCSS(css: string): CSSValidationResult {
         const hasBracesOrColons = line.includes("{") || line.includes("}") || line.includes(":")
         const looksLikeSelector = !hasBracesOrColons && (/^[.#]?[a-zA-Z]/.test(line) || /^[.#]?[_a-zA-Z]/.test(line)) && !line.startsWith("@")
 
-        // 只有当前一行存在未闭合的左花括号時才視为嵌套情況
+        // 只有当前一行存在未闭合的左花括号时才视为嵌套情况
         const prevLineIndex = lineNo - 1
         if (!lines[prevLineIndex]) continue
         const prevLine = prevLineIndex >= 0 ? lines[prevLineIndex].trim() : ""
@@ -223,7 +223,7 @@ export function isValidCSS(css: string): CSSValidationResult {
                 continue
             }
 
-            // 去掉末尾分号後检查属性值并复用验证逻辑
+            // 去掉末尾分号后检查属性值并复用验证逻辑
             const rawValue = rest.trim()
             const value = rawValue.replace(/;\s*$/, "").trim()
 
@@ -349,7 +349,7 @@ export function removeCommentsSafe(css: string): string {
 
         // 如果不在字符串内且遇到注释起始符則跳过注释内容
         if (inString === null && css.startsWith("/*", i)) {
-            // 支持嵌套式注释: 找到注释结束位置，同时统计注释内的换行数以保留行号
+            // 支持嵌套式注释: 找到注释结束位置, 同时统计注释内的换行数以保留行号
             let depth = 1
             let j = i + 2
             let newlineCount = 0
@@ -380,7 +380,7 @@ export function removeCommentsSafe(css: string): string {
             // 将注释区域替换为同样数量的换行符以保留原始行号对齐
             if (newlineCount > 0) out += "\n".repeat(newlineCount)
 
-            // 将主索引移动到注释末尾位置（j 已指向结束后的位置）
+            // 将主索引移动到注释末尾位置(j 已指向结束后的位置)
             i = Math.max(j - 1, i)
             continue
         }
@@ -420,7 +420,7 @@ export function findFirstOutsideByPredicate(text: string, predicate: (ch: string
             continue
         }
 
-        // 处理字符串起始与结束：未在字符串时遇到引号进入字符串, 遇到相同引号则退出字符串
+        // 处理字符串起始与结束: 未在字符串时遇到引号进入字符串, 遇到相同引号则退出字符串
         if (char === '"' && inString === null) {
             inString = '"'
             continue
@@ -487,7 +487,7 @@ export function checkNotCssLines(css: string): Array<{ lineNo: number; text: str
  * @return 找到则返回索引, 否则返回 -1
  */
 export function findFirstOutsideString(text: string, target: string): number {
-    // 使用通用查找函数 查找不在字符串內的目标字符位置
+    // 使用通用查找函数 查找不在字符串内的目标字符位置
     return findFirstOutsideByPredicate(text, (ch) => ch === target)
 }
 
@@ -550,7 +550,7 @@ export function findMatchingBlockEnd(text: string, blockStart: number): number {
  * @return 存在返回 true, 否则返回 false
  */
 function hasBracesOutsideString(text: string): boolean {
-    // 使用通用查找函数 判定是否存在不在字符串內的花括号
+    // 使用通用查找函数 判定是否存在不在字符串内的花括号
     return findFirstOutsideByPredicate(text, (ch) => ch === "{" || ch === "}") !== -1
 }
 
@@ -594,7 +594,7 @@ function splitDeclarationsOutsideStrings(text: string): string[] {
             continue
         }
 
-        // 如果遇到不在字符串内的分号則分割当前片段
+        // 如果遇到不在字符串内的分号则分割当前片段
         if (ch === ";" && inString === null) {
             parts.push(cur.trim())
             cur = ""
@@ -640,7 +640,7 @@ function validatePropName(prop: string, lineNo: number, result: CSSValidationRes
  * @return 是否通过校验
  */
 function validatePropVal(prop: string, val: string, lineNo: number, line: string, result: CSSValidationResult): boolean {
-    // 如果值中还包含冒号表示可能缺失分号導致多個聲明黏连
+    // 如果值中还包含冒号表示可能缺失分号导致多个声明黏连
     if (findFirstOutsideString(val, ":") !== -1) {
         result.isValid = false
         result.errors.push(`样式未以分号结尾: 第 ${lineNo + 1} 行 -> "${line}"`)

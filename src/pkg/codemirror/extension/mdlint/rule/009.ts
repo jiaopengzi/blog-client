@@ -1,10 +1,11 @@
-/**
- * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\rule\009.ts
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\mdlint\rule\009.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
  * Description : 规则 009 检测 wechat-captcha 标签是否合法(成对闭合、属性完整、标签前后空行)
  */
+
 import type { Diagnostic } from "@codemirror/lint"
 
 import { parseAttributes } from "@/utils/attribute"
@@ -34,7 +35,7 @@ export function run(doc: DocLike): Diagnostic[] {
         tagRegex.lastIndex = 0
 
         while ((match = tagRegex.exec(lineText)) !== null) {
-            // 跳过行内代码片段（单个反引号包裹）中的标签
+            // 跳过行内代码片段(单个反引号包裹)中的标签
             if (isInsideInlineCode(lineText, match.index)) continue
             const fullMatch = match[0]
             const isClosing = fullMatch.startsWith("</")

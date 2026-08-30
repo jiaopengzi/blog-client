@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\editor\components\toolbar\components\emoji\index.vue
+ * FilePath    : blog-client-nuxt\src\components\editor\components\toolbar\components\emoji\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <!-- emoji表情 -->
+    <!-- emoji 表情 -->
     <el-popover
         placement="bottom"
         width="310"
@@ -32,12 +32,10 @@ import type { IconKeys } from "@/components/common/icons"
 
 defineOptions({ name: "BarEmoji" })
 
-// 定义 props
 const { icon } = defineProps<{
-    icon: IconKeys // 预览内容
+    icon: IconKeys // 图标名称
 }>()
 
-// 子组件 传参
 const emit = defineEmits<{
     (e: "emoji-picker-selected", emoji: EmojiExt): void
 }>()

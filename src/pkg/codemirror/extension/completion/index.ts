@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\pkg\codemirror\extension\completions.ts
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\completion\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -18,8 +18,8 @@ import { mentionOverride } from "./mention"
  *
  * @param mentions - 用于 \@提及 补全的 Completion 对象数组
  * @param options - 可选配置对象.
- * @param options.enableMention - 是否启用 \@提及 补全，默认为 `true`.
- * @param options.enableEmoji - 是否启用 emoji 补全，默认为`true`.
+ * @param options.enableMention - 是否启用 \@提及 补全, 默认为 `true`.
+ * @param options.enableEmoji - 是否启用 emoji 补全, 默认为 `true`.
  * @returns 返回配置好的 CodeMirror 自动补全扩展.
  * @example
  * ```typescript
@@ -36,7 +36,7 @@ export function unifiedCompletion(
     // 默认开启情况
     const { enableMention = true, enableEmoji = true } = options || {}
 
-    // 如果都不开启则返回空
+    // 补全覆盖列表, 若都不开启则为空
     const overrides = []
 
     // @提及补全

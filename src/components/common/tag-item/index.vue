@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\tag-item\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 标签组件
+ * FilePath    : blog-client-nuxt\src\components\common\tag-item\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 标签组件
 -->
 
 <template>

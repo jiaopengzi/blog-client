@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\user\socialLogin.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 社交登录
+/*
+ * FilePath    : blog-client-nuxt\src\api\user\socialLogin.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 社交登录
  */
 
 import type { SocialLoginType } from "@/api/common"

@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-detail\components\comment-editor\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-detail\components\comment-editor\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -22,7 +22,8 @@ import { CommentPinnedCode, CommentReviewCode } from "@/api/comment/common"
 import { insertCommentAdminAPI, insertCommentAPI, type InsertCommentRequest } from "@/api/comment/insert"
 import { updateCommentAdminAPI, updateCommentAPI, type UpdateCommentRequest } from "@/api/comment/update"
 import { handleResErr, ResponseCode } from "@/api/response"
-import { EditorStateManager, type JEditorRef } from "@/components/editor"
+import { EditorStateManager } from "@/components/editor/state"
+import type { JEditorRef } from "@/components/editor"
 import JEditor from "@/components/editor/index.vue"
 import { useEditor } from "@/components/hooks/useEditor"
 import { useTheme } from "@/theme/useTheme"
@@ -34,7 +35,6 @@ import { CommentEditorMode, type CommentEditorProps } from "./types"
 
 defineOptions({ name: "CommentEditor" })
 
-// 定义 props
 const {
     postId,
     mentions,
@@ -47,7 +47,6 @@ const {
     reviewCode = CommentReviewCode.Pending,
 } = defineProps<CommentEditorProps>()
 
-// 事件
 const emit = defineEmits<{
     (event: "comment-insert"): void
     (event: "comment-update"): void
@@ -69,7 +68,6 @@ useEditor(manager)
 
 const { theme } = useTheme()
 
-// 更新 mentions
 watch(
     () => mentions,
     (newMentions) => {
@@ -82,7 +80,6 @@ watch(
 // 是否加载中
 const loading = ref(false)
 
-// 按钮文字
 const computedBtnText = (mode: CommentEditorMode, isLoading: boolean = false) => {
     if (isLoading) {
         return mode === CommentEditorMode.REPLY ? "回复中..." : "更新中..."
@@ -90,14 +87,12 @@ const computedBtnText = (mode: CommentEditorMode, isLoading: boolean = false) =>
     return mode === CommentEditorMode.REPLY ? "回复" : "更新"
 }
 
-// 按钮文字
 const btnTextInner = ref(computedBtnText(mode))
 
-// 更新编辑器内容
 const updateEditor = () => {
     btnTextInner.value = computedBtnText(mode)
 
-    // 如果是回复模式，清空编辑器内容
+    // 如果是回复模式, 清空编辑器内容
     if (mode === CommentEditorMode.REPLY) {
         manager.updateState("")
         if (mentions && mentions.length > 0) {
@@ -106,13 +101,13 @@ const updateEditor = () => {
         return
     }
 
-    // 如果是编辑模式，更新编辑器内容
+    // 如果是编辑模式, 更新编辑器内容
     if (content && jEditorRef.value) {
         jEditorRef.value.codemirror.insertContent(content)
     }
 }
 
-// 编辑器内容变化时更新编辑器状态
+// 模式变化时更新编辑器状态
 watch(
     () => mode,
     () => {
@@ -120,7 +115,6 @@ watch(
     },
 )
 
-// 新增评论
 const insertComment = async () => {
     loading.value = true
     btnTextInner.value = computedBtnText(mode, true)
@@ -159,13 +153,11 @@ const insertComment = async () => {
                 await pollingGetStreamIDsStatus(res.data.data.stream_items)
             }
 
-            // 提示成功
             MessageUtil.success("评论成功", 6000)
         } else if (data.status === CommentReviewCode.Rejected) {
             MessageUtil.error("评论失败，已被管理员拒绝")
         }
 
-        // 清空编辑器
         manager.updateState("")
 
         emit("comment-insert")
@@ -203,7 +195,7 @@ const updateComment = async (isAdminReply: boolean = false) => {
         req.content = contentNew
     }
 
-    // 管理员回复时，直接设置为已审核
+    // 管理员回复时, 直接设置为已审核
     if (isAdminReply) {
         req = {
             id: commentId!,
@@ -227,9 +219,7 @@ const updateComment = async (isAdminReply: boolean = false) => {
         }
 
         if (!isAdminReply) {
-            // 提示成功
             MessageUtil.success("评论更新成功", 6000)
-            // 清空编辑器
             manager.updateState("")
 
             emit("comment-update")
@@ -260,7 +250,6 @@ const run = async () => {
 }
 
 onMounted(() => {
-    // 初始化编辑器内容
     updateEditor()
 })
 
@@ -284,12 +273,6 @@ defineExpose({
         border-radius: 5px;
         color: var(--jpz-text-color-secondary);
     }
-
-    // @include respond-to("pc") {
-    // }
-
-    // @include respond-to("pad") {
-    // }
 
     @include respond-to("phone") {
         .comment-btn-container {

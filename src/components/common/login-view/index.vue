@@ -1,9 +1,9 @@
 <!--
- * FilePath    : blog-client\src\components\common\login-view\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\login-view\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 登录查看组件，未登录时提示用户登录，已登录时显示隐藏内容
+ * Description : 登录查看组件, 未登录时提示用户登录, 已登录时显示隐藏内容
 -->
 
 <template>
@@ -41,7 +41,8 @@ import { useRouter } from "vue-router"
 
 import PowerBi from "@/components/common/power-bi/index.vue"
 import VideoPlayer, { type PlayerState } from "@/components/player"
-import { Names, parseHtmlToContentParts } from "@/customElements"
+import { Names } from "@/customElements/constants"
+import { parseHtmlToContentParts } from "@/customElements/parseHtml"
 import { type PowerBIState } from "@/customElementsMount/PowerBI"
 import { useUserStore } from "@/stores/user"
 import { RouteNames } from "@/router/types"
@@ -62,7 +63,7 @@ const userStore = useUserStore()
 const { isLogin } = storeToRefs(userStore)
 const router = useRouter()
 
-// 将 hiddenHtml 解析为内容片段，登录后才解析以避免无意义开销
+// 将 hiddenHtml 解析为内容片段, 登录后才解析以避免无意义开销
 const contentParts = computed(() => {
     if (!isLogin.value || !hiddenHtml) return []
     return parseHtmlToContentParts(hiddenHtml, postId, isAdminVideo)

@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\rule\__test__\002.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\mdlint\rule\__test__\002.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -12,7 +12,6 @@ import type { DocLike } from "../../types"
 import { id, run } from "../002"
 import { makeDoc } from "./utils"
 
-// 测试规则 002: 检测行长度超过指定阈值
 describe("rule002 - 检测行长度限制", () => {
     it("不超过默认长度时不返回诊断", () => {
         const doc = makeDoc(["short", "ok"])

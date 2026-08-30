@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\user\getUserPublicInfoByUserName.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 通过用户名获取用户公开信息
+/*
+ * FilePath    : blog-client-nuxt\src\api\user\getUserPublicInfoByUserName.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 通过用户名获取用户公开信息
  */
 
 import { request, routerGroup } from "@/api/request"

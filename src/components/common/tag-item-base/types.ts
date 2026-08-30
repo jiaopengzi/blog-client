@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\common\tag-item\types.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 标签组件
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\tag-item-base\types.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 基础标签组件类型
  */
 
 // 标签颜色对象

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\accountKey\update.ts
+ * FilePath    : blog-client-nuxt\src\api\accountKey\update.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

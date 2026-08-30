@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\image-input\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 图片文件选择插入框
+ * FilePath    : blog-client-nuxt\src\components\common\image-input\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 图片文件选择插入框
 -->
 
 <template>
@@ -31,7 +31,6 @@ import type { TableData } from "@/components/common/base-table"
 import SelectMedia from "@/components/common/media-select/index.vue"
 import { MessageUtil } from "@/utils/message"
 
-// 定义组件名称
 defineOptions({ name: "ImageInput" })
 
 const {
@@ -40,15 +39,11 @@ const {
     isShowSelectBtn = true,
 } = defineProps<{
     modelValue?: string | null // 绑定值
-    isShowImg?: boolean // 是否显示图片,默认显示
+    isShowImg?: boolean // 是否显示图片, 默认显示
     isShowSelectBtn?: boolean // 是否显示选择按钮, 默认显示
 }>()
 
-// // 定义 emits 事件
 const emit = defineEmits(["update:modelValue"])
-// const emit = defineEmits<{
-//     (event: "update:modelValue", val: string | null | undefined): boolean // 更新绑定值
-// }>()
 
 const { formItem } = useFormItem()
 
@@ -90,7 +85,6 @@ const insertData = (data: TableData[]) => {
 .media-container {
     display: flex;
     flex-direction: column;
-    // padding: 10px 0;
     width: 100%;
 }
 

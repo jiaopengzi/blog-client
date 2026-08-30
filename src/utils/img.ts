@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\img.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 图片工具类
+/*
+ * FilePath    : blog-client-nuxt\src\utils\img.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 图片工具类
  */
 
 /**
@@ -21,12 +21,12 @@ export function extractImageUrlsFromHtml(input: string): string[] {
 }
 
 /**
- * @description:    循环移动数组元素，将item移动到数组头部 为了实现图片预览功能保证当前图片在第一位
+ * @description:    循环移动数组元素, 将 item 移动到数组头部, 为了实现图片预览功能保证当前图片在第一位
  * @param srcList   原始数组
  * @param item      要移动的元素
- * @return          移动完成后的数组 
+ * @return          移动完成后的数组
  *
-例子：
+例子:
 const srcList=["A","B","C","D"]
 function(srcList,item)
 当 x=A 返回 ["A","B","C","D"]
@@ -41,7 +41,7 @@ export function shiftArray(srcList: string[] | undefined, item: string): string[
     const index = srcList.indexOf(item)
 
     if (index === -1) {
-        // 如果item不在数组中，返回原数组
+        // 如果 item 不在数组中, 返回原数组
         return srcList
     }
 

@@ -1,12 +1,11 @@
 /*
- * FilePath    : blog-client\src\components\common\pay-video\hooks.ts
+ * FilePath    : blog-client-nuxt\src\components\common\pay-video\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : hooks
+ * Description : 付费视频播放 hooks
  */
 
-import axios from "axios"
 import { computed, type Ref, ref, watch } from "vue"
 
 import { type PostVideoTocTree } from "@/api/post/common"
@@ -27,16 +26,18 @@ import { useVideoTocTree } from "../video-toc-tree-base"
  * @param error 请求异常对象.
  * @return {boolean} 是否为可直接降级忽略的请求失败.
  */
+// Nuxt 适配: axios 不迁移(统一 ofetch), 用结构判断替代 axios.isAxiosError
 const isTransientRequestError = (error: unknown): boolean => {
-    return axios.isAxiosError(error) && !error.response
+    const e = error as { response?: unknown }
+    return !e.response
 }
 
 /**
- * @description: 付费视频播放 hooks, 根据预览场景决定是否使用管理员视频接口。
- * @param localTreeList 视频目录树。
- * @param postId 当前文章 ID。
- * @param isAdminVideo 是否使用管理员视频接口。
- * @returns 返回付费视频播放相关状态与操作。
+ * @description: 付费视频播放 hooks, 根据预览场景决定是否使用管理员视频接口
+ * @param localTreeList 视频目录树
+ * @param postId 当前文章 ID
+ * @param isAdminVideo 是否使用管理员视频接口
+ * @returns 返回付费视频播放相关状态与操作
  */
 export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<string>, isAdminVideo: Ref<boolean>) {
     const userStore = useUserStore()
@@ -48,7 +49,6 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
     const currentVideoOrder = ref<number>(0) // 当前视频的集数序号
     const currentTreeId = ref<number>(0) // 当前选中节点的 ID
 
-    // hooks
     const { videoTotal, covertToMap } = useVideoTocTree(localTreeList)
 
     // 是否显示集数列表
@@ -180,7 +180,7 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
                 manager.setSrc(video.video_src)
             }
 
-            //**注意这里需要设置用户输入, 保证进度有效设置**
+            // 注意: 这里需要设置用户输入, 保证进度有效设置
             manager.setUserInput(true)
 
             // 设置播放进度
@@ -249,7 +249,7 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
             }
         }
 
-        // 设置当前视频和进度（成功取到则使用记录时间，否则从0开始）
+        // 设置当前视频和进度(成功取到则使用记录时间, 否则从 0 开始)
         await setVideoAndProgress(fileIdHash, startTime)
     }
 

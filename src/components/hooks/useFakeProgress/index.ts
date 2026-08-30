@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useFakeProgress\index.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 生成虚假进度条 参考：https://liubing.me/article/vue/vue3-use-fake-progress.html#%E5%B0%81%E8%A3%85%E6%88%90-hook
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useFakeProgress\index.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 虚假进度条 hook
  */
 
 import FakeProgress from "fake-progress"
@@ -18,9 +18,10 @@ interface IUseFakeProgress {
 
 /**
  * useFakeProgress Hook
+ * 参考: https://liubing.me/article/vue/vue3-use-fake-progress.html#%E5%B0%81%E8%A3%85%E6%88%90-hook
  *
- * @param {number} [timeConstant=5000] - 默认timeConstant为5000，单位毫秒
- * @param {boolean} [autoStart=false] - 是否自动开始，默认为false
+ * @param {number} [timeConstant=5000] - 默认 timeConstant 为 5000, 单位毫秒
+ * @param {boolean} [autoStart=false] - 是否自动开始, 默认为 false
  * @return {IUseFakeProgress}
  */
 export function useFakeProgress(timeConstant?: number, autoStart?: boolean): IUseFakeProgress {

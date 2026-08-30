@@ -1,9 +1,9 @@
 /*
- * FilePath    : blog-client\src\components\common\post-detail\hooks\useInteraction.ts
+ * FilePath    : blog-client-nuxt\src\components\common\post-detail\hooks\useInteraction.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 交互相关的hook
+ * Description : 交互相关的 hook
  */
 
 import { storeToRefs } from "pinia"
@@ -72,7 +72,7 @@ export function useInteraction(
 
     const { isLogin } = storeToRefs(userStore)
 
-    // 初始状态
+    // 交互项列表
     const interactionItems: ComputedRef<InteractionItemProps[]> = computed(() => {
         const result: InteractionItemProps[] = [
             {
@@ -101,7 +101,7 @@ export function useInteraction(
             },
         ]
 
-        // 判断是否为全部都不显示, statusStore 中设置为false
+        // 判断是否为全部都不显示, statusStore 中设置为 false
         if (result.every((item) => !item.isShow)) {
             statusStore.setShowDetailInteraction(false)
         }
@@ -109,14 +109,12 @@ export function useInteraction(
         return result.filter((item) => item.isShow)
     })
 
-    const isShowPosterShare = ref(false) // 是否显示分享海报
+    const isShowPosterShare = ref(false)
 
-    // 处理分享海报完成事件
     const handPosterComplete = () => {
-        isShowPosterShare.value = false // 关闭分享海报
+        isShowPosterShare.value = false
     }
 
-    // 生成分享海报需要的数据
     const dataPosterShare = computed(() => {
         return {
             logoSrc: getPosterQrLogoSrc(app_options.value.favicon.value, app_options.value.logo.value),
@@ -128,18 +126,17 @@ export function useInteraction(
 
     /**
      * 生成可对外分享的稳定链接.
-     * 文章详情优先使用 `/post/:postId`, 避免复制内部查询串 `/?post_id=...` 导致外部打开时不稳定.
-     * 页面和其他场景继续回退到当前 head.url.
+     * 文章详情使用 nuxt 详情路由 `/p/:postId` (SPA 时代的 `/post/:id` 已降级为 legacy 301,
+     * 分享链接应直达新路由, 避免外部点击多一次跳转). 页面和其他场景继续回退到当前 head.url.
      */
     const shareUrl = computed(() => {
         if (detailType.value === PostDetailType.Post && postId.value) {
-            return new URL(`/post/${postId.value}`, window.location.origin).toString()
+            return new URL(`/p/${postId.value}`, window.location.origin).toString()
         }
 
         return head.value.url || window.location.href
     })
 
-    // 处理交互点击事件
     const handleClickInteraction = (val: InteractionIcon) => {
         if (!isLogin.value && (val === "like" || val === "star")) {
             MessageUtil.warning("【点赞】和【收藏】 需要登录")
@@ -155,17 +152,15 @@ export function useInteraction(
                 break
             case "share":
                 MessageUtil.success("海报正在生成中, 请稍等...")
-                isShowPosterShare.value = true // 显示分享海报
+                isShowPosterShare.value = true
                 break
             case "link":
                 if (!shareUrl.value || shareUrl.value === "") {
                     MessageUtil.warning("链接不存在")
                     return
                 }
-                // 构造需要复制的text
-                // const text = `[${head.value.title}](${shareUrl.value})`
+                // 构造需要复制的 text
                 const text = `${shareUrl.value}`
-                // 复制链接到剪贴板
                 copyText(text)
                     .then(() => {
                         MessageUtil.success("复制成功")
@@ -177,20 +172,20 @@ export function useInteraction(
         }
     }
 
-    // 设置交互项的左侧偏移量, 保障在不同屏幕下, 交互项的左侧偏移量一致
+    // 设置交互项的左侧偏移量, 保障不同屏幕下偏移量一致
     const setAffixLeft = () => {
         if (postDetailRef.value) {
-            const left = postDetailRef.value.offsetLeft // 获取当前元素的 left 值
-            const affix = left - 50 > 0 ? left - 50 : -100 // 如果 left 值小于0, 则设置为-100,即隐藏
+            const left = postDetailRef.value.offsetLeft
+            // 如果 left 值小于 0, 则设置为 -100, 即隐藏
+            const affix = left - 50 > 0 ? left - 50 : -100
             postDetailRef.value.style.setProperty("--affix-left", `${affix}px`)
         }
     }
 
-    // 宽度变化时
     watch(
         () => windowWidth.value,
         () => {
-            setAffixLeft() // 设置左侧偏移量
+            setAffixLeft()
         },
     )
 

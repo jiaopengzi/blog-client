@@ -1,9 +1,9 @@
 <!--
- * FilePath    : blog-client\src\components\common\base-table\base-table-list.vue
+ * FilePath    : blog-client-nuxt\src\components\common\base-table\base-table-list.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * @Description  : BaseTable 列表视图
+ * Description : BaseTable 列表视图
 -->
 
 <template>
@@ -30,26 +30,37 @@
                         <span>{{ col.label }}</span>
                     </template>
                     <template #default="scope">
-                        <div class="thumbnail" v-single-dbl-click="clickHandler(scope.row)">
+                        <!-- 260828-3: imgSingleClickViewPost 时图片单击/双击均改为"查看文章"跳转(与标题列一致),
+                             否则维持默认行为(单击图片预览/双击行事件) -->
+                        <div class="thumbnail" v-single-dbl-click="imgClickBinding(scope.row as TableData)">
                             <img
-                                v-if="getRowImg(scope.row)?.url"
+                                v-if="getRowImg(scope.row as TableData)?.url"
                                 class="thumbnail-img"
-                                :src="getRowImg(scope.row)?.url"
-                                :style="imgStyle(getRowImg(scope.row)?.width, getRowImg(scope.row)?.height, getRowImg(scope.row)?.imgFit)"
+                                :src="getRowImg(scope.row as TableData)?.url"
+                                :style="
+                                    imgStyle(
+                                        getRowImg(scope.row as TableData)?.width,
+                                        getRowImg(scope.row as TableData)?.height,
+                                        getRowImg(scope.row as TableData)?.imgFit,
+                                    )
+                                "
                             />
                             <j-icon
-                                v-else-if="getRowImg(scope.row)?.iconKeyName"
+                                v-else-if="getRowImg(scope.row as TableData)?.iconKeyName"
                                 class="thumbnail-img"
-                                :name="getRowImg(scope.row)?.iconKeyName"
-                                :style="iconStyle(getRowImg(scope.row)?.svgFontSize)"
+                                :name="getRowImg(scope.row as TableData)?.iconKeyName"
+                                :style="iconStyle(getRowImg(scope.row as TableData)?.svgFontSize)"
                             />
                             <!-- 无缩略图且有首字符时, 复用 PostThumbnail 占位图标, 与前台文章列表保持一致 -->
                             <PostThumbnail
-                                v-else-if="getRowImg(scope.row)?.initial"
+                                v-else-if="getRowImg(scope.row as TableData)?.initial"
                                 class="thumbnail-initial"
                                 theme="main"
-                                :initial="getRowImg(scope.row)?.initial ?? ''"
-                                :style="{ width: `${getRowImg(scope.row)?.width ?? 96}px`, height: `${getRowImg(scope.row)?.height ?? 96}px` }"
+                                :initial="getRowImg(scope.row as TableData)?.initial ?? ''"
+                                :style="{
+                                    width: `${getRowImg(scope.row as TableData)?.width ?? 96}px`,
+                                    height: `${getRowImg(scope.row as TableData)?.height ?? 96}px`,
+                                }"
                             />
                         </div>
                     </template>
@@ -82,7 +93,7 @@
                 <CustomCol v-else-if="col.formatter" :col="col" :width="resolveColWidth(col)" :tags-item-max-height="tagsItemMaxHeight" />
                 <el-table-column
                     v-else
-                    :prop="col.prop"
+                    :prop="String(col.prop)"
                     :label="col.label"
                     :sortable="col.sortable"
                     :width="resolveColWidth(col)"
@@ -96,7 +107,7 @@
                     <span>操作</span>
                 </template>
                 <template #default="scope">
-                    <el-button size="small" type="primary" @click="emit('edit', scope.$index, scope.row)">{{ rowOperationText }}</el-button>
+                    <el-button size="small" type="primary" @click="emit('edit', scope.$index, scope.row as TableData)">{{ rowOperationText }}</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -116,10 +127,27 @@ import { iconStyle, imgStyle } from "@/utils/style"
 import CustomCol from "./custom-col"
 import type { BaseTableListExpose, BaseTableListProps, TableColumn, TableData } from "./types"
 import { clearStoredColumnWidths, getElTableVisibleRows, persistColumnWidth, readStoredColumnWidths } from "./utils"
+import type { SingleDblClickBinding } from "@/utils/singleDblClickDirective"
 
 defineOptions({ name: "BaseTableList" })
 
 const props = defineProps<BaseTableListProps>()
+
+/**
+ * @description: 构造图片单元格的单双击绑定(260828-3)
+ * imgSingleClickViewPost 开启时单击/双击均 emit view-post(行数据的 id 为文章 id, 如收藏列表);
+ * 否则回落到 useBaseTable 的默认 clickHandler(单击图片预览/双击行事件)
+ * @param row 当前数据行
+ * @return 指令绑定对象
+ */
+const imgClickBinding = (row: TableData): SingleDblClickBinding => {
+    if (props.imgSingleClickViewPost) {
+        const viewPost = () => emit("view-post", String(row.id ?? ""))
+        return { single: viewPost, double: viewPost, delay: 200 }
+    }
+
+    return props.clickHandler(row)
+}
 
 // 当前路由已持久化的列宽映射 (列 prop -> 宽度 px), 初始即读取以便首屏恢复
 const storedWidths = ref<Record<string, number>>(readStoredColumnWidths(props.routeName ?? ""))
@@ -139,9 +167,9 @@ watch(
 )
 
 /**
- * @description: 计算列的有效宽度: 优先使用本地持久化宽度, 否则回退到列自身配置的固定宽度.
- * @param col 表格列配置.
- * @return 有效列宽 (px) 或 undefined (使用 minWidth 弹性布局).
+ * @description: 计算列的有效宽度: 优先使用本地持久化宽度, 否则回退到列自身配置的固定宽度
+ * @param col 表格列配置
+ * @return 有效列宽 (px) 或 undefined (使用 minWidth 弹性布局)
  */
 const resolveColWidth = (col: TableColumn): number | string | undefined => {
     const stored = storedWidths.value[String(col.prop)]
@@ -149,11 +177,11 @@ const resolveColWidth = (col: TableColumn): number | string | undefined => {
 }
 
 /**
- * @description: 列宽拖拽结束时持久化新宽度, 按 routeName + 列 prop 分组存储.
- * @param newWidth 拖拽后的新列宽.
- * @param _oldWidth 拖拽前的旧列宽 (未使用).
- * @param column 被拖拽的 Element Plus 列对象, property 对应 TableColumn.prop.
- * @return void.
+ * @description: 列宽拖拽结束时持久化新宽度, 按 routeName + 列 prop 分组存储
+ * @param newWidth 拖拽后的新列宽
+ * @param _oldWidth 拖拽前的旧列宽 (未使用)
+ * @param column 被拖拽的 Element Plus 列对象, property 对应 TableColumn.prop
+ * @return void
  */
 const handleHeaderDragend = (newWidth: number, _oldWidth: number, column: TableColumnCtx<TableData>): void => {
     const routeName = props.routeName ?? ""
@@ -167,8 +195,8 @@ const handleHeaderDragend = (newWidth: number, _oldWidth: number, column: TableC
 }
 
 /**
- * @description: 恢复所有列到传入的默认列宽: 清除本地持久化并重挂载表格.
- * @return void.
+ * @description: 恢复所有列到传入的默认列宽: 清除本地持久化并重挂载表格
+ * @return void
  */
 const resetColumnWidths = (): void => {
     clearStoredColumnWidths(props.routeName ?? "")
@@ -178,9 +206,9 @@ const resetColumnWidths = (): void => {
 }
 
 /**
- * @description: 在列宽拖拽热区 (列头右边界附近) 双击时, 一键恢复所有列的默认列宽.
- * @param event 双击事件.
- * @return void.
+ * @description: 在列宽拖拽热区 (列头右边界附近) 双击时, 一键恢复所有列的默认列宽
+ * @param event 双击事件
+ * @return void
  */
 const handleContainerDblclick = (event: MouseEvent): void => {
     const tableEl = (tableRef.value as unknown as { $el?: HTMLElement } | null)?.$el
@@ -216,51 +244,51 @@ const emit = defineEmits<{
 const tableRef = useTemplateRef<TableInstance>("tableRef")
 
 /**
- * @description: 向父层同步表格选中行.
- * @param rows 当前选中行.
- * @return void.
+ * @description: 向父层同步表格选中行
+ * @param rows 当前选中行
+ * @return void
  */
 const handleSelectionChange = (rows: TableData[]): void => {
     emit("selection-change", rows)
 }
 
 /**
- * @description: 向父层同步排序变化.
- * @return void.
+ * @description: 向父层同步排序变化
+ * @return void
  */
 const handleSortChange = (): void => {
     emit("sort-change")
 }
 
 /**
- * @description: 获取当前选中行.
- * @return 当前选中行数组.
+ * @description: 获取当前选中行
+ * @return 当前选中行数组
  */
 const getSelectionRows = (): TableData[] => {
     return (tableRef.value?.getSelectionRows() as TableData[] | undefined) ?? []
 }
 
 /**
- * @description: 清空当前选中行.
- * @return void.
+ * @description: 清空当前选中行
+ * @return void
  */
 const clearSelection = (): void => {
     tableRef.value?.clearSelection()
 }
 
 /**
- * @description: 切换指定行的选中状态.
- * @param row 当前数据行.
- * @param selected 是否选中.
- * @return void.
+ * @description: 切换指定行的选中状态
+ * @param row 当前数据行
+ * @param selected 是否选中
+ * @return void
  */
 const toggleRowSelection = (row: TableData, selected?: boolean): void => {
     tableRef.value?.toggleRowSelection(row, selected)
 }
 
 /**
- * @description: 获取当前列表真实可见顺序.
- * @return 当前可见行数组.
+ * @description: 获取当前列表真实可见顺序
+ * @return 当前可见行数组
  */
 const getVisibleRows = (): TableData[] => {
     return getElTableVisibleRows(props.pagination.records, tableRef.value ?? null)
@@ -300,9 +328,9 @@ defineExpose<BaseTableListExpose>({
 }
 
 // 鼠标移入表头时显示列头竖向分隔线, 提示列边界即为拖拽热区, 便于快速定位并拖拽调整列宽;
-// 排除最后一列以避免在表格右缘露出多余竖线.
+// 排除最后一列以避免在表格右缘露出多余竖线
 // 不加 transition: border-style 由 none 切换为 solid 时, border-color 过渡的起始色会回退到 currentColor (深色文字色),
-// 导致先闪一下深色再变淡, 观感不佳; 直接以目标浅色即时显示即可.
+// 导致先闪一下深色再变淡, 观感不佳; 直接以目标浅色即时显示即可
 :deep(.el-table__header-wrapper:hover thead th.el-table__cell:not(:last-child)) {
     border-right: 1px solid var(--el-border-color-lighter);
 }

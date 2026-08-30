@@ -1,9 +1,9 @@
 /*
- * FilePath    : blog-client\src\utils\getStreamIDsStatus.ts
+ * FilePath    : blog-client-nuxt\src\utils\getStreamIDsStatus.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 获取streamID状态
+ * Description : 获取 streamID 状态
  */
 
 import { getStreamIDsStatusAPI, type StreamsStatusRequest, StreamStatus } from "@/api/helper/getStreamIDsStatus"
@@ -12,7 +12,7 @@ import { handleResErr, ResponseCode } from "@/api/response"
 import { MessageUtil } from "@/utils/message"
 
 /**
- * 递归轮询获取stream状态(内部使用)
+ * 递归轮询获取 stream 状态(内部使用)
  * @param streams stream 列表
  * @param startTime 开始时间
  * @param pollingTime 轮询间隔时间
@@ -40,7 +40,7 @@ async function poll(streams: StreamInfo[], startTime: number, pollingTime: numbe
     const info = res.data
     if (info.code === ResponseCode.GetStreamIDStatusSuccess) {
         if (info.data.status_all === StreamStatus.UnHandle) {
-            // 未处理，继续轮询
+            // 未处理, 继续轮询
             const status = await poll(streams, startTime, pollingTime, timeOut)
             return status
         }
@@ -55,10 +55,10 @@ async function poll(streams: StreamInfo[], startTime: number, pollingTime: numbe
 }
 
 /**
- * 轮询获取stream状态
+ * 轮询获取 stream 状态
  * @param streams stream 列表
- * @param pollingTime 轮询间隔时间，默认1000ms
- * @param timeOut 超时时间，默认10000ms
+ * @param pollingTime 轮询间隔时间, 默认 1000ms
+ * @param timeOut 超时时间, 默认 10000ms
  * @returns Promise<StreamStatus>
  */
 export async function pollingGetStreamIDsStatus(streams: StreamInfo[], pollingTime: number = 1000, timeOut: number = 10000): Promise<StreamStatus> {

@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\db-pgsql\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : pgsql 数据库配置表单
+ * FilePath    : blog-client-nuxt\src\components\common\db-pgsql\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : pgsql 数据库配置表单
 -->
 
 <template>
@@ -53,7 +53,7 @@ const rules = reactive<FormRules<PgsqlSetupRequest>>({
     table_prefix: [
         { required: true, message: "请输入表格前缀", trigger: "blur" },
         {
-            // 结尾为'_'且长度不超过50,不包含空格
+            // 结尾为 '_' 且长度不超过 50, 不包含空格
             validator: prefixValidatorFunc,
             trigger: "blur",
         },

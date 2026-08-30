@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\user\editUserInfo.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 修改用户信息
+/*
+ * FilePath    : blog-client-nuxt\src\api\user\editUserInfo.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 修改用户信息
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -18,7 +18,7 @@ export interface EditUserInfoRequest {
     description: string
 }
 
-// 注册
+// 修改用户信息
 export function editUserInfoAPI(requestData: EditUserInfoRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/user/info-edit"
     return request({

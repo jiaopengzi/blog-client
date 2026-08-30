@@ -1,14 +1,15 @@
 /*
- * FilePath    : blog-client\src\components\common\video-toc-tree-base\hooks.ts
+ * FilePath    : blog-client-nuxt\src\components\common\video-toc-tree-base\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : hooks
+ * Description : 视频目录树 hooks
  */
 
 import { computed, type Ref, ref } from "vue"
 
-import type { TableData } from "@/components/common/base-table"
+// Nuxt 适配: 仅需 TableData 类型, 直接指向 types(避免引入 base-table 组件树)
+import type { TableData } from "@/components/common/base-table/types"
 import { MediaTypes } from "@/components/player"
 
 import type { Node, Tree, VideoTocMapByFileIdHash, VideoTocMapByOrder } from "./types"
@@ -54,7 +55,7 @@ const calcVideoTotal = (list: Tree[]) => {
 }
 
 /**
- * @description: 将目录树转换为多种索引 map, 并收集排序后的视频序号与文件ID列表.
+ * @description: 将目录树转换为多种索引 map, 并收集排序后的视频序号与文件 ID 列表.
  * @param list 目录树列表.
  * @return 多种索引结果.
  */
@@ -104,7 +105,7 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
 
     // 选择媒体文件后的回调
     const selectData = (data: TableData[]) => {
-        // 如果目标节点不存在, 则插入到根节点
+        // 如果目标节点不存在, 则直接返回
         if (!targetNode.value) {
             return
         }
@@ -116,7 +117,7 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
             // 视频类型
             const type = item.file_type.split("/")[1] as MediaTypes
 
-            // 动态计算id
+            // 动态计算 id
             const id = calcMaxId(localTreeList.value) + 1
 
             // 基础节点

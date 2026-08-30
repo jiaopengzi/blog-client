@@ -1,9 +1,9 @@
 /*
- * FilePath    : blog-client\src\components\editor\hooks\useCodemirror.ts
+ * FilePath    : blog-client-nuxt\src\components\editor\hooks\useCodemirror.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : codemirror hook
+ * Description : CodeMirror 编辑器高度与滚动同步 hook
  */
 
 import { useResizeObserver } from "@vueuse/core"
@@ -16,10 +16,8 @@ import type { CodemirrorRef } from "../components/codemirror"
 import { EditorStateManager } from "../state"
 
 export function useCodemirror(mdContainerRef: Ref<HTMLElement | null>, codemirrorRef: Ref<CodemirrorRef | null>, editorStateManager: EditorStateManager) {
-    // 状态管理
     const editorState = editorStateManager.getState()
 
-    // codemirror 高度
     const cmHeight = ref<string | undefined>(void 0)
 
     // 更新 cmView 编辑器实例高度
@@ -38,11 +36,10 @@ export function useCodemirror(mdContainerRef: Ref<HTMLElement | null>, codemirro
         if (codemirrorRef.value && !editorState.isFullScreen) {
             // 读取 codemirror 容器中的 css 变量 --md-editor-height 的值
             cmHeight.value = getCSSVariableValue(codemirrorRef.value.root, "--md-editor-height")
-            // console.log('cmHeight.value====>非全屏', isFullScreen.value, cmHeight.value)
         }
     }
 
-    // 监听窗口变化
+    // 监听容器尺寸变化
     const { stop } = useResizeObserver(mdContainerRef, () => {
         nextTick(() => {
             if (editorState.isFullScreen) {
@@ -70,21 +67,21 @@ export function useCodemirror(mdContainerRef: Ref<HTMLElement | null>, codemirro
         // 如果不是同步滚动就直接返回
         if (!editorState.isSyncScroll || editorState.mouseStatus !== "cmEditor") return
 
-        editorStateManager.setIsUserScrollPreview(false) // 设置是否用户滚动预览
+        editorStateManager.setIsUserScrollPreview(false)
 
-        // 滚动条在顶部时附近时
+        // 滚动条位于顶部附近时
         if (scrollTop <= 4) {
             editorStateManager.setScrollStatus("start")
             return
         }
 
-        // 滚动条在底部时附近时
+        // 滚动条位于底部附近时
         if (scrollHeight - clientHeight - scrollTop <= 4) {
             editorStateManager.setScrollStatus("end")
             return
         }
 
-        editorStateManager.setScrollHideViewStr(hideDoc) // store 存储不可见部分的 markdown
+        editorStateManager.setScrollHideViewStr(hideDoc) // 存储不可见部分的 markdown
     })
 
     // 设置是否用户滚动编辑器
@@ -94,7 +91,6 @@ export function useCodemirror(mdContainerRef: Ref<HTMLElement | null>, codemirro
 
     // 鼠标进入元素
     const handleMouseInCmEditor = (flag: boolean) => {
-        // editorStateManager.setMouseStatus(flag ? "cmEditor" : void 0)
         if (flag) {
             editorStateManager.setMouseStatus("cmEditor")
         }

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\common\nav-item\types.ts
+ * FilePath    : blog-client-nuxt\src\components\common\nav-item\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -8,7 +8,7 @@
 
 import { IconKeys } from "@/components/common/icons"
 
-// 导航图标类型
+// 导航项属性类型
 export interface NavItemProps {
     text: string
 

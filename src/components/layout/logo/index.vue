@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\layout\logo\index.vue
+ * FilePath    : blog-client-nuxt\src\components\layout\logo\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -9,15 +9,13 @@
 <template>
     <div class="logo-container">
         <router-link :to="{ name: RouteNames.Home }" @click="clickLogo">
-            <!-- 使用绝对路径来解析公共资源，以便在嵌套路由中正确解析 -->
+            <!-- 使用绝对路径来解析公共资源, 以便在嵌套路由中正确解析 -->
             <img class="logo" :src="logo || '/demo-logo.svg'" alt="logo" />
         </router-link>
     </div>
 </template>
 
 <script setup lang="ts">
-import { useRoute } from "vue-router"
-
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options"
 

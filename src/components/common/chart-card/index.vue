@@ -1,10 +1,11 @@
 <!--
- * FilePath    : blog-client\src\components\common\chart-card\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\chart-card\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 卡片图
 -->
+
 <template>
     <div :class="isClick ? `card-container-click` : `card-container`" ref="cardRef" @click="handleClick">
         <div class="value">{{ renderedValue }}</div>
@@ -22,12 +23,10 @@ import type { ChartCardProps } from "./types"
 
 defineOptions({ name: "ChartCard" })
 
-// 事件
 const emit = defineEmits<{
     (event: "card-click", label: string): void
 }>()
 
-// 定义 props
 const {
     name = "card",
     label = "卡片图",
@@ -60,7 +59,6 @@ const renderedValue = computed(() => {
 const calcCssVars = () => {
     if (!cardRef.value) return
 
-    // 在 cardRef 上设置高度和宽度的 css 变量
     cardRef.value.style.setProperty("--card-width", `${width}px`)
     cardRef.value.style.setProperty("--card-height", `${height}px`)
     if (bgColor) {

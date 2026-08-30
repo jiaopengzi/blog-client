@@ -1,28 +1,29 @@
-/**
- * @FilePath     : \blog-client\src\stores\local.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 本地存储键名
+/*
+ * FilePath    : blog-client-nuxt\src\stores\local.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 本地存储键名
  */
 
 export enum LocalStorageKey {
+    LoginHint = "login_hint", // 登录态提示标记 (feature01 反馈第 1 轮: 列表页据此判定首屏走 SSR 直出还是隐藏式 CSR)
     ArticleEditorVisibility = "article_editor_visibility", // 文章编辑器目录/编辑区/预览区显示状态
     DashboardTrendSelection = "dashboard_trend_selection", // 仪表盘趋势图筛选项
     IsCollapse = "is_collapse", // 侧边栏是否折叠
     IsShowDashboardStats = "is_show_dashboard_stats", // 仪表盘统计信息是否显示敏感数值
     IsShowListOrGridAtMedia = "is_show_list_or_grid_at_media", // 媒体列表是否显示为列表或网格
     MediaGridCellSize = "media_grid_cell_size", // 媒体宫格模式单元格最小宽度 (px)
-    MediaAddIsEncrypt = "media_add_is_encrypt", // 新增媒体文件：视频是否加密
-    MediaAddIsNoFree = "media_add_is_no_free", // 新增媒体文件：视频是否收费
-    IsShowSeoAtPostWrite = "is_show_seo_at_post_write", // 文章写作是否显示SEO设置
+    MediaAddIsEncrypt = "media_add_is_encrypt", // 新增媒体文件: 视频是否加密
+    MediaAddIsNoFree = "media_add_is_no_free", // 新增媒体文件: 视频是否收费
+    IsShowSeoAtPostWrite = "is_show_seo_at_post_write", // 文章写作是否显示 SEO 设置
     SearchHistory = "search_history", // 搜索历史
     ThemePreset = "theme_preset", // 主题预设
     OptionsApp = "options_app", // 应用配置
     OptionsHeadInfo = "options_head_info", // 头部信息
     OptionsNavList = "options_nav_list", // 导航列表
     OptionsCarousel = "options_carousel", // 轮播图
-    OptionsNavObj = "options_nav_obj", // 导航object
+    OptionsNavObj = "options_nav_obj", // 导航 object
     OptionsFooterInfo = "options_footer_info", // 底部信息
     OptionsSlideVerify = "options_slide_verify", // 滑动验证
     OptionsVideoWatermark = "options_video_watermark", // 视频水印

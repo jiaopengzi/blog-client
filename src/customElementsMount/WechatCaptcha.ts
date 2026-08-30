@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\customElementsMount\WechatCaptcha.ts
+ * FilePath    : blog-client-nuxt\src\customElementsMount\WechatCaptcha.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -11,7 +11,7 @@ import { createApp, h } from "vue"
 import WechatCaptcha from "@/components/common/wechat-captcha"
 import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
 
-import { Attributes, Names } from "../customElements"
+import { Attributes, Names } from "../customElements/constants"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
 
 export interface WechatCaptchaState {

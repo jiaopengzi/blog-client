@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\editor\utils\state.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\editor\utils\state.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -12,8 +12,8 @@ import type { EditorState, EditorStateOptions } from "../types"
 import { DEFAULT_VIM_IME_PORT } from "@/stores/editor-defaults"
 
 /**
- * @description : 创建默认的编辑器状态
- * @return      : 空值编辑器信息
+ * @description: 创建默认的编辑器状态
+ * @return 默认编辑器状态
  */
 export function createDefaultEditorState(options: EditorStateOptions = {}): EditorState {
     const defaultState: EditorState = {
@@ -22,7 +22,7 @@ export function createDefaultEditorState(options: EditorStateOptions = {}): Edit
         tocShow: false, // 是否显示目录
 
         editorContent: "", // 编辑器内容
-        initDocIsEmpty: true, // 初始内容是否为空, 默认为 true 即默认为空
+        initDocIsEmpty: true, // 初始内容是否为空, 默认为 true
         editorShow: true, // 是否显示编辑器
         scrollHideViewStr: "", // 滚动条隐藏的编辑器 markdown 字符串
         isSyncScroll: false, // 是否同步滚动

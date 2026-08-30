@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\coupon\common.ts
+ * FilePath    : blog-client-nuxt\src\api\coupon\common.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -9,7 +9,7 @@
 import { type PgSqlDateTime } from "@/api/common"
 import type { DataWithImg } from "@/components/common"
 
-// 定义优惠券叠加使用状态
+// 优惠券叠加使用状态
 export enum CouponStackable {
     Disabled = 1, // 禁用叠加使用
     Enabled = 2, // 启用叠加使用
@@ -52,7 +52,7 @@ export const getDiscountTypeOptions = () => {
 // 优惠券状态
 export enum CouponStatus {
     Disabled = 1, // 禁用
-    Enabled = 2, //
+    Enabled = 2,
 }
 
 // 优惠券状态显示
@@ -77,11 +77,11 @@ export interface InsertCouponRequest {
     expire_time?: PgSqlDateTime // 过期时间
     min_spend?: string // 最小消费金额(分)
     max_spend?: string // 最大消费金额(分)
-    stackable?: CouponStackable // 是否允许叠加使用,默认 1 禁用 2 启用
+    stackable?: CouponStackable // 是否允许叠加使用, 默认 1 禁用 2 启用
     use_limit?: string // 使用次数限制
     used_count?: string // 已使用次数
     use_limit_per_user?: string // 单人使用次数限制
-    status: CouponStatus // 状态 1禁用, 2启用
+    status: CouponStatus // 状态 1 禁用, 2 启用
 }
 
 export interface UpdateCouponRequest extends InsertCouponRequest {
@@ -100,9 +100,9 @@ export interface CouponRes extends DataWithImg {
     expire_time: PgSqlDateTime // 过期时间
     min_spend: number // 最小消费金额(分)
     max_spend: number // 最大消费金额(分)
-    stackable: CouponStackable // 是否允许叠加使用,默认 1 禁用 2 启用
+    stackable: CouponStackable // 是否允许叠加使用, 默认 1 禁用 2 启用
     use_limit: number // 使用次数限制
     used_count: number // 已使用次数
     use_limit_per_user: number // 单人使用次数限制
-    status: CouponStatus // 状态 1禁用, 2启用
+    status: CouponStatus // 状态 1 禁用, 2 启用
 }

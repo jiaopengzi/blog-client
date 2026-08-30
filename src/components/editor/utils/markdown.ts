@@ -1,18 +1,19 @@
-/**
- * FilePath    : blog-client\src\components\editor\utils\markdown.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\editor\utils\markdown.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
  * Description : Markdown 渲染与 HTML 处理
  */
 
-import DOMPurify, { type Config } from "dompurify"
-
-import { CustomElementAttributes, Names } from "@/customElements"
+import { CustomElementAttributes, Names } from "@/customElements/constants"
 import { getActiveImageCaptionFormat } from "@/pkg/marked/extension/renderer"
-import createMarked from "@/pkg/marked/new-marked"
-import { extractImageUrlsFromHtml } from "@/utils/img"
 import { htmlTagReplace } from "@/utils/tagReplace"
+// 阶段 4: 渲染路径统一走同构管线 (utils/markdownRenderer), 服务端 SSR 与客户端同一实现
+import {
+    markdownSanitizeConfig as markdownSanitizeConfigFromPipeline,
+    renderMarkdownDocument as renderMarkdownDocumentIsomorphic,
+} from "@/utils/markdownRenderer"
 
 import type { Heading } from "../components/toc"
 import type { MarkdownHeadingLine, RegexCache } from "../types"
@@ -34,14 +35,14 @@ type QuoteBlockInfo = {
  * @description: 更新属性名数组
  * @param tarAttributeNames 目标元素的属性名数组
  * @param srcAttributeNamesList 源元素的属性名数组列表
- * @return  更新后目标元素的属性名数组
+ * @return 更新后目标元素的属性名数组
  */
 export const updateAttributeNames = (tarAttributeNames: Array<string>, srcAttributeNamesList: Array<Array<string>>) => {
-    // /id|class/ DOMPurify 允许的 自定义元素的属性名
+    // DOMPurify 允许的自定义元素属性名, 如 id 和 class
     for (let i = 0; i < srcAttributeNamesList.length; i++) {
         const srcAttributeNames = srcAttributeNamesList[i]!
         for (let j = 0; j < srcAttributeNames.length; j++) {
-            tarAttributeNames.push(srcAttributeNames[j]!) // 添加属性名
+            tarAttributeNames.push(srcAttributeNames[j]!)
         }
     }
 
@@ -75,14 +76,14 @@ export const getCustomElementHeadingAttributeNameRegex = (): RegExp => {
  * @return {Object} 正则表达式缓存
  */
 export const createRegexCache = (): RegexCache => {
-    const h1TagRegex = /<h1.*?>.*?<\/h1>/ // 匹配 h1 标签 注意需要 g 全局匹配
-    const hTagRegex = /<h\d.*?>.*?<\/h\d>/g // 匹配 h 标签 注意需要 g 全局匹配
+    const h1TagRegex = /<h1.*?>.*?<\/h1>/ // 匹配 h1 标签
+    const hTagRegex = /<h\d.*?>.*?<\/h\d>/g // 匹配 h 标签, g 全局匹配
     const hTagStartRegex = /<h(\d)/ // 匹配 h 标签的开始
     const hTagLevelRegex = /<h(\d).*?>/ // 匹配 h 标签的等级
     const hTagAnchorRegex = /id="(.*)"/ // 匹配 h 标签的锚点
     const htmlTagRegex = /<.*?>/g // 匹配所有 HTML 标签
     const markdownHeadingRegex = /^\s{0,3}(#{1,6})\s+(.*)(?:\n+|$)/gm // 匹配 markdown 标题
-    const nonAlphaNumericRegex = /[^a-zA-Z0-9\u4e00-\u9fa5]/g // 匹配非中文、字母、数字的字符
+    const nonAlphaNumericRegex = /[^a-zA-Z0-9\u4e00-\u9fa5]/g // 匹配非中文, 字母, 数字的字符
     const multipleDashRegex = /-{2,}/g // 匹配多个连续的 -
     const leadingTrailingDashRegex = /^-|-$/g // 匹配首尾的 -
 
@@ -97,11 +98,11 @@ export const createRegexCache = (): RegexCache => {
     const detailsTagRegex = /<details[\s\S]*?<\/details>/gi
     // 需要去掉 details 标签
     const detailsTagToRemoveRegex = /<\/?details[^>]*>/g
-    // 匹配 HTML 命名实体（如 &lt; &gt; &amp; &quot; &apos; 等）
+    // 匹配 HTML 命名实体 (如 &lt; &gt; &amp; &quot; &apos; 等)
     const htmlNamedEntityRegex = /&(?:amp|lt|gt|quot|apos|#39|#x27|#x2F);/g
-    // 匹配 HTML 十进制数字实体（如 &#39; &#160; 等）
+    // 匹配 HTML 十进制数字实体 (如 &#39; &#160; 等)
     const htmlDecimalEntityRegex = /&#(\d+);/g
-    // 匹配 HTML 十六进制数字实体（如 &#x27; &#x2F; 等）
+    // 匹配 HTML 十六进制数字实体 (如 &#x27; &#x2F; 等)
     const htmlHexEntityRegex = /&#x([\da-fA-F]+);/g
     return {
         h1TagRegex,
@@ -132,13 +133,8 @@ export const regexCache = createRegexCache()
 
 export const MARKDOWN_RENDER_CACHE_LIMIT = 20
 export const markdownRenderCache = new Map<string, MarkdownRenderResult>()
-export const markdownSanitizeConfig: Config = {
-    CUSTOM_ELEMENT_HANDLING: {
-        tagNameCheck: (tagName) => !!tagName.match(regexCache.customElementHeadingTagNameRegex),
-        attributeNameCheck: (attr) => !!attr.match(regexCache.customElementHeadingAttributeNameRegex),
-        allowCustomizedBuiltInElements: true,
-    },
-}
+// 阶段 4: 白名单配置收敛到同构管线 (保留本导出以兼容既有引用)
+export const markdownSanitizeConfig = markdownSanitizeConfigFromPipeline
 
 /**
  * getCachedValue 从 LRU Map 中读取缓存, 并刷新当前项的最近使用顺序.
@@ -220,7 +216,7 @@ export const anchorGenerator = (text: string | undefined): string => {
     if (!text) return ""
     const { nonAlphaNumericRegex, multipleDashRegex, leadingTrailingDashRegex } = createRegexCache()
     return text
-        .replace(nonAlphaNumericRegex, "-") // 替换非中文、字母、数字的字符
+        .replace(nonAlphaNumericRegex, "-") // 替换非中文, 字母, 数字的字符
         .replace(multipleDashRegex, "-") // 替换多个连续的 -
         .replace(leadingTrailingDashRegex, "") // 去除首尾的 -
         .toLowerCase() // 转为小写
@@ -234,14 +230,14 @@ export const anchorGenerator = (text: string | undefined): string => {
  */
 export const anchorGeneratorWithIndex = (text: string | undefined, index: number | undefined): string => {
     if (!text || index === void 0) return ""
-    // 为了不然锚点中出现数字开头的情况, 将索引index简写为 idx
+    // 为了不让锚点中出现数字开头的情况, 将索引 index 简写为 idx
     return `idx${index.toString()}-${anchorGenerator(text)}`
 }
 
 /**
  * @description: 从 markdown 字符串中获取所有标题行号
  * @param markdownStr 源字符串
- * @return       标题,行号数组
+ * @return 标题与行号数组
  */
 export function getMarkdownHeadingLines(markdownStr: string): MarkdownHeadingLine[] {
     const { markdownHeadingRegex } = regexCache
@@ -309,7 +305,7 @@ export function getSafeHeadingCurrentIndex(currentIndex: number, headingsLength:
 
 /**
  * @description: 为 html 中的所有 h 标签生成锚点
- * @param html
+ * @param html html 字符串
  * @return {String} 生成锚点和 href 的后 html 字符串
  */
 export function generateAllHeadingAnchor(html: string): string {
@@ -318,24 +314,24 @@ export function generateAllHeadingAnchor(html: string): string {
 
     // 使用 replace 的回调函数处理每个匹配的标题
     return html.replace(hTagRegex, (match) => {
-        // 判断是否已经有锚点, 如果已经有锚点, 则不进行处理
+        // 已有锚点则不处理
         const existingAnchor = match.match(hTagAnchorRegex)
         if (existingAnchor) {
             return match
         }
 
         const text = match.replace(htmlTagRegex, "") // h 标签的文本
-        const anchor = anchorGeneratorWithIndex(text, headingIndex++) // h 标签的锚点,标题+索引
-        const anchorAndHref = `id="${anchor}"` // 锚点
+        const anchor = anchorGeneratorWithIndex(text, headingIndex++) // h 标签的锚点, 标题 + 索引
+        const anchorAndHref = `id="${anchor}"`
 
         // 向 h 标签中添加锚点
-        // $1 是正则表达式替换中的占位符, 用于插入第一个捕获组的内容。
-        // 在当前的代码中, 它的作用是将正则表达式中捕获的 h 标签的数字(如 1, 2, 3) 动态插入到替换结果中。
+        // $1 是正则表达式替换中的占位符, 用于插入第一个捕获组的内容
+        // 在当前的代码中, 它的作用是将正则表达式中捕获的 h 标签的数字(如 1, 2, 3) 动态插入到替换结果中
         return match.replace(hTagStartRegex, `<h$1 ${anchorAndHref}`)
     })
 }
 
-// HTML 命名实体映射表(模块级缓存，避免每次调用时重复创建)
+// HTML 命名实体映射表 (模块级缓存, 避免每次调用时重复创建)
 export const HTML_ENTITY_MAP: Record<string, string> = {
     "&amp;": "&",
     "&lt;": "<",
@@ -347,12 +343,12 @@ export const HTML_ENTITY_MAP: Record<string, string> = {
     "&apos;": "'",
 }
 /**
- * @description : 解码 HTML 实体字符（如 &lt; &gt; &amp; &quot; &#39; 及数字实体）
- * @param str                  : 包含 HTML 实体的字符串
- * @param htmlNamedEntityRegex : 匹配 HTML 命名实体的正则表达式（来自 regexCache，避免重复创建）
- * @param htmlDecimalEntityRegex : 匹配 HTML 十进制数字实体的正则表达式（来自 regexCache，避免重复创建）
- * @param htmlHexEntityRegex   : 匹配 HTML 十六进制数字实体的正则表达式（来自 regexCache，避免重复创建）
- * @return                     : 解码后的字符串
+ * @description: 解码 HTML 实体字符 (如 &lt; &gt; &amp; &quot; &#39; 及数字实体)
+ * @param str 包含 HTML 实体的字符串
+ * @param htmlNamedEntityRegex 匹配 HTML 命名实体的正则表达式 (来自 regexCache, 避免重复创建)
+ * @param htmlDecimalEntityRegex 匹配 HTML 十进制数字实体的正则表达式 (来自 regexCache, 避免重复创建)
+ * @param htmlHexEntityRegex 匹配 HTML 十六进制数字实体的正则表达式 (来自 regexCache, 避免重复创建)
+ * @return 解码后的字符串
  */
 export function decodeHtmlEntities(str: string, htmlNamedEntityRegex: RegExp, htmlDecimalEntityRegex: RegExp, htmlHexEntityRegex: RegExp): string {
     return str
@@ -362,9 +358,9 @@ export function decodeHtmlEntities(str: string, htmlNamedEntityRegex: RegExp, ht
 }
 
 /**
- * @description : 通过正则表达式匹配 html 中所有的 h 标签 并转换为 HeadingType 数组
- * @param html  : html 字符串
- * @return      : 匹配到的 h 标签数组
+ * @description: 通过正则表达式匹配 html 中所有的 h 标签 并转换为 HeadingType 数组
+ * @param html html 字符串
+ * @return 匹配到的 h 标签数组
  */
 export function matchAllHeadingToList(html: string): Heading[] {
     const { hTagRegex, hTagLevelRegex, hTagAnchorRegex, htmlTagRegex, htmlNamedEntityRegex, htmlDecimalEntityRegex, htmlHexEntityRegex } = regexCache
@@ -373,9 +369,8 @@ export function matchAllHeadingToList(html: string): Heading[] {
     let headingIndex = 0 // 标题索引
 
     matches.forEach((item) => {
-        // 遍历匹配到的 h 标签数组
         const level = Number(item.match(hTagLevelRegex)?.[1]) || 1 // h 标签的等级
-        const text = decodeHtmlEntities(item.replace(htmlTagRegex, ""), htmlNamedEntityRegex, htmlDecimalEntityRegex, htmlHexEntityRegex) // h 标签的文本（解码 HTML 实体）
+        const text = decodeHtmlEntities(item.replace(htmlTagRegex, ""), htmlNamedEntityRegex, htmlDecimalEntityRegex, htmlHexEntityRegex) // h 标签的文本 (解码 HTML 实体)
         const anchor = item.match(hTagAnchorRegex)?.[1] || "" // h 标签的锚点
         headingList.push({
             index: headingIndex++,
@@ -412,20 +407,8 @@ export function renderMarkdownDocument(markdownSrc: string, isRemoveFirstH1: boo
         return cloneMarkdownRenderResult(cachedResult)
     }
 
-    const markdownParse = createMarked().parse(markdownSrc).toString()
-    const normalizedHtml = htmlHandleUtf8BOM(markdownParse)
-    let purifiedHtml = DOMPurify.sanitize(normalizedHtml, markdownSanitizeConfig) as string
-
-    if (isRemoveFirstH1) {
-        purifiedHtml = htmlRemoveFirstH1(purifiedHtml)
-    }
-
-    const html = generateAllHeadingAnchor(mergeAlertContinuationBlockquotes(purifiedHtml, markdownSrc))
-    const result: MarkdownRenderResult = {
-        html,
-        tocHtml: matchAllHeadingToList(html),
-        imgUrls: extractImageUrlsFromHtml(html),
-    }
+    // 阶段 4: 委托同构管线 (marked → isomorphic-dompurify → node-html-parser, 双端同一实现)
+    const result: MarkdownRenderResult = renderMarkdownDocumentIsomorphic(markdownSrc, isRemoveFirstH1)
 
     setCachedValue(markdownRenderCache, cacheKey, result, MARKDOWN_RENDER_CACHE_LIMIT)
     return cloneMarkdownRenderResult(result)
@@ -564,22 +547,21 @@ export function mergeAlertContinuationBlockquotes(htmlSrc: string, markdownSrc: 
 }
 
 /**
- * @description:  处理 utf-8 编码问题
+ * @description: 处理 utf-8 编码问题
  * @param htmlSrc html 源码
  * @return 替换后的 html 源码
  */
 export function htmlHandleUtf8BOM(htmlSrc: string) {
-    // 处理 utf-8 编码问题
-    return htmlSrc.replace(regexCache.utf8BomRegex, "").replace(regexCache.windowsNewLineRegex, "\n") // 去除 BOM 头 和 windows 换行符
+    return htmlSrc.replace(regexCache.utf8BomRegex, "").replace(regexCache.windowsNewLineRegex, "\n") // 去除 BOM 头和 windows 换行符
 }
 
 /**
- * @description: 匹配所有 class 中有 copy-button 的按钮元素 替换掉
+ * @description: 匹配所有 class 中有 copy-button 的按钮元素并替换掉
  * @param htmlSrc html 源码
- * @return  替换后的 html 源码
+ * @return 替换后的 html 源码
  */
 export function htmlHandleCopyBtns(htmlSrc: string) {
-    // 匹配所有 class 中有 copy-button 的按钮元素 替换为空
+    // 将 class 中含 copy-button 的按钮元素替换为空
     return htmlSrc.replace(regexCache.copyButtonRegex, "")
 }
 
@@ -598,7 +580,7 @@ export function htmlHandleDetailsTag(htmlSrc: string) {
 /**
  * @description: html 处理微信预览
  * @param htmlSrc html 源码
- * @return  替换后的 html 源码
+ * @return 替换后的 html 源码
  */
 export function htmlHandleWeChat(htmlSrc: string) {
     // 去除 copy 按钮
@@ -616,14 +598,14 @@ export function htmlHandleWeChat(htmlSrc: string) {
 /**
  * @description: html 移除第一个 h1 标签
  * @param htmlSrc html 源码
- * @return  移除后的 html 源码
+ * @return 移除后的 html 源码
  */
 export function htmlRemoveFirstH1(htmlSrc: string) {
     // 移除第一个 h1 标签
     const h1Match = htmlSrc.match(regexCache.h1TagRegex)
     if (h1Match) {
-        const h1Tag = h1Match[0] // 获取第一个 h1 标签
-        htmlSrc = htmlSrc.replace(h1Tag, "") // 移除第一个 h1 标签
+        const h1Tag = h1Match[0]
+        htmlSrc = htmlSrc.replace(h1Tag, "")
     }
     return htmlSrc
 }

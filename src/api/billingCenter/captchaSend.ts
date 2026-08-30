@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\billingCenter\captchaSend.ts
+ * FilePath    : blog-client-nuxt\src\api\billingCenter\captchaSend.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

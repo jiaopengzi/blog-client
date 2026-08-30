@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\common\post-upsert\useEdit.ts
+ * FilePath    : blog-client-nuxt\src\components\common\post-upsert\useEdit.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -19,6 +19,7 @@ import { ResponseCode } from "@/api/response"
 import type { SwitchItem } from "@/components/common/switch-group"
 import { EditorStateManager } from "@/components/editor"
 import { useUserStore } from "@/stores/user"
+import { invalidateSsrRenderCache } from "@/utils/ssrCache"
 import { MessageUtil } from "@/utils/message"
 
 import { handleSubmit } from "./formHandler"
@@ -50,7 +51,7 @@ export function useEdit(
     const route = useRoute()
     const userStore = useUserStore()
 
-    // 从路由中query中获取值
+    // 从路由 query 中获取值
     const getValueFromQuery = async () => {
         postInfoForm.id = route.query[queryKey.ID] as string
     }
@@ -104,10 +105,10 @@ export function useEdit(
                 postInfoForm.post_expired_time = data.post_expired_time
             }
 
-            // 历遍 data.categories 列表,取出 id 组成新数组
+            // 遍历 data.categories 列表, 取出 id 组成新数组
             postInfoForm.category_ids = data.categories?.map((item: PostCategory) => item.id.toString())
 
-            // 历遍 data.tags 列表,取出 name 组成新数组
+            // 遍历 data.tags 列表, 取出 name 组成新数组
             postInfoForm.tag_names = data.tags?.map((item: PostTag) => item.name)
 
             // 更新角色付费管理
@@ -144,7 +145,10 @@ export function useEdit(
             if (resolution.message) {
                 MessageUtil.warning(resolution.message)
             }
-            await router.replace({ name: resolution.redirectRouteName })
+            // bug01(260830-02): Nuxt 的 admin 子页为 pages/admin/[...slug].vue 单一 catch-all,
+            // SPA 的 admin 路由名 (post-all / page-all) 不在 Nuxt 路由表中, 按 name replace 会抛
+            // "No match" 且 URL 不更新(用户停在已失效的编辑页). 对齐 useAdd / usePostDetail 的路径跳转
+            await router.replace({ path: `/admin/${resolution.redirectRouteName}` })
             return false
         }
 
@@ -155,7 +159,7 @@ export function useEdit(
     // 提交表单
     const submitForm = async (formEl: FormInstance | undefined): Promise<boolean> => {
         const req = await handleSubmit<UpdatePostRequest>(formEl, dataOfUpdate, unfoldDefaultStatus)
-        // 如果 req 是空对象，则表示表单验证失败
+        // 如果 req 是空对象, 则表示表单验证失败
         if (Object.keys(req).length === 0) return false
 
         return await updatePostAPI(req).then(async (res): Promise<boolean> => {
@@ -163,6 +167,10 @@ export function useEdit(
                 postInfoAboutTime.updated_at = new Date(res.data.data.updated_at)
                 isPaid.value = res.data.data.is_paid
                 MessageUtil.success(res.data.msg, 6000)
+
+                // feature01(260829-08): 文章/自定义页内容变化影响 /p/** 与 /page/** 详情及
+                // 首页/分类/标签等 SSR 直出内容, 保存成功后立即清空 swr 渲染缓存即时生效
+                await invalidateSsrRenderCache()
                 return true
             } else {
                 handlePostUpsertError(res)

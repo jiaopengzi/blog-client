@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\setting\getPayConfigStatus.ts
+ * FilePath    : blog-client-nuxt\src\api\setting\getPayConfigStatus.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -14,7 +14,6 @@ export interface GetPayConfigStatusResponse {
     alipay: boolean // 支付宝支付配置状态
 }
 
-// 获取支付配置状态
 export function getPayConfigStatusAPI(): ResPromise<Res<GetPayConfigStatusResponse>> {
     const urlStr = routerGroup + "/setting/get-pay-config-status"
     return request({

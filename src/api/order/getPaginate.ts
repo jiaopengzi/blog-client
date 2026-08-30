@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\order\getPaginate.ts
+ * FilePath    : blog-client-nuxt\src\api\order\getPaginate.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -14,7 +14,7 @@ import type { OrderGetByIDRes, OrderStatus } from "./common"
 // 获取订单分页数据请求参数
 export interface OrderPaginationRequest extends PaginationRequest {
     status?: OrderStatus // 状态
-    user_id?: string // 用户ID
+    user_id?: string // 用户 ID
 }
 
 // 获取订单分页数据响应

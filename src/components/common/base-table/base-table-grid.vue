@@ -1,23 +1,23 @@
 <!--
- * FilePath    : blog-client\src\components\common\base-table\base-table-grid.vue
+ * FilePath    : blog-client-nuxt\src\components\common\base-table\base-table-grid.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * @Description  : BaseTable 宫格视图
+ * Description : BaseTable 宫格视图
 -->
 
 <template>
     <el-checkbox-group
-        :model-value="checkedRows"
-        @update:model-value="emit('update-checked-rows', $event)"
-        @change="emit('checked-grid-change', $event)"
+        :model-value="checkedRows as unknown as (string | number)[]"
+        @update:model-value="emit('update-checked-rows', $event as unknown as TableData[])"
+        @change="emit('checked-grid-change', $event as unknown as TableData[])"
         v-show="!showListOrGridStatus"
     >
         <el-empty v-if="!pagination.records || !(pagination.records.length > 0)" />
 
         <ul class="grid">
             <li v-for="(row, index) in pagination.records" :key="row.id" class="thumbnail grid-item">
-                <el-checkbox v-if="isSelected(row)" class="grid-item-selection-status" :key="row" :value="row" size="large" />
+                <el-checkbox v-if="isSelected(row)" class="grid-item-selection-status" :key="String(row.id)" :value="row" size="large" />
 
                 <img
                     v-if="getRowImg(row)?.url"

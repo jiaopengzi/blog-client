@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\utils\escape.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\escape.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -7,10 +7,10 @@
  */
 
 /**
- * 将HTML字符串中文本内容部分的空白字符转义, 不影响标签内部的空白字符
- * @param html 要处理的HTML字符串
+ * 将 HTML 字符串中文本内容部分的空白字符转义, 不影响标签内部的空白字符
+ * @param html 要处理的 HTML 字符串
  * @param options 配置选项
- * @returns 处理后的HTML字符串
+ * @returns 处理后的 HTML 字符串
  */
 export function escapeWhitespaceInHtmlContent(
     html: string,

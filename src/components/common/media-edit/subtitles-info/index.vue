@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\media-edit\subtitles-info\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\media-edit\subtitles-info\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
+import type { FormInstance, FormRules } from "element-plus"
 import { reactive, ref, useTemplateRef, watch } from "vue"
 
 import { handleResErr, ResponseCode } from "@/api/response"
@@ -64,29 +64,25 @@ import { isWebvtt } from "@/utils/vttParse"
 
 import type { SubtitlesForm } from "./types"
 
-// 定义组件名称
 defineOptions({ name: "SubtitlesInfo" })
 
-// props
 const { fileId, hashId, subtitlesList } = defineProps<{
     fileId: string // 文件ID
     hashId: string
     subtitlesList: string[] // 字幕列表
 }>()
 
-// emits
 const emit = defineEmits<{
     (event: "update-subtitles", language: string): void // 更新字幕
     (event: "delete-subtitles", language: string): void // 删除字幕
 }>()
 
-// 表单label位置 top | left | right
-const labelPosition = ref("left")
+// 表单 label 位置 top | left | right
+const labelPosition = ref<"top" | "left" | "right">("left")
 
 // 表单大小 '' | 'large' | 'default' | 'small'
-const formSize = ref("default")
+const formSize = ref<"" | "default" | "large" | "small">("default")
 
-// ref
 const subtitlesFormRef = useTemplateRef<FormInstance>("subtitlesFormRef")
 
 // 本地字幕文件选择框 ref
@@ -94,7 +90,7 @@ const subtitlesFileInputRef = useTemplateRef<HTMLInputElement>("subtitlesFileInp
 
 const loading = ref(false)
 
-// 语言keys
+// 语言 keys
 const languageKeys = Object.keys(Language)
 
 // 表单数据
@@ -128,7 +124,6 @@ ${subtitlesDemo.value}
 - 字幕块之间需要空行分隔。
 `)
 
-// 插入示例
 const insertDemo = () => {
     subtitlesForm.subtitles = subtitlesDemo.value.trim()
 }
@@ -139,9 +134,9 @@ const triggerSelectFile = () => {
 }
 
 /**
- * @description: 处理本地字幕文件选择, 仅接受 WebVTT 格式, 读取后写入字幕内容.
- * @param event input change 事件.
- * @return void.
+ * @description: 处理本地字幕文件选择, 仅接受 WebVTT 格式, 读取后写入字幕内容
+ * @param event input change 事件
+ * @return void
  */
 const handleSelectFile = (event: Event) => {
     const input = event.target as HTMLInputElement
@@ -178,7 +173,7 @@ const handleSelectFile = (event: Event) => {
     reader.readAsText(file)
 }
 
-// 检查别名是否可用
+// webvtt 格式校验器
 function isWebvttValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
     // 判断是否是 webvtt 格式
     const checkResult = isWebvtt(subtitlesForm.subtitles)
@@ -192,7 +187,7 @@ function isWebvttValidator(rule: unknown, value: string, callback: (error?: stri
 
 /**
  * @description: 表单校验规则
- * @return  FormRules<SubtitlesForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
+ * @return FormRules<SubtitlesForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
  */
 const rulesSubtitlesForm = reactive<FormRules<SubtitlesForm>>({
     language: [{ required: true, message: "请选择语言", trigger: "change" }],
@@ -221,7 +216,7 @@ const saveSubtitles = async (formEl: FormInstance | undefined) => {
 
     const res = await upsertSubtitlesAPI(params)
     if (res.data.code === ResponseCode.SubtitlesUpsertSuccess) {
-        // 如果响应中包含 items，则轮询获取状态
+        // 如果响应中包含 items, 则轮询获取状态
         if (res.data.data && res.data.data.stream_items) {
             await pollingGetStreamIDsStatus(res.data.data.stream_items)
         }
@@ -254,12 +249,12 @@ const delSubtitles = async () => {
 
     await deleteSubtitlesAPI(params).then(async (res) => {
         if (res.data.code === ResponseCode.SubtitlesDeleteSuccess) {
-            // 如果响应中包含 items，则轮询获取状态
+            // 如果响应中包含 items, 则轮询获取状态
             await pollingGetStreamIDsStatus(res.data.data.stream_items)
             loading.value = false
 
             emit("delete-subtitles", subtitlesForm.language)
-            // 重置表单，不会触发校验
+            // 重置表单, 不会触发校验
             subtitlesFormRef.value?.resetFields()
             MessageUtil.success("删除成功", 3000)
         } else {
@@ -290,7 +285,7 @@ watch(
     (newVal, oldVal) => {
         if (!oldVal) return
         if (oldVal !== newVal) {
-            // 当查看不同文件时，重置表单，不会触发校验
+            // 当查看不同文件时, 重置表单, 不会触发校验
             subtitlesFormRef.value?.resetFields()
         }
     },

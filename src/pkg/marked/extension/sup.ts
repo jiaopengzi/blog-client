@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\pkg\marked\extension\sup.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 上标配置
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\marked\extension\sup.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 上标配置
  */
 
 import type { Token, TokenizerAndRendererExtension } from "marked"

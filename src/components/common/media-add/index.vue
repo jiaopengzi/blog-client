@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\media-add\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 添加媒体文件
+ * FilePath    : blog-client-nuxt\src\components\common\media-add\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 添加媒体文件
 -->
 
 <template>
@@ -88,7 +88,7 @@ const uploadRef = useTemplateRef<typeof ElUpload>("uploadRef")
 // 配置的 hooks
 const { ffmpegData, fetchDataNoCloud } = useSettingUpload()
 
-// 从 localStorage 读取视频选项，无记录时默认 true
+// 从 localStorage 读取视频选项, 无记录时默认 true
 const readLocalBool = (key: LocalStorageKey, fallback: boolean): boolean => {
     const stored = localStorage.getItem(key)
     return stored !== null ? stored === "true" : fallback
@@ -141,10 +141,10 @@ const httpRequest = async (options: UploadRequestOptions) => {
 }
 
 /**
- * 校验待上传文件是否满足扩展名和大小要求。
+ * 校验待上传文件是否满足扩展名和大小要求
  *
- * @param rawFile 待上传的原始文件。
- * @returns 校验通过返回 true, 否则返回 false 中断上传。
+ * @param rawFile 待上传的原始文件
+ * @returns 校验通过返回 true, 否则返回 false 中断上传
  */
 const handleBeforeUpload = (rawFile: UploadRawFile): boolean => {
     const extension = rawFile.name.split(".").pop()?.toLowerCase() ?? ""
@@ -164,11 +164,11 @@ const handleBeforeUpload = (rawFile: UploadRawFile): boolean => {
 }
 
 /**
- * 处理超出文件数量限制的提示。
+ * 处理超出文件数量限制的提示
  *
- * @param files 本次尝试新增的文件列表。
- * @param uploadFiles 当前已选择的文件列表。
- * @returns 无返回值。
+ * @param files 本次尝试新增的文件列表
+ * @param uploadFiles 当前已选择的文件列表
+ * @returns 无返回值
  */
 const handleExceed = (files: File[], uploadFiles: UploadUserFile[]): void => {
     ElMessage.warning(`当前已选择 ${uploadFiles.length} 个文件, 本次尝试添加 ${files.length} 个文件, 已超过最大上传数量 10。`)
@@ -183,13 +183,12 @@ const getAllowedInfo = async () => {
             fileAllowedList.value = allowedInfoList
             chunkSizeServer.value = response.data.data.chunk_size
             hashAlgorithmServer = response.data.data.hash_algorithm
-            // for 循环遍历 allowedInfoList 数组 i 最大值为 allowedInfoList.length - 1
             for (let i = 0; i < allowedInfoList.length; i++) {
-                // item的 Type按照'/'分割，取最后一个 例如：image/png => png
+                // 扩展名转为大写, 例如: png => PNG
                 const fileType = allowedInfoList[i]!.extension.toUpperCase()
-                // item的 MaxSize 是以字节为单位，转换为mb
+                // max_size 以字节为单位, 转换为 MB
                 const maxSize = allowedInfoList[i]!.max_size / 1024 / 1024
-                // 如果 maxSize 小于 1MB，保留两位小数 否则取整
+                // 如果 maxSize 小于 1MB, 保留两位小数, 否则取整
                 if (maxSize < 1) {
                     strList.push(`${fileType}:${maxSize.toFixed(2)}MB`)
                 } else {
@@ -224,7 +223,6 @@ onBeforeMount(async () => {
     p {
         font-weight: 500;
         margin: 4px 0;
-        // 行高
         line-height: 1.5;
     }
 
@@ -242,7 +240,6 @@ onBeforeMount(async () => {
 
 :deep(.el-upload-list) {
     li {
-        // 上下边距
         margin: 30px 0;
         padding: 0;
     }
@@ -254,7 +251,6 @@ onBeforeMount(async () => {
 }
 
 .el-upload__text {
-    // font-size: 16px;
     font-weight: 500;
 }
 

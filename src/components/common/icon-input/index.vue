@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\icon-input\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\icon-input\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -14,7 +14,7 @@
         </el-button>
     </div>
 
-    <!-- icon选择弹窗 -->
+    <!-- icon 选择弹窗 -->
     <IconSelect v-if="iconDialogVisible" v-model="iconDialogVisible" @select-icon-key="selectIconKey" />
 </template>
 
@@ -24,18 +24,13 @@ import { ref } from "vue"
 import IconSelect from "@/components/common/icon-select"
 import { IconKeys } from "@/components/common/icons"
 
-// 定义组件名称
 defineOptions({ name: "ImageInput" })
 
 const { modelValue = "" } = defineProps<{
     modelValue?: IconKeys | string | null // 绑定值
 }>()
 
-// 定义 emits 事件
 const emit = defineEmits(["update:modelValue"])
-// const emit = defineEmits<{
-//     (event: "update:modelValue", val: IconKeys | string | null | undefined): boolean // 更新绑定值
-// }>()
 
 const iconDialogVisible = ref(false)
 const selectIconKey = (iconKey: IconKeys) => {
@@ -49,7 +44,6 @@ const selectIconKey = (iconKey: IconKeys) => {
 .icon-container {
     display: flex;
     flex-direction: column;
-    // padding: 10px 0;
     width: 100%;
 }
 

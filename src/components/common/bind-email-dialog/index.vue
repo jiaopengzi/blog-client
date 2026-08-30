@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\bind-email-dialog\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 绑定邮箱弹窗
+ * FilePath    : blog-client-nuxt\src\components\common\bind-email-dialog\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 绑定邮箱弹窗
 -->
 
 <template>
@@ -16,7 +16,7 @@
         class="bind-email-dialog"
     >
         <div class="bind-email-wrapper">
-            <!-- 添加滑动验证组件：SlideVerify -->
+            <!-- 添加滑动验证组件: SlideVerify -->
             <SlideVerify @on-success="sendCaptcha" />
             <el-form
                 :label-position="labelPosition"
@@ -64,7 +64,7 @@ import { CaptchaPurpose } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { bindEmailAPI, type BindEmailRequest } from "@/api/user/bindEmail"
 import { checkEmailAPI, type CheckEmailRequest } from "@/api/user/checkEmail"
-import SlideVerify from "@/components/common/slide-verify" // 引用滑块验证组件
+import SlideVerify from "@/components/common/slide-verify"
 import { useCaptchaBtnStatus } from "@/components/hooks/useCaptchaBtnStatus"
 import { createCaptchaRules, createEmailRules } from "@/components/hooks/useAccountFormValidation/rules"
 import { useOptionsStore } from "@/stores/options"
@@ -77,7 +77,7 @@ defineOptions({ name: "BindEmailDialog" })
 const userStore = useUserStore()
 const optionsStore = useOptionsStore()
 
-// 打开滑动验证
+// 打开滑动验证, 未开启时直接走成功回调
 const openSlideVerify = async () => {
     // 如果没有开启滑动验证, 直接调用成功回调
     if (!optionsStore.slide_verify_enable || optionsStore.slide_verify_imgs.length === 0) {
@@ -85,7 +85,6 @@ const openSlideVerify = async () => {
         return
     }
 
-    // 开启滑动验证
     optionsStore.openSlideVerify()
 }
 
@@ -96,16 +95,14 @@ interface BindEmailForm {
     captcha: string
 }
 
-// 表单label位置 top | left | right
-const labelPosition = ref("top")
+// 表单 label 位置 top | left | right
+const labelPosition = ref<"left" | "right" | "top">("top")
 
 // 表单大小 '' | 'large' | 'default' | 'small'
-const formSize = ref("default")
+const formSize = ref<"" | "default" | "small" | "large">("default")
 
-// 表单实例
 const bindEmailFormRef = useTemplateRef<FormInstance>("bindEmailFormRef")
 
-// 表单数据
 const bindEmailForm = reactive<BindEmailForm>({
     email: "",
     captcha: "",
@@ -113,20 +110,20 @@ const bindEmailForm = reactive<BindEmailForm>({
 
 /**
  * @description: 验证码发送 异步函数
- * @return Promise<void> 验证码错误返回 Promise.reject()，否则返回 Promise.resolve()
+ * @return Promise<void> 验证码错误返回 Promise.reject(), 否则返回 Promise.resolve()
  */
 async function checkSendCaptcha(): Promise<void> {
     try {
-        // 创建请求对象 加密内容
+        // 创建请求对象
         const req: CaptchaSendRequest = {
             email: bindEmailForm.email,
             purpose: CaptchaPurpose.BindEmail,
         }
-        const res = await captchaSendAPI(req) // 将 resStr 转换为对象
+        const res = await captchaSendAPI(req)
 
         if (res.data.code !== ResponseCode.CaptchaSendSuccess) {
-            const msg = handleResErr(res) // 处理错误信息
-            throw new Error(msg) // 抛出错误信息
+            const msg = handleResErr(res)
+            throw new Error(msg)
         }
     } catch (err: unknown) {
         console.log(err)
@@ -139,7 +136,7 @@ async function checkSendCaptcha(): Promise<void> {
  * @return
  */
 async function checkEmail(email: string): Promise<void> {
-    // 创建请求对象 加密内容
+    // 创建请求对象
     const req: CheckEmailRequest = {
         email: email,
     }
@@ -157,10 +154,10 @@ async function checkEmail(email: string): Promise<void> {
 }
 
 /**
- * @description: 用户名查重 Validator
+ * @description: 邮箱查重 Validator
  * @param rule 校验规则
  * @param value 对应输入框的值
- * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
+ * @param callback 回调函数, 如果邮箱已存在, 则传入错误提示字符串
  */
 function checkEmailValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
     if (value === "" || !RegexPatterns.Email.test(value)) {
@@ -174,7 +171,7 @@ function checkEmailValidator(rule: unknown, value: string, callback: (error?: st
             callback() // 校验成功
         })
         .catch((err: Error) => {
-            callback(err.message) // 如果失败（邮箱已经存在），则传入错误提示字符串
+            callback(err.message) // 如果失败 (邮箱已经存在), 则传入错误提示字符串
         })
 }
 
@@ -205,11 +202,11 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             const res = await bindEmailAPI(req)
 
             if (res.data.code === ResponseCode.BindEmailSuccess) {
-                // 显示注册成功提示
+                // 显示绑定成功提示
                 userStore.getUserInfoByToken(true) // 强制更新用户信息
                 MessageUtil.success(res.data.msg, 6000)
             } else {
-                // 注册失败
+                // 绑定失败
                 const msg = handleResErr(res)
                 MessageUtil.error(msg, 0)
             }
@@ -223,7 +220,7 @@ const { captchaBtnText, isCaptchaBtnDisabled, countdown } = useCaptchaBtnStatus(
 
 // 发送邮箱验证码
 const sendCaptcha = async () => {
-    // 手动触发 FormInstance 的校验，校验 userName 和 email 字段
+    // 手动触发 FormInstance 的校验, 校验 email 字段
     const emailResult = await bindEmailFormRef.value?.validateField("email").catch(() => false)
     if (!emailResult) {
         MessageUtil.error("请输入正确的邮箱地址。", 0)
@@ -232,7 +229,7 @@ const sendCaptcha = async () => {
     }
 
     if (emailResult) {
-        isCaptchaBtnDisabled.value = true // 按钮设置不能点击状态
+        isCaptchaBtnDisabled.value = true // 将按钮设置为不可点击状态
 
         // 发送验证码
         checkSendCaptcha()
@@ -245,7 +242,6 @@ const sendCaptcha = async () => {
                 MessageUtil.error(err.message, 0)
             })
 
-        // 倒计时
         countdown()
     }
 }
@@ -263,11 +259,11 @@ const sendCaptcha = async () => {
 
 @media (max-width: pc.$width-page-main) {
     .bindEmail-form {
-        // 当屏幕宽度小于 1024px 时
-        width: 90vw;
-        box-shadow: none;
-        border: none;
-        background-color: transparent;
+        // 调整 260829-03 (3): 中低宽度下保留卡片样式——原"去边框/去背景/去阴影"会与
+        // el-dialog 50% 宽度叠加 (90vw 表单溢出弹窗容器), 视觉上弹窗全透明、表单错位;
+        // 宽度收敛为不超过 460px, 保证卡片始终完整落在弹窗可视区域内
+        width: min(90vw, 460px);
+        box-sizing: border-box;
     }
 }
 

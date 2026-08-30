@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\user\getUserInfoByUserID.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 通过用户ID 获取用户信息
+/*
+ * FilePath    : blog-client-nuxt\src\api\user\getUserInfoByUserID.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 通过用户 ID 获取用户信息
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -11,7 +11,7 @@ import type { Res, ResPromise } from "@/api/response"
 import type { UserInfo } from "@/api/user/getUserInfo"
 
 export interface GetUserInfoByUserIDRequest {
-    user_id: string // 用户id
+    user_id: string // 用户 id
 }
 
 // 获取用户信息

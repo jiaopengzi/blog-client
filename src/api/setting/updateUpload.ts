@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\setting\updateUpload.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 更新上传信息
+/*
+ * FilePath    : blog-client-nuxt\src\api\setting\updateUpload.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 更新上传信息
  */
 
 import { request, routerGroup } from "@/api/request"

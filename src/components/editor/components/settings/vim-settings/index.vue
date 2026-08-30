@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\editor\components\settings\vim-settings\index.vue
+ * FilePath    : blog-client-nuxt\src\components\editor\components\settings\vim-settings\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -46,8 +46,8 @@ const formRef = useTemplateRef<FormInstance>("formRef")
 const form = reactive({ mappingText: "", imePort: DEFAULT_VIM_IME_PORT })
 
 /**
- * recommendedMappingText 表示设置面板内置的推荐 Vim 映射文本.
- * 当前推荐配置会同时启用系统剪贴板桥接, 以及 visual 模式下的选区上下移动.
+ * recommendedMappingText 表示设置面板内置的推荐 Vim 映射文本
+ * 当前推荐配置会同时启用系统剪贴板桥接, 以及 visual 模式下的选区上下移动
  */
 const recommendedMappingText = buildVimMappingText([
     { lhs: "yy", rhs: '"+yy', context: "normal" },
@@ -58,16 +58,16 @@ const recommendedMappingText = buildVimMappingText([
 const mappingPlaceholderText = ['每行一个映射, 使用 ("lhs", "rhs", "normal") 格式.', "例如:", '("jj", "<Esc>", "insert")'].join("\n")
 
 /**
- * getInitialMappingText 返回当前表单应展示的映射文本.
- * @returns 多行映射文本.
+ * getInitialMappingText 返回当前表单应展示的映射文本
+ * @returns 多行映射文本
  */
 const getInitialMappingText = (): string => {
     return buildVimMappingText(props.initialValues?.mappings ?? getDefaultVimDefaults().mappings)
 }
 
 /**
- * getInitialImePort 返回当前表单应展示的输入法服务端口.
- * @returns 本地输入法服务端口.
+ * getInitialImePort 返回当前表单应展示的输入法服务端口
+ * @returns 本地输入法服务端口
  */
 const getInitialImePort = (): number => {
     return props.initialValues?.imePort ?? getDefaultVimDefaults().imePort
@@ -113,9 +113,9 @@ watch(
 )
 
 /**
- * handleApplyRecommendedMappings 将表单填充为推荐映射文本.
- * 推荐配置会显式接通 `yy` / `p` 的系统剪贴板映射, 并补上 visual 模式下的 J / K 选区移动映射.
- * @returns 无返回值.
+ * handleApplyRecommendedMappings 将表单填充为推荐映射文本
+ * 推荐配置会显式接通 `yy` / `p` 的系统剪贴板映射, 并补上 visual 模式下的 J / K 选区移动映射
+ * @returns 无返回值
  */
 const handleApplyRecommendedMappings = (): void => {
     form.mappingText = recommendedMappingText
@@ -123,8 +123,8 @@ const handleApplyRecommendedMappings = (): void => {
 }
 
 /**
- * handleSave 校验成功后保存 Vim 映射配置.
- * @returns 无返回值.
+ * handleSave 校验成功后保存 Vim 映射配置
+ * @returns 无返回值
  */
 const handleSave = async (): Promise<void> => {
     const formEl = formRef.value

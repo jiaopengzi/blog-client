@@ -1,10 +1,11 @@
 /*
- * FilePath    : blog-client\src\components\common\post-upsert\usePostVideoToc.ts
+ * FilePath    : blog-client-nuxt\src\components\common\post-upsert\usePostVideoToc.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 视频目录逻辑
  */
+
 import { computed, type Reactive } from "vue"
 
 import type { PostVideoTocTree } from "@/api/post/common"
@@ -23,7 +24,7 @@ const defaultToc = (): PostVideoTocTree[] => {
 }
 
 /**
- * 使用开关项
+ * 视频目录管理
  * @param postInfoForm 文章表单
  */
 export function usePostVideoToc(postInfoForm: Reactive<UpsertPostForm>) {

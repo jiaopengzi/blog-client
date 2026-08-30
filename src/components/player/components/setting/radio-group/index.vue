@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\player\components\setting\radio-group\index.vue
+ * FilePath    : blog-client-nuxt\src\components\player\components\setting\radio-group\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -40,10 +40,8 @@ import type { RadioGroupProps, RadioOption } from "./types"
 
 defineOptions({ name: "RadioGroup" })
 
-// 定义 props
 const { title = "", options, modelValue } = defineProps<RadioGroupProps<T>>()
 
-// 定义 emits
 const emit = defineEmits<{
     (event: "update:modelValue", value: T): void
     (event: "change", value: T): void
@@ -54,7 +52,7 @@ const selectedIndex = ref(0)
 // 用于存放按钮 DOM 引用, 便于键盘聚焦
 const btnRefs = reactive<HTMLButtonElement[]>([])
 
-// 监听 modelValue 变化，更新选中索引
+// 监听 modelValue 变化, 更新选中索引
 watch(
     () => modelValue,
     (newVal) => {
@@ -64,14 +62,12 @@ watch(
         }
     },
 
-    // 立即执行一次，初始化选中状态
+    // 立即执行一次, 初始化选中状态
     { immediate: true },
 )
 
-// 计算当前选择的值
 const select = (opt: RadioOption<T> | undefined) => {
     if (!opt) return
-    // 更新选中索引
     emit("update:modelValue", opt.value)
     emit("change", opt.value)
 
@@ -81,7 +77,6 @@ const select = (opt: RadioOption<T> | undefined) => {
     if (el) el.focus()
 }
 
-// 键盘事件处理
 const onKeydown = (e: KeyboardEvent, idx: number) => {
     const key = e.key
     if (key === "ArrowRight" || key === "ArrowDown") {
@@ -104,8 +99,6 @@ const onKeydown = (e: KeyboardEvent, idx: number) => {
     padding: 8px;
     margin-bottom: 12px;
     border-bottom: 1px solid #ffffff33;
-    // border-bottom: 1px solid var(--jpz-border-color);
-    // background-color: var(--jpz-bg-color);
 
     #radio-group-title {
         font-size: 14px;
@@ -124,7 +117,6 @@ const onKeydown = (e: KeyboardEvent, idx: number) => {
     }
 
     .btn {
-        // width: fit-content;
         min-width: 40px;
         appearance: none;
         -webkit-appearance: none;
@@ -145,7 +137,6 @@ const onKeydown = (e: KeyboardEvent, idx: number) => {
         &.selected {
             background: var(--jpz-color-primary);
             color: #ffffff;
-            // border-color: var(--jpz-color-primary);
         }
     }
 }

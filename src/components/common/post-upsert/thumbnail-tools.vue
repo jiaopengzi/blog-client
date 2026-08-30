@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-upsert\thumbnail-tools.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-upsert\thumbnail-tools.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -43,8 +43,8 @@ const emit = defineEmits<{
 }>()
 
 /**
- * 透传自动插入开关的双向绑定.
- * @returns 当前自动插入状态.
+ * 透传自动插入开关的双向绑定
+ * @returns 当前自动插入状态
  */
 const autoInsertModel = computed({
     get: () => autoInsert,
@@ -52,8 +52,8 @@ const autoInsertModel = computed({
 })
 
 /**
- * 透传默认插入序号的双向绑定.
- * @returns 当前默认插入序号.
+ * 透传默认插入序号的双向绑定
+ * @returns 当前默认插入序号
  */
 const insertIndexModel = computed({
     get: () => insertIndex,

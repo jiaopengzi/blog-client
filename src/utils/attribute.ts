@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\utils\attribute.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\attribute.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -24,7 +24,7 @@ export function parseAttributes(attrText: string): Record<string, string> {
     while ((m = attrRegex.exec(attrText)) !== null) {
         const key = m[1] as string
 
-        // m[2] 为双引号捕获，m[3] 为单引号捕获
+        // m[2] 为双引号捕获, m[3] 为单引号捕获
         const val = (m[2] ?? m[3] ?? "") as string
 
         attrs[key] = val

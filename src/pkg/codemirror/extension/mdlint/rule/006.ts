@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\rule\006.ts
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\mdlint\rule\006.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -8,7 +8,7 @@
 
 import type { Diagnostic } from "@codemirror/lint"
 
-// 导入的时候不能使用 @/components/player, 会导致测试错误引用，需要相对完整路径
+// 导入的时候不能使用 @/components/player, 会导致测试错误引用, 需要相对完整路径
 import { MediaTypes } from "@/components/player/types"
 import { parseAttributes } from "@/utils/attribute"
 
@@ -54,7 +54,7 @@ export function run(doc: DocLike): Diagnostic[] {
         tagRegex.lastIndex = 0
 
         while ((match = tagRegex.exec(lineText)) !== null) {
-            // 跳过行内代码片段（单个反引号包裹）中的标签
+            // 跳过行内代码片段(单个反引号包裹)中的标签
             if (isInsideInlineCode(lineText, match.index)) continue
             const fullMatch = match[0]
             const isClosing = fullMatch.startsWith("</")

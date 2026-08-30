@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\editor\components\codemirror\index.vue
+ * FilePath    : blog-client-nuxt\src\components\editor\components\codemirror\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -40,7 +40,7 @@ const {
     vimMode = false, // 是否开启 vim 模式
     vimMappings = [], // Vim 快捷键映射
     vimImePort = 8765, // Vim 输入法切换服务端口
-    initDocIsEmpty = true, // 初始文档是否为空,默认为空
+    initDocIsEmpty = true, // 初始文档是否为空, 默认为空
     height = "100%", // 编辑器高度
     width = "100%", // 编辑器宽度
     mentions = [], // @ 提及补全
@@ -57,11 +57,10 @@ const {
     }, // Markdown 规则配置
     theme = getTheme(Theme.MD, ThemeMode.Dark), // 主题
     imageUploadHandler = void 0, // 图片上传处理器
-} = defineProps<CodeEditorProps>() // 定义 props
+} = defineProps<CodeEditorProps>()
 
-const codemirrorRef = useTemplateRef<HTMLElement | null>("codemirrorRef") // 编辑器 dom 节点
+const codemirrorRef = useTemplateRef<HTMLElement | null>("codemirrorRef") // 编辑器 DOM 节点
 
-// 定义 emits 子组件 传参
 const emit = defineEmits<{
     (event: "update-editor-doc", editorDoc: string): void
     (
@@ -76,13 +75,11 @@ const emit = defineEmits<{
     (event: "update-is-user-scroll", val: boolean): void // 更新是否用户手动滚动预览
 }>()
 
-// 鼠标进入
 const onMouseEnter = () => {
     if (!isWatchMouse) return
     emit("is-mouse-in-element", true)
 }
 
-// 鼠标离开
 const onMouseLeave = () => {
     if (!isWatchMouse) return
     emit("is-mouse-in-element", false)
@@ -111,12 +108,11 @@ const initializeCssVariable = (w: string | undefined, h: string | undefined) => 
 
     if (!codemirrorRef.value) return
 
-    // console.log("============>w,h", w, h)
     codemirrorRef.value.style.setProperty("--jpz-codemirror-width", `${w}`)
     codemirrorRef.value.style.setProperty("--jpz-codemirror-height", `${h}`)
 }
 
-// 监听 props 宽高 变化
+// 监听 props 宽高变化
 watch(
     () => [height, width],
     ([newHeight, newWidth]) => {
@@ -129,8 +125,16 @@ watch(
     },
 )
 
+// 反馈第 2 轮(编辑器高度塌陷): watch immediate 的 nextTick 回调在 Nuxt 异步页面组件下
+// 可能早于本组件挂载执行(codemirrorRef 为 null 直接返回), 且 height/width 之后不变不再触发,
+// 导致 --jpz-codemirror-height 从未设置、编辑器塌陷为单行高度(app-option 的 JSON/CSS 编辑器)
+// 挂载后兜底设置一次, 保证变量必定写入(SPA 下此调用为幂等重复, 无副作用)
+onMounted(() => {
+    initializeCssVariable(width, height)
+})
+
 // 编辑器实例
-let cmView: EditorView
+let cmView: EditorView | undefined
 let currentVimMode: VimModeName = "normal"
 
 type VimCompatibleCm = {
@@ -166,23 +170,23 @@ const options: ComputedRef<DefaultSetupOptions> = computed(() => {
 const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewUpdate) => {
     if (viewUpdate.docChanged) {
         const { state } = viewUpdate.view
-        emit("update-editor-doc", state.doc.toString()) // 更新编辑器内容 提交给父组件
+        emit("update-editor-doc", state.doc.toString()) // 更新编辑器内容并提交给父组件
     }
 })
 
 /**
- * getVimCompatibleCm 获取 codemirror-vim 挂在到 EditorView 上的兼容实例.
- * @returns 兼容的 Vim 编辑器实例, 不存在时返回 null.
+ * getVimCompatibleCm 获取 codemirror-vim 挂在到 EditorView 上的兼容实例
+ * @returns 兼容的 Vim 编辑器实例, 不存在时返回 null
  */
 const getVimCompatibleCm = (): VimCompatibleCm | null => {
     return (cmView as VimCompatibleEditorView | undefined)?.cm ?? null
 }
 
 /**
- * resolveCurrentVimModeFromEditor 尝试从 codemirror-vim 当前状态推导实际 Vim 模式.
- * 监听器首次挂载时, 三方库通常不会补发一次 mode-change 事件, 因此这里需要主动读取当前状态用于输入法校准.
- * @param vimCm - 当前 Vim 兼容实例.
- * @returns 当前推导出的 Vim 模式.
+ * resolveCurrentVimModeFromEditor 尝试从 codemirror-vim 当前状态推导实际 Vim 模式
+ * 监听器首次挂载时, 三方库通常不会补发一次 mode-change 事件, 因此这里需要主动读取当前状态用于输入法校准
+ * @param vimCm - 当前 Vim 兼容实例
+ * @returns 当前推导出的 Vim 模式
  */
 const resolveCurrentVimModeFromEditor = (vimCm: VimCompatibleCm): VimModeName => {
     if (vimCm.state?.vim?.visualMode) {
@@ -197,9 +201,9 @@ const resolveCurrentVimModeFromEditor = (vimCm: VimCompatibleCm): VimModeName =>
 }
 
 /**
- * handleVimModeChange 处理 Vim 模式切换事件, 并同步通知本地输入法服务.
- * @param modeObj - codemirror-vim 发出的模式对象.
- * @returns 无返回值.
+ * handleVimModeChange 处理 Vim 模式切换事件, 并同步通知本地输入法服务
+ * @param modeObj - codemirror-vim 发出的模式对象
+ * @returns 无返回值
  */
 const handleVimModeChange = (modeObj: VimModeChangeEvent): void => {
     const nextMode = resolveVimModeName(modeObj)
@@ -218,17 +222,17 @@ const handleVimModeChange = (modeObj: VimModeChangeEvent): void => {
 }
 
 /**
- * detachVimModeChangeListener 移除当前编辑器上的 Vim 模式切换监听.
- * @returns 无返回值.
+ * detachVimModeChangeListener 移除当前编辑器上的 Vim 模式切换监听
+ * @returns 无返回值
  */
 const detachVimModeChangeListener = (): void => {
     getVimCompatibleCm()?.off("vim-mode-change", handleVimModeChange)
 }
 
 /**
- * attachVimModeChangeListener 为当前编辑器挂载 Vim 模式切换监听.
- * 重复调用时会先移除旧监听, 避免同一实例重复上报.
- * @returns 无返回值.
+ * attachVimModeChangeListener 为当前编辑器挂载 Vim 模式切换监听
+ * 重复调用时会先移除旧监听, 避免同一实例重复上报
+ * @returns 无返回值
  */
 const attachVimModeChangeListener = (): void => {
     const vimCm = getVimCompatibleCm()
@@ -245,9 +249,9 @@ const attachVimModeChangeListener = (): void => {
 }
 
 /**
- * syncVimImeBackToNormal 在 Vim 模式被关闭或编辑器销毁前, 尝试把输入法恢复到 normal 对应的英文态.
- * 当前 IME 服务仅依赖 mode-after 决定最终状态, 因此这里即使本地记录已是 normal, 也要再强制校准一次英文态.
- * @returns 无返回值.
+ * syncVimImeBackToNormal 在 Vim 模式被关闭或编辑器销毁前, 尝试把输入法恢复到 normal 对应的英文态
+ * 当前 IME 服务仅依赖 mode-after 决定最终状态, 因此这里即使本地记录已是 normal, 也要再强制校准一次英文态
+ * @returns 无返回值
  */
 const syncVimImeBackToNormal = (): void => {
     currentVimMode = "normal"
@@ -282,6 +286,8 @@ const initCodeMirror = (opts: DefaultSetupOptions) => {
 
 // 执行按钮命令
 const runCommand = (commandName: CommandsKey, customContent: MarkdownEditorCommandItem = {}): void => {
+    if (!cmView) return // 编辑器实例未就绪时跳过
+
     if (commandName) {
         if (customContent) {
             // 合并自定义内容
@@ -296,15 +302,15 @@ const runCommand = (commandName: CommandsKey, customContent: MarkdownEditorComma
     }
 }
 
-// 插入内容
 const insertContent = (content: string): void => {
+    if (!cmView) return // 编辑器实例未就绪时跳过
     editorInsertContent(cmView, content)
 }
 
 /**
- * @description: 用新的完整内容替换编辑器文档, 供保存前自动修复结果回写使用.
- * @param content 修复后的完整 Markdown 内容.
- * @return 无返回值.
+ * @description: 用新的完整内容替换编辑器文档, 供保存前自动修复结果回写使用
+ * @param content 修复后的完整 Markdown 内容
+ * @return 无返回值
  */
 const replaceContent = (content: string): void => {
     if (!cmView || cmView.state.doc.toString() === content) {
@@ -324,28 +330,12 @@ const replaceContent = (content: string): void => {
 const scrollIntoViewLine = (lineNumber: number): void => {
     let yMargin = 5 // 默认值 5
     if (lineNumber === 1) {
-        yMargin = 350 // 当第一行的时候设置为 350，不会出现滚动到顶部的情况
+        yMargin = 350 // 当第一行的时候设置为 350, 不会出现滚动到顶部的情况
     }
+    if (!cmView) return // 编辑器实例未就绪时跳过
     const line = cmView.state.doc.line(lineNumber) // 获取当前元素在编辑器中的行数
 
-    // // 精准跳转选中目标行 但不能是平滑滚动
-    // cmView.dispatch({
-    //     selection: {
-    //         anchor: line.from,
-    //         head: line.from,
-    //     },
-    //     // 通过 effects 会影响到外部 DOM 树的 scroll 事件, 导致外部页面滚动
-    //     effects: EditorView.scrollIntoView(
-    //         // 滚动到当前行
-    //         line.from,
-    //         {
-    //             y: "start", // "nearest" | "start" | "end" | "center"
-    //             yMargin, // 默认值 5
-    //         },
-    //     ),
-    // })
-
-    // 第一步：只移动光标，不附带 scrollIntoView effect（CM6 不会自动滚动）
+    // 第一步: 只移动光标, 不附带 scrollIntoView effect (CM6 不会自动滚动)
     cmView.dispatch({
         selection: {
             anchor: line.from,
@@ -353,12 +343,12 @@ const scrollIntoViewLine = (lineNumber: number): void => {
         },
     })
 
+    // 编辑器实例未就绪时跳过
+    if (!cmView) return
+
     const { top } = cmView.lineBlockAt(line.from) // 获取当前元素在编辑器中的位置
 
-    // // 滑动到指定行有一些问题 内容较多时会出现滑动不到指定行的情况,因为没有渲染完全
-    // cmView.scrollDOM.scrollTo({ top, behavior: "smooth" }) // 滚动到当前行
-
-    // 第二步：直接设置 scrollDOM.scrollTop，绕过 CodeMirror 内部的 scrollRectIntoView 逻辑
+    // 第二步: 直接设置 scrollDOM.scrollTop, 绕过 CodeMirror 内部的 scrollRectIntoView 逻辑
     // scrollRectIntoView 会遍历整个 DOM 树向上滚动所有可滚动祖先容器(如 el-main), 导致外部页面滚动
     cmView.scrollDOM.scrollTop = Math.max(0, top - yMargin)
 }
@@ -367,7 +357,10 @@ const scrollIntoViewLine = (lineNumber: number): void => {
 watch(
     () => headingShowCurrentIndex,
     (newIndex) => {
-        // 如果没有目录或者索引小于0则不执行
+        // 编辑器实例未就绪(如组件挂载/卸载过渡期)时跳过, 避免空引用
+        if (!cmView) return
+
+        // 如果没有目录或者索引小于 0 则不执行
         if (!tocMarkdown || tocMarkdown.length === 0 || newIndex === void 0 || newIndex < 0 || isUserScrollCmEditor || tocMarkdown.length < newIndex) return
 
         // 跳转编辑器选中目标行
@@ -380,6 +373,9 @@ watch(
  * @description: 处理编辑器滚动事件
  */
 const handleScroll = () => {
+    // 编辑器实例未就绪(如卸载过渡期触发的滚动事件)时跳过
+    if (!cmView) return
+
     const hideTopBlockInfo = cmView.lineBlockAtHeight(cmView.scrollDOM.scrollTop) // 获取不可见部分的 block 信息
     const hideTopMarkdown = cmView.state.sliceDoc(0, hideTopBlockInfo.from) // 不可见部分的 markdown
     emit(
@@ -395,13 +391,13 @@ const handleScroll = () => {
 // 初始化计数器
 let initCount = 0
 
-// 监听 doc 变化 更新编辑器内容
+// 监听 doc 变化, 更新编辑器内容
 watch(
     () => doc,
     (newDoc) => {
         // 当 doc 初始值不为空时, 设置编辑器初始内容为 newDoc, 只在第一次加载时执行
         if (!initDocIsEmpty && initCount === 0 && newDoc && cmView) {
-            initCount++ // 初始化计数器加1
+            initCount++ // 初始化计数器加 1
             cmView.dispatch({
                 changes: {
                     from: 0,
@@ -411,14 +407,14 @@ watch(
             })
         }
 
-        // 当 doc 为空时, 清空编辑器
-        if (newDoc === "") {
+        // 当 doc 为空时, 清空编辑器(实例未就绪时跳过, 避免卸载过渡期空引用)
+        if (newDoc === "" && cmView) {
             clearEditorView(cmView) // 清空编辑器
         }
     },
 )
 
-// 监听 vimMode 变化 更改 vim 模式
+// 监听 vimMode 变化, 更改 vim 模式
 watch(
     () => vimMode,
     (newVal) => {
@@ -448,11 +444,12 @@ watch(
 )
 
 /**
- * 监听 vimMappings 变化, 重新应用用户映射和默认剪贴板桥接.
+ * 监听 vimMappings 变化, 重新应用用户映射和默认剪贴板桥接
  */
 watch(
     () => vimMappings,
     (newMappings) => {
+        if (!cmView) return // 编辑器实例未就绪时跳过(卸载过渡期)
         applyVimMappings(newMappings ?? [])
     },
     {
@@ -460,11 +457,12 @@ watch(
     },
 )
 
-// 监听 mentions 变化 更新编辑器内容
+// 监听 mentions 变化, 更新编辑器内容
 watch(
     () => mentions,
     (newVal) => {
         if (!newVal) return // 如果没有 mentions 则不执行
+        if (!cmView) return // 编辑器实例未就绪时跳过(卸载过渡期)
         // 更新 mentions
         options.value.mention = newVal
         cmView.dispatch({
@@ -475,11 +473,12 @@ watch(
     { deep: true },
 )
 
-// 监听 theme 变化 更改主题
+// 监听 theme 变化, 更改主题
 watch(
     () => theme,
     (newTheme) => {
         if (!newTheme) return // 如果没有主题则不执行
+        if (!cmView) return // 编辑器实例未就绪时跳过(卸载过渡期)
         cmView.dispatch({
             effects: themeCompartment.reconfigure(newTheme),
         })
@@ -513,8 +512,12 @@ onMounted(() => {
 onUnmounted(() => {
     detachVimModeChangeListener()
     syncVimImeBackToNormal()
-    cmView.scrollDOM.removeEventListener("scroll", handleScroll) // 移除监听滚动事件
-    cmView.destroy() // 销毁编辑器实例
+    // 实例未就绪(卸载过渡期/重复卸载)时跳过销毁
+    if (cmView) {
+        cmView.scrollDOM.removeEventListener("scroll", handleScroll) // 移除监听滚动事件
+        cmView.destroy() // 销毁编辑器实例
+        cmView = undefined
+    }
 })
 
 // 导出函数

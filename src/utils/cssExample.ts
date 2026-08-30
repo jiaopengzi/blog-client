@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\utils\cssExample.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\cssExample.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

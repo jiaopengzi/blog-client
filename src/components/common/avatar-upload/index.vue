@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\avatar-upload\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 头像上传
+ * FilePath    : blog-client-nuxt\src\components\common\avatar-upload\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 头像上传
 -->
 
 <template>
@@ -20,8 +20,8 @@
             <input type="file" ref="fileInput" accept="image/*" @change="onFileChange" style="display: none" />
             <!-- 选择后预览容器 -->
 
-            <!-- 文档参考1:https://fengyuanchen.github.io/cropperjs/zh/guide.html -->
-            <!-- 文档参考2:https://fengyuanchen.github.io/cropperjs/zh/playground.html -->
+            <!-- 文档参考 1: https://fengyuanchen.github.io/cropperjs/zh/guide.html -->
+            <!-- 文档参考 2: https://fengyuanchen.github.io/cropperjs/zh/playground.html -->
             <div v-if="!imgURL" class="cropper-image-tip">请选择头像图片</div>
             <cropper-canvas v-if="imgURL" background class="cropper-canvas">
                 <cropper-image :src="imgURL" alt="图片" rotatable scalable skewable translatable></cropper-image>
@@ -74,7 +74,7 @@ const emit = defineEmits<{
     (event: "avatar-upload-url", value: string): void // 头像上传地址
 }>()
 
-const imgURL = ref<string>("") // 图片地址
+const imgURL = ref<string>("")
 
 const cropperVisible = ref(false)
 
@@ -82,14 +82,14 @@ const fileInput = useTemplateRef<HTMLInputElement | null>("fileInput")
 const cropperSelectionRef = useTemplateRef<CropperSelection | null>("cropperSelectionRef")
 
 /**
- * toggleCropperVisible 切换头像裁剪弹窗显示状态.
+ * toggleCropperVisible 切换头像裁剪弹窗显示状态
  */
 const toggleCropperVisible = () => {
     cropperVisible.value = !cropperVisible.value
 }
 
 /**
- * openFileDialog 打开系统文件选择器.
+ * openFileDialog 打开系统文件选择器
  */
 const openFileDialog = () => {
     fileInput.value?.click()
@@ -117,8 +117,8 @@ function onFileChange(e: Event) {
 }
 
 /**
- * uploadImage 导出裁剪结果并按用户名规则重命名后上传头像.
- * @returns 上传流程完成后的 Promise.
+ * uploadImage 导出裁剪结果并按用户名规则重命名后上传头像
+ * @returns 上传流程完成后的 Promise
  */
 async function uploadImage() {
     if (!cropperSelectionRef.value) {
@@ -179,7 +179,6 @@ async function uploadImage() {
 
 .button-group {
     display: flex;
-    // 居中显示
     justify-content: center;
     width: 100%;
 }

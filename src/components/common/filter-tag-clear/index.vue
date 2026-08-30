@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\filter-tag-clear\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\filter-tag-clear\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -19,18 +19,18 @@ import { Close } from "@element-plus/icons-vue"
 defineOptions({ name: "FilterTagClear" })
 
 const { tags, title = "清除筛选" } = defineProps<{
-    /** tags, 当前展示的筛选标签列表。 */
+    /** tags, 当前展示的筛选标签列表 */
     tags: string[]
-    /** title, 清除按钮的提示文案。 */
+    /** title, 清除按钮的提示文案 */
     title?: string
 }>()
 
 const emit = defineEmits<{
-    /** clear, 点击清除按钮后触发。 */
+    /** clear, 点击清除按钮后触发 */
     (event: "clear"): void
 }>()
 
-/** 处理清除操作, 交由父组件重置筛选状态。 */
+/** 处理清除操作, 交由父组件重置筛选状态 */
 const handleClear = () => {
     emit("clear")
 }

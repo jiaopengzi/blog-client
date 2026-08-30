@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\pkg\marked\extension\mark.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 扩展 marked 的解析器，支持 ==mark== 标记
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\marked\extension\mark.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 扩展 marked 的解析器, 支持 ==mark== 标记
  */
 
 import type { Token, TokenizerAndRendererExtension } from "marked"

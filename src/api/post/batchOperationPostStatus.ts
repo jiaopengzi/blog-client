@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\post\batchOperationPostStatus.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 批量操作文章状态
+/*
+ * FilePath    : blog-client-nuxt\src\api\post\batchOperationPostStatus.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 批量操作文章状态
  */
 
 import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
@@ -13,7 +13,7 @@ import type { Res, ResPromise } from "@/api/response"
 import { PostStatusCode } from "./common"
 
 export interface PostStatusOperation {
-    id: string // 文章ID
+    id: string // 文章 ID
     post_status: PostStatusCode // 文章状态
 }
 

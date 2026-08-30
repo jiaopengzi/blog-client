@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\theme\runtime.ts
+/*
+ * FilePath    : blog-client-nuxt\src\theme\runtime.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -159,7 +159,12 @@ function buildThemeCssVariables(palette: ThemePalette, scheme: ThemePreset["sche
         `--el-fill-color-blank: ${palette.bg};`,
     ]
 
-    vars.push(...buildElementColorGroup("primary", palette.primary, scheme))
+    // 注意: primary 一族不在此直供 --el-color-primary (260828 按钮不随自定义 CSS 变色的根因)
+    // main.scss 的 G1 映射 (html.light/html.dark 下 --el-color-primary: var(--jpz-color-primary) 及
+    // color-mix 派生) 与这里的直接值同特异度且本样式在后, 会把 G1 压掉 —— 按钮永远吃预设色板,
+    // 自定义 CSS 里的 --jpz-color-primary 传不进 EP 组件。去掉 primary 直供后, G1 成为 el 主色族
+    // 唯一来源: 预设切换时跟随预设的 jpz 主色, 自定义 CSS 覆盖时跟随自定义值
+    // success/warning/danger/error/info 无站内跟随需求, 仍由预设直供
     vars.push(...buildElementColorGroup("success", palette.success, scheme))
     vars.push(...buildElementColorGroup("warning", palette.warning, scheme))
     vars.push(...buildElementColorGroup("danger", palette.danger, scheme))
@@ -190,6 +195,15 @@ function ensureThemeStyleElement(): HTMLStyleElement | null {
 }
 
 /**
+ * 构建主题预设 style 的完整 CSS 文本（纯字符串, SSR 直出与运行时更新共用）.
+ * @param preset 目标主题预设.
+ * @returns 形如 html[data-theme="<id>"] { ...变量 } 的 CSS 文本.
+ */
+export function buildThemePresetStyleContent(preset: ThemePreset): string {
+    return `html[data-theme="${preset.id}"] {\n${buildThemeCssVariables(preset.palette, preset.scheme)}\n}`
+}
+
+/**
  * 将主题预设应用到文档根节点.
  * @param preset 当前要生效的主题预设.
  */
@@ -209,5 +223,5 @@ export function applyThemePresetToDocument(preset: ThemePreset): void {
         return
     }
 
-    styleElement.textContent = `html[data-theme="${preset.id}"] {\n${buildThemeCssVariables(preset.palette, preset.scheme)}\n}`
+    styleElement.textContent = buildThemePresetStyleContent(preset)
 }

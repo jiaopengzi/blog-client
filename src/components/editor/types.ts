@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\editor\core\types.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 编辑器类型
+/*
+ * FilePath    : blog-client-nuxt\src\components\editor\types.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 编辑器类型
  */
 
 import type { Completion } from "@codemirror/autocomplete"
@@ -69,10 +69,10 @@ export interface InlineStyleApplyContext {
 export interface MarkdownHeadingLine {
     index: number // markdown 标题索引
     markdownHeading: string // markdown 标题
-    markdownLineNumber: number // markdown行号
+    markdownLineNumber: number // markdown 行号
 }
 
-// 编辑器模式 文章模式 评论模式
+// 编辑器模式, post 为文章模式, comment 为评论模式
 export type EditorMode = "post" | "comment"
 export type ScrollStatus = "start" | "end" | undefined // 滚动条状态 start 开始 end 结束
 export type MouseStatus = "cmEditor" | "preview" | undefined // 鼠标状态 cmEditor 编辑器 preview 预览
@@ -88,10 +88,10 @@ export interface EditorState {
 
     // 编辑器
     editorContent: string // 编辑器内容
-    initDocIsEmpty: boolean // 初始内容是否为空, 默认为 true 即默认为空
+    initDocIsEmpty: boolean // 初始内容是否为空, 默认为 true
     editorShow: boolean // 是否显示编辑器
     scrollHideViewStr: string // 滚动条隐藏的编辑器 view markdown 字符串
-    isSyncScroll: boolean // 是否异步滚动
+    isSyncScroll: boolean // 是否同步滚动
     isUserScrollCmEditor: boolean // 是否用户滚动编辑器
     isFullScreen: boolean // 是否全屏
     isShowEmojiPicker: boolean // 是否显示 emoji picker

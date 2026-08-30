@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\pkg\codemirror\extension\imgUpload.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 图片上传
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\imgUpload.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 图片上传
  */
 
 import type { Extension } from "@codemirror/state"
@@ -70,12 +70,12 @@ function normalizeImageUploadResult(result: ImageUploadResult | string | undefin
 }
 
 /**
- * uploadImage 调用当前场景的图片处理器, 并将结果写回编辑器。
- * @param file - 用户粘贴或拖拽的图片文件。
- * @param view - 当前 CodeMirror 实例。
- * @param source - 当前上传来源。
- * @param imageUploadHandler - 当前场景使用的图片处理器。
- * @returns 无返回值。
+ * uploadImage 调用当前场景的图片处理器, 并将结果写回编辑器
+ * @param file - 用户粘贴或拖拽的图片文件
+ * @param view - 当前 CodeMirror 实例
+ * @param source - 当前上传来源
+ * @param imageUploadHandler - 当前场景使用的图片处理器
+ * @returns 无返回值
  */
 async function uploadImage(file: File, view: EditorView, source: "paste" | "drop", imageUploadHandler: Exclude<ImageUploadHandler, null>): Promise<void> {
     try {
@@ -108,10 +108,10 @@ function warnImageUploadDisabled(): void {
 }
 
 /**
- * createImageUploadExtensions 根据传入的处理器创建图片粘贴与拖拽扩展。
- * 未传入时默认沿用后台编辑器的上传 API, 以保证现有行为不变; 传入 null 时仅提示当前页面不支持直接上传。
- * @param imageUploadHandler - 当前场景的图片处理器。
- * @returns 粘贴与拖拽图片扩展。
+ * createImageUploadExtensions 根据传入的处理器创建图片粘贴与拖拽扩展
+ * 未传入时默认沿用后台编辑器的上传 API, 以保证现有行为不变; 传入 null 时仅提示当前页面不支持直接上传
+ * @param imageUploadHandler - 当前场景的图片处理器
+ * @returns 粘贴与拖拽图片扩展
  */
 export function createImageUploadExtensions(imageUploadHandler?: ImageUploadHandler): {
     handlePasteImage: Extension

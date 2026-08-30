@@ -1,16 +1,15 @@
-/**
- * @FilePath     : \blog-client\src\api\upload\confirmBeforeUpload.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 上传文件前确认
+/*
+ * FilePath    : blog-client-nuxt\src\api\upload\confirmBeforeUpload.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 上传文件前确认
  */
 
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 import type { UploadFileInfo } from "@/utils/chunkUpload"
 
-// ConfirmBeforeUploadRequest
 // 上传前确认请求
 export interface ConfirmBeforeUploadRequest {
     file_name: string // 文件名称
@@ -18,7 +17,7 @@ export interface ConfirmBeforeUploadRequest {
     file_type: string // 文件类型
     file_chunk_size: number // 分片大小
     hash_algorithm: string // 哈希算法
-    first_chunk_hash_key: string // 第一个分片的hash值
+    first_chunk_hash_key: string // 第一个分片的 hash 值
     part_numbers: number // 分片数量
     is_encrypt: boolean // 是否加密
     is_Free: boolean // 是否免费

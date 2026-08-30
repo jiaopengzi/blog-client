@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\pay\order.ts
+ * FilePath    : blog-client-nuxt\src\api\pay\order.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -13,16 +13,16 @@ import type { PayType } from "./common"
 
 // 支付订单请求数据
 export interface PayOrderRequest {
-    is_re_pay?: boolean // 是否重新支付, 首次支付时为false, 重新支付时为true
+    is_re_pay?: boolean // 是否重新支付, 首次支付时为 false, 重新支付时为 true
     pay_type: PayType // 支付类型
-    order_id: string // 订单ID
+    order_id: string // 订单 ID
     description: string // 支付订单描述
     return_url: string // 支付完成后的回调地址
 }
 
 // 支付订单响应数据
 export interface PayOrderRes {
-    order_id: string // 订单ID
+    order_id: string // 订单 ID
     pay_type: PayType // 支付类型
     pay_url: string // 支付二维码链接
     time_expire: string // 订单失效时间

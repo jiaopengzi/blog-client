@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useRestart\index.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 常规重启 hook
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useRestart\index.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 常规重启 hook
  */
 
 import { ref } from "vue"
@@ -34,9 +34,9 @@ export function useRestart(maxWaitSeconds: number = 120, successFunc: () => void
             waitSeconds.value++
         }, 1000)
 
-        // 安装成功后，服务端开始重启,同时开始轮训检查是否重启成功 间隔 5 秒重试
+        // 安装成功后, 服务端开始重启, 同时开始轮询检查是否重启成功, 间隔 5 秒重试
         const interval = setInterval(async () => {
-            // 首先判断是否超时,默120秒
+            // 首先判断是否超时, 默认 120 秒
             if (waitSeconds.value >= maxWaitSeconds) {
                 isShowTimer.value = false
                 clearInterval(interval)
@@ -45,7 +45,7 @@ export function useRestart(maxWaitSeconds: number = 120, successFunc: () => void
                 failedFunc()
             }
 
-            // 轮训检查是否重启成功
+            // 轮询检查是否重启成功
             const res = await isSetupAPI()
             if (res.data.code === ResponseCode.SetupAlready) {
                 if (!hasShowSuccessMsg.value) {
@@ -54,7 +54,7 @@ export function useRestart(maxWaitSeconds: number = 120, successFunc: () => void
                     clearInterval(timer)
                     hasShowSuccessMsg.value = true
 
-                    // 确认成功后，执行回调函数
+                    // 确认成功后, 执行回调函数
                     MessageUtil.success("服务端重启完成！", 5000)
                     successFunc()
                 }

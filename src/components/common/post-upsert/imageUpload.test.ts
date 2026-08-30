@@ -1,9 +1,9 @@
-/**
- * FilePath    : blog-client\src\components\common\post-upsert\imageUpload.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\post-upsert\imageUpload.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 文章编辑 页图片上传命名辅助单元测试
+ * Description : 文章编辑页图片上传命名辅助单元测试
  */
 
 import { describe, expect, it } from "vitest"

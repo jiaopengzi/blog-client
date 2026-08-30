@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\user\editUserInfoByAdmin.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 编辑用户
+/*
+ * FilePath    : blog-client-nuxt\src\api\user\editUserInfoByAdmin.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 编辑用户
  */
 
 import { type PgSqlDateTime } from "@/api/common"
@@ -12,7 +12,7 @@ import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
 export interface EditUserInfoByAdminRequest {
-    edit_user_id: string // 用户id
+    edit_user_id: string // 用户 id
     user_name: string // 用户名
     email: string // 邮箱
     disable_expires_at: PgSqlDateTime // 禁用到期时间

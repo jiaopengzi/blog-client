@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\layout\aside\hot-post\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 热门文章
+ * FilePath    : blog-client-nuxt\src\components\layout\aside\hot-post\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 热门文章
 -->
 
 <template>
@@ -70,15 +70,15 @@ const noData = computed(() => {
 
 .post-list {
     font-size: 14px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 2px 10px 8px;
 
     .post-item {
         margin-top: 10px;
-    }
-
-    &:last-child {
-        margin-bottom: 10px;
+        // H1/H2(条目节奏): 行间细分隔线替代纯留白, 阅读动线更清晰
+        &:not(:last-of-type) {
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--jpz-border-color-lighter);
+        }
     }
 }
 

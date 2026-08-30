@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\rule\008.ts
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\mdlint\rule\008.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -58,7 +58,7 @@ export function run(doc: DocLike): Diagnostic[] {
         tagRegex.lastIndex = 0
 
         while ((match = tagRegex.exec(lineText)) !== null) {
-            // 跳过行内代码片段（单个反引号包裹）中的标签
+            // 跳过行内代码片段(单个反引号包裹)中的标签
             if (isInsideInlineCode(lineText, match.index)) continue
             const fullMatch = match[0]
             const isClosing = fullMatch.startsWith("</")

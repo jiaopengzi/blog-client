@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\user\getUserInfo.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 获取用户信息
+/*
+ * FilePath    : blog-client-nuxt\src\api\user\getUserInfo.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 获取用户信息
  */
 
 import type { PgSqlDateTime } from "@/api/common"
@@ -21,8 +21,8 @@ export function getUserInfoAPI(): ResPromise<Res<UserInfo>> {
 
 // 订阅状态
 export enum SubscribeStatus {
-    On = 1, // 全部状态
-    Off = 2, // 待支付
+    On = 1, // 开启状态
+    Off = 2, // 关闭状态
 }
 
 // 订阅状态显示
@@ -41,7 +41,7 @@ export const getSubscribeStatusOptions = () => {
         }))
 }
 
-// 用户性别选项, 用于前台资料页和后台编辑用户页保持同源展示.
+// 用户性别选项, 用于前台资料页和后台编辑用户页保持同源展示
 export const UserSexOptions = ["未知", "男", "女"] as const
 
 export type UserSex = (typeof UserSexOptions)[number]
@@ -63,10 +63,6 @@ export interface User {
 
 // 用户元信息
 export interface UserMeta {
-    // id: number
-    // created_at: string
-    // updated_at: string
-    // deleted_at: string
     user_id: string
     meta_key: string
     meta_value: string
@@ -74,21 +70,13 @@ export interface UserMeta {
 
 // 用户手机号信息
 export interface UserMobile {
-    // id: number
-    // created_at: string
-    // updated_at: string
-    // deleted_at: string
     user_id: string
     mobile: string
     region: string
 }
 
-// 用户qq信息
+// 用户 QQ 信息
 export interface UserQQ {
-    // id: number
-    // created_at: string
-    // updated_at: string
-    // deleted_at: string
     user_id: string
     openid: string
     nickname: string
@@ -100,10 +88,6 @@ export interface UserQQ {
 
 // 用户微信信息
 export interface UserWechat {
-    // id: number
-    // created_at: string
-    // updated_at: string
-    // deleted_at: string
     user_id: string
     openid: string
     unionid: string
@@ -153,29 +137,17 @@ export function emptyUserInfo(): UserInfo {
         },
         user_meta: [
             {
-                // id: 0,
-                // created_at: '',
-                // updated_at: '',
-                // deleted_at: '',
                 user_id: "",
                 meta_key: "",
                 meta_value: "",
             },
         ],
         user_mobile: {
-            // id: 0,
-            // created_at: '',
-            // updated_at: '',
-            // deleted_at: '',
             user_id: "",
             mobile: "",
             region: "",
         },
         user_qq: {
-            // id: 0,
-            // created_at: '',
-            // updated_at: '',
-            // deleted_at: '',
             user_id: "",
             openid: "",
             nickname: "",
@@ -185,10 +157,6 @@ export function emptyUserInfo(): UserInfo {
             avatar: "",
         },
         user_wechat: {
-            // id: 0,
-            // created_at: '',
-            // updated_at: '',
-            // deleted_at: '',
             user_id: "",
             openid: "",
             unionid: "",

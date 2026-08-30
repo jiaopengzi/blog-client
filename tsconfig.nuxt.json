@@ -1,0 +1,21 @@
+/*
+ * @FilePath     : \blog-client-nuxt\tsconfig.nuxt.json
+ * @Description  : Nuxt 独立 tsconfig（供 nuxi typecheck 与 vue-tsc type-check 使用）
+ * @说明         : 无 project references，避免 vue-tsc -b 展开 vitest 项目（计划坑位 7）
+ */
+
+{
+    "extends": "./.nuxt/tsconfig.json",
+    "compilerOptions": {
+        "composite": false,
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        // 对齐旧 SPA（@vue/tsconfig 未开启）：迁移代码大量按索引访问数组/对象且无 undefined 防御
+        "noUncheckedIndexedAccess": false
+    },
+    "vueCompilerOptions": {
+        // 与旧 SPA 一致（SPA 继承 @vue/tsconfig 未开启模板严格检查）：
+        // el-tooltip placement/el-radio 等模板字面量绑定不按联合类型严查，避免迁移代码大面积报 TS2322
+        "strictTemplates": false
+    },
+    "exclude": ["dist", ".output", "src/**/*.test.ts", "src/**/__tests__"]
+}

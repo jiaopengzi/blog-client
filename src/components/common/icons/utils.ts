@@ -1,17 +1,17 @@
-/**
- * @FilePath     : \blog-client\src\components\common\icons\utils.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 工具函数
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\icons\utils.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 工具函数
  */
 
-import iconFontJSON from "@/components/common/icons/assets/iconfont.json" // 导入 iconfont.json 数据
+import iconFontJSON from "@/components/common/icons/assets/iconfont.json"
 import { kebabToPascalCase } from "@/utils/namingConversion"
 
 import { type IconJSON, IconKeys, type IconMap } from "./types"
 
-// 图标 json 数据 类型守卫函数
+// 图标 json 数据类型守卫函数
 export function isIconJSON(obj: unknown): IconJSON {
     return (obj &&
         typeof obj === "object" &&
@@ -42,17 +42,17 @@ export function isIconJSON(obj: unknown): IconJSON {
 /**
  * @description: 通过 iconfont.json 数据获取 iconMap 对象
  * 检查 iconFontJSON 是否符合 IconJSON 类型
- * 读取 @/components/icons/iconfont.json 中的数据 将 iconfont.json 中的 glyphs 数组转换成 iconMap 对象
- * iconMap 对象的 key 为 glyphs 数组中的 font_class 字段，value 为 "#icon-" + glyph.font_class
+ * 读取 @/components/icons/iconfont.json 中的数据, 将 iconfont.json 中的 glyphs 数组转换成 iconMap 对象
+ * iconMap 对象的 key 为 glyphs 数组中的 font_class 字段, value 为 "#icon-" + glyph.font_class
  * @param iconFontJSON iconfont.json 数据
  * @return {IconMap} iconMap 对象
  */
 export function getIconMap(iconFontJSON: IconJSON): IconMap {
     const iconMap: IconMap = {}
     if (isIconJSON(iconFontJSON)) {
-        const prefix = iconFontJSON.css_prefix_text //前缀
+        const prefix = iconFontJSON.css_prefix_text
         iconFontJSON.glyphs.forEach((glyph: { font_class: string; unicode: string }) => {
-            // 如果 glyph.font_class 不存在 则打印错误信息
+            // 如果 glyph.font_class 不存在, 则打印错误信息
             if (!glyph.font_class) {
                 console.error("font_class 不存在")
                 return
@@ -60,31 +60,21 @@ export function getIconMap(iconFontJSON: IconJSON): IconMap {
             iconMap[glyph.font_class] = "#" + prefix + glyph.font_class
         })
     } else {
-        // 打印堆栈信息
         console.error("iconFontJSON 不符合 IconJSON 类型")
     }
-    // 将 iconMap key 升序排序
-
-    // Object.keys(iconMap)
-    //   .sort()
-    //   .forEach((key) => {
-    //     const value = iconMap[key]
-    //     delete iconMap[key]
-    //     iconMap[key] = value
-    //   })
     return iconMap
 }
 
-// 通过 iconMap 对象 得到 对应的 key 作为 icon 类型约束
+// 通过 iconMap 对象得到对应的 key 作为 icon 类型约束
 export const iconMap: IconMap = getIconMap(iconFontJSON as IconJSON)
 
-// 开发模式下运行 历遍 iconMap 对象中的 key 校验是否符合 IconKeys 类型约束
+// 开发模式下运行, 遍历 iconMap 对象中的 key, 校验是否符合 IconKeys 类型约束
 export const devCheckIconKeys = (iconMap: IconMap): void => {
     let newIconKeys = ""
     Object.keys(iconMap).forEach((key) => {
         const keyPascalCase = kebabToPascalCase(key)
         if (!(keyPascalCase in IconKeys)) {
-            // 如果 key 中包含 - 则添加
+            // 如果 key 中包含 -, 则添加
             const enumEntry = `${keyPascalCase} = '${key}',`
             newIconKeys += enumEntry + "\n"
         }

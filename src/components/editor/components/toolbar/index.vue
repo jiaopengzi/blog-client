@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\editor\components\toolbar\index.vue
+ * FilePath    : blog-client-nuxt\src\components\editor\components\toolbar\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -61,13 +61,12 @@ import BarVim from "./components/vim"
 
 defineOptions({ name: "EditorToolbar" })
 
-// 定义 props
 const { toolbarBtns } = defineProps<{
     toolbarBtns: EditorToolbarButton[] // 工具栏按钮列表
     vimMode?: boolean // Vim 当前启用状态
 }>()
 
-// 子组件 传参
+// 子组件传参
 const emit = defineEmits<{
     (e: "toolbar-btn-clicked", name: CommandsKey): void
     (e: "heading-select", name: CommandsKey): void
@@ -83,8 +82,8 @@ const emit = defineEmits<{
     (e: "toolbar-height", height: string): void
 }>()
 
-const toolbarRef = useTemplateRef<HTMLElement | null>("toolbarRef") // 工具栏
-const toolbarHeight = ref(0) // 工具栏高度
+const toolbarRef = useTemplateRef<HTMLElement | null>("toolbarRef")
+const toolbarHeight = ref(0)
 
 const toolbarMenuCommands = new Set<CommandsKey>([
     CommandsKey.PayContent,
@@ -96,10 +95,10 @@ const toolbarMenuCommands = new Set<CommandsKey>([
 ])
 
 /**
- * emitToolbarBtnClicked 将非菜单型按钮点击事件继续抛给父组件。
- * Vim 按钮需要同时支持悬浮弹出菜单和点击切换, 因此不能再被菜单集合拦截。
- * @param name - 当前点击的工具栏命令。
- * @returns 无返回值。
+ * emitToolbarBtnClicked 将非菜单型按钮点击事件继续抛给父组件
+ * Vim 按钮需要同时支持悬浮弹出菜单和点击切换, 因此不能再被菜单集合拦截
+ * @param name - 当前点击的工具栏命令
+ * @returns 无返回值
  */
 const emitToolbarBtnClicked = (button: EditorToolbarButton) => {
     if (button.isExternal) {
@@ -112,7 +111,7 @@ const emitToolbarBtnClicked = (button: EditorToolbarButton) => {
         return
     }
 
-    // 触发自定义事件 "onToolbarBtnClicked"，将 name 传递给父组件
+    // 触发自定义事件 "toolbar-btn-clicked", 将 name 传递给父组件
     emit("toolbar-btn-clicked", name)
 }
 
@@ -172,7 +171,7 @@ const updateToolbarHeight = () => {
     }
 }
 
-// 监听窗口变化
+// 监听工具栏尺寸变化
 const { stop } = useResizeObserver(toolbarRef, () => {
     updateToolbarHeight()
 })
@@ -182,48 +181,46 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-    stop() // 停止监听窗口变化
+    stop() // 停止尺寸监听
 })
 </script>
 
 <style scoped lang="scss">
+// A5(工具栏分组): 放弃"每行铺满均分"的 margin 计算, 改为固定小间距从左依次排列,
+// 相近功能的按钮自然聚拢成组, 符合通用编辑器工具栏惯例 (--icon-number-per-line 不再被样式消费)
 #toolbar {
     display: flex;
-    flex-wrap: wrap; // 自动换行
+    flex-wrap: wrap;
     align-items: center;
-    // justify-content: left;
-    // border-bottom: 1px solid var(--jpz-border-color);
+    gap: 2px;
+    padding: 0 8px;
     min-height: pc.$editor-toolbar-height;
     margin-top: pc.$editor-toolbar-margin-top;
     margin-bottom: pc.$editor-toolbar-margin-top;
     background-color: var(--jpz-bg-color);
     border-radius: 4px;
 
-    // // 两端对齐
-    // justify-content: space-between;
-
     .toolbar-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         border: none;
         background-color: transparent;
         cursor: pointer;
         outline: none;
         height: pc.$editor-toolbar-height;
-        // 通过计算每个按钮的 margin-left 和 margin-right 来实现每行显示的按钮个数
-        margin: 0 calc((100% - 24px * var(--icon-number-per-line)) / var(--icon-number-per-line) / 2);
-        padding: 0;
+        margin: 0;
+        padding: 0 3px;
+        border-radius: 6px;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+            background-color: var(--jpz-bg-color-page);
+        }
     }
 
-    // @include respond-to("pc") {
-    // }
-
-    // @include respond-to("pad") {
-    // }
-
-    @include respond-to("phone") {
-        .toolbar-btn {
-            // 通过计算每个按钮的 margin-left 和 margin-right 来实现每行显示的按钮个数
-            margin: 0 calc((100% - 20px * var(--icon-number-per-line)) / var(--icon-number-per-line) / 2);
-        }
+    .iconfont {
+        fill: var(--jpz-text-color-primary);
     }
 }
 
@@ -231,12 +228,7 @@ onUnmounted(() => {
     width: 28px;
     height: 28px;
     font-size: 20px;
-    fill: var(--jpz-text-color-primary);
     transition: fill 0.3s ease;
     border-radius: 4px;
-}
-
-.iconfont:hover {
-    background-color: var(--jpz-text-color-secondary);
 }
 </style>

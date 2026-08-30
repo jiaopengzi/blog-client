@@ -1,5 +1,5 @@
 # Dockerfile.dev
-# 从 blog-client:env 镜像中构建, 这个镜像是在 blog-client 项目的 Dockerfile.env 中构建
+# 从 blog-client:env 镜像中构建, 这个镜像是在 blog-client-nuxt 项目的 Dockerfile.env 中构建
 # 它包含了 Node.js 和 pnpm 环境及项目的依赖项, 可以直接 build
 FROM blog-client:env AS builder
 
@@ -9,24 +9,32 @@ WORKDIR /app
 # 将源代码复制到容器中
 COPY . .
 
-# 编译 Vue 项目
+# 编译 Nuxt 项目(产出 .output; 依赖已由基础镜像预装, 跳过 lint/test 加速迭代)
 RUN pnpm build
 
-# 使用一个较小的基础镜像以减小构建产物的体积
+# 使用与 spa 项目一致的 nginx alpine 镜像(TLS 终端 + 静态资源 + 反向代理)
 FROM nginx:1.31.3-alpine
 
-# 安装 tzdata 包 设置时区
-RUN apk add --no-cache tzdata && \
+# 安装 tzdata 包 设置时区; libstdc++/libgcc 为 node 二进制的运行依赖
+RUN apk add --no-cache tzdata libstdc++ libgcc && \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone
 ENV TZ=Asia/Shanghai
 
+# 仅拷贝 node 二进制(不含 npm/pnpm/corepack, 精简体积; 版本与构建阶段严格一致, musl 架构相同)
+COPY --from=node:24.19.0-alpine /usr/local/bin/node /usr/local/bin/node
+
 # 更改 Nginx 缓存目录的所有权(修复问题使用非 root 用户来启动容器)
 RUN mkdir -p /var/cache/nginx && \
-    chown -R nginx:nginx /var/cache/nginx
+    chown -R nginx:nginx /var/cache/nginx && \
+    mkdir -p /app
 
-# 将构建产物从 builder 镜像中复制到当前镜像中的 Nginx 的静态文件目录
-COPY --from=builder /app/dist /usr/share/nginx/html
+# 将 nitro node-server 产物复制到容器中(server: node SSR 进程入口; public: 静态资源)
+COPY --from=builder /app/.output /app/.output
+
+# 静态资源同时交给 nginx 直出(保留 spa 的 nginx 静态缓存策略: _nuxt/fonts 长缓存,
+# 以及 nitro compressPublicAssets 预压缩产物的 gzip_static 直发)
+COPY --from=builder /app/.output/public /usr/share/nginx/html
 
 # 从源码中添加 LICENSE 到 html 目录
 COPY LICENSE /usr/share/nginx/html/LICENSE
@@ -37,11 +45,20 @@ COPY nginx.conf /etc/nginx/nginx.conf
 # 复制旧网址重定向映射文件(可选, 不需要时可删除此行及 redirects.map 文件)
 COPY redirects.map /etc/nginx/redirects.map
 
-# 挂载 Nginx 配置文件
+# 复制双进程启动脚本(node SSR + nginx, 任一退出容器退出)
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# node SSR 运行配置(均可在 docker run -e 覆盖, 详见 Dockerfile 同节注释)
+ENV NITRO_PORT=7364 \
+    NUXT_API_BASE=http://blog-server:5426 \
+    NUXT_PUBLIC_BASE_URL=https://jiaopengzi.com
+
+# 挂载 Nginx 配置文件(SSL 证书挂 /etc/nginx/ssl)
 VOLUME ["/etc/nginx"]
 
 # 暴露 Nginx 服务的默认端口
 EXPOSE 80 443
 
 # 设置启动命令
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/docker-entrypoint.sh"]

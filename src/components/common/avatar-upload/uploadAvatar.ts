@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\common\avatar-upload\uploadAvatar.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 上传头像
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\avatar-upload\uploadAvatar.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 上传头像
  */
 
 import { checkQuotaBlocked } from "@/api/permissionRole/quota"

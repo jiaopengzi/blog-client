@@ -1,9 +1,9 @@
 /*
- * FilePath    : blog-client\src\utils\clipboard\copy-html.ts
+ * FilePath    : blog-client-nuxt\src\utils\clipboard\copy-html.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : html复制 优先使用现代 clipboard API，如果不支持则回退到 execCommand 方式
+ * Description : html 复制, 优先使用现代 clipboard API, 如果不支持则回退到 execCommand 方式
  */
 
 export interface CopyHtmlResult {

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useCheckCloudConfig\index.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 校验云存储配置 hook
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useCheckCloudConfig\index.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 校验云存储配置 hook
  */
 
 import { ref } from "vue"
@@ -16,9 +16,9 @@ import { MessageUtil } from "@/utils/message"
 export type CloudType = "oss" | "cos"
 
 /**
- * useCheckCloudConfig 校验云存储配置。
- * @param cloudType - 云存储类型: "oss" 或 "cos"。
- * @returns checking, 是否正在校验; handleCheckConfig, 执行校验的异步方法。
+ * useCheckCloudConfig 校验云存储配置
+ * @param cloudType - 云存储类型: "oss" 或 "cos"
+ * @returns checking, 是否正在校验; handleCheckConfig, 执行校验的异步方法
  */
 export function useCheckCloudConfig(cloudType: CloudType) {
     const checking = ref(false)

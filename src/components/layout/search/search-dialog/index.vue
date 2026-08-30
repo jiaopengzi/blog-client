@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\layout\search\search-dialog\index.vue
+ * FilePath    : blog-client-nuxt\src\components\layout\search\search-dialog\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -42,9 +42,8 @@ import { MessageUtil } from "@/utils/message.ts"
 import type { SearchHistoryItem } from "./types.ts"
 defineOptions({ name: "SearchDialog" })
 
-// 定义 props, 默认值为不显示 false
 const { isShow = false } = defineProps<{
-    isShow?: boolean // 是否显示
+    isShow?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -58,7 +57,6 @@ const isVisible = computed<boolean>({
     set: (val: boolean) => emit("update:isShow", val),
 })
 
-// 关闭对话框
 const dialogClose = () => {
     emit("update:isShow", false)
 }
@@ -77,29 +75,25 @@ const setHistory = () => {
     localStorage.setItem(LocalStorageKey.SearchHistory, JSON.stringify(searchHistory.value))
 }
 
-// 更新搜索历史
 const updateHistory = (val: string) => {
-    // 如果没有值, 就不执行
     if (!val) {
         return
     }
 
-    // 判断是否有这个值
     const hasValue = searchHistory.value.some((item) => item.value === val)
 
     if (!hasValue) {
-        // 如果没有, 直接添加到搜索历史中
         searchHistory.value.unshift({
             id: searchHistory.value.length,
             value: val,
             time: new Date().getTime(),
         })
     } else {
-        // 如果有,更新的时间,重新添加到最后面
+        // 已存在则更新时间并移到最前
         const index = searchHistory.value.findIndex((item) => item.value === val)
         searchHistory.value[index]!.time = new Date().getTime()
         const item = searchHistory.value[index]
-        searchHistory.value.splice(index, 1) // 删除这个值
+        searchHistory.value.splice(index, 1)
         searchHistory.value.unshift(item!)
     }
 
@@ -108,12 +102,10 @@ const updateHistory = (val: string) => {
         searchHistory.value.pop()
     }
 
-    // 更新本地存储
     setHistory()
 }
 
 const handleSearch = () => {
-    // 如果没有值, 就不执行
     if (!searchValue.value) {
         MessageUtil.warning("请输入搜索内容", 3000)
         return
@@ -121,21 +113,17 @@ const handleSearch = () => {
 
     emit("search", searchValue.value)
 
-    // 更新搜索历史
     updateHistory(searchValue.value)
 
-    // 清空搜索框
     searchValue.value = ""
 }
 
 const tagClose = (id: number) => {
-    // 删除搜索历史
     const index = searchHistory.value.findIndex((item) => item.id === id)
     if (index !== -1) {
         searchHistory.value.splice(index, 1)
     }
 
-    // 更新本地存储
     setHistory()
 }
 
@@ -152,9 +140,6 @@ onBeforeMount(() => {
 
 <style scoped lang="scss">
 // 弹窗挂载到 body 上, 样式在 main.scss 中
-// .search-dialog {
-//     opacity: 0.6;
-// }
 
 .container-search {
     display: flex;
@@ -206,8 +191,8 @@ onBeforeMount(() => {
 
 .search-history-list {
     display: flex;
-    flex-wrap: wrap; // 允许换行
-    justify-content: flex-start; // 左对齐
+    flex-wrap: wrap;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
 }
@@ -222,10 +207,10 @@ onBeforeMount(() => {
     margin-left: 8px;
     margin-top: 10px;
     display: inline-block; // 让元素可设置宽度
-    max-width: 160px; // 需要的最大宽度
-    overflow: hidden; // 超出隐藏
-    white-space: nowrap; // 不换行
-    text-overflow: ellipsis; // 超出部分显示省略号
+    max-width: 160px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .search-main {
@@ -233,7 +218,6 @@ onBeforeMount(() => {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    // background-color: var(--jpz-bg-color-page);
     padding: 20px 0;
     border-radius: 10px;
     width: 100%;

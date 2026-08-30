@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\rule\__test__\005.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\mdlint\rule\__test__\005.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -12,7 +12,6 @@ import type { DocLike } from "../../types"
 import { run } from "../005"
 import { makeDoc } from "./utils"
 
-// 测试规则 005: 检测付费标签是否合法
 describe("rule005 - 付费标签合法性检测", () => {
     it("正确的 pay-read 块不返回诊断", () => {
         const doc = makeDoc(["pre", "", "<pay-read>", "secret", "</pay-read>", "", "post"])

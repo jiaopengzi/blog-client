@@ -1,14 +1,14 @@
 /*
- * FilePath    : blog-client\src\utils\clipboard\copy-img.ts
+ * FilePath    : blog-client-nuxt\src\utils\clipboard\copy-img.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 图片 复制 优先使用现代 clipboard API，如果不支持则回退到 link 方式
+ * Description : 图片复制, 优先使用现代 clipboard API, 如果不支持则回退到 link 方式
  */
 
 /**
  * 尝试使用现代 API 写入到系统剪贴板
- * 成功返回 Promise<void>，失败（或不支持）抛出错误
+ * 成功返回 Promise<void>, 失败(或不支持)抛出错误
  */
 async function tryWriteImgWithModernAPI(blob: Blob): Promise<void> {
     // 仅在支持 navigator.clipboard.write 的环境下执行
@@ -18,7 +18,7 @@ async function tryWriteImgWithModernAPI(blob: Blob): Promise<void> {
             const clipboardItem = new ClipboardItem({ [blob.type]: blob })
             await navigator.clipboard.write([clipboardItem])
         } catch (err) {
-            // 即使对象存在，也可能因非安全上下文或权限失败
+            // 即使对象存在, 也可能因非安全上下文或权限失败
             const wrappedError = new Error(`Modern clipboard API failed: ${err}`)
             ;(wrappedError as Error & { cause?: unknown }).cause = err
             throw wrappedError
@@ -30,7 +30,7 @@ async function tryWriteImgWithModernAPI(blob: Blob): Promise<void> {
 
 /**
  * 使用 img + execCommand 的方式复制图片
- * 直接从 Blob 创建 img 元素并尝试复制，兼容 HTTP 环境
+ * 直接从 Blob 创建 img 元素并尝试复制, 兼容 HTTP 环境
  */
 function tryWriteImgWithExecCommand(blob: Blob): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -85,7 +85,7 @@ function tryWriteImgWithExecCommand(blob: Blob): Promise<void> {
 }
 
 /**
- * 使用 link 下载的方式（保留原方案作为最后备选）
+ * 使用 link 下载的方式(保留原方案作为最后备选)
  * @param blob Blob 对象
  * @param linkDownload 下载链接的文件名(注意包文件含拓展名)
  */
@@ -108,8 +108,8 @@ function writeImgWithLink(blob: Blob, linkDownload = "img.png"): Promise<void> {
 }
 
 /**
- * 对外暴露的拷贝函数：优先尝试使用现代 API，
- * 如果不支持或失败则回退到 canvas+execCommand 方式，最后降级到下载
+ * 对外暴露的拷贝函数: 优先尝试使用现代 API,
+ * 如果不支持或失败则回退到 canvas+execCommand 方式, 最后降级到下载
  */
 export async function copyImg(blob: Blob, linkDownload = "img.png"): Promise<void> {
     try {

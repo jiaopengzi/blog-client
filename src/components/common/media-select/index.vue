@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\media-select\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 媒体文件选择 
+ * FilePath    : blog-client-nuxt\src\components\common\media-select\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 媒体文件选择
 -->
 
 <template>
@@ -72,15 +72,12 @@ import MediaBase from "@/components/common/media-base/index.vue"
 import { useMedia } from "@/components/hooks/useMedia"
 import { MessageUtil } from "@/utils/message"
 
-// 定义组件名称
 defineOptions({ name: "SelectMedia" })
 
-// 定义 props, 默认值为不显示 false
 const { isShow = false } = defineProps<{
     isShow?: boolean // 是否显示
 }>()
 
-// 定义 emit
 const emit = defineEmits<{
     (event: "update:isShow", val: boolean): void
     (event: "insert-data", selection: TableData[]): void
@@ -140,13 +137,13 @@ const updateSearchAc = async (val: string) => {
     updateSearch(val, false)
 }
 
-// 更新当前页（不更新路由）
+// 更新当前页 (不更新路由)
 const updateCurrentPageAc = async (val: number) => {
     queryParams.current_page = val
     await updatePaginate()
 }
 
-// 更新每页显示条数（不更新路由）
+// 更新每页显示条数 (不更新路由)
 const updatePageSizeAc = async (val: number) => {
     queryParams.page_size = val
     await updatePaginate()
@@ -188,12 +185,12 @@ const updateSelection = (selection: TableData[]) => {
 
 // 插入
 const insert = () => {
-    // 首先判断是否选择数据,没有选择数据则显示警告提示
+    // 首先判断是否选择数据, 没有选择数据则显示警告提示
     if (selectionRows.value.length === 0) {
         return MessageUtil.warning("请选择数据")
     }
 
-    // 选择数据不能大于10条
+    // 选择数据不能大于 10 条
     if (selectionRows.value.length > 10) {
         return MessageUtil.warning("选择数据不能大于10条")
     }

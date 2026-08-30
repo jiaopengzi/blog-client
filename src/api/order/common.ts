@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\order\common.ts
+ * FilePath    : blog-client-nuxt\src\api\order\common.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -113,9 +113,9 @@ export const getProductTypeOptions = () => {
 
 // 订单子表响应
 export interface OrderItemRes {
-    order_id: string // 订单ID
-    product_id: string // 产品ID
-    related_id?: string // 关联文章ID, product_type 为 post 时有值
+    order_id: string // 订单 ID
+    product_id: string // 产品 ID
+    related_id?: string // 关联文章 ID, product_type 为 post 时有值
     product_type: ProductType // 产品类型
     title: string // 产品标题
     quantity: number // 数量
@@ -126,8 +126,8 @@ export interface OrderItemRes {
 
 // 优惠券子表响应
 export interface CouponItemRes {
-    order_id: string // 订单ID
-    coupon_id: string // 优惠券ID
+    order_id: string // 订单 ID
+    coupon_id: string // 优惠券 ID
     code: string // 优惠券代码
     discount_type: CouponDiscountType // 折扣类型
     amount: number // 折扣数量
@@ -135,18 +135,18 @@ export interface CouponItemRes {
 
 // 支付信息响应
 export interface PaymentRes {
-    order_id: string // 订单ID
+    order_id: string // 订单 ID
     pay_type: PayType // 支付类型
     total_amount: number // 总金额(分)
-    transaction_id: string // 交易ID
+    transaction_id: string // 交易 ID
     trade_state: TradeState // 交易状态
 }
 
 // 退款信息响应
 export interface RefundRes {
-    order_id: string // 订单ID
-    transaction_id: string // 交易ID
-    refund_transaction_id: string // 退款交易ID
+    order_id: string // 订单 ID
+    transaction_id: string // 交易 ID
+    refund_transaction_id: string // 退款交易 ID
     total_amount: number // 订单总金额(分)
     refund_amount: number // 退款金额(分)
     status: RefundStatus // 退款状态
@@ -155,14 +155,14 @@ export interface RefundRes {
 
 // 订单详情响应
 export interface OrderGetByIDRes extends DataWithImg {
-    id: string // 订单ID
+    id: string // 订单 ID
     created_at: string // 创建时间
     updated_at: string // 更新时间
     status: OrderStatus // 订单状态
     currency: Currency // 货币类型
     total_amount: number // 总金额(分)
-    user_id: string // 用户ID
-    ip: string // 下单IP地址
+    user_id: string // 用户 ID
+    ip: string // 下单 IP 地址
     remark: string // 客户备注
     remark_admin: string // 管理员备注
     description: string // 描述

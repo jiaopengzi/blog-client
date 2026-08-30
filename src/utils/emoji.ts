@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\emoji.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : emojiCompletionList 单例模式
+/*
+ * FilePath    : blog-client-nuxt\src\utils\emoji.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : emojiCompletionList 单例模式
  */
 
 import type { Completion } from "@codemirror/autocomplete"

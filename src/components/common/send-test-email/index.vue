@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\send-test-email\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 测试发送邮件组件
+ * FilePath    : blog-client-nuxt\src\components\common\send-test-email\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 测试发送邮件组件
 -->
 
 <template>
@@ -36,7 +36,6 @@ const loading = ref(false)
 const btnTextTemp = ref("")
 
 const widthStyle = computed(() => {
-    // 判断是数字还是字符串
     return {
         width: typeof width === "number" ? `${width}px` : width || "100%",
     }
@@ -63,7 +62,6 @@ const sendEmail = async () => {
         return
     }
 
-    // 使用正则表达式验证邮箱格式
     if (!RegexPatterns.Email.test(toEmail.value)) {
         MessageUtil.error("请输入正确的邮箱地址")
         return

@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\editor\components\resize-handle\index.vue
+ * FilePath    : blog-client-nuxt\src\components\editor\components\resize-handle\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -35,9 +35,9 @@ const emit = defineEmits<{
 }>()
 
 /**
- * handleKeydown 屏蔽分隔条按钮的回车与空格默认激活。
- * @param event - 当前键盘按下事件。
- * @returns 无返回值。
+ * handleKeydown 屏蔽分隔条按钮的回车与空格默认激活
+ * @param event - 当前键盘按下事件
+ * @returns 无返回值
  */
 const handleKeydown = (event: KeyboardEvent): void => {
     if (event.key === "Enter" || event.key === " ") {
@@ -46,9 +46,9 @@ const handleKeydown = (event: KeyboardEvent): void => {
 }
 
 /**
- * handleKeyup 屏蔽空格抬起时的按钮默认触发。
- * @param event - 当前键盘抬起事件。
- * @returns 无返回值。
+ * handleKeyup 屏蔽空格抬起时的按钮默认触发
+ * @param event - 当前键盘抬起事件
+ * @returns 无返回值
  */
 const handleKeyup = (event: KeyboardEvent): void => {
     if (event.key === " ") {
@@ -57,18 +57,18 @@ const handleKeyup = (event: KeyboardEvent): void => {
 }
 
 /**
- * handlePointerdown 将拖拽开始事件交回父组件处理。
- * @param event - 当前 pointerdown 事件。
- * @returns 无返回值。
+ * handlePointerdown 将拖拽开始事件交回父组件处理
+ * @param event - 当前 pointerdown 事件
+ * @returns 无返回值
  */
 const handlePointerdown = (event: PointerEvent): void => {
     emit("resize-start", event)
 }
 
 /**
- * handleDoubleClick 处理双击恢复默认宽度。
- * @param event - 当前双击事件。
- * @returns 无返回值。
+ * handleDoubleClick 处理双击恢复默认宽度
+ * @param event - 当前双击事件
+ * @returns 无返回值
  */
 const handleDoubleClick = (event: MouseEvent): void => {
     event.preventDefault()

@@ -1,12 +1,9 @@
-/**
- * @Author       : jiaopengzi
- * @Date         : 2024-01-23 15:38:37
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 11:27:43
- * @FilePath     : \blog-client\src\components\common\index.ts
- * @Description  : 公用信息
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\index.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * Description : 公用信息
  */
 
 import type { IconKeys } from "@/components/common/icons"
@@ -14,10 +11,10 @@ import type { IconKeys } from "@/components/common/icons"
 // 图片填充方式
 export enum ImgFit {
     Cover = "cover", // 默认值
-    Contain = "contain", // 保持宽高比缩放图片，使图片的长边能完全显示出来
-    Fill = "fill", // 拉伸图片，使图片填满元素
+    Contain = "contain", // 保持宽高比缩放图片, 使图片的长边能完全显示出来
+    Fill = "fill", // 拉伸图片, 使图片填满元素
     None = "none", // 保持原图尺寸
-    ScaleDown = "scale-down", // 保持原图尺寸，但是不超过元素的尺寸
+    ScaleDown = "scale-down", // 保持原图尺寸, 但是不超过元素的尺寸
 }
 
 // 表格图片配置

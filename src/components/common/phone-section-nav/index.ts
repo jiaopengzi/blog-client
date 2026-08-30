@@ -1,5 +1,5 @@
-/**
- * FilePath    : bf\c:\Desktop\blog-client\src\components\common\phone-section-nav\index.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\phone-section-nav\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

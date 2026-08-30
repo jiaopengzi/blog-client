@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\pkg\codemirror\extension\uploadEditor.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 编辑器上传
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\uploadEditor.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 编辑器上传
  */
 
 import { HashAlgorithm } from "@/utils/hash"

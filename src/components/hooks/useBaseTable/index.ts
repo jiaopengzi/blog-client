@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 基础表格钩子
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useBaseTable\index.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 基础表格钩子
  */
 
 import { onBeforeMount, type Reactive, reactive, ref, watch } from "vue"
@@ -42,7 +42,7 @@ export interface BaseTableOptions<T extends FormatTableData, K extends Paginatio
 
 /**
  * @description: 基础表格钩子
- * @param ctx 上下文对象，包含路由名称、获取数据的 API、响应码、查询参数、删除 API 和可选参数等
+ * @param ctx 上下文对象, 包含路由名称, 获取数据的 API, 响应码, 查询参数, 删除 API 和可选参数等
  */
 export function useBaseTable<T extends FormatTableData, K extends PaginationRequest, Q>(ctx: BaseTableOptions<T, K, Q>) {
     let isInit = false // 是否初始化
@@ -61,7 +61,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     const loadingDelete = ref<boolean>(false)
 
     /**
-     * @description: 更新和路由
+     * @description: 更新路由
      */
     const updateRouterPush = async () => {
         if (!syncRoute) {
@@ -99,7 +99,11 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         // 仅当当前路由名称与表格路由名称一致时, 才从 URL 读取查询参数.
         // 在非目标页面 (如弹窗中嵌入的表格) 跳过 URL 解析, 避免当前页面参数 (如 page_size)
         // 泄漏到表格的 queryParams 中, 覆盖其 localStorage 偏好.
-        const isSameRoute = route.name === routeName
+        // Nuxt 适配: admin 子页为 pages/admin/[...slug].vue 单一 catch-all, route.name 为
+        // 文件派生名 ("admin-slug"), 与 SPA 的 RouteNamesAdmin (如 "post-all") 永不相等,
+        // 导致直接访问/刷新/重挂载时 URL 查询参数被跳过解析 (列表与筛选不一致)
+        // 补充 path 匹配 (/admin/<routeName>), 恢复 admin 表格的 URL 参数解析
+        const isSameRoute = route.name === routeName || route.path === `/admin/${routeName}`
         if (isSameRoute) {
             const { hasQuery, result } = await parseRouteQuery(route.query, options as QueryParamsOptions<K>)
 
@@ -176,12 +180,12 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         editItemDialogVisible.value = !editItemDialogVisible.value
     }
 
-    // 新增对话框
+    // 设置新增对话框可见状态
     const addItemUpdateDialogVisible = (val: boolean) => {
         addItemDialogVisible.value = val
     }
 
-    // 编辑对话框
+    // 设置编辑对话框可见状态
     const editItemUpdateDialogVisible = (val: boolean) => {
         editItemDialogVisible.value = val
     }
@@ -211,14 +215,14 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
 
     // 获取分页
     async function getPaginate(req: K): Promise<Pagination<T>> {
-        // 遍历 options.NoRequest 中的参数，如果 req 中的参数值等于 options.NoRequest 中的值则删除,不请求
+        // 遍历 options.noRequestKeys 中的参数, 如果 req 中的参数值与其相等则删除该参数, 不参与请求
         for (const key in options?.noRequestKeys) {
             if (key in req && req[key as keyof K] === options.noRequestKeys[key]) {
                 delete req[key as keyof K]
             }
         }
 
-        // 获取标签列表
+        // 请求表格数据
         const res = await viewAPI(req)
         if (res.data.code === viewResCode) {
             res.data.data.records = res.data.data.records.map((row: T) =>
@@ -240,15 +244,20 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         return getEmptyPagination<T>()
     }
 
-    const deleteRows = async (rows: TableData[]) => {
+    /**
+     * deleteRows 删除行数据.
+     * @param rows - 待删除的表格行.
+     * @returns true 表示删除成功(feature01 260829-08: 调用方据此触发缓存失效等副作用); 未配置删除 API 或删除失败返回 false.
+     */
+    const deleteRows = async (rows: TableData[]): Promise<boolean> => {
         if (!deleteAPI || !deleteResCode) {
             MessageUtil.error("未配置删除 API 或响应码", 3000)
-            return
+            return false
         }
 
         loadingDelete.value = true // 显示加载动画
 
-        // 将 rows 中的id 组成新的 list
+        // 将 rows 中的 id 组成新的 list
         const ids = rows.flatMap((item) => ("id" in item ? item.id.toString() : []))
 
         const deleteRequest = { id_list: ids } as Q
@@ -266,10 +275,12 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
             // 删除成功后重新获取列表
             await updatePaginate()
             MessageUtil.success(res.data.msg, 3000)
+            return true
         } else {
             loadingDelete.value = false // 隐藏加载动画
             // 显示错误信息
             MessageUtil.error(res.data.msg, 3000)
+            return false
         }
     }
 

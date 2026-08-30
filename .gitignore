@@ -7,19 +7,30 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
+# dependencies
+node_modules/
+.pnpm-store/
+
+# nuxt build
+.nuxt/
+.output/
+.nitro/
+.cache/
+
+# build
+dist
+dist-ssr
 coverage
 ./src/coverage
 /src/coverage
+
+# misc
 .DS_Store
 .demo
 .feat
 .bug
 .cert
 .sisyphus
-dist
-dist-ssr
-coverage
 *.local
 
 /cypress/videos/
@@ -37,3 +48,8 @@ coverage
 .dsh-vision-router
 .agent-teams
 .spa2nuxt
+
+# project local
+.debug
+.mimosa
+.codebuddy

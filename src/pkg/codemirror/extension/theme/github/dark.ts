@@ -1,5 +1,8 @@
-/**
- * FilePath    : blog-client/src/pkg/codemirror/extension/theme/github/dark.ts
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\theme\github\dark.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
  * Description : github dark 主题
  */
 

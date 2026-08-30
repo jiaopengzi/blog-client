@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\hooks\useRootUtils\route.ts
+ * FilePath    : blog-client-nuxt\src\components\hooks\useRootUtils\route.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -7,7 +7,6 @@
  */
 
 import { type Reactive, ref } from "vue"
-import { useRoute, useRouter } from "vue-router"
 
 import { type QueryParamsOptions } from "@/api/request"
 import { routerPushByParams } from "@/router"
@@ -25,7 +24,7 @@ export function useRootRoute<T extends QueryParams>(
 
     const hasPaginationInURL = ref(false) // URL 中是否有分页参数
 
-    // 更新查询参数
+    // 更新查询参数和路由
     const updateRouterPush = async () => {
         // 遍历 options.noRouteKeys 中的参数, 如果 queryParams 存在该 key 则删除, 不参与路由
         if (options?.noRouteKeys) {
@@ -40,17 +39,46 @@ export function useRootRoute<T extends QueryParams>(
         await routerPushByParams(router, RouteNames.Home, queryParams, options?.hash)
     }
 
-    // 更新查询参数
+    // 从 URL 中解析参数
     const updateQueryParams = async () => {
         const { hasQuery, hasPagination, result } = await parseRouteQuery(route.query, options as QueryParamsOptions<T>)
+
+        // URL 简写分页参数 (page/size) 是否存在于解析结果 (翻译前的原始判断)
+        let hasPaginationShorthand = false
+
+        // Nuxt 适配: persistKeys 中的参数 (如 /category/[slug] 注入的 post_category_slug)
+        // 不随 URL query 清空——清空前先暂存、清空后回填
+        const persisted: Record<PropertyKey, unknown> = {}
+        const persistKeys = (options as QueryParamsOptions<T> | undefined)?.persistKeys ?? []
+        persistKeys.forEach((key) => {
+            if (key in queryParams) {
+                persisted[key as PropertyKey] = (queryParams as unknown as Record<PropertyKey, unknown>)[key as PropertyKey]
+            }
+        })
 
         // 清空 queryParams
         Object.keys(queryParams).forEach((key) => delete queryParams[key as keyof typeof queryParams])
         if (hasQuery) {
             Object.assign(queryParams, result)
-        }
 
-        hasPaginationInURL.value = hasPagination
+            // URL 简写与请求参数名映射: URL 采用 ?page= / ?size= 简写 (REST 最佳实践),
+            // 请求参数名保持 current_page / page_size 不变 (后端接口不变)
+            // 简写分页参数同样计入 hasPaginationInURL, 避免被视作"无分页"而触发无限滚动追加
+            const shorthand = queryParams as unknown as Record<string, unknown>
+            if (shorthand.page !== undefined && shorthand.page !== null) {
+                queryParams.current_page = Number(shorthand.page)
+                delete shorthand.page
+                hasPaginationShorthand = true
+            }
+            if (shorthand.size !== undefined && shorthand.size !== null) {
+                queryParams.page_size = Number(shorthand.size)
+                delete shorthand.size
+                hasPaginationShorthand = true
+            }
+        }
+        Object.assign(queryParams, persisted)
+
+        hasPaginationInURL.value = hasPagination || hasPaginationShorthand
     }
 
     const clearParamsExcept = (fieldsToKeep: QueryParamsKey[]) => {
@@ -67,10 +95,6 @@ export function useRootRoute<T extends QueryParams>(
             "page_size",
 
             "post_id",
-
-            // "highlight_fields",
-            // "pre_tags",
-            // "post_tags",
         ]
 
         keysToClear.forEach((key) => {

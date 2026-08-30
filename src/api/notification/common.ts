@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\notification\common.ts
+ * FilePath    : blog-client-nuxt\src\api\notification\common.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -96,19 +96,19 @@ export const getNotificationCategoryOptions = () => {
 }
 
 export interface InsertNotificationRequest {
-    to_list?: string // 通知接收人列表,逗号分隔
-    exclude_to_list?: string // 排除的接收人列表,逗号分隔
+    to_list?: string // 通知接收人列表, 逗号分隔
+    exclude_to_list?: string // 排除的接收人列表, 逗号分隔
     subject: string // 通知主题
     content: string // 通知内容
     push_time?: PgSqlDateTime // 推送时间
-    push_status?: NotificationPushStatus // 是否已推送, 1未推送,2推送中,3已推送
+    push_status?: NotificationPushStatus // 是否已推送, 1 未推送, 2 推送中, 3 已推送
     category: NotificationCategory // 通知类别
-    status: NotificationStatus // 状态 1禁用, 2启用
-    format: NotificationFormat // 通知格式 1html, 2纯文本
+    status: NotificationStatus // 状态 1 禁用, 2 启用
+    format: NotificationFormat // 通知格式 1 html, 2 纯文本
 }
 
 export interface UpdateNotificationRequest extends InsertNotificationRequest {
-    id: string // 通知id
+    id: string // 通知 id
 }
 
 // 通知
@@ -116,13 +116,13 @@ export interface NotificationRes extends DataWithImg {
     id: string // id
     created_at: string // 创建时间
     updated_at: string // 更新时间
-    to_list: string // 通知接收人列表,逗号分隔
-    exclude_to_list: string // 排除的接收人列表,逗号分隔
+    to_list: string // 通知接收人列表, 逗号分隔
+    exclude_to_list: string // 排除的接收人列表, 逗号分隔
     subject: string // 通知主题
     content: string // 通知内容
     push_time: PgSqlDateTime // 推送时间
-    push_status: NotificationPushStatus // 是否已推送, 1未推送,2推送中,3已推送
+    push_status: NotificationPushStatus // 是否已推送, 1 未推送, 2 推送中, 3 已推送
     category: NotificationCategory // 通知类别
-    status: NotificationStatus // 状态 1禁用, 2启用
-    format: NotificationFormat // 通知格式 1html, 2纯文本
+    status: NotificationStatus // 状态 1 禁用, 2 启用
+    format: NotificationFormat // 通知格式 1 html, 2 纯文本
 }

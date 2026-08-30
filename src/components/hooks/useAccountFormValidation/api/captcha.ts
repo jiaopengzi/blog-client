@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useAccountFormValidation\api\captcha.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 验证码相关API
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useAccountFormValidation\api\captcha.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 验证码相关 API
  */
 
 import { captchaCheckAPI, type CaptchaCheckRequest } from "@/api/captcha/check"
@@ -20,7 +20,6 @@ import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
  */
 export async function checkSendCaptcha(email: string, purpose: CaptchaPurpose): Promise<void> {
     try {
-        // 创建请求对象
         const req: CaptchaSendRequest = {
             email: email,
             purpose: purpose,
@@ -56,7 +55,6 @@ export async function checkSendCaptcha(email: string, purpose: CaptchaPurpose): 
  */
 export async function checkCaptcha(email: string, captcha: string, purpose: CaptchaPurpose): Promise<void> {
     try {
-        // 创建请求对象
         const req: CaptchaCheckRequest = {
             email: email,
             captcha: captcha,

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\post\getPostCountByStatus.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 按照文章状态统计文章数量
+/*
+ * FilePath    : blog-client-nuxt\src\api\post\getPostCountByStatus.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 按照文章状态统计文章数量
  */
 
 import { PostStatusCode } from "@/api/post/common"
@@ -18,9 +18,9 @@ export interface PostCountByStatus {
 }
 
 /**
- * getPostCountByStatusAPI 获取指定文章类型的状态统计。
- * @param postType - 文章类型, 未传时沿用后端默认的 post。
- * @returns 状态维度的文章数量统计结果。
+ * getPostCountByStatusAPI 获取指定文章类型的状态统计
+ * @param postType - 文章类型, 未传时沿用后端默认的 post
+ * @returns 状态维度的文章数量统计结果
  */
 export function getPostCountByStatusAPI(postType?: PostType): ResPromise<Res<PostCountByStatus[]>> {
     const urlStr = routerGroup + "/post/count-by-status"

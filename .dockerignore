@@ -1,0 +1,52 @@
+# 依赖与构建产物(容器内重新安装/构建)
+node_modules
+.pnpm-store
+.nuxt
+.output
+.nitro
+.cache
+dist
+dist-ssr
+coverage
+
+# git 与本地调试目录(不进镜像; 注意: 排除 .git 后构建时 set-env-version 模块
+# 拿不到 git tag, public/VERSION 会回退为 "dev", 需要真实版本时在 CI 传入 git 上下文)
+.git
+.debug
+.mimosa
+.codebuddy
+.cert
+.spa2nuxt
+.bug
+.feat
+.demo
+.sisyphus
+.VSCodeCounter
+.agent-teams
+.dsh-vision-router
+
+# IDE / 编辑器
+.vscode
+.idea
+*.suo
+*.njsproj
+*.sln
+*.sw?
+
+# CI(镜像构建不需要)
+.gitlab-ci.yml
+.github
+
+# 文档(仅排除根级 md, 不影响 src/ 内被源码引用的资源文件如 assets/example/*.md)
+/*.md
+
+# 日志与临时文件
+*.log
+logs
+.DS_Store
+
+# Docker 自身文件(避免 COPY . . 时产生歧义)
+Dockerfile
+Dockerfile.dev
+Dockerfile.env
+.dockerignore

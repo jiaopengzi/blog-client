@@ -1,30 +1,30 @@
-/**
- * @FilePath     : \blog-client\src\pkg\marked\new-marked.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 配置 marked
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\marked\new-marked.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 配置 marked
  */
 
 import "katex/dist/contrib/mhchem.mjs"
 
 import { Marked } from "marked"
 import markedAlert from "marked-alert" // 引用不同主题提醒效果
-import customHeadingId from "marked-custom-heading-id" // 自定义标题id
+import customHeadingId from "marked-custom-heading-id" // 自定义标题 id
 import markedFootnote from "marked-footnote" // 脚注
 import { markedHighlight } from "marked-highlight" // 代码高亮
 import markedKatex from "marked-katex-extension" // 公式
-import { mangle } from "marked-mangle" // 将邮件链接用HTML字符引用混淆
-import { markedXhtml } from "marked-xhtml" // 将HTML标签转换为XHTML Add closing slash to tags like: hr, br, img, and input
+import { mangle } from "marked-mangle" // 将邮件链接用 HTML 字符引用混淆
+import { markedXhtml } from "marked-xhtml" // 将 HTML 标签转换为 XHTML, 为 hr, br, img 和 input 等标签补上闭合斜杠
 
 import { emojiExtensionInline } from "./extension/emoji" // 自定义表情
 import optionFootnote from "./extension/footnote" // 脚注配置
 import optionHighlight from "./extension/highlight" // 代码高亮配置
 import optionKatex from "./extension/katex" // 公式配置
-import { markExtensionInline } from "./extension/mark" // 自定义mark 扩展
-import { renderer } from "./extension/renderer" // 自定义renderer
-import { subExtensionInline } from "./extension/sub" // 自定义sub 下标
-import { supExtensionInline } from "./extension/sup" // 自定义sup 上标
+import { markExtensionInline } from "./extension/mark" // 自定义 mark 扩展
+import { renderer } from "./extension/renderer" // 自定义 renderer
+import { subExtensionInline } from "./extension/sub" // 自定义 sub 下标
+import { supExtensionInline } from "./extension/sup" // 自定义 sup 上标
 
 let markedInstance: Marked | null = null
 
@@ -45,8 +45,7 @@ const setupMarked = (): Marked => {
         markedAlert(),
         {
             breaks: true, // 允许换行
-            // useNewRenderer 将在 14 版本中默认使用,参考 https://github.com/markedjs/marked/issues/3374
-            // useNewRenderer: true,
+            // useNewRenderer 将在 14 版本中默认使用, 参考 https://github.com/markedjs/marked/issues/3374
             extensions: [emojiExtensionInline, markExtensionInline, subExtensionInline, supExtensionInline],
             renderer: renderer,
         },

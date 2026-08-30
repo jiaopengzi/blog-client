@@ -1,13 +1,13 @@
 <!--
- * FilePath    : blog-client\src\components\common\comment-markdown-preview\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\comment-markdown-preview\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 评论markdown预览组件
+ * Description : 评论 Markdown 预览组件
 -->
 
 <template>
-    <!-- markdown渲染 -->
+    <!-- markdown 渲染 -->
     <div class="markdown-preview-container">
         <HtmlPreview
             ref="previewRef"
@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { EditorStateManager } from "@/components/editor"
+import { EditorStateManager } from "@/components/editor/state"
 import HtmlPreview from "@/components/editor/components/preview"
 import { usePreview } from "@/components/editor/hooks/usePreview"
 

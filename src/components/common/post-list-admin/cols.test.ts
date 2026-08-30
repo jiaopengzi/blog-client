@@ -1,9 +1,9 @@
-/**
- * FilePath    : blog-client\src\components\common\post-list-admin\cols.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\post-list-admin\cols.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : post-list-admin 列配置测试
+ * Description : post-list-admin 列配置的单元测试
  */
 
 import { describe, expect, it } from "vitest"

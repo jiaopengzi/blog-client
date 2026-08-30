@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\common\base-table\types.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 类型定义
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\base-table\types.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 类型定义
  */
 
 import type { AccountKeyItemRes, AccountKeyRes } from "@/api/accountKey/common"
@@ -37,13 +37,13 @@ export interface TableColumn {
     isCategories?: boolean // 是否为分类
     isTags?: boolean // 是否为标签
     isHeading?: boolean // 是否为标题
-    isHeadingWithId?: boolean // 是否为标题带有ID
+    isHeadingWithId?: boolean // 是否为标题带有 ID
     isHeadingWithComment?: boolean // 是否为标题带有评论信息
     isUser?: boolean // 是否为用户
     isUserWithAvatar?: boolean // 是否使用用户头像
     isCommentWithPost?: boolean // 是否为评论带有文章信息
     isCommentWithAdmin?: boolean // 是否为管理员查看评论
-    isMarkdownPreview?: boolean // 是否为Markdown预览
+    isMarkdownPreview?: boolean // 是否为 Markdown 预览
     isCopyText?: boolean // 是否为可复制文本
     isScrollFormatter?: boolean // 是否为可滚动的格式化文本
     onHeadingClick?: (row: TableData) => void // 标题点击回调, isHeading 时生效
@@ -111,6 +111,8 @@ export interface BaseTableProps {
     isShowUserEmail?: boolean // 是否显示用户邮箱
     isShowUserDisplayName?: boolean // 是否显示用户昵称
     isShowCursorPointer?: boolean // 是否显示鼠标手型
+    // 260828-3: 图片单元格单击改为"查看文章"跳转(如用户中心收藏列表), 覆盖默认的图片预览行为
+    imgSingleClickViewPost?: boolean
     loadingDelete?: boolean // 删除加载状态
     rowOperationText?: string // 行操作文本
     deleteConfirmMessage?: string // 自定义删除确认提示信息
@@ -163,6 +165,8 @@ export interface BaseTableListProps {
     isShowUserEmail: boolean
     isShowUserDisplayName: boolean
     isShowCursorPointer: boolean
+    // 260828-3: 图片单元格单击改为"查看文章"跳转(如用户中心收藏列表), 覆盖默认的图片预览行为
+    imgSingleClickViewPost?: boolean
     rowOperationText: string
     tagsItemMaxHeight?: string
     markdownPreviewMaxHeight?: string

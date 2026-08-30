@@ -1,10 +1,11 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-upsert\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-upsert\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 文章新增和编辑组件
 -->
+
 <template>
     <section class="post-upsert-page">
         <NoPermission v-if="showEditNoPermission" :head-title="editNoPermissionHeadTitle" :path-display="editNoPermissionPathDisplay" />
@@ -82,7 +83,7 @@
                     </div>
 
                     <div class="post-form-panels">
-                        <!-- 基础信息面板：页面无分类/标签但有缩略图，始终显示 -->
+                        <!-- 基础信息面板: 页面无分类/标签但有缩略图, 始终显示 -->
                         <section class="form-panel">
                             <div class="form-panel__header">
                                 <h3 class="form-panel__title">基础信息</h3>
@@ -341,7 +342,6 @@
     />
 </template>
 <script lang="ts" setup>
-import { useHead } from "@unhead/vue"
 import { useResizeObserver } from "@vueuse/core"
 import { ElMessage } from "element-plus"
 import type { FormInstance } from "element-plus"
@@ -373,13 +373,13 @@ import { autoFixMarkdownText } from "@/pkg/codemirror/extension/mdlint/service"
 import { RouteNames } from "@/router"
 import { LocalStorageKey } from "@/stores/local"
 import { useOptionsStore } from "@/stores/options"
-import { PermissionNames } from "@/stores/permissionRole"
+import { PermissionNames } from "@/api/permissionRole/permissionNames"
 import { useUserStore } from "@/stores/user"
 import { formatTime } from "@/utils/dateTime"
 import { generateShortcuts } from "@/utils/dateTime"
 import { extractSeoDescriptionFromMarkdown } from "@/utils/markdownSeo"
 import { MessageUtil } from "@/utils/message"
-import NoPermission from "@/views/admin/component/main/no-permission"
+import NoPermission from "@/components/views/admin/component/main/no-permission"
 
 import { type PostInfoAboutTime, type PostUpsertProps, queryKey, type UpdatePostForm, type UpsertPostForm } from "./types"
 import PostUpsertThumbnailTools from "./thumbnail-tools.vue"
@@ -405,11 +405,6 @@ defineOptions({ name: "PostUpsert" })
 
 const { postType, headTitle, routeName } = defineProps<PostUpsertProps>()
 
-// // 事件
-// const emit = defineEmits<{
-//     (event: "post-id", val: string): void
-// }>()
-
 useHead({
     title: headTitle,
 })
@@ -427,24 +422,24 @@ const editNoPermissionHeadTitle = computed(() => `后台管理 - ${editNoPermiss
 const postInfoAboutTime = reactive<PostInfoAboutTime>({})
 
 /**
- * 判断非定时文章是否选择了未来展示时间.
- * @returns true 表示需要展示轻量提醒.
+ * 判断非定时文章是否选择了未来展示时间
+ * @returns true 表示需要展示轻量提醒
  */
 const isShowFuturePostPushTimeTip = computed(() => {
     return shouldShowFuturePostPushTimeTip(postInfoForm.post_status, postInfoForm.post_push_time.Time)
 })
 
 /**
- * 记录展示时间已经由用户手动调整.
- * @returns void.
+ * 记录展示时间已经由用户手动调整
+ * @returns void
  */
 const markPostPushTimeTouched = () => {
     isPostPushTimeTouched.value = true
 }
 
 /**
- * 判断新建文章是否仍在使用初始化时的默认展示时间.
- * @returns true 表示保存时可刷新为提交时刻.
+ * 判断新建文章是否仍在使用初始化时的默认展示时间
+ * @returns true 表示保存时可刷新为提交时刻
  */
 const isUsingInitialDefaultPostPushTime = () => {
     if (postInfoForm.id || isPostPushTimeTouched.value || !postInfoForm.post_push_time.Time || defaultPostPushTimeMs.value === null) {
@@ -455,8 +450,8 @@ const isUsingInitialDefaultPostPushTime = () => {
 }
 
 /**
- * 同步新建文章默认展示时间到提交时刻.
- * @returns true 表示本次提交使用了自动默认值.
+ * 同步新建文章默认展示时间到提交时刻
+ * @returns true 表示本次提交使用了自动默认值
  */
 const syncDefaultPostPushTimeBeforeCreate = () => {
     if (!isUsingInitialDefaultPostPushTime()) {
@@ -521,8 +516,8 @@ watch(thumbnailImgIndex, (val) => {
 })
 
 /**
- * persistArticleEditorVisibility 保存文章编辑器当前栏位显示状态。
- * @returns void.
+ * persistArticleEditorVisibility 保存文章编辑器当前栏位显示状态
+ * @returns void
  */
 const persistArticleEditorVisibility = (): void => {
     saveArticleEditorVisibilityState({
@@ -541,8 +536,8 @@ watch(
 )
 
 /**
- * 打开文章内图片选择弹窗.
- * @returns void.
+ * 打开文章内图片选择弹窗
+ * @returns void
  */
 const openThumbnailPicker = () => {
     if (!hasEditorThumbnailOptions.value) {
@@ -553,18 +548,18 @@ const openThumbnailPicker = () => {
 }
 
 /**
- * 根据用户点选结果更新缩略图.
- * @param selectedUrl 用户在弹窗中选中的图片 URL.
- * @returns void.
+ * 根据用户点选结果更新缩略图
+ * @param selectedUrl 用户在弹窗中选中的图片 URL
+ * @returns void
  */
 const handleThumbnailPicked = (selectedUrl: string) => {
     insertThumbnailFromEditor(selectedUrl)
 }
 
 /**
- * 将文章内图片设置为当前缩略图.
- * @param selectedUrl 手动选择的图片 URL, 不传时按默认插入序号取图.
- * @returns void.
+ * 将文章内图片设置为当前缩略图
+ * @param selectedUrl 手动选择的图片 URL, 不传时按默认插入序号取图
+ * @returns void
  */
 const insertThumbnailFromEditor = (selectedUrl?: string) => {
     const thumbnailUrl = selectedUrl || getPostThumbnailUrlByIndex(editorState.imgUrls, thumbnailImgIndex.value)
@@ -632,7 +627,7 @@ const updateTagListIn = (tagList: string[]) => {
     postInfoForm.tag_names = tagList
 }
 
-// 开关hooks
+// 开关 hooks
 const {
     moreSettingIsShow,
     updateDefaultStatus,
@@ -651,14 +646,14 @@ const {
 const { handleUpdate, isShowAddTocBtn, addDefaultToc } = usePostVideoToc(postInfoForm)
 
 /**
- * seoDescriptionExtract 从 Markdown 源文本中提取 SEO 描述, 跳过代码块等不应进入摘要的内容.
- * @returns void.
+ * seoDescriptionExtract 从 Markdown 源文本中提取 SEO 描述, 跳过代码块等不应进入摘要的内容
+ * @returns void
  */
 const seoDescriptionExtract = () => {
     postInfoForm.seo_description = extractSeoDescriptionFromMarkdown(editorState.editorContent || "", seoDescriptionExtractWords.value)
 }
 
-// 监控文章标签变化,更新 seo 关键词
+// 监控文章标签变化, 更新 seo 关键词
 watch(
     () => postInfoForm.tag_names,
     (newVal, oldVal) => {
@@ -666,17 +661,17 @@ watch(
         newVal = newVal || []
         oldVal = oldVal || []
 
-        // 如果 seo 关键词为空，则更新 seo 关键词
+        // 如果 seo 关键词为空, 则更新 seo 关键词
         if (!postInfoForm.seo_keywords && newVal) {
             postInfoForm.seo_keywords = newVal.join(",")
         }
 
-        // 如果末尾有逗号，则去掉
+        // 如果末尾有逗号, 则去掉
         if (postInfoForm.seo_keywords.endsWith(",")) {
             postInfoForm.seo_keywords = postInfoForm.seo_keywords.slice(0, -1)
         }
 
-        // 将当前 postInfoForm.seo_keywords 使用逗号分割转为set
+        // 将当前 postInfoForm.seo_keywords 使用逗号分割转为 set
         const keywordSet = new Set(postInfoForm.seo_keywords.split(","))
 
         // 需要增加的标签
@@ -702,23 +697,23 @@ watch(
 watch(
     () => postInfoForm.id,
     (newVal) => {
-        // 如果 slug 为空，且 id 不为空，则更新 slug
+        // 如果 slug 为空, 且 id 不为空, 则更新 slug
         if (!postInfoForm.slug && newVal) {
             postInfoForm.slug = newVal
         }
     },
 )
 
-// 更新 slug
+// 监控文章状态变化
 watch(
     () => postInfoForm.post_status,
     (newVal) => {
-        // 如果文章状态不为密码，则清空文章密码
+        // 如果文章状态不为密码, 则清空文章密码
         if (newVal !== PostStatusCode.Password) {
             postInfoForm.post_password = ""
         }
 
-        // 如果文章状态不为过期，则清空文章过期时间
+        // 如果文章状态不为过期, 则清空文章过期时间
         if (newVal !== PostStatusCode.Expired) {
             postInfoForm.post_expired_time = {
                 Time: null,
@@ -726,7 +721,7 @@ watch(
             }
         }
 
-        // 如果文章状态不为发布，则默认文章显示方式为关闭
+        // 如果文章状态不为发布, 则默认文章显示方式为关闭
         if (newVal !== PostStatusCode.Publish) {
             postShowMethod.forEach((item) => {
                 item.status = false
@@ -803,7 +798,7 @@ const {
     updateStatus,
 })
 
-// 监控 category_ids 变化,手动执行校验
+// 监控 category_ids 变化, 手动执行校验
 watch(
     () => postInfoForm.category_ids,
     () => {
@@ -814,8 +809,8 @@ watch(
 )
 
 /**
- * 同步编辑器内容到表单, 并在用户继续编辑时清空上一次 lint 阻断提示.
- * @returns void.
+ * 同步编辑器内容到表单, 并在用户继续编辑时清空上一次 lint 阻断提示
+ * @returns void
  */
 const updateEditorStatus = () => {
     // 将编辑器内容赋值给 post_content
@@ -826,9 +821,9 @@ const updateEditorStatus = () => {
 }
 
 /**
- * 汇总 lint 诊断信息, 用于在表单校验中提示用户未自动修复的问题.
- * @param diagnostics lint 诊断列表.
- * @returns 适合表单错误展示的简短提示文本.
+ * 汇总 lint 诊断信息, 用于在表单校验中提示用户未自动修复的问题
+ * @param diagnostics lint 诊断列表
+ * @returns 适合表单错误展示的简短提示文本
  */
 const formatLintErrorMessage = (diagnostics: { message: string }[]) => {
     const uniqueMessages = Array.from(new Set(diagnostics.map((item) => item.message))).slice(0, 3)
@@ -838,9 +833,9 @@ const formatLintErrorMessage = (diagnostics: { message: string }[]) => {
 }
 
 /**
- * 保存前执行 Markdown lint 自动修复, 剩余问题会挂到 post_content 表单校验中并阻止提交.
- * @param formEl 文章表单实例.
- * @returns 是否通过保存前的编辑器校验.
+ * 保存前执行 Markdown lint 自动修复, 剩余问题会挂到 post_content 表单校验中并阻止提交
+ * @param formEl 文章表单实例
+ * @returns 是否通过保存前的编辑器校验
  */
 const validateEditorBeforeSubmit = async (formEl: FormInstance | undefined) => {
     updateEditorStatus()
@@ -865,7 +860,7 @@ const validateEditorBeforeSubmit = async (formEl: FormInstance | undefined) => {
     try {
         await formEl?.validateField("post_content")
     } catch {
-        // 表单错误提示由 Element Plus 展示, 这里无需额外处理.
+        // 表单错误提示由 Element Plus 展示, 这里无需额外处理
     }
 
     return false
@@ -877,7 +872,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         return
     }
 
-    // 保存时自动插入缩略图，插入后立即同步快照比对状态，避免 watch 异步导致 isUpdate 未更新
+    // 保存时自动插入缩略图, 插入后立即同步快照比对状态, 避免 watch 异步导致 isUpdate 未更新
     if (thumbnailAutoInsert.value) {
         insertThumbnailFromEditor()
         updateStatus()
@@ -885,13 +880,13 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
     // 判断 seo 标题是否为空
     if (!postInfoForm.seo_title) {
-        // 如果 seo 标题为空，则使用文章标题
+        // 如果 seo 标题为空, 则使用文章标题
         postInfoForm.seo_title = postInfoForm.post_title
     }
 
     // 判断 seo 描述是否为空
     if (!postInfoForm.seo_description) {
-        // 如果 seo 描述为空，则自动截取内容前 post_list_summary_truncate 字
+        // 如果 seo 描述为空, 则自动截取内容前 post_list_summary_truncate 字
         seoDescriptionExtract()
     }
 
@@ -900,7 +895,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (!postInfoForm.id) {
         const isAutoPostPushTime = syncDefaultPostPushTimeBeforeCreate()
         const isFinish = await addSubmitForm(formEl)
-        // 如果新增成功，将快照更新
+        // 如果新增成功, 将快照更新
         if (isFinish) {
             if (isAutoPostPushTime && postInfoAboutTime.created_at) {
                 postInfoForm.post_push_time = {
@@ -930,7 +925,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         dataOfUpdate.id = postInfoForm.id
 
         const isFinish = await editSubmitForm(formEl)
-        // 如果更新成功，将快照更新
+        // 如果更新成功, 将快照更新
         if (isFinish) {
             await updateSnapshot()
             clearPostUpsertLocalDraftAfterRemoteSaved(draftPostIdBeforeSubmit)
@@ -939,10 +934,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 }
 
 /**
- * handleEditorExternalToolbarButtonClick 处理编辑器工具栏内的业务按钮动作。
- * 文章编辑页仅在此处注册附加能力, 以避免影响编辑器在其他场景的复用。
- * @param name - 当前点击的外部工具栏按钮标识。
- * @returns 无返回值。
+ * handleEditorExternalToolbarButtonClick 处理编辑器工具栏内的业务按钮动作
+ * 文章编辑页仅在此处注册附加能力, 以避免影响编辑器在其他场景的复用
+ * @param name - 当前点击的外部工具栏按钮标识
+ * @returns 无返回值
  */
 const handleEditorExternalToolbarButtonClick = (name: string): void => {
     if (name === postEditorToolbarActionNames.AddMedia) {
@@ -957,10 +952,10 @@ const handleEditorExternalToolbarButtonClick = (name: string): void => {
 }
 
 /**
- * insertMedia 将媒体选择器中的内容插入编辑器.
- * 图片会统一插入为空方括号的 Markdown 语法, 以保持与拖拽和截图上传行为一致.
- * @param data 媒体选择器返回的数据列表.
- * @returns void.
+ * insertMedia 将媒体选择器中的内容插入编辑器
+ * 图片会统一插入为空方括号的 Markdown 语法, 以保持与拖拽和截图上传行为一致
+ * @param data 媒体选择器返回的数据列表
+ * @returns void
  */
 const insertMedia = (data: TableData[]) => {
     // 不满足条件直接返回
@@ -978,7 +973,7 @@ const insertMedia = (data: TableData[]) => {
             content = `<video-player video-type="hls" id="${videoID}"></video-player>\n`
         }
 
-        // 视频 非 hls
+        // 视频非 hls
         if (item.file_type.startsWith("video") && !item.is_generate_hls) {
             const src = item.url_belong + item.path
             const type = item.file_type.split("/")[1]
@@ -1000,9 +995,9 @@ const insertMedia = (data: TableData[]) => {
 }
 
 /**
- * insertPostContent 将选择的文章或页面链接插入编辑器当前光标位置.
- * @param rows 后台文章或页面列表选中的行.
- * @returns void.
+ * insertPostContent 将选择的文章或页面链接插入编辑器当前光标位置
+ * @param rows 后台文章或页面列表选中的行
+ * @returns void
  */
 const insertPostContent = (rows: PostResPaginationByAdmin[]) => {
     if (!editorPostRef.value || rows.length === 0) return
@@ -1032,8 +1027,9 @@ const viewPost = () => {
 const newPostWrite = async () => {
     // 先跳转到列表再跳转到编辑页面, 以便重置组件状态
     const allRouteName = postType === PostType.Page ? RouteNames.PageAll : RouteNames.PostAll
-    await router.push({ name: allRouteName })
-    await router.push({ name: routeName })
+    // Nuxt 适配: admin 子页为 [...slug] catch-all, SPA 路由名不存在, 改路径跳转
+    await router.push({ path: `/admin/${allRouteName}` })
+    await router.push({ path: `/admin/${routeName}` })
 }
 
 onUnmounted(() => {
@@ -1154,7 +1150,6 @@ onBeforeMount(async () => {
 .more-setting-switch {
     display: flex;
     align-items: center;
-    // margin: 16px 0;
     font-size: 14px;
     color: var(--jpz-text-color-primary);
 }

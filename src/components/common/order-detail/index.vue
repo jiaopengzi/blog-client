@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\views\admin\component\main\order\order-detail\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\order-detail\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -88,16 +88,15 @@ import UserItem from "../user-item"
 defineOptions({ name: "OrderDetail" })
 
 const emit = defineEmits<{
-    (event: "edit-status", value: boolean): void // 编辑用户状态
+    (event: "edit-status", value: boolean): void // 编辑状态
 }>()
 
-// props
 const {
     data,
     isAdmin = true,
     column = 1,
 } = defineProps<{
-    data: OrderGetByIDRes // 需要编辑的用户ID
+    data: OrderGetByIDRes // 订单详情数据
     isAdmin?: boolean // 是否显示用户信息
     column?: number // 信息列数
 }>()
@@ -145,7 +144,7 @@ watch(
 )
 
 const availableRefundAmount = computed(() => {
-    // 如果没有支付信息，或者未支付，或者关闭，则可退款金额为0
+    // 如果没有支付信息, 或者未支付, 或者关闭, 则可退款金额为 0
     if (
         !dataAc.value.payment ||
         !dataAc.value.payment.trade_state ||
@@ -156,14 +155,14 @@ const availableRefundAmount = computed(() => {
         return 0
     }
 
-    // 如果没有退款信息，可退款金额就是订单总金额
+    // 如果没有退款信息, 可退款金额就是订单总金额
     if (refundList.value.length === 0) {
         return dataAc.value.payment.total_amount / 100
     }
 
     // 根据退款信息计算可退款金额
     const totalRefunded = refundList.value.reduce((acc, item) => acc + (item.refund_amount || 0), 0)
-    return Math.max(0, dataAc.value.payment.total_amount - totalRefunded) / 100 // 确保不小于0
+    return Math.max(0, dataAc.value.payment.total_amount - totalRefunded) / 100 // 确保不小于 0
 })
 
 // 退款成功后触发事件
@@ -206,7 +205,7 @@ const handleCancel = async () => {
                 await pollingGetStreamIDsStatus(res.data.data.stream_items)
             }
 
-            // 取消成功，更新订单状态
+            // 取消成功, 更新订单状态
             dataAc.value.status = OrderStatus.Canceled
             emit("edit-status", true)
             MessageUtil.success("订单取消成功")

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\post\delete.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 删除文章
+/*
+ * FilePath    : blog-client-nuxt\src\api\post\delete.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 删除文章
  */
 
 import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"

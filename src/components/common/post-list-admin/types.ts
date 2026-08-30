@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\common\post-list-admin\types.ts
+ * FilePath    : blog-client-nuxt\src\components\common\post-list-admin\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -10,7 +10,7 @@ import { RouteNames } from "@/router"
 
 import { type PostUpsertProps } from "../post-upsert"
 
-// url query key
+// url 查询参数的键
 export enum queryKey {
     Group = "group",
     PostAuthor = "post_author",

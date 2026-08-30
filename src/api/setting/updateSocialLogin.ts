@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\setting\updateSocialLogin.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 更新社交登录信息
+/*
+ * FilePath    : blog-client-nuxt\src\api\setting\updateSocialLogin.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 更新社交登录信息
  */
 
 import { request, routerGroup } from "@/api/request"

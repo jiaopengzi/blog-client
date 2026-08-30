@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\common\post-list-admin\hooks.ts
+ * FilePath    : blog-client-nuxt\src\components\common\post-list-admin\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -21,18 +21,18 @@ import { MessageUtil } from "@/utils/message"
 import { type PostCountGroupItem, queryKey } from "./types"
 
 /**
- * normalizeCountList 归一化统计列表, 避免接口在无数据时返回 null 导致后续 reduce 或 forEach 报错。
+ * normalizeCountList 归一化统计列表, 避免接口在无数据时返回 null 导致后续 reduce 或 forEach 报错
  */
 function normalizeCountList<T>(data: T[] | null | undefined): T[] {
     return Array.isArray(data) ? data : []
 }
 
 /**
- * useHeader 获取后台文章或页面列表头部统计数据。
- * @param userID - 当前登录用户 ID, 用于生成“我的”分组。
- * @param postType - 当前列表对应的文章类型。
- * @param enabled - 是否启用头部统计请求。
- * @returns 头部分组, 月份统计和刷新方法集合。
+ * useHeader 获取后台文章或页面列表头部统计数据.
+ * @param userID - 当前登录用户 ID, 用于生成 "我的" 分组.
+ * @param postType - 当前列表对应的文章类型.
+ * @param enabled - 是否启用头部统计请求.
+ * @returns 头部分组, 月份统计和刷新方法集合.
  */
 export function useHeader(userID: string = "", postType: PostType, enabled: boolean = true) {
     const postCountAuthor = ref<PostCountByAuthor[]>([])
@@ -49,7 +49,6 @@ export function useHeader(userID: string = "", postType: PostType, enabled: bool
     const allGroup = "all"
     const activeGroup = ref(allGroup)
 
-    // 获取 postCountAuthor
     const getPostCountAuthor = async () => {
         const res = await getPostCountByAuthorAPI(postType)
         if (res.data.code === ResponseCode.PostCountByAuthorSuccess) {
@@ -60,7 +59,6 @@ export function useHeader(userID: string = "", postType: PostType, enabled: bool
         }
     }
 
-    // 获取 postCountStatus
     const getPostCountStatus = async () => {
         const res = await getPostCountByStatusAPI(postType)
         if (res.data.code === ResponseCode.PostCountByStatusSuccess) {
@@ -71,7 +69,6 @@ export function useHeader(userID: string = "", postType: PostType, enabled: bool
         }
     }
 
-    // 获取 postCountMonth
     const getPostCountMonth = async () => {
         const res = await getPostCountByMonthAdminAPI(postType)
         if (res.data.code === ResponseCode.PostCountByMonthSuccess) {
@@ -82,7 +79,6 @@ export function useHeader(userID: string = "", postType: PostType, enabled: bool
         }
     }
 
-    // 获取 postCountPinned
     const getPostCountByIsPinned = async () => {
         const res = await getPostCountByIsPinnedAPI(postType)
         postCountPinned.value = {} as PostCountByIsPinned
@@ -99,7 +95,6 @@ export function useHeader(userID: string = "", postType: PostType, enabled: bool
         }
     }
 
-    // 获取 postCountRecommended
     const getPostCountByIsRecommended = async () => {
         const res = await getPostCountByIsRecommendedAPI(postType)
         postCountRecommended.value = {} as PostCountByIsRecommended
@@ -156,8 +151,6 @@ export function useHeader(userID: string = "", postType: PostType, enabled: bool
             const statusList = normalizeCountList(postCountStatus.value)
 
             // 构造按照状态统计的文章数量
-
-            // 清空 statusPosts
             statusPosts.value = []
 
             statusList.forEach((item) => {
@@ -215,7 +208,6 @@ export function useHeader(userID: string = "", postType: PostType, enabled: bool
             countGroup.value.push(...statusPosts.value)
         }
 
-        // 按照 index 升序排序
         return (
             Object.values(countGroup.value)
                 .slice()

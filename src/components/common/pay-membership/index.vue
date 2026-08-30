@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\pay-membership\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\pay-membership\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -34,7 +34,7 @@ import { onBeforeMount, ref } from "vue"
 import { type MembershipRes } from "@/api/membership/common"
 import { getMembershipPayRolesAPI } from "@/api/membership/getPayRoles"
 import { ResponseCode } from "@/api/response"
-import { Names } from "@/customElements"
+import { Names } from "@/customElements/constants"
 import { useCustomElementsDataCacheStore } from "@/stores/customElementsDataCache"
 import { fenToYuan } from "@/utils/amount"
 
@@ -42,15 +42,13 @@ import { type PayMembershipProps } from "./types"
 
 defineOptions({ name: "PayMembership" })
 
-// 定义 props
 const { loading = false } = defineProps<PayMembershipProps>()
 
-// 事件
 const emit = defineEmits<{
     (event: "pay-membership", val: MembershipRes): void
 }>()
 
-// 加载状态根据点击对应的按钮，只保证一个按钮加载
+// 加载状态根据点击对应的按钮, 只保证一个按钮加载
 const loadingAcId = ref<string | null>(null)
 const loadingAc = (id: string) => loading && loadingAcId.value === id
 
@@ -62,7 +60,7 @@ const handleClick = (item: MembershipRes) => {
 const roles = ref<MembershipRes[]>([])
 
 const durationTimeDisplay = (duration: string) => {
-    // 将文本转换为数字（秒）
+    // 将文本转换为数字(秒)
     const durationNum = parseInt(duration, 10)
 
     if (durationNum === 0) return "永久"
@@ -141,7 +139,7 @@ onBeforeMount(async () => {
         width: 200px;
         box-shadow: var(--jpz-box-shadow-light);
 
-        /* Reset el-button default styles to stretch fully */
+        /* 重置 el-button 默认样式, 使内容完全撑满 */
         :deep(> span) {
             display: block;
             width: 100%;

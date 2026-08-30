@@ -1,13 +1,12 @@
-/**
- * @FilePath     : \blog-client\src\components\common\media-add\requestStrategyEl.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : el 组件通用上传请求策略
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\media-add\requestStrategyEl.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : el 组件通用上传请求策略
  */
 
 import { uploadChunkAPI } from "@/api/upload/chunk"
-// import { uploadFileBySignedUrlAPI } from '@/api/upload/uploadFileBySignedUrl'
 import { confirmAfterUploadBySignedUrlAPI } from "@/api/upload/confirmAfterUploadBySignedUrl"
 import { type ConfirmBeforeUploadRequest, confirmBeforeUploadAPI } from "@/api/upload/confirmBeforeUpload"
 import type { FileAllowed } from "@/api/upload/getUploadFileRequirements"
@@ -19,7 +18,6 @@ import { RequestStrategyBase } from "@/utils/requestStrategyBase"
 
 export class RequestStrategyEl extends RequestStrategyBase {
     confirmBeforeUploadAPI = confirmBeforeUploadAPI
-    // uploadFileBySignedUrlAPI = uploadFileBySignedUrlAPI
     confirmAfterUploadBySignedUrlAPI = confirmAfterUploadBySignedUrlAPI
     uploadChunkAPI = uploadChunkAPI
     getUploadFileUrlAPI = getUploadFileUrlAPI
@@ -28,7 +26,7 @@ export class RequestStrategyEl extends RequestStrategyBase {
     fileAllowedList: FileAllowed[] = []
 
     // 覆写 confirmBeforeUpload, 根据扩展名修正浏览器可能返回的非标准 MIME 类型
-    async confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo> {
+    override async confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo> {
         const ext = this.fileName.split(".").pop()?.toLowerCase() || ""
         const matched = this.fileAllowedList.find((f) => f.extension.toLowerCase() === ext)
         if (matched) {
@@ -48,7 +46,7 @@ export class RequestStrategyEl extends RequestStrategyBase {
             const allowedExts = this.fileAllowedList.map((f) => f.extension).join(", ")
             detail = `文件类型不允许上传，允许的类型：${allowedExts}`
         } else {
-            // 类型允许，大小超出限制
+            // 类型允许, 大小超出限制
             detail = `${ext.toUpperCase()} 最大允许 ${Math.floor(convertBytes(matched.max_size, ByteUnit.B, ByteUnit.MB))}MB`
         }
 

@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\countdown\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 倒计时 
+ * FilePath    : blog-client-nuxt\src\components\common\countdown\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 倒计时
 -->
 
 <template>
@@ -22,37 +22,35 @@ import { computed, onUnmounted, ref, watch } from "vue"
 defineOptions({ name: "Countdown" })
 
 const emit = defineEmits<{
-    (event: "countdown-over", value: boolean): void // 编辑用户状态
+    (event: "countdown-over", value: boolean): void // 倒计时结束事件
 }>()
 
 const { countdown = 100 } = defineProps<{
     countdown?: number
 }>()
 
-const totalSeconds = ref(countdown) // 初始化倒计时时间，单位为秒
+const totalSeconds = ref(countdown) // 初始化倒计时时间, 单位为秒
 
-let timer: ReturnType<typeof setInterval> | undefined = undefined // 定时器
+let timer: ReturnType<typeof setInterval> | undefined = undefined
 
-const days = computed(() => Math.floor(totalSeconds.value / 60 / 60 / 24)) // 计算天数
-const hours = computed(() => Math.floor((totalSeconds.value / 60 / 60) % 24)) // 计算小时数
-const minutes = computed(() => Math.floor((totalSeconds.value / 60) % 60)) // 计算分钟数
-const seconds = computed(() => Math.floor(totalSeconds.value % 60)) // 计算秒数
+const days = computed(() => Math.floor(totalSeconds.value / 60 / 60 / 24))
+const hours = computed(() => Math.floor((totalSeconds.value / 60 / 60) % 24))
+const minutes = computed(() => Math.floor((totalSeconds.value / 60) % 60))
+const seconds = computed(() => Math.floor(totalSeconds.value % 60))
 
-// 监控 props.countdown 变化 重新开始倒计时
+// 监控 props.countdown 变化, 重新开始倒计时
 watch(
     () => countdown,
     (valNew) => {
-        totalSeconds.value = valNew // 更新 totalSeconds.value 的值
+        totalSeconds.value = valNew
         stopCountdown()
-        startCountdown() // 重新开始倒计时
+        startCountdown()
     },
-    // 立刻执行
     { immediate: true },
 )
 
 // 启动倒计时
 function startCountdown() {
-    // 组件挂载时启动定时器
     timer = setInterval(() => {
         if (totalSeconds.value > 0) {
             totalSeconds.value--

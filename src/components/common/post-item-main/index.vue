@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\post-item-main\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 单个主文章组件
+ * FilePath    : blog-client-nuxt\src\components\common\post-item-main\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 单个主文章组件
 -->
 
 <template>
@@ -52,7 +52,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from "pinia"
 import { computed } from "vue"
-import { useRouter } from "vue-router"
 
 import { getPostDisplayTime, type PostResPagination, PostStatusCode } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
@@ -77,7 +76,6 @@ const {
 
 const fallbackInitial = computed(() => postData.post_title?.trim().slice(0, 1).toUpperCase() || "P")
 
-// 设备类型
 const deviceStore = useDeviceStore()
 const { device } = storeToRefs(deviceStore)
 const router = useRouter()
@@ -111,12 +109,10 @@ const emit = defineEmits<{
     (event: "author-user-name", val: string): void
 }>()
 
-// 点击分类
 const clickCategory = (val: PostCategory) => {
     emit("clickCategory", val)
 }
 
-// 点击文章
 const postId = (val: string) => {
     emit("postId", val)
 }
@@ -161,7 +157,6 @@ const handleReadMoreClick = () => {
     postId(postData.id)
 }
 
-// 点击作者
 const clickAuthorUserName = (val: string) => {
     router.push({
         name: RouteNames.UserPublicProfile,
@@ -171,7 +166,7 @@ const clickAuthorUserName = (val: string) => {
 
 // 右上角提示符内容
 const topRightTip = computed(() => {
-    // 判断 postData 中展示时间是否在 7 天内, 显示 NEW.
+    // 判断 postData 中展示时间是否在 7 天内, 显示 NEW
     const createTime = new Date(getPostDisplayTime(postData)).getTime()
     const nowTime = new Date().getTime()
     const diffTime = nowTime - createTime
@@ -192,8 +187,6 @@ const topRightTip = computed(() => {
     overflow: hidden;
 
     &:hover {
-        // 鼠标移动到 .post-item 上时, .post-item 出现上下阴影
-        // box-shadow: var(--jpz-post-item-main-hover-shadow);
         .read-more {
             opacity: 1;
         }
@@ -233,13 +226,21 @@ const topRightTip = computed(() => {
     padding-left: 10px;
     padding-right: 10px;
     z-index: 2;
-    background-color: var(--jpz-color-primary);
+    // Nuxt 适配: 生产构建 CSS 提取顺序下 element-plus 同特异性规则可能覆盖本规则,
+    // 用 !important 固定主题主色背景与文字色 (与线上旧站视觉一致)
+    background-color: var(--jpz-color-primary) !important;
     line-height: 200%;
     font-size: 14px;
-    color: var(--jpz-bg-color);
+    color: var(--jpz-bg-color) !important;
     border-radius: 5%;
     font-weight: 500;
     border: none;
+}
+
+// Nuxt 适配: 阅读全文按钮锁定主题主色背景与白色文字, 使按钮出现时与 hover 时颜色保持不变; 与线上旧站一致, 生产构建顺序防护
+.read-more {
+    background-color: var(--jpz-color-primary) !important;
+    color: var(--jpz-bg-color) !important;
 }
 
 .thumbnail {
@@ -310,7 +311,7 @@ const topRightTip = computed(() => {
 .pinned {
     // 使用 float:left 让标识只占用第一行宽度, 第二、第三行文字回到左对齐
     float: left;
-    padding: 0px 6px; //手动调整位置
+    padding: 0px 6px; // 手动调整位置
     margin-top: 2px;
     margin-right: 5px;
     background-color: var(--jpz-color-secondary);
@@ -409,7 +410,7 @@ const topRightTip = computed(() => {
     .summary {
         height: 2em;
         line-clamp: 4;
-        -webkit-line-clamp: 4; // 限制行数为4
+        -webkit-line-clamp: 4; // 限制行数为 4
     }
 
     .has-top-right-tip {

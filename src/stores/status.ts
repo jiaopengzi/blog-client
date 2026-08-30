@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\stores\status.ts
+ * FilePath    : blog-client-nuxt\src\stores\status.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -8,7 +8,9 @@
 
 import { acceptHMRUpdate, defineStore } from "pinia"
 
-import { PostDetailType } from "@/components/common/post-detail"
+// 阶段 1 适配: 原项目为目录导入 "@/components/common/post-detail" (barrel),
+// 新项目该目录暂只迁移类型文件, 改为直接指向 types (计划坑位 8: 目录导入在 Nuxt dev 下可能解析失败)
+import { PostDetailType } from "@/components/common/post-detail/types"
 
 export interface StatusStore {
     isShowPostDetail: boolean // 是否显示文章详情
@@ -19,7 +21,7 @@ export interface StatusStore {
     isShowHomeAside: boolean // 是否显示首页侧边栏
     hasDataHomeAside: boolean // 首页侧边栏是否有数据
     isShowSearchList: boolean // 是否显示搜索列表
-    disablePagination: boolean // 是否禁用分页功能,主要是临时禁用，比如在搜索时，一段时间后自动解禁
+    disablePagination: boolean // 是否禁用分页功能, 主要是临时禁用, 比如在搜索时, 一段时间后自动解禁
 
     detailType: PostDetailType // 页面类型
     isShowSearch: boolean // 是否显示搜索框
@@ -31,6 +33,8 @@ export interface StatusStore {
     isShowMonthArchive: boolean // 是否显示归档
 
     hasDataToc: boolean // 目录是否有数据
+    tocHtml: Array<{ index: number; level: number; text: string; anchor: string }> // 目录数据 (文章详情视图写入, 公用 layout 渲染)
+    tocHeadingShowCurrentIndex: number // 目录当前高亮索引
     hasDataRecommendedRead: boolean // 推荐文章是否有数据
     hasDataHotPost: boolean // 热门文章是否有数据
     hasDataPostTag: boolean // 标签是否有数据
@@ -57,7 +61,7 @@ function createStatusStore(): StatusStore {
         disablePagination: false, // 默认不禁用分页功能
 
         detailType: PostDetailType.Post, // 默认页面类型为文章
-        isShowSearch: true, // 默认不显示搜索框
+        isShowSearch: true, // 默认显示搜索框
 
         isShowToc: true, // 默认显示目录
         isShowRecommendedRead: true, // 默认显示推荐文章
@@ -66,6 +70,8 @@ function createStatusStore(): StatusStore {
         isShowMonthArchive: true, // 默认显示归档
 
         hasDataToc: false, // 默认目录没有数据
+        tocHtml: [], // 默认目录为空
+        tocHeadingShowCurrentIndex: 0, // 默认高亮第一个
         hasDataRecommendedRead: false, // 默认推荐文章没有数据
         hasDataHotPost: false, // 默认热门文章没有数据
         hasDataPostTag: false, // 默认标签没有数据
@@ -244,6 +250,11 @@ export const useStatusStore = defineStore("status", {
             this.isShowHotPost = true
             this.isShowPostTag = true
             this.isShowMonthArchive = true
+
+            // 复位详情页目录状态 (修复详情页点面包屑首页后侧栏残留目录组件)
+            this.hasDataToc = false
+            this.tocHtml = []
+            this.tocHeadingShowCurrentIndex = 0
         },
 
         // 预设状态 文章详情
@@ -300,7 +311,7 @@ export const useStatusStore = defineStore("status", {
     },
 })
 
-// 允许开发环境下进行热更新 HMR(Hot Module Replacement)
+// 允许开发环境下进行热更新 HMR (Hot Module Replacement)
 if (import.meta.hot) {
     import.meta.hot.accept(acceptHMRUpdate(useStatusStore, import.meta.hot))
 }

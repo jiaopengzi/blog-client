@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\setting\testEmail.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 测试邮箱配置链接
+/*
+ * FilePath    : blog-client-nuxt\src\api\setting\testEmail.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 测试邮箱配置链接
  */
 
 import type { SendTestEmailRequest } from "@/api/common" // 复用类型

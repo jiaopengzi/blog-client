@@ -1,5 +1,8 @@
-/**
- * FilePath    : blog-client\src\pkg\codemirror\extension\theme\index.ts
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\theme\index.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
  * Description : 统一导出主题
  */
 
@@ -44,7 +47,6 @@ export const presetThemeMap: Record<ThemePresetId, Theme> = {
     "tokyonight-night": Theme.TokyoNight,
 }
 
-// 定义主题键的类型
 export type ThemeKey = `${Theme}${ThemeMode}`
 
 // 更严格的类型定义

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\editor\command\constant.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : markdown 标记常量
+/*
+ * FilePath    : blog-client-nuxt\src\components\editor\command\constant.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : markdown 标记常量
  */
 
 import { redo, undo } from "@codemirror/commands"
@@ -43,7 +43,6 @@ export enum CommandsKey {
     Superscript = "superscript",
     Subscript = "subscript",
     PayContent = "payContent",
-    // Video = "video",
     Copy = "copy",
     Save = "save",
     Publish = "publish",
@@ -54,11 +53,7 @@ export enum CommandsKey {
     ExitFullscreen = "exitFullscreen",
     Edit = "edit",
     WechatOfficialAccount = "WechatOfficialAccount",
-    // Markdown = "markdown",
-    // Html = "html",
-    // Pdf = "pdf",
     Help = "help",
-    // Info = "info",
     Vim = "vim",
     Details = "details",
     Alert = "alert",
@@ -68,7 +63,7 @@ export enum CommandsKey {
     LoginView = "loginView",
 }
 
-// markdown 编辑器 单个命令对象 的类型
+// markdown 编辑器单个命令对象的类型
 export interface MarkdownEditorCommandItem {
     tip?: string // 前端提示
     prefix?: string // 前缀
@@ -93,18 +88,17 @@ export const clearEditorView = (view: EditorView) => {
 }
 
 /**
- * @description: 创建 markdown 编辑器 所有 排序 命令 集合对象
- * @param editorStateManager 编辑器状态管理器
- * @return {MarkdownEditorCommands} 编辑器 所有 排序 命令 集合对象
+ * @description: 创建 markdown 编辑器排序命令集合对象
+ * @return {MarkdownEditorCommands} 编辑器排序命令集合对象
  */
 export function createMarkdownEditorCommands(): MarkdownEditorCommands {
     return {
-        // 撤销重做
+        // vim 模式
         [CommandsKey.Vim]: {
             tip: "vim模式",
             icon: IconKeys.Vim,
         },
-        // 撤销重做
+        // 撤销
         [CommandsKey.Undo]: {
             tip: "撤销",
             hotKey: "Ctrl+Z",
@@ -151,14 +145,14 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             suffix: "~~",
             icon: IconKeys.Strikethrough,
         },
-        // mark标记
+        // mark 标记
         [CommandsKey.Mark]: {
             tip: "mark标记",
             prefix: "==",
             suffix: "==",
             icon: IconKeys.Mark,
         },
-        //   emoji
+        // emoji 表情
         [CommandsKey.Emoji]: {
             tip: "emoji表情",
             prefix: ":",
@@ -174,7 +168,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             hotKey: "Ctrl+H",
             icon: IconKeys.Heading,
         },
-        // 标题1
+        // 标题 1
         [CommandsKey.H1]: {
             tip: "标题1",
             prefix: "# ",
@@ -182,7 +176,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             hotKey: "Ctrl+1",
             icon: IconKeys.H1,
         },
-        // 标题2
+        // 标题 2
         [CommandsKey.H2]: {
             tip: "标题2",
             prefix: "\n## ",
@@ -190,7 +184,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             hotKey: "Ctrl+2",
             icon: IconKeys.H2,
         },
-        // 标题3
+        // 标题 3
         [CommandsKey.H3]: {
             tip: "标题3",
             prefix: "\n### ",
@@ -198,7 +192,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             hotKey: "Ctrl+3",
             icon: IconKeys.H3,
         },
-        // 标题4
+        // 标题 4
         [CommandsKey.H4]: {
             tip: "标题4",
             prefix: "\n#### ",
@@ -206,7 +200,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             hotKey: "Ctrl+4",
             icon: IconKeys.H4,
         },
-        // 标题5
+        // 标题 5
         [CommandsKey.H5]: {
             tip: "标题5",
             prefix: "\n##### ",
@@ -214,7 +208,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             hotKey: "Ctrl+5",
             icon: IconKeys.H5,
         },
-        // 标题6
+        // 标题 6
         [CommandsKey.H6]: {
             tip: "标题6",
             prefix: "\n###### ",
@@ -332,17 +326,8 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 付费内容
         [CommandsKey.PayContent]: {
             tip: "付费内容",
-            // prefix: "<!--more-->",
             icon: IconKeys.PayContent,
         },
-        // // 视频
-        // [CommandsKey.Video]: {
-        //     tip: "视频",
-        //     prefix: '\n<video-player video-type="hls" src="" poster="" id="',
-        //     suffix: '"></video-player>\n',
-        //     hotKey: "Ctrl+Shift+V",
-        //     icon: IconKeys.Video,
-        // },
         // 复制
         [CommandsKey.Copy]: {
             tip: "复制",
@@ -415,31 +400,11 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             suffix: "\n\n</login-view>\n",
             icon: IconKeys.Lock,
         },
-        // // 导出 markdown
-        // [CommandsKey.Markdown]: {
-        //     tip: "导出 markdown",
-        //     icon: IconKeys.Markdown,
-        // },
-        // // 导出 html
-        // [CommandsKey.Html]: {
-        //     tip: "导出 html",
-        //     icon: IconKeys.Html,
-        // },
-        // // 导出 pdf
-        // [CommandsKey.Pdf]: {
-        //     tip: "导出 PDF",
-        //     icon: IconKeys.Pdf,
-        // },
         // 帮助
         [CommandsKey.Help]: {
             tip: "帮助",
             icon: IconKeys.Help,
         },
-        // // 关于
-        // [CommandsKey.Info]: {
-        //     tip: "关于",
-        //     icon: IconKeys.Info,
-        // },
         // 详情
         [CommandsKey.Details]: {
             tip: "详情",
@@ -474,5 +439,5 @@ export const ScrollElementTag: string = "*"
 // 需要跳转的元素标题标签
 export const ScrollElementTagHeading: string = "h1, h2, h3, h4, h5, h6"
 
-// createMarkdownEditorCommands 执行导出单例对象
+// markdown 编辑器命令单例
 export const markdownEditorCommands = createMarkdownEditorCommands()

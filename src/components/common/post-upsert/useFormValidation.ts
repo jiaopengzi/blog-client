@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\common\post-upsert\useFormValidation.ts
+ * FilePath    : blog-client-nuxt\src\components\common\post-upsert\useFormValidation.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -21,7 +21,7 @@ import { type UpsertPostForm } from "./types"
 // 表单验证选项
 interface FormValidationOptions {
     form: {
-        id?: Ref<string | undefined> // 文章ID
+        id?: Ref<string | undefined> // 文章 ID
         post_author?: Ref<string> // 文章作者
         post_content?: Ref<string> // 文章内容
         post_title?: Ref<string> // 文章标题
@@ -29,12 +29,12 @@ interface FormValidationOptions {
         post_password?: Ref<string | undefined> // 文章密码
         comment_status?: Ref<CommentStatusCode> // 评论是否开启 0 关闭 1 开启
         price?: Ref<number | undefined> // 价格
-        seo_title?: Ref<string | undefined> // SEO标题
-        seo_keywords?: Ref<string | undefined> // SEO关键词
-        seo_description?: Ref<string | undefined> // SEO描述
+        seo_title?: Ref<string | undefined> // SEO 标题
+        seo_keywords?: Ref<string | undefined> // SEO 关键词
+        seo_description?: Ref<string | undefined> // SEO 描述
         slug?: Ref<string | undefined> // 别名
         thumbnail?: Ref<string | undefined> // 缩略图
-        category_ids?: Ref<string[]> // 分类id
+        category_ids?: Ref<string[]> // 分类 id
         tag_names?: Ref<string[] | undefined> // 标签
         pay_roles?: Ref<string[] | undefined> // 付费角色
         post_push_time?: Ref<PgSqlDateTime | undefined> // 发布时间
@@ -57,13 +57,13 @@ function checkCategoriesValidator(rule: unknown, value: number[], callback: (err
 
 // 检查 price 是否可用
 function checkPriceValidator(rule: unknown, value: number, callback: (error?: string | Error | undefined) => void): void {
-    // 若为空，则直接返回
+    // 若为空, 则直接返回
     if (!value) {
         callback()
         return
     }
 
-    // 若不为空，必须为数字
+    // 若不为空, 必须为数字
     if (isNaN(value)) {
         callback(new Error("价格必须为数字"))
         return
@@ -86,11 +86,11 @@ function checkPriceValidator(rule: unknown, value: number, callback: (error?: st
 }
 
 /**
- * @description: 校验 SEO 描述字段.
- * @param rule 表单规则, 当前校验中未使用.
- * @param value 当前输入值.
- * @param callback 校验完成回调.
- * @return void.
+ * @description: 校验 SEO 描述字段
+ * @param rule 表单规则, 当前校验中未使用
+ * @param value 当前输入值
+ * @param callback 校验完成回调
+ * @return void
  */
 function checkSeoDescriptionValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
     void rule
@@ -114,11 +114,11 @@ function checkSeoDescriptionValidator(rule: unknown, value: string, callback: (e
 }
 
 /**
- * @description: 校验 SEO 关键词字段.
- * @param rule 表单规则, 当前校验中未使用.
- * @param value 当前输入值.
- * @param callback 校验完成回调.
- * @return void.
+ * @description: 校验 SEO 关键词字段
+ * @param rule 表单规则, 当前校验中未使用
+ * @param value 当前输入值
+ * @param callback 校验完成回调
+ * @return void
  */
 function checkSeoKeywordsValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
     void rule
@@ -147,11 +147,11 @@ function checkSeoKeywordsValidator(rule: unknown, value: string, callback: (erro
 }
 
 /**
- * @description: 校验缩略图 URL 字段.
- * @param rule 表单规则, 当前校验中未使用.
- * @param value 当前输入值.
- * @param callback 校验完成回调.
- * @return void.
+ * @description: 校验缩略图 URL 字段
+ * @param rule 表单规则, 当前校验中未使用
+ * @param value 当前输入值
+ * @param callback 校验完成回调
+ * @return void
  */
 function checkThumbnailValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
     void rule
@@ -221,7 +221,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查文章密码是否可用
     function checkPostPasswordValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 如果文章状态不是密码保护，则直接返回
+        // 如果文章状态不是密码保护, 则直接返回
         if (form.post_status?.value !== PostStatusCode.Password) {
             callback()
             return
@@ -250,7 +250,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查 SEO 标题是否可用
     function checkSeoTitleValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 若为空，则直接返回
+        // 若为空, 则直接返回
         if (!value) {
             callback()
             return
@@ -272,13 +272,13 @@ export function useFormValidation(options: FormValidationOptions): {
     }
     // 检查别名是否可用
     function checkPostSlugValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 如果 id 不为空，则直接返回
+        // 如果 id 不为空, 则直接返回
         if (form.id?.value) {
             callback()
             return
         }
 
-        // 如果为空，则直接返回
+        // 如果为空, 则直接返回
         if (!value) {
             callback()
             return
@@ -320,13 +320,13 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查别名是否可用
     function checkPostSlugExcludingIDValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 如果 id 为空，则直接返回
+        // 如果 id 为空, 则直接返回
         if (!form.id?.value) {
             callback()
             return
         }
 
-        // 如果为空，则直接返回
+        // 如果为空, 则直接返回
         if (!value) {
             callback()
             return
@@ -377,13 +377,13 @@ export function useFormValidation(options: FormValidationOptions): {
         const now = new Date()
         const postPushTime = value.Time
 
-        // 定时发布时, 发布时间不能小于当前时间.
+        // 定时发布时, 发布时间不能小于当前时间
         if (form.post_status?.value === PostStatusCode.Future && now >= postPushTime) {
             callback(new Error("发布时间不能小于当前时间"))
             return
         }
 
-        // 若不为空，再判断 post_push_time 是否小于 post_expired_time
+        // 若不为空, 再判断 post_push_time 是否小于 post_expired_time
         if (form.post_expired_time?.value && form.post_expired_time.value.Time) {
             const postExpiredTime = new Date(form.post_expired_time.value.Time)
             if (postPushTime > postExpiredTime) {
@@ -397,7 +397,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查过期时间是否可用
     function checkPostExpiredTimeValidator(rule: unknown, value: PgSqlDateTime, callback: (error?: string | Error | undefined) => void): void {
-        // 状态不为过期且过期时间为空，则直接返回
+        // 状态不为过期且过期时间为空, 则直接返回
         if (form.post_status?.value !== PostStatusCode.Expired && !value.Time) {
             callback()
             return
@@ -409,23 +409,17 @@ export function useFormValidation(options: FormValidationOptions): {
             return
         }
 
-        // // 状态不为过期且过期时间不为
-        // if (form.post_status?.value !== PostStatusCode.Expired && value.Time) {
-        //     callback(new Error("状态不为过期时，过期时间必须为空"))
-        //     return
-        // }
-
         // 校验过期时间
         if (value.Time) {
             const postExpiredTime = value.Time
 
-            // 若不为空，再判断 post_push_time 为空，直接返回
+            // 若不为空, 再判断 post_push_time 为空, 直接返回
             if (!form.post_push_time?.value) {
                 callback()
                 return
             }
 
-            // 若不为空，再判断 post_push_time 是否小于 post_expired_time
+            // 若不为空, 再判断 post_push_time 是否小于 post_expired_time
             if (form.post_push_time?.value && form.post_push_time.value.Time) {
                 const postPushTime = new Date(form.post_push_time.value.Time)
                 if (postPushTime > postExpiredTime) {
@@ -440,7 +434,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     /**
      * @description: 表单校验规则
-     * @return  FormRules<EditMediaForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
+     * @return FormRules<UpsertPostForm> 表单校验规则, trigger: 'blur' 表示失去焦点时校验, 'change' 表示值改变时校验
      */
     const rules = reactive<FormRules<UpsertPostForm>>({
         post_title: [

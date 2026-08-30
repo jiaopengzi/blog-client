@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-detail\components\interaction\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-detail\components\interaction\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -29,15 +29,12 @@ import { computed, onMounted, ref } from "vue"
 import type { InteractionIcon, InteractionItem, InteractionProps } from "./types"
 defineOptions({ name: "DetailInteraction" })
 
-// 定义 props
 const { direction, items } = defineProps<InteractionProps>()
 
-// 事件
 const emit = defineEmits<{
     (event: "click-item", val: InteractionIcon): void
 }>()
 
-// 判断是否为触屏设备
 const isTouch = ref(false)
 
 onMounted(() => {
@@ -51,7 +48,7 @@ onMounted(() => {
  * @param item - 被点击的交互项
  */
 const handleItemClick = (e: MouseEvent, item: InteractionItem) => {
-    // 移除焦点，解决移动端点击后 tooltip 不消失和按钮状态残留的问题
+    // 移除焦点, 解决移动端点击后 tooltip 不消失和按钮状态残留的问题
     const target = e.currentTarget as HTMLElement | null
     if (target) {
         target.blur()
@@ -61,7 +58,7 @@ const handleItemClick = (e: MouseEvent, item: InteractionItem) => {
     }
 }
 
-// 初始状态
+// 初始交互项列表
 const initItems: InteractionItem[] = [
     {
         icon: "like",
@@ -187,14 +184,4 @@ const tipPlacement = computed(() => {
         background-color: transparent;
     }
 }
-
-// // 媒体查询
-// @include respond-to("pc") {
-// }
-
-// @include respond-to("pad") {
-// }
-
-// @include respond-to("phone") {
-// }
 </style>

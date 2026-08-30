@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\layout\header-nav\index.vue
+ * FilePath    : blog-client-nuxt\src\components\layout\header-nav\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -12,29 +12,33 @@
         <div class="switch" v-if="!isHorizontal">
             <ThemePresetSelector :model-value="activeThemePreset" :presets="themePresetOptions" @update:model-value="selectThemePreset" />
         </div>
-        <!-- 
+        <!--
             jpz-header-menu-popover 样式在 main.scss
-            由于 Element Plus 的 Popover 挂载在 body 上，所以需要在全局样式中定义
+            由于 Element Plus 的 Popover 挂载在 body 上, 所以需要在全局样式中定义
         -->
-        <el-menu
-            :mode="isHorizontal ? 'horizontal' : 'vertical'"
-            @select="handleSelect"
-            :default-active="navActiveIndex"
-            ellipsis
-            :style="horizontalMenuStyle"
-            popper-class="jpz-header-menu-popover"
-        >
-            <recursive-menu-item v-for="(item, key) in topLevelMenuItems" :key="key" :menu-item-map="navObj" :menu-item="item" />
-        </el-menu>
+        <!-- ClientOnly: 菜单整体客户端渲染——(1) 避免 el-sub-menu 内置 tooltip popper 的 SSR 双端不一致;
+             (2) el-menu ellipsis 折叠 (三个点) 依赖客户端挂载时对完整菜单项的宽度测量,
+             若仅菜单项后置注入会丢失测量时机导致不折叠 -->
+        <ClientOnly>
+            <el-menu
+                :mode="isHorizontal ? 'horizontal' : 'vertical'"
+                @select="handleSelect"
+                :default-active="navActiveIndex"
+                ellipsis
+                :style="horizontalMenuStyle"
+                popper-class="jpz-header-menu-popover"
+            >
+                <recursive-menu-item v-for="(item, key) in topLevelMenuItems" :key="key" :menu-item-map="navObj" :menu-item="item" />
+            </el-menu>
+        </ClientOnly>
     </nav>
 </template>
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia"
 import { computed, watch } from "vue"
-import { useRoute, useRouter } from "vue-router"
 
-import RecursiveMenuItem from "@/components/common/recursive-menu-item" // 引入递归菜单组件
+import RecursiveMenuItem from "@/components/common/recursive-menu-item"
 import ThemePresetSelector from "@/theme/preset-selector"
 import { useTheme } from "@/theme/useTheme"
 import { DeviceType, useDeviceStore } from "@/stores/device"
@@ -43,7 +47,6 @@ import { useStatusStore } from "@/stores/status"
 
 import Account from "../account"
 
-// 定义组件名称
 defineOptions({ name: "HeaderNav" })
 
 const route = useRoute()
@@ -74,12 +77,10 @@ const horizontalMenuStyle = computed(() => {
     }
 })
 
-// 计算顶级菜单项
 const topLevelMenuItems = computed(() => {
     return Object.values(navObj.value).filter((item) => !item.parentIndex)
 })
 
-// 处理菜单项选中事件
 const handleSelect = async (index: string) => {
     const href = navObj.value[index]!.href || "/"
     // 判断 href 是否为外部链接
@@ -97,7 +98,7 @@ const handleSelect = async (index: string) => {
     await router.push({ path, query })
 }
 
-// 监听路由变化，更新默认选中菜单项
+// 监听路由变化, 更新默认选中菜单项
 watch(
     () => route.fullPath,
     (newVal: string) => {

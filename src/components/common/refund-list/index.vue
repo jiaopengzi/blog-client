@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\refund-list\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\refund-list\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -44,15 +44,15 @@ const { totalPaidAmount, items } = defineProps<{
     items: RefundRes[]
 }>()
 
-// 计算优惠金额
+// 计算剩余可退款金额
 const computedFinal = (total: number, couponList: RefundRes[]) => {
     if (couponList.length === 0) return total
-    // 循环计算优惠金额
+    // 依次扣除每笔退款金额
     const final = couponList.reduce((acc, item) => {
         return acc - (item.refund_amount || 0)
     }, total)
 
-    // 如果最终金额小于0，则返回0
+    // 如果最终金额小于 0, 则返回 0
     return final < 0 ? 0 : final
 }
 

@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\common\post-upsert\useLocalDraft.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\post-upsert\useLocalDraft.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -29,9 +29,9 @@ afterEach(() => {
 })
 
 /**
- * createForm 创建测试用文章编辑表单.
- * @param partial - 需要覆盖的局部字段.
- * @returns 完整文章编辑表单.
+ * createForm 创建测试用文章编辑表单
+ * @param partial - 需要覆盖的局部字段
+ * @returns 完整文章编辑表单
  */
 function createForm(partial: Partial<UpsertPostForm> = {}): UpsertPostForm {
     return {
@@ -70,8 +70,8 @@ function createForm(partial: Partial<UpsertPostForm> = {}): UpsertPostForm {
 }
 
 /**
- * createLocalDraftContext 创建本地草稿组合式函数测试上下文.
- * @returns 表单, 草稿管理器和销毁函数.
+ * createLocalDraftContext 创建本地草稿组合式函数测试上下文
+ * @returns 表单, 草稿管理器和销毁函数
  */
 function createLocalDraftContext() {
     const form = reactive(createForm())

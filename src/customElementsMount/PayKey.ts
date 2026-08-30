@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\customElementsMount\PayKey.ts
+ * FilePath    : blog-client-nuxt\src\customElementsMount\PayKey.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -11,7 +11,7 @@ import { type ComputedRef, createApp, h } from "vue"
 import { type Product as KeyRes } from "@/api/order/create"
 import PayKey, { type PayKeyProps } from "@/components/common/pay-key"
 
-import { Attributes, Names } from "../customElements"
+import { Attributes, Names } from "../customElements/constants"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
 import { convertEmits } from "./utils"
 
@@ -22,7 +22,7 @@ export const getPayKeyState = (el: Element): { elTarget: Element | null; state: 
 
     if (!el) return { elTarget, state }
 
-    const productId = el.getAttribute(Attributes.Id) || "" // 产品关联ID
+    const productId = el.getAttribute(Attributes.Id) || "" // 产品关联 ID
     const title = el.getAttribute(Attributes.Title) || "账号密钥" // 自定义标题
     const description = el.getAttribute(Attributes.Description) || "" // 自定义说明
 
@@ -48,7 +48,7 @@ export const mountPayKeyOnCustomElements = (
     tagName: Names,
     createOrderLoading: ComputedRef<boolean>,
 
-    // **注意这里函数的写法必须是on开头的后续跟驼峰格式的事件名**
+    // **注意这里函数的写法必须是 on 开头的后续跟驼峰格式的事件名**
     emits: {
         onPayKey?: (val: KeyRes) => void // 付费账号密钥事件
     } = {},

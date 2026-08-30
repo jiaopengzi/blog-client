@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\captcha\check.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 验证码校验接口
+/*
+ * FilePath    : blog-client-nuxt\src\api\captcha\check.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 验证码校验接口
  */
 
 import { request, routerGroup } from "@/api/request"

@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\editor\index.vue
+ * FilePath    : blog-client-nuxt\src\components\editor\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -189,13 +189,13 @@ const {
     externalToolbarButtons = [],
 } = defineProps<{
     stateManager: EditorStateManager
-    postId?: string // 文章ID
+    postId?: string // 文章 ID
     previewRootClassName?: string // 预览根节点附加类名
     isEnableCopyCache?: boolean // 是否启用复制缓存预生成
     isAdminVideo?: boolean // 是否使用管理员视频接口
     isPaid?: boolean // 是否付费阅读
     payStrategy?: PayStrategy // 付费策略
-    price?: string // 价格(单位：分)
+    price?: string // 价格 (单位: 分)
     videoToc?: PostVideoTocTree[] // 付费视频目录
     placeholderText?: string // 占位符文本
     mdlintUseWorker?: boolean // 是否使用 web worker 进行 lint 检查
@@ -257,17 +257,17 @@ const mdContainerStyle = computed(() => {
 })
 
 /**
- * persistPaneRatios 将当前三栏比例写入 localStorage。
- * @returns 无返回值。
+ * persistPaneRatios 将当前三栏比例写入 localStorage
+ * @returns 无返回值
  */
 const persistPaneRatios = (): void => {
     saveEditorPaneRatios(paneRatios.value)
 }
 
 /**
- * restoreDefaultPaneRatios 一键恢复默认三栏宽度。
- * 恢复后直接清除本地缓存, 让后续进入编辑器时继续使用默认布局。
- * @returns 无返回值。
+ * restoreDefaultPaneRatios 一键恢复默认三栏宽度
+ * 恢复后直接清除本地缓存, 让后续进入编辑器时继续使用默认布局
+ * @returns 无返回值
  */
 const restoreDefaultPaneRatios = (): void => {
     paneRatios.value = { ...DEFAULT_EDITOR_PANE_RATIOS }
@@ -275,9 +275,9 @@ const restoreDefaultPaneRatios = (): void => {
 }
 
 /**
- * syncPaneResizeInteraction 同步拖拽过程中的全局鼠标样式。
- * @param isDragging - 当前是否处于拖拽中。
- * @returns 无返回值。
+ * syncPaneResizeInteraction 同步拖拽过程中的全局鼠标样式
+ * @param isDragging - 当前是否处于拖拽中
+ * @returns 无返回值
  */
 const syncPaneResizeInteraction = (isDragging: boolean): void => {
     document.body.style.cursor = isDragging ? "col-resize" : ""
@@ -285,9 +285,9 @@ const syncPaneResizeInteraction = (isDragging: boolean): void => {
 }
 
 /**
- * handlePaneResize 根据拖拽位移更新三栏布局比例。
- * @param event - 当前 pointermove 事件。
- * @returns 无返回值。
+ * handlePaneResize 根据拖拽位移更新三栏布局比例
+ * @param event - 当前 pointermove 事件
+ * @returns 无返回值
  */
 const handlePaneResize = (event: PointerEvent): void => {
     if (!activeResize.value || !mdContainerRef.value) {
@@ -307,8 +307,8 @@ const handlePaneResize = (event: PointerEvent): void => {
 }
 
 /**
- * stopPaneResize 结束拖拽并持久化最新比例。
- * @returns 无返回值。
+ * stopPaneResize 结束拖拽并持久化最新比例
+ * @returns 无返回值
  */
 const stopPaneResize = (): void => {
     if (!activeResize.value) {
@@ -324,11 +324,11 @@ const stopPaneResize = (): void => {
 }
 
 /**
- * startPaneResize 开始拖拽指定分隔条。
- * @param event - 当前 pointerdown 事件。
- * @param leftPane - 分隔条左侧栏位。
- * @param rightPane - 分隔条右侧栏位。
- * @returns 无返回值。
+ * startPaneResize 开始拖拽指定分隔条
+ * @param event - 当前 pointerdown 事件
+ * @param leftPane - 分隔条左侧栏位
+ * @param rightPane - 分隔条右侧栏位
+ * @returns 无返回值
  */
 const startPaneResize = (event: PointerEvent, leftPane: EditorPaneName, rightPane: EditorPaneName): void => {
     if (event.button !== 0 || !isPaneResizeEnabled.value) {
@@ -349,9 +349,9 @@ const startPaneResize = (event: PointerEvent, leftPane: EditorPaneName, rightPan
 }
 
 /**
- * syncVisibleTocState 同步目录的可视快照。
- * 将编辑器内部的实时目录状态回写到 TOC 展示层, 用于停止输入后恢复最新目录。
- * @returns 无返回值。
+ * syncVisibleTocState 同步目录的可视快照
+ * 将编辑器内部的实时目录状态回写到 TOC 展示层, 用于停止输入后恢复最新目录
+ * @returns 无返回值
  */
 const syncVisibleTocState = (): void => {
     visibleTocHeadings.value = [...state.tocHtml]
@@ -359,18 +359,18 @@ const syncVisibleTocState = (): void => {
 }
 
 /**
- * shouldSyncTocImmediately 判断当前编辑是否需要立刻同步 TOC 展示层.
- * 删除标题或当前高亮索引失效时, 不能继续冻结旧目录, 否则 active-marker 会残留在旧位置。
- * @returns true 表示本次需要立即同步, false 表示可继续沿用 debounce 冻结策略.
+ * shouldSyncTocImmediately 判断当前编辑是否需要立刻同步 TOC 展示层
+ * 删除标题或当前高亮索引失效时, 不能继续冻结旧目录, 否则 active-marker 会残留在旧位置
+ * @returns true 表示本次需要立即同步, false 表示可继续沿用 debounce 冻结策略
  */
 const shouldSyncTocImmediately = (): boolean => {
     return state.tocHtml.length < visibleTocHeadings.value.length || state.headingShowCurrentIndex < 0
 }
 
 /**
- * resumeTocRefresh 在用户停止输入后恢复 TOC 展示刷新。
- * 通过 debounce 合并连续输入, 避免 active-marker 在编辑期间频繁跳动。
- * @returns 无返回值。
+ * resumeTocRefresh 在用户停止输入后恢复 TOC 展示刷新
+ * 通过 debounce 合并连续输入, 避免 active-marker 在编辑期间频繁跳动
+ * @returns 无返回值
  */
 const resumeTocRefresh = debounce(300, (): void => {
     isTocRefreshPaused.value = false
@@ -378,9 +378,9 @@ const resumeTocRefresh = debounce(300, (): void => {
 })
 
 /**
- * pauseTocRefreshDuringEditing 在编辑期间暂停 TOC 的可视刷新。
- * 仅冻结目录展示层, 不影响内部 Markdown 解析和预览同步逻辑。
- * @returns 无返回值。
+ * pauseTocRefreshDuringEditing 在编辑期间暂停 TOC 的可视刷新
+ * 仅冻结目录展示层, 不影响内部 Markdown 解析和预览同步逻辑
+ * @returns 无返回值
  */
 const pauseTocRefreshDuringEditing = (): void => {
     isTocRefreshPaused.value = true
@@ -393,18 +393,18 @@ const openSettingsDialog = (name: CommandsKey) => {
 }
 
 /**
- * handleExternalToolbarBtnClicked 将业务侧附加按钮点击事件继续抛给父组件。
- * @param name - 当前点击的外部按钮标识。
- * @returns 无返回值。
+ * handleExternalToolbarBtnClicked 将业务侧附加按钮点击事件继续抛给父组件
+ * @param name - 当前点击的外部按钮标识
+ * @returns 无返回值
  */
 const handleExternalToolbarBtnClicked = (name: string): void => {
     emit("external-toolbar-btn-clicked", name)
 }
 
 /**
- * handleVimSettingsSave 在 Vim 设置保存后同步当前编辑器状态.
- * @param data - 最新 Vim 配置.
- * @returns 无返回值.
+ * handleVimSettingsSave 在 Vim 设置保存后同步当前编辑器状态
+ * @param data - 最新 Vim 配置
+ * @returns 无返回值
  */
 const handleVimSettingsSave = (data: VimDefaults): void => {
     stateManager.setVimMode(data.enabled)
@@ -420,12 +420,12 @@ if (persistedVimDefaults) {
 }
 
 // ref
-const mdLayoutRef = useTemplateRef<HTMLElement | null>("mdLayoutRef") // 编辑器布局
-const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef") // 编辑器容器
-const codemirrorRef = useTemplateRef<CodemirrorRef | null>("codemirrorRef") // 编辑器
-const htmlPreviewRef = useTemplateRef<HtmlPreviewRef | null>("htmlPreviewRef") // 预览
+const mdLayoutRef = useTemplateRef<HTMLElement | null>("mdLayoutRef")
+const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef")
+const codemirrorRef = useTemplateRef<CodemirrorRef | null>("codemirrorRef")
+const htmlPreviewRef = useTemplateRef<HtmlPreviewRef | null>("htmlPreviewRef")
 
-// 工具栏点击事件
+// 工具栏 hook
 const { toolbarBtns, toolbarBtnClicked, updateMdContainerStyle, insertPay, emojiPickerSelected, insertTableRowCol, insertAlert, setVimMode } = useToolbar(
     mdLayoutRef,
     mdContainerRef,
@@ -446,17 +446,17 @@ const tocHeadingClicked = (index: number) => {
     stateManager.setIsUserScrollPreview(false)
     stateManager.setIsUserScrollCmEditor(false)
     visibleHeadingShowCurrentIndex.value = index
-    stateManager.setHeadingShowCurrentIndex(index) // 设置当前目录索引
+    stateManager.setHeadingShowCurrentIndex(index)
 }
 
 // codemirror
 const { cmHeight, handleScroll, handleUpdateIsUserScrollCmEditor, handleMouseInCmEditor } = useCodemirror(mdContainerRef, codemirrorRef, stateManager)
 
 /**
- * updateEditorDoc 处理编辑器内容变更。
- * 在更新内部状态后暂时冻结 TOC 展示, 待用户停止输入后再统一同步目录。
- * @param editorDoc - 编辑器最新 Markdown 内容。
- * @returns 无返回值。
+ * updateEditorDoc 处理编辑器内容变更
+ * 在更新内部状态后暂时冻结 TOC 展示, 待用户停止输入后再统一同步目录
+ * @param editorDoc - 编辑器最新 Markdown 内容
+ * @returns 无返回值
  */
 const updateEditorDoc = (editorDoc: string) => {
     stateManager.updateState(editorDoc) // 更新 store 中的 editor
@@ -468,13 +468,13 @@ const updateEditorDoc = (editorDoc: string) => {
         pauseTocRefreshDuringEditing()
     }
 
-    emit("updateEditorStatus", true) // 更新编辑器状态
+    emit("updateEditorStatus", true)
 }
 
 /**
- * 将外部修复后的完整内容回写到编辑器与预览状态.
- * @param editorDoc 修复后的 Markdown 内容.
- * @returns void.
+ * 将外部修复后的完整内容回写到编辑器与预览状态
+ * @param editorDoc 修复后的 Markdown 内容
+ * @returns 无返回值
  */
 const replaceContent = (editorDoc: string) => {
     codemirrorRef.value?.replaceContent(editorDoc)
@@ -538,8 +538,8 @@ defineExpose({
 .emoji-picker-wrapper {
     position: absolute;
     z-index: 1000; // 使用足够高的 z-index 以确保 EmojiPicker 显示在其他元素上方
-    top: 100%; // 根据需要调整，这将使 EmojiPicker 出现在工具栏下方
-    left: 0; // 根据需要调整，这将使 EmojiPicker 从左边开始
+    top: 100%; // 按需调整, 使 EmojiPicker 出现在工具栏下方
+    left: 0; // 按需调整, 使 EmojiPicker 从左侧开始
 }
 
 .md-layout {
@@ -585,11 +585,9 @@ defineExpose({
     }
 }
 
-// 媒介查询
+// 媒体查询
 @include respond-to("pc") {
     .md-layout {
-        // border: 1px solid var(--jpz-border-color);
-
         .md-toolbar {
             --icon-number-per-line: 20;
         }
@@ -598,7 +596,7 @@ defineExpose({
             height: pc.$editor-md-container-height;
 
             .md-editor {
-                // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+                // 使用 #{} 插值语法将 SASS 变量写入 css 自定义属性
                 --md-editor-height: #{pc.$editor-md-container-height};
             }
 
@@ -611,7 +609,7 @@ defineExpose({
             height: pc.$editor-md-container-height-comment;
 
             .md-editor {
-                // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+                // 使用 #{} 插值语法将 SASS 变量写入 css 自定义属性
                 --md-editor-height: #{pc.$editor-md-container-height-comment};
             }
 
@@ -641,8 +639,6 @@ defineExpose({
 
 @include respond-to("pad") {
     .md-layout {
-        // border: 1px solid var(--jpz-border-color);
-
         .md-toolbar {
             --icon-number-per-line: 15;
         }
@@ -651,7 +647,7 @@ defineExpose({
             height: pad.$editor-md-container-height;
 
             .md-editor {
-                // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+                // 使用 #{} 插值语法将 SASS 变量写入 css 自定义属性
                 --md-editor-height: #{pad.$editor-md-container-height};
             }
 
@@ -664,7 +660,7 @@ defineExpose({
             height: pad.$editor-md-container-height-comment;
 
             .md-editor {
-                // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+                // 使用 #{} 插值语法将 SASS 变量写入 css 自定义属性
                 --md-editor-height: #{pad.$editor-md-container-height-comment};
             }
 
@@ -702,7 +698,7 @@ defineExpose({
             height: phone.$editor-md-container-height;
 
             .md-editor {
-                // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+                // 使用 #{} 插值语法将 SASS 变量写入 css 自定义属性
                 --md-editor-height: #{phone.$editor-md-container-height};
             }
 
@@ -715,7 +711,7 @@ defineExpose({
             height: phone.$editor-md-container-height-comment;
 
             .md-editor {
-                // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+                // 使用 #{} 插值语法将 SASS 变量写入 css 自定义属性
                 --md-editor-height: #{phone.$editor-md-container-height-comment};
             }
 

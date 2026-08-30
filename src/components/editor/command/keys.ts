@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\editor\command\keys.ts
+ * FilePath    : blog-client-nuxt\src\components\editor\command\keys.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -8,7 +8,7 @@
 
 import { CommandsKey } from "./constant"
 
-// pc端文章编辑器工具栏按钮
+// pc 端文章编辑器工具栏按钮
 const postPc = [
     CommandsKey.Vim,
     CommandsKey.Undo,
@@ -37,7 +37,6 @@ const postPc = [
     CommandsKey.Alert,
     CommandsKey.PayContent,
     CommandsKey.Tool,
-    // CommandsKey.Video,
     CommandsKey.Toc,
     CommandsKey.Edit,
     CommandsKey.Preview,
@@ -45,14 +44,10 @@ const postPc = [
     CommandsKey.WechatOfficialAccount,
     CommandsKey.Copy,
     CommandsKey.Fullscreen,
-    // CommandsKey.Markdown,
-    // CommandsKey.Html,
-    // CommandsKey.Pdf,
     CommandsKey.Help,
-    // CommandsKey.Info,
 ]
 
-// pad端文章编辑器工具栏按钮
+// pad 端文章编辑器工具栏按钮
 const postPad = [
     CommandsKey.Undo,
     CommandsKey.Redo,
@@ -81,13 +76,10 @@ const postPad = [
     CommandsKey.Preview,
     CommandsKey.Fullscreen,
     CommandsKey.Help,
-    // CommandsKey.Info,
 ]
 
 // 手机端文章编辑器工具栏按钮
 const postPhone = [
-    // CommandsKey.Undo,
-    // CommandsKey.Redo,
     CommandsKey.Clear,
     CommandsKey.Heading,
     CommandsKey.Bold,
@@ -100,10 +92,9 @@ const postPhone = [
     CommandsKey.Preview,
     CommandsKey.Fullscreen,
     CommandsKey.Help,
-    // CommandsKey.Info,
 ]
 
-// pc端评论区工具栏按钮
+// pc 端评论区工具栏按钮
 const commentPc = [
     CommandsKey.Clear,
     CommandsKey.Heading,
@@ -121,10 +112,9 @@ const commentPc = [
     CommandsKey.Preview,
     CommandsKey.Fullscreen,
     CommandsKey.Help,
-    // CommandsKey.Info,
 ]
 
-// pad端评论区工具栏按钮
+// pad 端评论区工具栏按钮
 const commentPad = [
     CommandsKey.Clear,
     CommandsKey.Heading,
@@ -138,7 +128,6 @@ const commentPad = [
     CommandsKey.Preview,
     CommandsKey.Fullscreen,
     CommandsKey.Help,
-    // CommandsKey.Info,
 ]
 
 // 手机端评论区工具栏按钮
@@ -154,7 +143,6 @@ const commentPhone = [
     CommandsKey.Preview,
     CommandsKey.Fullscreen,
     CommandsKey.Help,
-    // CommandsKey.Info,
 ]
 
 // 公用 Markdown 页面工具栏按钮, 与文章编辑器保持一致, 但去掉全屏按钮

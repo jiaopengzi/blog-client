@@ -1,9 +1,9 @@
 /*
- * FilePath    : blog-client\src\components\common\post-detail\components\comment-list\comment-item\hooks.ts
+ * FilePath    : blog-client-nuxt\src\components\common\post-detail\components\comment-list\comment-item\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 评论列表的单条评论的hooks
+ * Description : 评论列表单条评论的 hooks
  */
 
 import { ref } from "vue"
@@ -21,14 +21,12 @@ export function useCommentItem(isAdmin: boolean = false) {
     const loadingDelete = ref<boolean>(false)
     const loadingUpdate = ref<boolean>(false)
 
-    // 删除评论
     async function deleteComment(id: string): Promise<void> {
-        loadingDelete.value = true // 显示加载动画
+        loadingDelete.value = true
         const req: DeleteCommentRequest = {
-            id_list: [id], // 删除的评论ID列表
+            id_list: [id], // 待删除的评论 ID 列表
         }
 
-        // 删除评论
         let res
         if (isAdmin) {
             res = await deleteCommentAdminAPI(req)
@@ -42,20 +40,18 @@ export function useCommentItem(isAdmin: boolean = false) {
                 await pollingGetStreamIDsStatus(res.data.data.stream_items)
             }
 
-            MessageUtil.success("删除成功") // 显示成功信息
-            loadingDelete.value = false // 隐藏加载动画
+            MessageUtil.success("删除成功")
+            loadingDelete.value = false
             return
         }
 
-        MessageUtil.error(handleResErr(res)) // 显示错误信息
-        loadingDelete.value = false // 隐藏加载动画
+        MessageUtil.error(handleResErr(res))
+        loadingDelete.value = false
     }
 
-    // 更新评论
     async function updateComment(req: UpdateCommentRequest): Promise<void> {
-        loadingUpdate.value = true // 显示加载动画
+        loadingUpdate.value = true
 
-        // 获取标签列表
         let res
         if (isAdmin) {
             res = await updateCommentAdminAPI(req)
@@ -70,12 +66,12 @@ export function useCommentItem(isAdmin: boolean = false) {
             }
 
             MessageUtil.success("更新成功")
-            loadingUpdate.value = false // 隐藏加载动画
+            loadingUpdate.value = false
             return
         }
 
-        MessageUtil.error(handleResErr(res)) // 显示错误信息
-        loadingUpdate.value = false // 隐藏加载动画
+        MessageUtil.error(handleResErr(res))
+        loadingUpdate.value = false
     }
 
     return {

@@ -1,9 +1,9 @@
-/**
- * FilePath    : blog-client\src\stores\md-custom.ts
+/*
+ * FilePath    : blog-client-nuxt\src\stores\md-custom.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : /md 页面自定义配置状态管理，包含默认值、读取、保存和清除函数.
+ * Description : /md 页面自定义配置状态管理, 包含默认值、读取、保存和清除函数.
  */
 
 import { LocalStorageKey } from "./local"

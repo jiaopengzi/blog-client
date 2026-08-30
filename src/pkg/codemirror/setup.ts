@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\pkg\codemirror\setup.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 重新封装 codemirror 参考: codemirror 包源码 https://www.npmjs.com/package/codemirror
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\setup.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 重新封装 codemirror 参考: codemirror 包源码 https://www.npmjs.com/package/codemirror
  */
 
 import { closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete"
@@ -66,7 +66,7 @@ const createBaseExtensions = (): Extension[] => {
         crosshairCursor(), // 十字光标
         highlightActiveLine(), // 高亮当前行
         highlightSelectionMatches(), // 高亮选择匹配
-        search({ top: true }), // 搜索面板置顶，避免与底部面板冲突
+        search({ top: true }), // 搜索面板置顶, 避免与底部面板冲突
         keymap.of([
             ...closeBracketsKeymap, // 关闭括号
             ...defaultKeymap, // 默认快捷键

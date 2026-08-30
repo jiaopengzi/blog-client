@@ -1,6 +1,8 @@
-# blog-client
+# blog-client-nuxt
 
-一个基于 Vue3, Vite 和 TypeScript 构建的博客系统前端. 它不仅包含公开博客站点, 还覆盖了登录注册, markdown 写作, 评论互动, **付费阅读** **付费下载** **付费视频** **视频播放**, 以及完整的后台管理能力.
+一个基于 Nuxt 4, Vue3 和 TypeScript 构建的博客系统前端(SSR). 它不仅包含公开博客站点, 还覆盖了登录注册, markdown 写作, 评论互动, **付费阅读** **付费下载** **付费视频** **视频播放**, 以及完整的后台管理能力.
+
+由已上线的纯 SPA 项目 [blog-client](https://github.com/jiaopengzi/blog-client) 迁移而来, 页面渲染升级为 SSR + ISR(swr), 交互行为与 SPA 版保持一致.
 
 效果展示：[https://jiaopengzi.com](https://jiaopengzi.com)
 
@@ -37,13 +39,13 @@
 
 ## 技术栈
 
-- Vue3
-- Vite8
+- Nuxt 4
+- Vue 3
 - TypeScript
 - Pinia
 - Vue Router
 - Element Plus
-- Axios
+- ofetch
 - Vitest
 - CodeMirror
 
@@ -66,13 +68,14 @@ pnpm dev
 ### 3. 常用命令
 
 ```bash
-pnpm dev
-pnpm build
-pnpm preview
-pnpm type-check
-pnpm lint
-pnpm lint:fix
-pnpm test
+pnpm dev          # 开发服务器(端口 7364)
+pnpm dev:fresh    # 清理 nuxt 缓存后重新启动
+pnpm build        # 生产构建(产出 .output)
+pnpm preview      # 本地预览生产构建
+pnpm type-check   # vue-tsc 全量类型检查
+pnpm lint         # oxlint 检查(--fix)
+pnpm fmt          # oxfmt 格式化 src/
+pnpm test         # vitest 单次运行
 ```
 
 ## 与后端联调
@@ -81,53 +84,82 @@ pnpm test
 
 在后端服务启动后，通过访问 `http://your-server-ip:5426/api/v1/docs/index.html` 可以查看接口文档.
 
-当前前端通过相对路径访问后端接口, 统一接口前缀为 `/api/v1`.
+当前前端通过相对路径访问后端接口, 统一接口前缀为 `/api`.
 
-- 路由组定义位于 `src/api/request/routerGroup.ts`.
-- 请求封装位于 `src/api/request/axios.ts`.
-- 开发环境代理位于 `vite.config.ts`.
+- SSR 服务端直连地址由环境变量 `NUXT_API_BASE` 控制(见 `.env`).
+- 开发环境 `/api` 代理位于 `nuxt.config.ts` 的 `nitro.devProxy`.
+- 请求封装位于 `src/api/request/ofetch.ts`(保持 axios 风格调用签名).
 
-开发模式下, Vite 会把 `/api` 代理到 `vite.config.ts` 中配置的目标地址. 如果你本地运行的是自己的后端实例, 需要先把该代理目标改成你的本地服务地址.
+开发模式下, `/api` 与 `/sitemap` 会代理到后端. 如果你本地运行的是自己的后端实例, 需要先把代理目标与 `NUXT_API_BASE` 改成你的本地服务地址.
 
 推荐的本地联调方式:
 
 1. 先启动后端服务.
-2. 根据你的本地环境调整 `vite.config.ts` 中 `/api` 代理目标.
+2. 根据你的本地环境调整 `.env` 中 `NUXT_API_BASE` 与 `nuxt.config.ts` 中 `nitro.devProxy` 的目标地址.
 3. 再执行 `pnpm dev` 启动前端.
 
 ## 环境变量
 
-项目会读取 Vite 环境变量, 并在启动或构建前通过 `scripts/set-env-version.js` 自动补充版本信息.
+项目会读取 Nuxt 惯例的 `NUXT_*` 环境变量(本地开发配置在 `.env`), 构建时由本地模块 `src/modules/set-env-version.ts` 自动生成 `public/VERSION`(git tag, 供外部探活).
 
 常见变量包括:
 
-- `VITE_BASE_URL`
-- `VITE_DOMAIN`
-- `VITE_CLIENT_HTTP_PORT`
-- `VITE_CLIENT_HTTPS_PORT`
-- `VITE_HTTPS_KEY`
-- `VITE_HTTPS_CERT`
-- `VITE_GIT_TAG`
-- `VITE_GIT_COMMIT`
-- `VITE_BUILD_TIME`
+- `NUXT_API_BASE` — SSR 服务端直连的后端 API 地址
+- `NUXT_PUBLIC_BASE_URL` — 正式站点地址(canonical/SEO)
+- `NUXT_DOMAIN` — 监听域名或 IP(默认 `0.0.0.0`)
+- `NUXT_CLIENT_HTTP_PORT` / `NUXT_CLIENT_HTTPS_PORT` — 前端端口(默认 7364)
+- `NUXT_HTTPS_KEY` / `NUXT_HTTPS_CERT` — HTTPS 证书路径(社交登录需要)
+- `NITRO_PORT` / `PORT` — `pnpm preview` 的监听端口
 
-其中 `VITE_GIT_TAG`, `VITE_GIT_COMMIT`, `VITE_BUILD_TIME` 会在执行开发或构建脚本时自动写入 `.env.development` 与 `.env.production`.
+## Docker 部署
+
+SPA 版是纯静态文件 + nginx; Nuxt 版页面由 SSR 实时渲染, 因此最终镜像为 **单容器双进程**: `nginx`(80/443, TLS 终端 + 静态资源 + 反向代理) + `node`(`.output/server/index.mjs`, 容器内 `127.0.0.1:7364`, 与开发端口统一), 由 `docker-entrypoint.sh` 编排, 任一进程退出容器即退出.
+
+| 文件 | 作用 |
+| --- | --- |
+| `Dockerfile` | 完整构建(lint + type-check + test + build), 运行层 `nginx:1.31.3-alpine` + node 二进制 |
+| `Dockerfile.env` | 仅安装依赖的基础镜像(`blog-client:env`), 加速迭代构建 |
+| `Dockerfile.dev` | 基于 `blog-client:env` 的快速构建(跳过 lint/test) |
+| `nginx.conf` | 与 SPA 版保持一致, 仅三处 SSR 必要调整(文件头注释有说明) |
+| `redirects.map` | 旧网址 301 重定向映射(可选) |
+| `docker-entrypoint.sh` | 容器入口: node 就绪后启动 nginx, 双进程互相监控 |
+
+镜像内置环境变量(均可在 `docker run -e` 覆盖):
+
+- `NITRO_PORT=7364` — node SSR 监听端口(容器内部, 与开发端口统一), 与 `nginx.conf` 的 `proxy_pass` 对应
+- `NUXT_API_BASE=http://blog-server:5426` — SSR 直连后端(docker 服务名, 需与后端容器同网络)
+- `NUXT_PUBLIC_BASE_URL=https://jiaopengzi.com` — 正式站点地址
+
+构建层与运行层统一使用 alpine(musl): 运行层基线 `nginx:1.31.3-alpine` 与 SPA 一致; 且 nitro 产物 `.output/server/node_modules` 内的原生依赖二进制(sharp 等)按构建平台的 libc 打包, 必须与运行时一致, 因此构建层用 `node:24.19.0-alpine`, 运行层从同版本 alpine 镜像拷贝 node 二进制. **勿把构建层换成 slim/debian 系**: glibc 构建出的 sharp 在 musl node 下加载失败(ERR_DLOPEN_FAILED), `/_ipx` 缩略图会全部 500.
+
+健康检查: `GET /nginx-health`(nginx)与 `GET /VERSION`(node 直出, 探活). SSL 证书挂载到 `/etc/nginx/ssl`(cert.pem / cert.key).
+
+nginx 配置验证:
+
+```bash
+sudo docker run --rm -v $(pwd)/nginx.conf:/etc/nginx/custom.conf nginx:1.31.3-alpine nginx -t -c /etc/nginx/custom.conf
+```
 
 ## 项目结构
 
 ```text
-blog-client/
+blog-client-nuxt/
 ├─ public/                    # 静态资源与 VERSION 文件
-├─ scripts/                   # 开发与构建辅助脚本
+├─ server/                    # nitro 服务端路由与中间件(legacy 重定向 / robots / api 反代兜底)
 ├─ src/
-│  ├─ api/                    # 按领域拆分的接口调用
-│  ├─ components/             # 通用组件, 编辑器, 播放器等
-│  ├─ pkg/                    # 编辑器, Markdown, HLS 等内置功能模块
-│  ├─ router/                 # 路由定义与中间件链路
-│  ├─ stores/                 # Pinia 状态管理
-│  ├─ views/                  # 页面与后台功能模块
-│  └─ main.ts                 # 应用入口
-├─ vite.config.ts             # Vite 配置与开发代理
+│  ├─ api/                    # 按领域拆分的接口调用(一接口一文件)
+│  ├─ components/             # 通用组件, 编辑器, 播放器等(common/views/editor/layout/player)
+│  ├─ composables/            # useSiteOptions / useSeo 等
+│  ├─ layouts/                # default / bare-shell
+│  ├─ middleware/             # 路由中间件(admin/auth/legacy/setup)
+│  ├─ modules/                # 本地 Nuxt 模块(set-env-version)
+│  ├─ pages/                  # 文件路由(28 个页面)
+│  ├─ pkg/                    # 编辑器, Markdown, HLS 等内置功能模块封装
+│  ├─ plugins/                # Nuxt 插件(指令注册 / stores 初始化 / payload 瘦身等)
+│  ├─ stores/                 # Pinia 状态管理(显式导入)
+│  ├─ theme/                  # 主题域(预设 / 运行时 / 状态 / UI)
+│  └─ utils/                  # 通用工具
+├─ nuxt.config.ts             # Nuxt 配置(routeRules / nitro / vite)
 ├─ vitest.config.ts           # Vitest 配置
 └─ package.json               # 项目脚本与依赖声明
 ```
@@ -136,30 +168,30 @@ blog-client/
 
 ### 应用启动
 
-入口文件为 `src/main.ts`, 负责挂载 Vue 应用, 注册 Pinia, Router, 指令与页面 Head 管理.
+Nuxt 接管应用入口, 自动导入已全部关闭(`components: false`, `imports.dirs: []`), 组件 / 工具 / store 一律显式 `import`.
 
-### 路由系统
+### 渲染策略
 
-路由定义位于 `src/router/routes.ts`, 路由实例位于 `src/router/router.ts`. 项目采用中间件链的方式统一处理鉴权, 编辑器访问控制, 结算页逻辑, 页面元信息更新等横切逻辑.
+路由级渲染策略在 `nuxt.config.ts` 的 `routeRules` 中声明: 公开页走 SSR + ISR(swr), 后台 / 搜索 / 编辑器 / 结算等页面走纯 CSR. 公开页取数统一 `useAsyncData`, 站点配置由 `useSiteOptions()` 共享同一 key 去重.
 
 ### 状态管理
 
-项目使用 Pinia. 其中 `src/stores/user.ts` 负责用户登录态与令牌, `src/stores/options.ts` 负责站点配置, 导航, 支付开关, 轮播图, 滑块验证等前台运行时配置.
+项目使用 Pinia. 其中 `src/stores/user.ts` 负责用户登录态与令牌, `src/stores/options.ts` 负责站点配置, 导航, 支付开关, 轮播图, 滑块验证等前台运行时配置. stores 初始化延后到 `onNuxtReady`, 避免 hydration mismatch.
 
 ### 请求层
 
-请求统一通过 Axios 封装, 并在拦截器中附加 `Bearer` Token. 项目内还实现了 access token 刷新与登录态失效处理逻辑, 便于与后端的认证体系协同工作.
+请求统一通过 ofetch 封装(保持 axios 风格签名), 客户端注入 `Bearer` Token, 并实现了 access token 刷新与登录态失效处理逻辑, 便于与后端的认证体系协同工作.
 
 ## 适合从哪里开始阅读代码
 
 如果你准备贡献代码, 建议按下面顺序了解项目:
 
 1. `package.json`, 了解脚本与依赖.
-2. `src/main.ts`, 了解应用启动流程.
-3. `src/router/`, 了解页面组织与中间件机制.
+2. `nuxt.config.ts`, 了解构建与渲染策略.
+3. `src/pages/`, 了解页面组织与路由.
 4. `src/stores/`, 了解全局状态来源.
 5. `src/api/`, 了解接口组织方式.
-6. `src/views/admin/`, 了解后台管理功能入口.
+6. `src/components/views/admin/`, 了解后台管理功能入口.
 7. `src/components/editor/` 与 `src/components/common/post-upsert/`, 了解文章编辑体验.
 
 ## 测试与质量检查
@@ -180,7 +212,7 @@ blog-client/
 
 1. Fork 本仓库并创建特性分支.
 2. 完成开发后运行类型检查, lint 与测试.
-3. 提交清晰的变更说明, 方便评审理解修改目的.
+3. 提交清晰的变更说明, 方便评审理解修改.
 
 ## License
 

@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\types.ts
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\mdlint\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -12,11 +12,11 @@ import type { Text } from "@codemirror/state"
 /**
  * 已知的 Markdown 规则集合接口
  *
- * 说明：
+ * 说明:
  * - 文件中间的 `// @generated-mdlint-rules-start` `// @generated-mdlint-rules-end`
- *   区域可由项目脚本自动更新(脚本 `scripts/generate-mdlint-rules.js`)。
+ *   区域可由项目脚本自动更新(脚本 `scripts/generate-mdlint-rules.js`)
  * - 若在项目中新增规则文件(例如 `003.ts` / `004.ts`), 运行生成脚本
- *   将自动把规则 id 与注释信息写入此处, 从而在编辑器中获得提示。
+ *   将自动把规则 id 与注释信息写入此处, 从而在编辑器中获得提示
  */
 export interface MarkdownRules {
     // @generated-mdlint-rules-start
@@ -74,7 +74,7 @@ export interface MarkdownRules {
 }
 
 /**
- * 单独导出的规则配置类型，方便复用与导出
+ * 单独导出的规则配置类型, 方便复用与导出
  */
 export type MarkdownRulesConfig = { [K in keyof MarkdownRules]?: boolean | (MarkdownRules[K] & { enabled?: boolean }) }
 
@@ -97,13 +97,13 @@ export interface MarkdownLinterOptions {
 }
 
 /**
- *  DocLike 类型定义, 提供行数和按行获取文本的方法
+ * DocLike 类型定义, 提供行数和按行获取文本的方法
  */
 export type DocLike = { lines: number; line: (i: number) => { from: number; to: number; text: string } }
 
 /**
- * 通用规则定义：为每个规则提供 id/description/defaultOptions/run
- * - `Opts` 用于更精确地声明规则配置项形状；默认使用 `unknown` 保持灵活性
+ * 通用规则定义: 为每个规则提供 id/description/defaultOptions/run
+ * - `Opts` 用于更精确地声明规则配置项形状; 默认使用 `unknown` 保持灵活性
  */
 export type RuleDefinition<Opts = unknown> = {
     /** 规则 id, 例如 'rule001' */

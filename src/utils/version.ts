@@ -1,9 +1,9 @@
-/**
- * FilePath    : blog-client\src\utils\version.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\version.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 版本相关
+ * Description : 从变更日志中提取版本信息
  */
 
 export interface VersionInfo {

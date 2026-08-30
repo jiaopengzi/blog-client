@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\post\insert.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 插入文章
+/*
+ * FilePath    : blog-client-nuxt\src\api\post\insert.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 插入文章
  */
 
 import { request, routerGroup } from "@/api/request"

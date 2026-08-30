@@ -23,7 +23,9 @@
 // 共用样式
 %common-menu-style {
     --el-menu-text-color: var(--jpz-text-color-primary);
-    --el-menu-active-color: var(--jpz-color-secondary);
+    // G5(暗色导航激活残漏): 激活色经 --jpz-menu-active-color 中转——
+    // 亮色沿用 secondary 金; 暗色 secondary 为警示红(#bb1818), 在 main.scss 切换为主色金.
+    --el-menu-active-color: var(--jpz-menu-active-color, var(--jpz-color-secondary));
     fill: var(--jpz-color-primary);
 
     // 精确匹配第一层父级激活的标题
@@ -49,7 +51,13 @@
 }
 
 // 横向菜单样式
-.el-menu--horizontal {
+// bugfix(260825-02 bug02): 使用 .el-menu.el-menu--horizontal 双类提升优先级.
+// element-plus 的 el-menu--horizontal.el-menu{border-bottom:...} 为 (0,2,0) 双类选择器,
+// 与本组件 scoped 编译后的 .el-menu--horizontal[data-v] (0,2,0) 特异性打平;
+// dev 下本样式后注入生效, 而 preview 构建时 theme-chalk 动态 chunk CSS 后加载,
+// 平局按加载顺序判定导致 element-plus 边框胜出, 与 dev 表现不一致.
+// 追加 .el-menu 类后特异性 (0,3,0), 无论加载顺序均覆盖 theme-chalk 的底部边框.
+.el-menu.el-menu--horizontal {
     width: 100%;
     border: none;
 

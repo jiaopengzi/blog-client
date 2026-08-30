@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\copy-button\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\copy-button\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -27,22 +27,22 @@ const {
     successMsg = "复制成功",
     errorMsg = "复制失败",
 } = defineProps<{
-    /** text, 复制到剪贴板的文本。 */
+    /** text, 复制到剪贴板的文本 */
     text: string
-    /** successMsg, 复制成功提示文案, 默认 "复制成功"。 */
+    /** successMsg, 复制成功提示文案, 默认 "复制成功" */
     successMsg?: string
-    /** errorMsg, 复制失败提示文案, 默认 "复制失败"。 */
+    /** errorMsg, 复制失败提示文案, 默认 "复制失败" */
     errorMsg?: string
 }>()
 
 const emit = defineEmits<{
-    /** 复制成功事件。 */
+    /** 复制成功事件 */
     (event: "copied"): void
 }>()
 
 /**
- * 处理复制点击, 将文本写入剪贴板并提示结果。
- * @return void。
+ * 处理复制点击, 将文本写入剪贴板并提示结果
+ * @return void
  */
 const handleCopy = () => {
     if (!text) {

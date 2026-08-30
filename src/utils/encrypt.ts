@@ -1,13 +1,13 @@
-/**
- * @FilePath     : \blog-client\src\utils\encrypt.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 加密解密工具类
+/*
+ * FilePath    : blog-client-nuxt\src\utils\encrypt.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 加密解密工具类
  */
 
-// 1.安装库：npm install crypto-js --save
-// 2.安装类型声明文件： npm install @types/crypto-js --save-dev
+// 1. 安装库: npm install crypto-js --save
+// 2. 安装类型声明文件: npm install @types/crypto-js --save-dev
 
 import CryptoJS from "crypto-js"
 

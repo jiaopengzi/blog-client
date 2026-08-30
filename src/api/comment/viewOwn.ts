@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\comment\viewOwn.ts
+ * FilePath    : blog-client-nuxt\src\api\comment\viewOwn.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

@@ -1,20 +1,8 @@
+/*
+ * @FilePath     : \blog-client-nuxt\tsconfig.json
+ * @Description  : 根 tsconfig（Nuxt 4 标准形态，无 references —— 计划坑位 7）
+ */
+
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.vitest.json"
-    },
-  ],
-  "compilerOptions": {
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
-    ]
-  },
+    "extends": "./tsconfig.nuxt.json"
 }

@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\layout\header\index.vue
+ * FilePath    : blog-client-nuxt\src\components\layout\header\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -46,7 +46,7 @@ import ThemePresetSelector from "@/theme/preset-selector"
 import type { ScrollData } from "@/components/hooks/useScroll"
 import { useScrollActions } from "@/components/hooks/useScroll"
 import { useTheme } from "@/theme/useTheme"
-import HeaderNav from "@/components/layout/header-nav"
+import HeaderNav from "@/components/layout/header-nav/index.vue" // 显式 .vue: Nuxt dev SSR (vite-node) 下目录 index.ts 的 re-export 可能解析为 undefined (计划坑位 8)
 
 import Account from "../account"
 import Logo from "../logo"
@@ -55,19 +55,18 @@ import Search from "../search"
 defineOptions({ name: "HeaderBar" })
 
 const { isShowSearch = true } = defineProps<{
-    isShowSearch?: boolean // 是否显示搜索框
+    isShowSearch?: boolean
 }>()
 
-// 事件
 const emit = defineEmits<{
     (event: "handle-search", val: string): void
 }>()
 
 const { activeThemePreset, selectThemePreset, themePresetOptions } = useTheme()
 
-const headerVisible = ref(true) // 导航栏是否可见
+const headerVisible = ref(true)
 
-const phoneNavVisible = ref(false) // 侧边导航栏是否可见
+const phoneNavVisible = ref(false)
 
 const phoneToggleNav = () => {
     phoneNavVisible.value = !phoneNavVisible.value
@@ -81,15 +80,13 @@ const handleSearch = (val: string) => {
 
 const scrollUpAction = () => {
     if (scrollData.value.speed > 100 || scrollData.value.position < 200) {
-        // 速度大于100px/s 或者 滚动条位置小于200px
-        headerVisible.value = true // 显示导航栏
+        headerVisible.value = true
     }
 }
 
 const scrollDownAction = () => {
     if (scrollData.value.speed > 100 && scrollData.value.position > 400) {
-        headerVisible.value = false // 隐藏导航栏
-        // console.log(`===>Down, 位置：${scrollData.value.position.toFixed(2)}, 速度：${scrollData.value.speed.toFixed(2)} px/s`);
+        headerVisible.value = false
     }
 }
 
@@ -115,16 +112,12 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
     position: fixed;
     top: 0;
     left: -1;
-    // 可选：如果需要头部在其他元素上方显示，可以设置一个较高的 z-index 值
-    // z-index: 999;
     background-color: var(--jpz-bg-color);
-    // border-bottom: 1px solid var(--jpz-border-color);
 }
 
 .header-main-common {
-    // 使用网格布局
     display: grid;
-    grid-template-columns: auto 1fr auto auto auto; // 5列布局
+    grid-template-columns: auto 1fr auto auto auto;
     align-items: center;
     gap: 20px;
 }
@@ -174,7 +167,6 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
     }
 
     .header-main-phone {
-        // border-bottom: 1px solid var(--jpz-border-color);
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -207,7 +199,6 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
         background-color: var(--jpz-bg-color);
         position: fixed;
         top: 0;
-        // border: 1px solid var(--jpz-border-color);
         left: 0;
         z-index: 998;
         transition: transform 300ms ease-in-out;

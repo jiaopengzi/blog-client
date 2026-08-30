@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\order-remark\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\order-remark\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -54,9 +54,8 @@ const { orderId, remark, remarkAdmin } = defineProps<{
     remarkAdmin: string // 管理员备注
 }>()
 
-// 事件
 const emit = defineEmits<{
-    (event: "remark-submit-success"): void // 退款提交成功
+    (event: "remark-submit-success"): void // 备注提交成功
 }>()
 
 // 表单实例

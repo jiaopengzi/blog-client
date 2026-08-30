@@ -1,9 +1,9 @@
 /*
- * FilePath    : blog-client\src\components\common\order-refund\hooks.ts
+ * FilePath    : blog-client-nuxt\src\components\common\order-refund\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 退款hooks
+ * Description : 退款 hooks
  */
 
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
@@ -38,7 +38,7 @@ export function useOrderRefund(formRef: Ref<FormInstance | null>, formRefund: Re
             return
         }
 
-        isCaptchaBtnDisabled.value = true // 禁用按钮
+        isCaptchaBtnDisabled.value = true
         const req: CaptchaSendRefundRequest = {
             order_id: formRefund.value.id,
             reason: formRefund.value.reason,
@@ -71,16 +71,16 @@ export function useOrderRefund(formRef: Ref<FormInstance | null>, formRefund: Re
 
     // 执行退款
     const runRefund = async () => {
-        isRefundBtnLoading.value = true // 禁用按钮
+        isRefundBtnLoading.value = true
         if (!formRef || !formRef.value) {
-            isRefundBtnLoading.value = false // 启用按钮
+            isRefundBtnLoading.value = false
             return false
         }
 
         try {
             await formRef.value.validate()
         } catch {
-            isRefundBtnLoading.value = false // 启用按钮
+            isRefundBtnLoading.value = false
             return false
         }
 
@@ -90,7 +90,6 @@ export function useOrderRefund(formRef: Ref<FormInstance | null>, formRefund: Re
             reason: formRefund.value.reason,
             captcha: formRefund.value.captcha,
         }
-        // 调用退款API
         const res = await orderRefundAPI(req)
         if (res.data.code === ResponseCode.OrderRefundSuccess) {
             MessageUtil.success("退款申请已提交，请耐心等待后端处理。", 3000)
@@ -98,14 +97,14 @@ export function useOrderRefund(formRef: Ref<FormInstance | null>, formRefund: Re
             if (res.data.data && res.data.data.stream_items) {
                 await pollingGetStreamIDsStatus(res.data.data.stream_items)
             }
-            formRefund.value.captcha = "" // 清空验证码
-            isRefundBtnLoading.value = false // 启用按钮
+            formRefund.value.captcha = ""
+            isRefundBtnLoading.value = false
             return true
         }
 
         const msg = handleResErr(res)
         MessageUtil.error(msg, 3000)
-        isRefundBtnLoading.value = false // 启用按钮
+        isRefundBtnLoading.value = false
         return false
     }
 

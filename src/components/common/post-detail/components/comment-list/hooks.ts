@@ -1,9 +1,9 @@
 /*
- * FilePath    : blog-client\src\components\common\post-detail\components\comment-list\hooks.ts
+ * FilePath    : blog-client-nuxt\src\components\common\post-detail\components\comment-list\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 评论列表的hooks
+ * Description : 评论列表的 hooks
  */
 
 import type { Completion } from "@codemirror/autocomplete"
@@ -30,7 +30,7 @@ const updateMentions = (comments: CommentRes[]): Completion[] => {
                 map.set(user_name, user_display_name)
                 mentions.push({
                     label: `@${user_display_name}`,
-                    apply: `[@${user_display_name}](${window.location.origin}/${user_name}) `,
+                    apply: `[@${user_display_name}](${window.location.origin}/user/${user_name}) `,
                 })
             }
         }
@@ -40,25 +40,22 @@ const updateMentions = (comments: CommentRes[]): Completion[] => {
 }
 
 export function useCommentList(req: Reactive<ViewCommentRequest>) {
-    const isShowLoading = ref<boolean>(false) // 是否显示加载动画
+    const isShowLoading = ref<boolean>(false)
 
-    const pagination = reactive<Pagination<CommentRes>>(getEmptyPagination<CommentRes>()) // 分页数据
+    const pagination = reactive<Pagination<CommentRes>>(getEmptyPagination<CommentRes>())
 
-    const mentions = ref<Completion[]>([]) // @提及数据
+    const mentions = ref<Completion[]>([])
     async function getPaginate(): Promise<Pagination<CommentRes>> {
-        isShowLoading.value = true // 显示加载动画
-        // 获取标签列表
+        isShowLoading.value = true
         const res = await viewByPostIDAPI(req)
         if (res.data.code === ResponseCode.CommentViewSuccess) {
-            isShowLoading.value = false // 隐藏加载动画
-            // 更新 @ 提及数据
+            isShowLoading.value = false
             mentions.value = updateMentions(res.data.data.records)
             return res.data.data
         }
 
-        isShowLoading.value = false // 隐藏加载动画
+        isShowLoading.value = false
 
-        // 更新 @ 提及数据
         mentions.value = updateMentions([])
         return getEmptyPagination<CommentRes>()
     }
@@ -66,15 +63,11 @@ export function useCommentList(req: Reactive<ViewCommentRequest>) {
     // 分页 hooks
     const { updateCurrentPage, updatePageSize, updatePaginate } = usePaginationNoRouter(pagination, getPaginate, req)
 
-    // 删除评论
     const handleDelete = async (_commentID: string): Promise<void> => {
-        // 更新分页数据
         await updatePaginate()
     }
 
-    // 处理置顶
     const handlePinned = async (_commentID: string, _isPinned: CommentPinnedCode): Promise<void> => {
-        // 更新分页数据
         await updatePaginate()
     }
 

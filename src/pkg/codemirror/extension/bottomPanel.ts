@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\pkg\codemirror\extension\bottomPanel.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : codemirror 底部面板
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\bottomPanel.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : codemirror 底部面板
  */
 
 import { type Extension, Text, type TextIterator } from "@codemirror/state"
@@ -16,11 +16,11 @@ function countWordsFromDoc(doc: Text): number {
     while (!iter.next().done) {
         let inWord = false
         for (let i = 0; i < iter.value.length; i++) {
-            // 匹配英文单词、中文字符以及中文标点
+            // 匹配英文单词字符与中文字符
             const charOrWord: boolean = /[\w\u4e00-\u9fa5]/.test(iter.value[i]!)
 
             if (charOrWord && !inWord) {
-                // 如果当前字符是中文，则直接增加计数
+                // 如果当前字符是中文, 则直接增加计数
                 if (/[\u4e00-\u9fa5]/.test(iter.value[i]!)) {
                     count++
                 } else {
@@ -49,13 +49,11 @@ export function countWords(text: string): number {
 // 获取光标位置信息
 function getCursorInfo(view: EditorView): string {
     let cursorInfo = ""
-    // 如果光标位置发生变化
     const { state } = view // 获取当前编辑器状态
     const pos = state.selection.main.head // 获取光标位置
     const line = state.doc.lineAt(pos) // 获取光标所在行
     const column = pos - line.from // 获取光标所在列
     cursorInfo = `pos: ${pos} | row: ${line.number} | col: ${column + 1}` // 位置信息
-    // console.log(cursorInfo) // 输出光标位置到控制台，根据需要修改这里的逻辑
     return cursorInfo
 }
 
@@ -68,7 +66,7 @@ function updateBottomPanelContent(view: EditorView): string {
 
     const rowCol = getCursorInfo(view) // 光标位置信息
     if (rowCol) {
-        contentArray.push(rowCol) // 如果光标位置信息存在，则添加到内容数组
+        contentArray.push(rowCol) // 如果光标位置信息存在, 则添加到内容数组
     }
 
     return contentArray.join(" | ") // 拼接底部面板内容

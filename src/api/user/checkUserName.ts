@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\user\checkUserName.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 用户查重
+/*
+ * FilePath    : blog-client-nuxt\src\api\user\checkUserName.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 用户查重
  */
 
 import { request, routerGroup } from "@/api/request"

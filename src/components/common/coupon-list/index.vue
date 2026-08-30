@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\coupon-list\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\coupon-list\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <!-- 产品详情 -->
+    <!-- 优惠券详情 -->
     <div class="coupon-details">
         <h4 class="title">优惠券</h4>
         <el-table :data="items" style="width: 100%" border stripe max-height="420" row-class-name="coupon-details-row">
@@ -51,7 +51,7 @@ const computedDiscount = (total: number, discountType: CouponDiscountType, amoun
     }
 }
 
-// 计算优惠金额
+// 计算最终支付金额
 const computedFinal = (total: number, couponList: CouponItemRes[]) => {
     if (couponList.length === 0) return total
     // 循环计算优惠金额
@@ -59,7 +59,7 @@ const computedFinal = (total: number, couponList: CouponItemRes[]) => {
         return acc - computedDiscount(total, item.discount_type, item.amount)
     }, total)
 
-    // 如果最终金额小于0，则返回0
+    // 如果最终金额小于 0, 则返回 0
     return final < 0 ? 0 : final
 }
 </script>
@@ -87,7 +87,6 @@ h4 {
     font-size: 14px;
     color: var(--jpz-text-color-secondary);
     line-height: 1.5;
-    // text-align: right;
     margin-top: 10px;
 
     .amount,

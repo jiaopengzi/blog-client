@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\user-info-dropdown\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 用户信息下拉框 
+ * FilePath    : blog-client-nuxt\src\components\common\user-info-dropdown\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 用户信息下拉框
 -->
 
 <template>
@@ -35,11 +35,10 @@
 import { storeToRefs } from "pinia"
 import { computed } from "vue"
 import { onMounted, ref } from "vue"
-import { useRouter } from "vue-router"
 
-import AvatarInitials from "@/components/common/avatar-initials" // 导入 AvatarInitials 组件
+import AvatarInitials from "@/components/common/avatar-initials"
 import { RouteNames } from "@/router"
-import { PermissionNames } from "@/stores/permissionRole"
+import { PermissionNames } from "@/api/permissionRole/permissionNames"
 import { useUserStore } from "@/stores/user"
 
 defineOptions({ name: "UserInfoDropdown" })
@@ -65,7 +64,7 @@ const userAdminBtn = () => {
 // 是否有后台管理权限
 const hasPermissionLoginAdmin = ref(false)
 
-// 是否有后台管理权限
+// 更新后台管理权限标记
 const updateHasPermissionLoginAdmin = () => {
     hasPermissionLoginAdmin.value = userStore.hasPermission(PermissionNames.LoginAdmin)
 }

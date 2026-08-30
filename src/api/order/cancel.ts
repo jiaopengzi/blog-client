@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\order\cancel.ts
+ * FilePath    : blog-client-nuxt\src\api\order\cancel.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -12,7 +12,7 @@ import type { Res, ResPromise } from "@/api/response"
 
 // 取消订单请求参数
 export interface OrderCancelRequest {
-    id: string // 订单ID
+    id: string // 订单 ID
 }
 
 // 取消订单响应参数

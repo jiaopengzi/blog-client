@@ -1,3 +1,11 @@
+/*
+ * FilePath    : blog-client-nuxt\src\components\editor\utils\vim-ime.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : Vim 模式与本地输入法服务联动
+ */
+
 /**
  * vim-ime 负责把编辑器内的 Vim 模式切换翻译为本地输入法服务请求.
  */
@@ -50,13 +58,13 @@ export function buildVimImeEndpoint(port: number): string {
 }
 
 /**
- * markVimImeEndpointUnavailable 将当前端点标记为不可用, 并仅在首次失败时输出一次告警.
+ * markVimImeEndpointUnavailable 将当前端点标记为不可用, 并仅在首次失败时输出一次友好提示.
  * 同一端口的服务一旦确认不存在, 当前页面生命周期内后续模式切换将直接忽略.
+ * 本地输入法服务为可选组件, 未运行属于预期场景(不是报错), 提示文案说明用途与建议.
  * @param endpoint - 当前输入法服务地址.
- * @param error - 当前失败原因.
  * @returns 无返回值.
  */
-function markVimImeEndpointUnavailable(endpoint: string, error: unknown): void {
+function markVimImeEndpointUnavailable(endpoint: string): void {
     unavailableVimImeEndpointSet.add(endpoint)
 
     if (warnedUnavailableVimImeEndpointSet.has(endpoint)) {
@@ -64,7 +72,9 @@ function markVimImeEndpointUnavailable(endpoint: string, error: unknown): void {
     }
 
     warnedUnavailableVimImeEndpointSet.add(endpoint)
-    console.warn(`Vim IME hook service is unavailable at ${endpoint}, following requests will be ignored in this page session.`, error)
+    console.warn(
+        `未检测到本地 Vim 输入法服务(${endpoint}), 本页将跳过 Vim 模式的输入法联动(属正常现象); 如需编辑器 Vim 模式自动切换输入法, 请先启动本地 blog-vim-ime 服务.`,
+    )
 }
 
 /**
@@ -85,8 +95,6 @@ function shouldIgnoreVimImeRequest(endpoint: string): boolean {
  */
 export async function notifyVimModeChange(options: NotifyVimModeChangeOptions): Promise<void> {
     const { modeBefore, modeAfter, port, force = false } = options
-
-    // console.log(`Vim IME hook: ${modeBefore} -> ${modeAfter}`)
 
     if (!force && modeBefore === modeAfter) {
         return
@@ -118,8 +126,8 @@ export async function notifyVimModeChange(options: NotifyVimModeChangeOptions): 
         if (!response.ok) {
             console.warn(`Vim IME hook request failed with status ${response.status}.`)
         }
-    } catch (error) {
-        markVimImeEndpointUnavailable(endpoint, error)
+    } catch {
+        markVimImeEndpointUnavailable(endpoint)
     } finally {
         globalThis.clearTimeout(timeoutId)
     }

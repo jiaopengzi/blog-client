@@ -1,23 +1,30 @@
 <!--
- * FilePath    : blog-client\src\components\common\slide-verify-manage\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\slide-verify-manage\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 滑动验证图片管理
+ * Description : 滑动验证图片管理(卡片式布局, 图片链接支持媒体库选择, 复用 ImageInput)
+-->
+
+<!--
+ * 补充说明:
+ * 每条图片为一个独立卡片: 头部为序号 + 删除按钮, 字段 label 置顶(label-position top)
+ * 避免 label 宽度不齐; ImageInput 自带输入行 + 预览行, 高度自适应
 -->
 
 <template>
     <div class="form-page">
         <el-form :label-position="labelPosition" ref="formRef" :model="formData" :rules="rules" class="form-content" :size="formSize" status-icon>
-            <el-form-item v-for="(fItem, index) in formData" :key="index" class="form-row">
-                <el-form-item label="图片链接" :prop="`[${index}].imageUrl`" :rules="rules.imageUrl" class="form-cell">
-                    <el-input v-model="fItem.imageUrl" placeholder="图片链接" clearable />
-                    <!-- 预览效果 -->
-                    <el-image class="img-preview" v-if="fItem.imageUrl" :src="fItem.imageUrl" alt="预览" fit="contain" />
+            <div v-for="(fItem, index) in formData" :key="index" class="item-card">
+                <div class="item-card__header">
+                    <span class="item-card__title">滑动验证图 {{ index + 1 }}</span>
+                    <el-button type="danger" link size="small" @click="remove(index)">删除</el-button>
+                </div>
+                <el-form-item label="图片链接" :prop="`[${index}].imageUrl`" :rules="rules.imageUrl">
+                    <ImageInput v-model="fItem.imageUrl" placeholder="图片链接" clearable />
                 </el-form-item>
-                <el-button type="danger" @click="remove(index)" size="small" class="form-cell">删除</el-button>
-            </el-form-item>
-            <el-button type="primary" @click="add" size="small" class="form-row-add">增加滑动验证图片</el-button>
+            </div>
+            <el-button type="primary" plain class="form-row-add" @click="add">+ 增加滑动验证图片</el-button>
         </el-form>
     </div>
 </template>
@@ -25,6 +32,8 @@
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from "element-plus"
 import { reactive, ref, toRaw, useTemplateRef, watch } from "vue"
+
+import ImageInput from "@/components/common/image-input"
 
 import { type SlideVerifyImgItem } from "./types"
 
@@ -34,11 +43,11 @@ const { data = [] } = defineProps<{
     data?: SlideVerifyImgItem[]
 }>()
 
-// 表单label位置 top | left | right
-const labelPosition = ref("left")
+// 表单 label 位置 top | left | right; top 使各字段 label 对齐不受文字长度影响
+const labelPosition = ref<"left" | "right" | "top">("top")
 
 // 表单大小 '' | 'large' | 'default' | 'small'
-const formSize = ref("default")
+const formSize = ref<"" | "default" | "small" | "large">("default")
 
 // 表单实例
 const formRef = useTemplateRef<FormInstance>("formRef")
@@ -78,7 +87,7 @@ const rules = reactive<FormRules<SlideVerifyImgItem>>({
 
 defineExpose({
     get formDataResult() {
-        return toRaw(formData.value) // 使用 toRaw 获取原始数据
+        return toRaw(formData.value)
     },
     validateForm: async (): Promise<boolean> => {
         if (formRef.value) {
@@ -95,40 +104,44 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
+// 透明背景融入 base-form 白卡片, 由 item-card 边框提供结构层次
 .form-page {
-    height: 100%;
     width: 100%;
-    background-color: var(--jpz-bg-color-page);
-    margin: 40px 0;
+    margin: 16px 0 8px;
 }
 
 .form-content {
     width: 100%;
-    // border: 1px solid var(--jpz-border-color);
-    // border-radius: 5px;
-    // padding: 20px;
-    // box-shadow: var(--jpz-box-shadow-light);
-    background-color: var(--jpz-bg-color);
 
-    .form-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+    .item-card {
+        padding: 14px 16px 0;
+        border: 1px solid var(--jpz-border-color-lighter);
+        border-radius: 8px;
+        background-color: var(--jpz-bg-color);
 
-        .form-cell {
-            margin: 0 10px;
-            height: 32px;
-
-            .img-preview {
-                width: 86px;
-                height: 32px;
-                margin: 0 5px;
-            }
+        & + .item-card {
+            margin-top: 12px;
         }
     }
 
-    .el-input {
-        width: 140px;
+    .item-card__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 4px;
     }
+
+    .item-card__title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--jpz-text-color-regular);
+    }
+}
+
+// 增加按钮: 通栏虚线, 与卡片形成"可追加"的视觉暗示
+.form-row-add {
+    width: 100%;
+    margin-top: 12px;
+    border-style: dashed;
 }
 </style>

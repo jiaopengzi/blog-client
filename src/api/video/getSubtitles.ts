@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\video\getSubtitles.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 获取字幕
+/*
+ * FilePath    : blog-client-nuxt\src\api\video\getSubtitles.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 获取字幕
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -17,7 +17,7 @@ export type Subtitles = Record<
     }
 >
 
-// 根据 fileIdHash 和 subtitlesLanguage 获取字幕
+// 根据 fileIdHash 获取字幕
 export function getSubtitlesAPI(fileIdHash: string): ResPromise<Res<Subtitles>> {
     return request({
         url: `${routerGroup}/subtitles/webvtt/${fileIdHash}`,

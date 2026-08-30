@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\comment-post-item\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\comment-post-item\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -35,16 +35,14 @@ import type { PostProps } from "./types"
 
 defineOptions({ name: "CommentPostItem" })
 
-// 定义 props
 const { post, isAdmin = false } = defineProps<PostProps>()
 
-// 事件
 const emit = defineEmits<{
     (event: "post-click", postID: string): void
     (event: "view-post", postID: string): void
 }>()
 
-// 待处理
+// 待审核评论数
 const pendingCount = computed(() => {
     for (const key in post.comment_count_by_status) {
         if (post.comment_count_by_status[key]!.status === CommentReviewCode.Pending) {
@@ -54,7 +52,7 @@ const pendingCount = computed(() => {
     return 0
 })
 
-// 已审核
+// 已审核评论数
 const approvedCount = computed(() => {
     for (const key in post.comment_count_by_status) {
         if (post.comment_count_by_status[key]!.status === CommentReviewCode.Approved) {
@@ -64,7 +62,7 @@ const approvedCount = computed(() => {
     return 0
 })
 
-// 已拒绝
+// 已拒绝评论数
 const rejectedCount = computed(() => {
     for (const key in post.comment_count_by_status) {
         if (post.comment_count_by_status[key]!.status === CommentReviewCode.Rejected) {
@@ -191,6 +189,8 @@ const handleViewPostClick = () => {
     background-color: transparent;
     font-size: 12px;
     align-self: center;
+    // 260828-5: 文章名过长时按钮不被挤压/遮盖
+    flex-shrink: 0;
 }
 
 .post-title-text {
@@ -201,14 +201,11 @@ const handleViewPostClick = () => {
     word-break: break-word;
     text-align: center;
     padding: 0 4px;
+
+    // 260828-5: 超长文章名最多两行, 余下省略, 避免把"查看文章"挤出可视区
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
-
-// @include respond-to("pc") {
-// }
-
-// @include respond-to("pad") {
-// }
-
-// @include respond-to("phone") {
-// }
 </style>

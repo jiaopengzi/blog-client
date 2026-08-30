@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\db-redis\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : redis 数据库配置表单
+ * FilePath    : blog-client-nuxt\src\components\common\db-redis\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : redis 数据库配置表单
 -->
 
 <template>

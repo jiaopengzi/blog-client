@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\notification\getShortCodes.ts
+ * FilePath    : blog-client-nuxt\src\api\notification\getShortCodes.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

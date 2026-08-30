@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\hooks\usePagination\usePaginationNoRouter.ts
+ * FilePath    : blog-client-nuxt\src\components\hooks\usePagination\usePaginationNoRouter.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -23,7 +23,7 @@ export function usePaginationNoRouter<T, K extends PaginationWithoutKeyWord>(
     paginateAPI: (params: K) => Promise<Pagination<T>>,
     queryParams: Reactive<K>,
 ) {
-    //  更新分页数据
+    // 更新分页数据
     const updatePaginate = async (): Promise<void> => {
         const data = await paginateAPI(queryParams as K)
         Object.assign(pagination, data)

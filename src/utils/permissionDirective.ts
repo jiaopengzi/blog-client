@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\utils\permissionDirective.ts
+ * FilePath    : blog-client-nuxt\src\utils\permissionDirective.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -8,7 +8,7 @@
 
 import type { Directive, DirectiveBinding } from "vue"
 
-import { PermissionNames } from "@/stores/permissionRole"
+import { PermissionNames } from "@/api/permissionRole/permissionNames"
 import { useUserStore } from "@/stores/user"
 
 // 权限指令, 如果没有权限则移除元素.

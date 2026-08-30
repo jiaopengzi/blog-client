@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\stores\customElementsDataCache.ts
+/*
+ * FilePath    : blog-client-nuxt\src\stores\customElementsDataCache.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -10,7 +10,7 @@ import { acceptHMRUpdate, defineStore } from "pinia"
 
 import type { AccountKeyRes } from "@/api/accountKey/common"
 import { type MembershipRes } from "@/api/membership/common"
-import { Names } from "@/customElements"
+import { Names } from "@/customElements/constants"
 
 // 自定义元素数据类型
 export type DataType = AccountKeyRes | MembershipRes[] | null
@@ -49,7 +49,7 @@ export const useCustomElementsDataCacheStore = defineStore("customElementsDataCa
     },
 
     actions: {
-        // 初始化面包屑
+        // 初始化自定义元素数据缓存
         init(): void {
             this.$state = initCustomElementsDataCache()
         },
@@ -85,7 +85,7 @@ export const useCustomElementsDataCacheStore = defineStore("customElementsDataCa
     },
 })
 
-// 允许开发环境下进行热更新 HMR(Hot Module Replacement)
+// 允许开发环境下进行热更新 HMR (Hot Module Replacement)
 if (import.meta.hot) {
     import.meta.hot.accept(acceptHMRUpdate(useCustomElementsDataCacheStore, import.meta.hot))
 }

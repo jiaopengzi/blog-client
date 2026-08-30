@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\link\insert.ts
+ * FilePath    : blog-client-nuxt\src\api\link\insert.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -22,7 +22,7 @@ export function insertLinkAPI(requestData: InsertLinkRequest): ResPromise<Res<St
     })
 }
 
-// 插入链接
+// 插入链接(管理员)
 export function insertLinkAdminAPI(requestData: InsertLinkRequest): ResPromise<Res<StreamsStatusRes>> {
     const urlStr = routerGroup + "/link/insert-admin"
     return request({

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\message.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 消息提示 工具类
+/*
+ * FilePath    : blog-client-nuxt\src\utils\message.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 消息提示 工具类
  */
 
 import "element-plus/theme-chalk/el-message.css"
@@ -36,7 +36,7 @@ export function success(msgStr: string, duration: number = 3000): void {
 }
 
 /**
- * @description: 显示成功提示，并持续展示直到下一条通过 MessageUtil 发出的消息出现.
+ * @description: 显示成功提示, 并持续展示直到下一条通过 MessageUtil 发出的消息出现.
  * @param msgStr 提示内容.
  * @return void.
  */
@@ -55,7 +55,7 @@ export function info(msgStr: string, duration: number = 3000): void {
 }
 
 /**
- * @description: 显示提示消息，并持续展示直到下一条通过 MessageUtil 发出的消息出现.
+ * @description: 显示提示消息, 并持续展示直到下一条通过 MessageUtil 发出的消息出现.
  * @param msgStr 提示内容.
  * @return void.
  */
@@ -74,7 +74,7 @@ export function warning(msgStr: string, duration: number = 3000): void {
 }
 
 /**
- * @description: 显示警告消息，并持续展示直到下一条通过 MessageUtil 发出的消息出现.
+ * @description: 显示警告消息, 并持续展示直到下一条通过 MessageUtil 发出的消息出现.
  * @param msgStr 提示内容.
  * @return void.
  */
@@ -93,7 +93,7 @@ export function error(msgStr: string, duration: number = 6000): void {
 }
 
 /**
- * @description: 显示错误消息，并持续展示直到下一条通过 MessageUtil 发出的消息出现.
+ * @description: 显示错误消息, 并持续展示直到下一条通过 MessageUtil 发出的消息出现.
  * @param msgStr 提示内容.
  * @return void.
  */
@@ -185,7 +185,7 @@ export function getLastMessageState() {
     return lastMessage
 }
 
-// 为了保持向后兼容，导出一个包含所有函数的对象
+// 为了保持向后兼容, 导出一个包含所有函数的对象
 export const MessageUtil = {
     success,
     successWaitNext,

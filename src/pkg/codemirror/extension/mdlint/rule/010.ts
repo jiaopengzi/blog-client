@@ -1,10 +1,11 @@
-/**
- * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\rule\010.ts
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\mdlint\rule\010.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
  * Description : 规则 010 检测 login-view 标签是否合法(成对闭合、标签前后空行)
  */
+
 import type { Diagnostic } from "@codemirror/lint"
 
 import type { DocLike } from "../types"

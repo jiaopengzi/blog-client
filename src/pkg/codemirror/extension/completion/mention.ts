@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\pkg\codemirror\extension\completion\mention.ts
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\completion\mention.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -16,7 +16,7 @@ import { CompletionContext } from "@codemirror/autocomplete"
  */
 export function mentionOverride(data: Completion[] = []): (context: CompletionContext) => CompletionResult | null {
     return (context: CompletionContext): CompletionResult | null => {
-        const keyword = context.matchBefore(/@([\u4e00-\u9fa5\w]+)?/) // 匹配以@开头后的任意字符，包括中文、英文、数字等
+        const keyword = context.matchBefore(/@([\u4e00-\u9fa5\w]+)?/) // 匹配以 @ 开头后的任意字符, 包括中文, 英文, 数字等
 
         if (!keyword) return null // 如果没有匹配到则不补全
         if (keyword.from === keyword.to && !context.explicit) return null // 如果没有输入内容则不补全

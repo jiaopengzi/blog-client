@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\customElementsMount\utils.ts
+ * FilePath    : blog-client-nuxt\src\customElementsMount\utils.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -7,8 +7,8 @@
  */
 
 /**
- * 转换事件名格式（从 onEventName 到 onEvent-name）
- * @param eventName 原始事件名（必须以'on'开头，驼峰格式）
+ * 转换事件名格式 (从 onEventName 到 onEvent-name)
+ * @param eventName 原始事件名 (必须以 'on' 开头, 驼峰格式)
  * @returns 转换后的事件名
  */
 export const convertEventName = (eventName: string): string => {

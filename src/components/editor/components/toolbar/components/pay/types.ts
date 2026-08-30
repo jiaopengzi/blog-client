@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\editor\components\toolbar\components\alert\types.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\editor\components\toolbar\components\pay\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -7,16 +7,16 @@
  */
 
 // 拿到自定义元素的名称枚举
-import { Names } from "@/customElements"
+import { Names } from "@/customElements/constants"
 
-// markdown 编辑器 单个命令对象 的类型
+// 付费标签项类型
 export interface PayTagItem {
     prefix: string // 前缀
     content: string // 内容
     suffix: string // 后缀
 }
 
-// 如果希望允许只包含其中一部分键（都为可选），使用 Partial
+// 如果希望允许只包含其中一部分键(都为可选), 使用 Partial
 export type PayTag = Record<Names.PayVideo | Names.PayMembership | Names.PayRead | Names.PayDownload | Names.PayKey, PayTagItem>
 
 export const payTags: Readonly<PayTag> = {

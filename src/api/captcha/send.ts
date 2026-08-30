@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\captcha\send.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 验证码发送接口
+/*
+ * FilePath    : blog-client-nuxt\src\api\captcha\send.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 验证码发送接口
  */
 
 import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"

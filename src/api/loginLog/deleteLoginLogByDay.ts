@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\loginLog\deleteLoginLogByDay.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 通过天删除登录日志
+/*
+ * FilePath    : blog-client-nuxt\src\api\loginLog\deleteLoginLogByDay.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 通过天删除登录日志
  */
 
 import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"

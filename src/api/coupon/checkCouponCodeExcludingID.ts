@@ -1,9 +1,9 @@
 /*
- * FilePath    : blog-client\src\api\coupon\checkCouponCodeExcludingID.ts
+ * FilePath    : blog-client-nuxt\src\api\coupon\checkCouponCodeExcludingID.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 检查优惠券码是否存在，排除指定ID
+ * Description : 检查优惠券码是否存在, 排除指定ID
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -14,7 +14,7 @@ export interface CheckCouponCodeExcludingIDRequest {
     code: string
 }
 
-// 检查优惠券码是否存在，排除指定ID
+// 检查优惠券码是否存在, 排除指定ID
 export function checkCouponCodeExcludingIDAPI(requestData: CheckCouponCodeExcludingIDRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/coupon/check-code-excluding-id"
     return request({

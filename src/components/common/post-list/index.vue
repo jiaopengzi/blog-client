@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-list\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-list\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -30,27 +30,32 @@
                 @post-id="postId"
             />
         </div>
-        <!-- 空 -->
-        <el-empty v-if="paginationData.records.length === 0" class="empty" description="没有数据" />
+        <!-- 空(feature01: el-empty 内部 useId 在 SSR 双端不一致, ClientOnly 渲染避免 hydration mismatch) -->
+        <ClientOnly>
+            <el-empty v-if="paginationData.records.length === 0" class="empty" description="没有数据" />
+        </ClientOnly>
     </div>
-    <!-- 分页 -->
+    <!-- 分页(feature01: el-pagination 内部 useId 在 SSR 双端不一致, ClientOnly 渲染避免 hydration mismatch;
+         列表条目与摘要已 SSR 直出, 分页控件仅交互用途) -->
     <div class="pagination-container">
         <div class="loader" v-show="isShowLoading"></div>
-        <div class="pagination-block" ref="paginationBlockRef">
-            <!-- 注意这里使用 v-model 双向绑定, 会造成意外的触发在 update 中手动更新 -->
-            <el-pagination
-                :current-page="paginationData.current_page"
-                :page-size="paginationData.page_size"
-                :page-sizes="paginationData.page_sizes"
-                :page-count="paginationData.page_count"
-                :total="paginationData.total"
-                :background="true"
-                :layout="paginationLayout"
-                size="small"
-                @update:current-page="updateCurrentPage"
-                @update:page-size="updatePageSize"
-            />
-        </div>
+        <ClientOnly>
+            <div class="pagination-block" ref="paginationBlockRef">
+                <!-- 注意这里使用 v-model 双向绑定, 会造成意外的触发在 update 中手动更新 -->
+                <el-pagination
+                    :current-page="paginationData.current_page"
+                    :page-size="paginationData.page_size"
+                    :page-sizes="paginationData.page_sizes"
+                    :page-count="paginationData.page_count"
+                    :total="paginationData.total"
+                    :background="true"
+                    :layout="paginationLayout"
+                    size="small"
+                    @update:current-page="updateCurrentPage"
+                    @update:page-size="updatePageSize"
+                />
+            </div>
+        </ClientOnly>
     </div>
 
     <!-- 链接列表 -->
@@ -69,7 +74,7 @@ import { type Pagination } from "@/api/response"
 import PostItemMain from "@/components/common/post-item-main"
 import PostItemSearch from "@/components/common/post-item-search"
 import { useStatusStore } from "@/stores/status"
-import LinkList from "@/views/link-list/components/link-list"
+import LinkList from "@/components/views/link-list"
 
 defineOptions({ name: "PostList" })
 
@@ -84,8 +89,8 @@ const {
     isSetTimeMargin = false,
 } = defineProps<{
     paginationData: Pagination<PostResPagination>
-    isShowLoading?: boolean // 是否显示loading
-    highlightKey?: string // 高亮的key
+    isShowLoading?: boolean // 是否显示 loading
+    highlightKey?: string // 高亮的 key
     showPostList?: boolean // 默认文章列表
     showSearchList?: boolean // 搜索列表
     postListSummaryTruncate?: number
@@ -93,7 +98,7 @@ const {
     isSetTimeMargin?: boolean
 }>()
 
-// 事件
+// 事件声明
 const emit = defineEmits<{
     (event: "updateCurrentPage", val: number): void
     (event: "updatePageSize", val: number): void
@@ -108,14 +113,12 @@ const { disablePagination } = storeToRefs(statusStore)
 
 const { paginationLayout } = useDevice()
 
-// 分页组件 ref
 const paginationBlockRef = useTemplateRef("paginationBlockRef")
 
 watch(
     () => [showSearchList, paginationData.total],
     ([showSearchList, total]) => {
-        // 如果是搜索列表，且没有数据，则禁用分页
-        // 临时禁用分页,避免触发分页事件，造成无异议的请求
+        // 搜索列表无数据时临时禁用分页, 避免触发分页事件造成无意义的请求
         if (showSearchList && total === 0) {
             statusStore.setDisablePagination(true)
         }
@@ -123,27 +126,24 @@ watch(
     { immediate: true },
 )
 
-// 更新当前页
 const updateCurrentPage = (val: number) => {
     if (disablePagination.value) {
         // 说明拦截到了分页事件, 需要恢复分页
-        statusStore.setDisablePagination(false) // 恢复分页
+        statusStore.setDisablePagination(false)
         return
     }
     emit("updateCurrentPage", val)
 }
 
-// 更新每页显示数量
 const updatePageSize = (val: number) => {
     if (disablePagination.value) {
         // 说明拦截到了分页事件, 需要恢复分页
-        statusStore.setDisablePagination(false) // 恢复分页
+        statusStore.setDisablePagination(false)
         return
     }
     emit("updatePageSize", val)
 }
 
-// 点击分类
 const clickCategory = (val: PostCategory) => {
     emit("clickCategory", val)
 }
@@ -153,18 +153,18 @@ const postId = async (val: string) => {
     emit("postId", val)
 }
 
-let stopIntersectionObserver: () => void // 停止监听函数
-const isInitialRender = ref(true) // 是否是初始渲染
+let stopIntersectionObserver: () => void
+const isInitialRender = ref(true)
 
 onMounted(async () => {
     await nextTick()
 
     const { stop } = useIntersectionObserver(paginationBlockRef, ([entry]) => {
         if (isInitialRender.value) {
-            // 初次加载时不emit
+            // 初次加载时不 emit
             isInitialRender.value = false
         } else {
-            // 非初次加载时，根据intersection情况emit
+            // 非初次加载时, 根据 intersection 情况 emit
             emit("paginationBlockVisible", entry?.isIntersecting || false)
         }
     })
@@ -187,7 +187,7 @@ onUnmounted(() => {
         border-right: 1px solid var(--jpz-border-color);
         border-top: 1px solid var(--jpz-border-color);
 
-        // 选中第一个元素时，显示上边框
+        // 选中第一个元素时, 显示上边框
         &:first-child {
             border-radius: 5px 5px 0 0;
         }
@@ -206,14 +206,14 @@ onUnmounted(() => {
 
 @include respond-to("pc") {
     .post-list {
-        // 最小高度,减去头部和面包屑的高度再减去 80px为了分页的高度
+        // 最小高度, 减去头部和面包屑的高度, 再减去 80px 作为分页的高度
         min-height: calc(100vh - pc.$height-header - pc.$height-breadcrumb - 80px);
     }
 }
 
 @include respond-to("pad") {
     .post-list {
-        // 最小高度,减去头部和面包屑的高度再减去 80px为了分页的高度
+        // 最小高度, 减去头部和面包屑的高度, 再减去 80px 作为分页的高度
         min-height: calc(100vh - pad.$height-header - pad.$height-breadcrumb - 80px);
         margin-left: 10px;
         margin-right: 10px;
@@ -222,7 +222,7 @@ onUnmounted(() => {
 
 @include respond-to("phone") {
     .post-list {
-        // 最小高度,减去头部和面包屑的高度再减去 80px为了分页的高度
+        // 最小高度, 减去头部和面包屑的高度, 再减去 80px 作为分页的高度
         min-height: calc(100vh - phone.$height-header - phone.$height-breadcrumb - 80px);
         margin-left: 10px;
         margin-right: 10px;
@@ -244,7 +244,7 @@ onUnmounted(() => {
     overflow-x: auto;
 }
 
-/* 参考:https://css-loaders.com/dots/ */
+/* 参考: https://css-loaders.com/dots/ */
 .loader {
     width: 60px;
     aspect-ratio: 3;

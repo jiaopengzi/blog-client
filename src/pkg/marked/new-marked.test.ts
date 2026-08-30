@@ -1,3 +1,11 @@
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\marked\new-marked.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : marked 配置的单元测试
+ */
+
 import { describe, expect, it } from "vitest"
 
 import createMarked from "./new-marked"

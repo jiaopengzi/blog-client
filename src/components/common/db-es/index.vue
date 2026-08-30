@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\db-es\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : es 配置表单
+ * FilePath    : blog-client-nuxt\src\components\common\db-es\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : es 配置表单
 -->
 
 <template>
@@ -56,7 +56,7 @@ const rules: ComputedRef<FormRules<ESForm>> = computed(() => {
         addresses: [
             { required: true, message: "请输入地址", trigger: "blur" },
             {
-                // urlList校验 以逗号分隔的url列表,每个url必须以http或https开头
+                // urlList 校验, 以逗号分隔的 url 列表, 每个 url 必须以 http 或 https 开头
                 validator: urlListValidatorFunc,
                 trigger: "blur",
             },
@@ -64,7 +64,7 @@ const rules: ComputedRef<FormRules<ESForm>> = computed(() => {
         index_prefix: [
             { required: true, message: "请输索引格前缀", trigger: "blur" },
             {
-                // 结尾为'_'且长度不超过50,不包含空格
+                // 结尾为 '_' 且长度不超过 50, 不包含空格
                 validator: prefixValidatorFunc,
                 trigger: "blur",
             },

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\membership\getUserCountByExpire.ts
+ * FilePath    : blog-client-nuxt\src\api\membership\getUserCountByExpire.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -15,7 +15,7 @@ export interface MembershipUserCountByExpire {
 }
 
 /**
- * getMembershipUserCountByExpireAPI 获取会员用户按是否过期统计数据。
+ * getMembershipUserCountByExpireAPI 获取会员用户按是否过期统计数据
  */
 export function getMembershipUserCountByExpireAPI(): ResPromise<Res<MembershipUserCountByExpire[]>> {
     const urlStr = routerGroup + "/membership/user-count-by-expire"

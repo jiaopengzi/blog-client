@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\media-base\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 媒体文件基础展示组件
+ * FilePath    : blog-client-nuxt\src\components\common\media-base\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 媒体文件基础展示组件
 -->
 
 <template>
@@ -37,7 +37,7 @@
                 </div>
             </template>
 
-            <!-- 编辑弹窗  -->
+            <!-- 编辑弹窗 -->
             <template #edit-item-title>
                 <span class="dialog-title">编辑媒体文件</span>
             </template>
@@ -82,10 +82,8 @@ import BaseTable from "@/components/common/base-table/index.vue"
 import AddMedia from "@/components/common/media-add"
 import EditMedia, { type EditMediaProps } from "@/components/common/media-edit"
 
-// 定义组件名称
 defineOptions({ name: "MediaBase" })
 
-// 数据
 const {
     tableColumn,
     pagination,
@@ -112,9 +110,8 @@ const {
     handleNextMedia?: () => void // 切换到下一条媒体
 }>()
 
-// 事件
 const emit = defineEmits<{
-    (event: "toggle-add-dialog"): void // 编辑Media状态
+    (event: "toggle-add-dialog"): void // 切换新增弹窗显示状态
     (event: "edit-media-status", value: boolean): void // 编辑Media状态
     (event: "has-upload", value: boolean): void // 是否有上传
     (event: "update-subtitles", language: string): void // 更新字幕
@@ -123,53 +120,53 @@ const emit = defineEmits<{
 }>()
 
 /**
- * @description: 切换新增弹窗显示状态.
- * @return void.
+ * @description: 切换新增弹窗显示状态
+ * @return void
  */
 const toggleAddDialog = () => {
     emit("toggle-add-dialog")
 }
 
 /**
- * @description: 同步编辑媒体状态到父组件.
- * @param value 编辑状态.
- * @return void.
+ * @description: 同步编辑媒体状态到父组件
+ * @param value 编辑状态
+ * @return void
  */
 const editStatus = (value: boolean) => {
     emit("edit-media-status", value)
 }
 
 /**
- * @description: 同步上传完成状态到父组件.
- * @param value 是否已有上传.
- * @return void.
+ * @description: 同步上传完成状态到父组件
+ * @param value 是否已有上传
+ * @return void
  */
 const handleHasUpload = (value: boolean) => {
     emit("has-upload", value)
 }
 
 /**
- * @description: 通知父组件刷新指定语言字幕.
- * @param language 字幕语言.
- * @return void.
+ * @description: 通知父组件刷新指定语言字幕
+ * @param language 字幕语言
+ * @return void
  */
 const updateSubtitles = (language: string) => {
     emit("update-subtitles", language)
 }
 
 /**
- * @description: 通知父组件删除指定语言字幕.
- * @param language 字幕语言.
- * @return void.
+ * @description: 通知父组件删除指定语言字幕
+ * @param language 字幕语言
+ * @return void
  */
 const deleteSubtitles = (language: string) => {
     emit("delete-subtitles", language)
 }
 
 /**
- * @description: 将当前列表可见顺序同步到父组件.
- * @param rows 当前列表展示顺序.
- * @return void.
+ * @description: 将当前列表可见顺序同步到父组件
+ * @param rows 当前列表展示顺序
+ * @return void
  */
 const updateVisibleRows = (rows: TableData[]) => {
     emit("update-visible-rows", rows)

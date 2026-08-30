@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\membership\insert.ts
+ * FilePath    : blog-client-nuxt\src\api\membership\insert.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -19,7 +19,7 @@ export interface InsertMembershipResData {
     status: MembershipStatus
 }
 
-// 插入
+// 插入会员
 export function insertMembershipAPI(requestData: InsertMembershipRequest): ResPromise<Res<InsertMembershipResData>> {
     const urlStr = routerGroup + "/membership/insert"
     return request({

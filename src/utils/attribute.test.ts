@@ -1,3 +1,11 @@
+/*
+ * FilePath    : blog-client-nuxt\src\utils\attribute.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : attribute 工具的单元测试
+ */
+
 import { describe, expect, it } from "vitest"
 
 import { parseAttributes } from "./attribute"

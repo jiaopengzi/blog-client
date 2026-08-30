@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\user\logoutByAdmin.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 管理员登出用户
+/*
+ * FilePath    : blog-client-nuxt\src\api\user\logoutByAdmin.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 管理员登出用户
  */
 
 import { request, routerGroup } from "@/api/request"

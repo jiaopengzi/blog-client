@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\editor\hooks\useToolbar.ts
+ * FilePath    : blog-client-nuxt\src\components\editor\hooks\useToolbar.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -33,16 +33,15 @@ export function useToolbar(
         copyPreparationInFlight: false,
     }),
 ) {
-    // 状态管理
     const editorState = stateManager.getState()
     const deviceStore = useDeviceStore()
     const { device } = storeToRefs(deviceStore)
 
     /**
-     * shouldIgnoreFullscreenEscape 判断当前 Escape 是否应忽略网页全屏退出。
-     * 当开启 Vim 模式且焦点位于 CodeMirror 内部时, 应优先交给 Vim 自己退出当前模式。
-     * @param event - 当前键盘事件。
-     * @returns true 表示本次 Escape 不应退出网页全屏。
+     * shouldIgnoreFullscreenEscape 判断当前 Escape 是否应忽略网页全屏退出
+     * 当开启 Vim 模式且焦点位于 CodeMirror 内部时, 应优先交给 Vim 自己退出当前模式
+     * @param event - 当前键盘事件
+     * @returns true 表示本次 Escape 不应退出网页全屏
      */
     const shouldIgnoreFullscreenEscape = (event: KeyboardEvent): boolean => {
         if (!editorState.vimMode) {
@@ -62,10 +61,10 @@ export function useToolbar(
     })
 
     /**
-     * syncFullscreenState 将网页全屏状态同步回编辑器状态。
-     * 这样无论是点击工具栏按钮, 还是按 Escape 退出全屏, 工具栏显示都能和真实状态保持一致。
-     * @param isFullscreen - 当前网页全屏状态。
-     * @returns 无返回值。
+     * syncFullscreenState 将网页全屏状态同步回编辑器状态
+     * 这样无论是点击工具栏按钮, 还是按 Escape 退出全屏, 工具栏显示都能和真实状态保持一致
+     * @param isFullscreen - 当前网页全屏状态
+     * @returns 无返回值
      */
     const syncFullscreenState = (isFullscreen: boolean): void => {
         stateManager.setIsFullScreen(isFullscreen)
@@ -74,10 +73,10 @@ export function useToolbar(
     watch(isWebFullscreen, syncFullscreenState, { immediate: true })
 
     /**
-     * getToolbarCommandMeta 根据当前编辑器状态返回工具栏命令显示配置。
-     * 全屏按钮始终保留原有的点击命令, 仅在已进入全屏时切换提示文案与图标。
-     * @param key - 当前工具栏按钮命令。
-     * @returns 当前按钮应展示的命令配置。
+     * getToolbarCommandMeta 根据当前编辑器状态返回工具栏命令显示配置
+     * 全屏按钮始终保留原有的点击命令, 仅在已进入全屏时切换提示文案与图标
+     * @param key - 当前工具栏按钮命令
+     * @returns 当前按钮应展示的命令配置
      */
     const getToolbarCommandMeta = (key: CommandsKey) => {
         if (key === CommandsKey.Fullscreen && editorState.isFullScreen) {
@@ -87,7 +86,6 @@ export function useToolbar(
         return markdownEditorCommands[key]
     }
 
-    // 工具栏按钮
     const toolbarBtns = computed<EditorToolbarButton[]>(() => {
         return editorState.commandKeys.map((key) => {
             const commandMeta = getToolbarCommandMeta(key as CommandsKey)
@@ -102,9 +100,9 @@ export function useToolbar(
     })
 
     /**
-     * setVimMode 更新 Vim 启用状态, 并将当前映射, 输入法端口与开关状态一起持久化到 localStorage.
-     * @param enabled - 是否启用 Vim 模式.
-     * @returns 无返回值.
+     * setVimMode 更新 Vim 启用状态, 并将当前映射, 输入法端口与开关状态一起持久化到 localStorage
+     * @param enabled - 是否启用 Vim 模式
+     * @returns 无返回值
      */
     const setVimMode = (enabled: boolean): void => {
         stateManager.setVimMode(enabled)
@@ -112,10 +110,10 @@ export function useToolbar(
     }
 
     /**
-     * syncPhoneExclusiveView 在手机端切换编辑区与预览区的互斥显示状态。
-     * 手机端只允许同时展示一个主面板, 避免编辑区和预览区并排挤压。
-     * @param targetView - 目标展示区域, editor 表示编辑区, preview 表示预览区。
-     * @returns 无返回值。
+     * syncPhoneExclusiveView 在手机端切换编辑区与预览区的互斥显示状态
+     * 手机端只允许同时展示一个主面板, 避免编辑区和预览区并排挤压
+     * @param targetView - 目标展示区域, editor 表示编辑区, preview 表示预览区
+     * @returns 无返回值
      */
     const syncPhoneExclusiveView = (targetView: "editor" | "preview"): void => {
         if (device.value !== DeviceType.PHONE) {
@@ -191,7 +189,7 @@ export function useToolbar(
         }
 
         if (name === CommandsKey.Copy) {
-            // 开启预复制缓存时，非微信模式且无有效缓存则拦截并提示，避免复制出 web 模式内容
+            // 开启预复制缓存时, 非微信模式且无有效缓存则拦截并提示, 避免复制出 web 模式内容
             if (isEnableCopyCache && !editorState.isShowPreviewWechat) {
                 const { hasPreparedCopyCache, copyPreparationInFlight } = getCopyState()
                 if (!hasPreparedCopyCache && !copyPreparationInFlight) {
@@ -211,15 +209,6 @@ export function useToolbar(
             window.open("https://jiaopengzi.com/page/editor-docs", "_blank")
             return
         }
-
-        // if (name === CommandsKey.save) {
-        //   isShowPreviewWechat.value = !isShowPreviewWechat.value
-        //   if (isShowPreviewWechat.value) return
-        //   const contentElement = document.getElementById('preview')
-        //   if (contentElement) {
-        //     copyToX(contentElement)
-        //   }
-        // }
 
         if (name === CommandsKey.PowerBi) {
             const defaults = loadPowerBiDefaults()
@@ -241,7 +230,7 @@ export function useToolbar(
             return
         }
 
-        // 调用 codemirrorRef 中的 runCommand 函数
+        // 将命令分发给 CodeMirror 执行
 
         stateManager.setCmCommand({
             commandName: name,
@@ -249,18 +238,16 @@ export function useToolbar(
         })
     }
 
+    const keys = useMagicKeys() // 通过 keys 获取键盘按键状态
     /**
      * @description: 注册快捷键
      */
-    const keys = useMagicKeys() // 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
     const registerHotKeys = () => {
         Object.values(CommandsKey).forEach((item) => {
             const hotKey = markdownEditorCommands[item].hotKey
             if (hotKey) {
                 watch(keys[hotKey]!, (v) => {
-                    // v 为 true 时表示按下了快捷键 v 为 false 时释放了快捷键
-                    // console.log('hotKey', hotKey, v)
-                    // console.log('item[0]', item)
+                    // v 为 true 时表示按下快捷键, 为 false 时释放快捷键
                     // 当开启快捷键功能时才响应
                     if (v && editorState.isShortcutKey) {
                         toolbarBtnClicked(item)
@@ -274,7 +261,7 @@ export function useToolbar(
     const updateMdContainerStyle = (toolbarHight: string): void => {
         if (!mdContainerRef.value) return
 
-        // 设置 cmContainerRef 中 css 变量 --md-editor-container-height-fullscreen 的值为 100vh - toolbar 高度 - toolbar margin
+        // 设置 mdContainerRef 中 css 变量 --md-editor-container-height-fullscreen 的值为 100vh - toolbar 高度 - toolbar margin
         setCSSVariable(mdContainerRef.value, "--md-editor-container-height-fullscreen", `calc(100vh - ${toolbarHight})`)
     }
 
@@ -307,8 +294,8 @@ export function useToolbar(
     }
 
     /**
-     * insertTableRowCol 按指定行列插入空白表格。
-     * 表头与内容单元格统一使用固定宽度的空白占位, 并让各列在源码中保持对齐。
+     * insertTableRowCol 按指定行列插入空白表格
+     * 表头与内容单元格统一使用固定宽度的空白占位, 并让各列在源码中保持对齐
      */
     const insertTableRowCol = (rowCol: TableRowCol) => {
         const { row, col } = rowCol
@@ -362,7 +349,7 @@ export function useToolbar(
     }
 
     onMounted(() => {
-        registerHotKeys() // 注册快捷键
+        registerHotKeys()
     })
 
     return {

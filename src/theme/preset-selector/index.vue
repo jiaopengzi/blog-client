@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\theme\preset-selector\index.vue
+ * FilePath    : blog-client-nuxt\src\theme\preset-selector\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -7,13 +7,8 @@
 -->
 
 <template>
-    <button
-        type="button"
-        class="theme-trigger theme-trigger--icon-only"
-        :aria-label="`切换主题, 当前为 ${activePreset?.label || 'Light'}`"
-        @click="dialogVisible = true"
-    >
-        <j-icon :name="activePreset?.scheme === 'dark' ? IconKeys.ThemeDark : IconKeys.ThemeLight" custom-class="theme-trigger__icon" />
+    <button type="button" class="theme-trigger theme-trigger--icon-only" :aria-label="`切换主题, 当前为 ${displayPreset.label}`" @click="dialogVisible = true">
+        <j-icon :name="displayPreset.scheme === 'dark' ? IconKeys.ThemeDark : IconKeys.ThemeLight" custom-class="theme-trigger__icon" />
     </button>
 
     <el-dialog
@@ -74,11 +69,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, unref } from "vue"
+import { computed, onMounted, ref, unref } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
 import { useTheme } from "@/theme/useTheme"
-import type { ThemePreset, ThemePresetId } from "@/theme/presets"
+import { defaultThemePresetId, getThemePreset, type ThemePreset, type ThemePresetId } from "@/theme/presets"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 
 defineOptions({ name: "ThemePresetSelector" })
@@ -97,6 +92,19 @@ const { activeSiteCodeBlockTheme, codeBlockThemeOptions, selectSiteCodeBlockThem
 const dialogVisible = ref(false)
 
 const activePreset = computed(() => presets.find((preset) => preset.id === modelValue))
+
+// feature02 水合修复: 服务端始终按默认主题渲染触发按钮(图标/aria-label);
+// 客户端水合期同样保持默认主题, 挂载(水合完成)后再切换为真实主题.
+// 用户浏览器保存的暗色主题在客户端模块初始化时即生效, 若触发按钮直接按 modelValue 渲染,
+// 服务端(默认 light)与客户端(存储 dark)不一致, 会产生 Hydration attribute/class mismatch.
+const isMounted = ref(false)
+onMounted(() => {
+    isMounted.value = true
+})
+
+// displayPreset 水合期展示默认预设, 挂载后展示当前真实预设
+const displayPreset = computed(() => (isMounted.value && activePreset.value ? activePreset.value : getThemePreset(defaultThemePresetId)))
+
 const resolvedSiteCodeBlockTheme = computed(() => unref(activeSiteCodeBlockTheme))
 const resolvedCodeBlockThemeOptions = computed(() => unref(codeBlockThemeOptions))
 

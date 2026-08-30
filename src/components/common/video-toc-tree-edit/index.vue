@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\video-toc-tree-edit\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\video-toc-tree-edit\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -7,7 +7,7 @@
 -->
 <template>
     <div class="video-toc-edit-wrapper" :class="{ 'has-data': hasTreeData }">
-        <!-- 工具栏：当目录树有数据时展示 -->
+        <!-- 工具栏: 当目录树有数据时展示 -->
         <div v-if="hasTreeData" class="video-toc-toolbar">
             <span class="toolbar-title">视频合集编辑</span>
             <div class="toolbar-actions">
@@ -74,14 +74,12 @@ import VideoTocTreeBase from "../video-toc-tree-base/index.vue"
 
 defineOptions({ name: "VideoTocTreeEdit" })
 
-// 定义 props
 const {
     treeList = [], // 目录树数据
 } = defineProps<{
     treeList?: Tree[]
 }>()
 
-// 事件
 const emit = defineEmits<{
     (event: "tree-update", val: Tree[], videoFileIdHashList: string[]): void
 }>()
@@ -93,10 +91,8 @@ const pasteInputRef = useTemplateRef("pasteInputRef")
 const pasteDialogVisible = ref(false)
 const pasteContent = ref("")
 
-// 是否有数据
 const hasTreeData = computed(() => treeList.length > 0)
 
-// 监听目录树变化
 const handleTreeUpdate = (val: Tree[], videoFileIdHashList: string[]) => {
     emit("tree-update", val, videoFileIdHashList)
 }
@@ -104,17 +100,17 @@ const handleTreeUpdate = (val: Tree[], videoFileIdHashList: string[]) => {
 // ---------- 导入/导出逻辑 ----------
 
 /**
- * 补零：将数字格式化为至少两位字符串.
- * @param n 待格式化的数字.
- * @returns 补零后的字符串.
+ * 补零: 将数字格式化为至少两位字符串
+ * @param n 待格式化的数字
+ * @returns 补零后的字符串
  */
 const pad = (n: number) => String(n).padStart(2, "0")
 
 /**
- * 递归校验单个节点是否符合 Tree 结构.
- * 每个节点必须包含 label (string) 和 is_chapter (boolean).
- * @param node 待校验节点.
- * @returns 是否通过校验.
+ * 递归校验单个节点是否符合 Tree 结构
+ * 每个节点必须包含 label (string) 和 is_chapter (boolean)
+ * @param node 待校验节点
+ * @returns 是否通过校验
  */
 const validateNode = (node: unknown): node is Tree => {
     if (typeof node !== "object" || node === null) return false
@@ -133,9 +129,9 @@ const validateNode = (node: unknown): node is Tree => {
 }
 
 /**
- * 从目录树中递归提取所有视频节点的 file_id_hash（去重）.
- * @param nodes 目录树节点列表.
- * @returns 去重后的 file_id_hash 数组.
+ * 从目录树中递归提取所有视频节点的 file_id_hash (去重)
+ * @param nodes 目录树节点列表
+ * @returns 去重后的 file_id_hash 数组
  */
 const extractFileIdHashList = (nodes: Tree[]): string[] => {
     const result: string[] = []
@@ -154,9 +150,9 @@ const extractFileIdHashList = (nodes: Tree[]): string[] => {
 }
 
 /**
- * 校验导入的 JSON 数据是否符合 Tree[] 结构.
- * @param data 待校验数据.
- * @returns 是否通过校验.
+ * 校验导入的 JSON 数据是否符合 Tree[] 结构
+ * @param data 待校验数据
+ * @returns 是否通过校验
  */
 const validateTreeData = (data: unknown): data is Tree[] => {
     if (!Array.isArray(data) || data.length === 0) return false
@@ -164,9 +160,9 @@ const validateTreeData = (data: unknown): data is Tree[] => {
 }
 
 /**
- * 为导入的目录树重新分配 id 与 video_order，确保与当前系统一致.
- * @param nodes 原始树节点列表.
- * @returns 重新编号后的树节点列表.
+ * 为导入的目录树重新分配 id 与 video_order, 确保与当前系统一致
+ * @param nodes 原始树节点列表
+ * @returns 重新编号后的树节点列表
  */
 const reorderTree = (nodes: Tree[]): Tree[] => {
     let orderAll = 1
@@ -194,8 +190,8 @@ const triggerImport = () => {
 }
 
 /**
- * 解析并应用导入数据（文件与剪贴板共用）.
- * @param content JSON 字符串.
+ * 解析并应用导入数据 (文件与剪贴板共用)
+ * @param content JSON 字符串
  */
 const processImportData = (content: string) => {
     try {
@@ -216,8 +212,8 @@ const processImportData = (content: string) => {
 }
 
 /**
- * 从文件导入：读取 JSON 文件 → 解析并应用.
- * @param event 文件选择事件.
+ * 从文件导入: 读取 JSON 文件后解析并应用
+ * @param event 文件选择事件
  */
 const handleFileImport = (event: Event) => {
     const input = event.target as HTMLInputElement
@@ -236,7 +232,7 @@ const handleFileImport = (event: Event) => {
 }
 
 /**
- * 打开剪贴板导入对话框.
+ * 打开剪贴板导入对话框
  */
 const openPasteDialog = () => {
     pasteContent.value = ""
@@ -244,7 +240,7 @@ const openPasteDialog = () => {
 }
 
 /**
- * 确认粘贴导入：校验并应用用户粘贴的 JSON 内容.
+ * 确认粘贴导入: 校验并应用用户粘贴的 JSON 内容
  */
 const confirmPasteImport = () => {
     if (!pasteContent.value.trim()) {
@@ -265,7 +261,7 @@ const handleImportCommand = (command: string) => {
 }
 
 /**
- * 将当前目录树序列化为 JSON 并触发浏览器下载.
+ * 将当前目录树序列化为 JSON 并触发浏览器下载
  */
 const exportToFile = () => {
     if (treeList.length === 0) {
@@ -293,7 +289,7 @@ const exportToFile = () => {
 }
 
 /**
- * 将当前目录树序列化为 JSON 并复制到剪贴板.
+ * 将当前目录树序列化为 JSON 并复制到剪贴板
  */
 const exportToClipboard = async () => {
     if (treeList.length === 0) {

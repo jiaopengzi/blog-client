@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-detail\components\category-tag\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-detail\components\category-tag\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -26,10 +26,8 @@ import type { CategoryTagItem, CategoryTagProps } from "./types"
 
 defineOptions({ name: "DetailCategoryTag" })
 
-// 定义 props
 const { data } = defineProps<{ data: CategoryTagProps }>()
 
-// 事件
 const emit = defineEmits<{
     (event: "click-category", val: PostCategory): void
     (event: "click-tag", val: PostTag): void
@@ -98,9 +96,6 @@ const clickItem = (index: string) => {
     gap: 8px;
     margin-top: 10px;
 }
-
-// @include respond-to("pc") {
-// }
 
 @include respond-to("pad") {
     .category-tag-container {

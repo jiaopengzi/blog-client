@@ -1,16 +1,16 @@
-/**
- * @FilePath     : \blog-client\src\utils\vttParse.test.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : parseVTT测试文件
+/*
+ * FilePath    : blog-client-nuxt\src\utils\vttParse.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : WebVTT 字幕解析的单元测试
  */
 
 import { describe, expect, it, test, vi } from "vitest"
 
 import { isWebvtt, parseVTT } from "./vttParse"
 
-// Mock fetch to return the VTT content
+// mock fetch 返回 VTT 内容
 global.fetch = vi.fn(() =>
     Promise.resolve(
         new Response(

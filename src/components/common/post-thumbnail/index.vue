@@ -1,20 +1,21 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\post-thumbnail\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 文章缩略图
+ * FilePath    : blog-client-nuxt\src\components\common\post-thumbnail\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 文章缩略图 (P0-5 nuxt4-good: @nuxt/image IPX 优化版)
+-->
+
+<!--
+ * 补充说明:
+ * 原 el-image 原图直出 → useImage() 构建 /_ipx 地址(png→webp, quality 80), 服务端转换后再下发
+ * 加载失败回退首字母占位(等价原 el-image 的 error 插槽)
+ * 本项目 components:false 禁用了 NuxtImg 自动注册, 故走 useImage composable(模块 addImports 不受 components 配置影响), 用原生 <img> 承载
 -->
 
 <template>
     <div class="post-thumbnail" :class="`post-thumbnail--${theme}`">
-        <el-image v-if="hasSrc" :src="src" class="post-thumbnail__image" :loading="loading" @click="emitClick">
-            <template #error>
-                <button type="button" class="post-thumbnail__fallback" @click="emitClick">
-                    <span class="post-thumbnail__initial">{{ initial }}</span>
-                </button>
-            </template>
-        </el-image>
+        <img v-if="hasSrc && !loadFailed" :src="thumbSrc" class="post-thumbnail__image" :loading="loading" alt="" @click="emitClick" @error="handleError" />
         <button v-else type="button" class="post-thumbnail__fallback" @click="emitClick">
             <span class="post-thumbnail__initial">{{ initial }}</span>
         </button>
@@ -22,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue"
+import { computed, ref, watch } from "vue"
 
 defineOptions({ name: "PostThumbnail" })
 
@@ -42,10 +43,39 @@ const emit = defineEmits<{
     (event: "click"): void
 }>()
 
+const { getImage } = useImage()
+
 const hasSrc = computed(() => Boolean(src.trim()))
 
+// IPX 转换失败(如源图 404/格式不支持)时回退原图地址, 由 <img> 的 error 再走首字母占位
+const loadFailed = ref(false)
+
+const thumbSrc = computed(() => {
+    if (!hasSrc.value) {
+        return ""
+    }
+
+    try {
+        return getImage(src, { modifiers: { format: "webp", quality: 80 } }).url
+    } catch {
+        return src
+    }
+})
+
+// 切换文章数据(列表复用组件)时重置失败态
+watch(
+    () => src,
+    () => {
+        loadFailed.value = false
+    },
+)
+
+const handleError = () => {
+    loadFailed.value = true
+}
+
 /**
- * emitClick 透传缩略图点击事件, 保持父组件交互语义一致.
+ * emitClick 透传缩略图点击事件, 保持父组件交互语义一致
  */
 const emitClick = () => {
     emit("click")
@@ -62,24 +92,12 @@ const emitClick = () => {
     width: 100%;
     height: 100%;
     display: block;
+    object-fit: cover;
     cursor: pointer;
+    transition: transform 0.3s ease;
 
     &:hover {
-        :deep(.el-image__inner) {
-            transform: scale(1.2);
-        }
-    }
-
-    :deep(.el-image__inner) {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-
-    :deep(.el-image__wrapper) {
-        width: 100%;
-        height: 100%;
+        transform: scale(1.2);
     }
 }
 
@@ -109,7 +127,8 @@ const emitClick = () => {
 }
 
 .post-thumbnail--main .post-thumbnail__initial {
-    font-size: 42px;
+    // H3(占位符打磨): 收敛字号降低视觉权重, 与标题层级协调
+    font-size: 32px;
     letter-spacing: 0.08em;
 }
 

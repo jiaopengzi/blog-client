@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\captcha\sendRefund.ts
+ * FilePath    : blog-client-nuxt\src\api\captcha\sendRefund.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -12,7 +12,7 @@ import type { Res, ResPromise } from "@/api/response"
 
 export interface CaptchaSendRefundRequest {
     order_id: string
-    refund_amount: string // 退款金额，单位为分
+    refund_amount: string // 退款金额, 单位为分
     reason: string // 退款原因
 }
 

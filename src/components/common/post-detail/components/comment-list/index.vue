@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-detail\components\comment-list\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-detail\components\comment-list\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -58,10 +58,8 @@ import type { CommentListProps } from "./types"
 
 defineOptions({ name: "CommentList" })
 
-// 定义 props
 const { postId, postAuthor, status, updateTime, isAdmin = false } = defineProps<CommentListProps>()
 
-// 事件
 const emit = defineEmits<{
     (event: "reply", comment: CommentRes): void
     (event: "mentions", mentions: Completion[]): void
@@ -82,15 +80,12 @@ const {
     handlePinned, // 处理置顶
 } = useCommentList(req)
 
-// 处理回复
 const handleReply = (commentID: string) => {
-    // 从评论列表中获取评论
     const comment = pagination.records.find((item) => item.id === commentID)
     if (!comment) return
     emit("reply", comment)
 }
 
-// 更新数据
 const updateData = async () => {
     await updatePaginate()
     emit("mentions", mentions.value)
@@ -152,7 +147,7 @@ onBeforeMount(async () => {
     margin: 10px;
 }
 
-/* 参考:https://css-loaders.com/dots/ */
+/* 参考: https://css-loaders.com/dots/ */
 .loader {
     width: 60px;
     aspect-ratio: 3;

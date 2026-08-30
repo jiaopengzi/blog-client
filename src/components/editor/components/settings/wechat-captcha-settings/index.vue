@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\editor\components\settings\wechat-captcha-settings\index.vue
+ * FilePath    : blog-client-nuxt\src\components\editor\components\settings\wechat-captcha-settings\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -30,12 +30,12 @@ import type { WechatCaptchaDefaults } from "@/stores/editor-defaults"
 defineOptions({ name: "WechatCaptchaSettings" })
 
 const props = defineProps<{
-    /** 初始值，来自 loadWechatCaptchaDefaults() */
+    /** 初始值, 来自 loadWechatCaptchaDefaults() */
     initialValues: WechatCaptchaDefaults | null
 }>()
 
 const emit = defineEmits<{
-    /** 校验通过后发送保存数据；data 为 null 表示清空（所有字段为空） */
+    /** 校验通过后发送保存数据; data 为 null 表示清空(所有字段为空) */
     (event: "save", data: WechatCaptchaDefaults | null): void
     (event: "cancel"): void
 }>()
@@ -49,7 +49,7 @@ const rules = reactive<FormRules>({
     codeurl: [{ pattern: /^https?:\/\//, message: "请输入有效的 URL，以 http:// 或 https:// 开头", trigger: "blur" }],
 })
 
-// 当父组件更新 initialValues 时，回填表单并清除校验状态
+// 当父组件更新 initialValues 时, 回填表单并清除校验状态
 watch(
     () => props.initialValues,
     (val) => {
@@ -60,7 +60,7 @@ watch(
     { immediate: true },
 )
 
-/** 校验通过后 emit save，空值时 emit null（触发 clear） */
+/** 校验通过后 emit save, 空值时 emit null(触发 clear) */
 const handleSave = async () => {
     const formEl = formRef.value
     if (!formEl) return

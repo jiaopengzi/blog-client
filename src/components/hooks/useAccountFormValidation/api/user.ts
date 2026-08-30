@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useAccountFormValidation\api\user.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 用户相关API
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useAccountFormValidation\api\user.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 用户相关 API
  */
 
 import { ResponseCode } from "@/api/response"
@@ -15,7 +15,7 @@ import { getDisableExpiresAtSecondsAPI, type GetDisableExpiresAtSecondsRequest }
 import { getUserForbiddenMsg } from "@/utils/msg"
 
 /**
- * @description: 用户名校验规则
+ * @description: 校验用户名是否未被注册
  * @param {string} userName 用户名
  */
 export async function checkUserName(userName: string): Promise<void> {
@@ -36,8 +36,8 @@ export async function checkUserName(userName: string): Promise<void> {
 }
 
 /**
- * @description: 用户名查重 异步函数，排除指定用户ID
- * @param {string} excludingUserID 排除的用户ID
+ * @description: 用户名查重异步函数, 排除指定用户 ID
+ * @param {string} excludingUserID 排除的用户 ID
  * @param {string} userName 用户名
  */
 export async function checkUserNameExcludingUserID(excludingUserID: string, userName: string): Promise<void> {
@@ -59,7 +59,7 @@ export async function checkUserNameExcludingUserID(excludingUserID: string, user
 }
 
 /**
- * @description: 邮箱查重 异步函数
+ * @description: 邮箱查重异步函数
  * @param {string} email 邮箱
  */
 export async function checkEmail(email: string): Promise<void> {
@@ -79,8 +79,8 @@ export async function checkEmail(email: string): Promise<void> {
 }
 
 /**
- * @description: 邮箱查重 异步函数 排除指定用户ID
- * @param {string} excludingUserID 排除的用户ID
+ * @description: 邮箱查重异步函数, 排除指定用户 ID
+ * @param {string} excludingUserID 排除的用户 ID
  * @param {string} email 邮箱
  */
 export async function checkEmailExcludingUserID(excludingUserID: string, email: string): Promise<void> {
@@ -102,7 +102,7 @@ export async function checkEmailExcludingUserID(excludingUserID: string, email: 
 }
 
 /**
- * @description: 用户名查重 异步函数
+ * @description: 校验登录名是否处于封禁状态
  * @param {string} loginName 登录名
  */
 export async function checkLoginName(loginName: string): Promise<void> {

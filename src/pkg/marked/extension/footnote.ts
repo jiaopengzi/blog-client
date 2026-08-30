@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\pkg\marked\extension\footnote.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 脚注配置
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\marked\extension\footnote.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 脚注配置
  */
 
 import type { Options } from "marked-footnote"
@@ -27,7 +27,7 @@ const optionFootnote: Options = {
      *
      * @default false
      */
-    refMarkers: true, // 脚注标记;
+    refMarkers: true, // 脚注标记
 }
 
 export default optionFootnote

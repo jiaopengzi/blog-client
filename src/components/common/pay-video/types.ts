@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\common\pay-video\types.ts
+ * FilePath    : blog-client-nuxt\src\components\common\pay-video\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -9,7 +9,7 @@
 import { type PostVideoTocTree } from "@/api/post/common"
 
 export interface PayVideoProps {
-    postId: string // 文章ID
+    postId: string // 文章 ID
     isAdminVideo?: boolean // 是否使用管理员视频接口
     toc?: PostVideoTocTree[] // 目录
     isPaid: boolean // 是否付费

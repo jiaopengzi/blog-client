@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\membership\common.ts
+ * FilePath    : blog-client-nuxt\src\api\membership\common.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -13,7 +13,7 @@ import type { DataWithImg } from "@/components/common"
 // 会员状态
 export enum MembershipStatus {
     Disabled = 1, // 禁用
-    Enabled = 2, //
+    Enabled = 2, // 启用
 }
 
 // 会员状态显示
@@ -56,16 +56,16 @@ export const getMembershipUserAdjustActionOptions = () => {
 export interface InsertMembershipRequest {
     role: string // 会员角色
     price?: string // 价格(分)
-    duration_time?: string // 有效时间(秒), 0表示永久有效
+    duration_time?: string // 有效时间(秒), 0 表示永久有效
     purchase_discount?: number // 购买折扣 0-100
     download_count?: number // 下载次数
     watch_count?: number // 观看次数
-    status: MembershipStatus // 状态 1禁用, 2启用
+    status: MembershipStatus // 状态 1 禁用, 2 启用
     description?: string // 描述
 }
 
 export interface UpdateMembershipRequest extends InsertMembershipRequest {
-    id: string // 会员id
+    id: string // 会员 id
 }
 
 // 会员
@@ -75,11 +75,11 @@ export interface MembershipRes extends DataWithImg {
     updated_at: string // 更新时间
     role: string // 会员角色
     price: string // 价格(分)
-    duration_time: string // 有效时间(秒), 0表示永久有效
+    duration_time: string // 有效时间(秒), 0 表示永久有效
     purchase_discount: number // 购买折扣 0-100
     download_count: number // 下载次数
     watch_count: number // 观看次数
-    status: MembershipStatus // 状态 1禁用, 2启用
+    status: MembershipStatus // 状态 1 禁用, 2 启用
     description: string // 描述
 }
 

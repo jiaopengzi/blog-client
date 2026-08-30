@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\pkg\codemirror\extension\vim.ts
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\vim.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -241,7 +241,7 @@ function inferUserMappingContext(mapping: Readonly<VimKeyMapping>): VimMappingCo
 
 /**
  * getVimRegisterController 获取 codemirror-vim 的寄存器控制器.
- * 这里复用三方库内部现有寄存器写入逻辑, 避免重写默认 yank 行为。
+ * 这里复用三方库内部现有寄存器写入逻辑, 避免重写默认 yank 行为.
  * @returns Vim 寄存器控制器.
  */
 function getVimRegisterController(): VimRegisterController {
@@ -682,7 +682,7 @@ export function createVimExtension() {
 
 /**
  * applyVimMappings 将当前用户映射和系统剪贴板桥接一次性重建到 Vim 全局 keymap 中.
- * 默认保留原生 Vim 行为; 仅当用户显式配置 `"+` 相关映射时, 才启用项目侧桥接。
+ * 默认保留原生 Vim 行为; 仅当用户显式配置 `"+` 相关映射时, 才启用项目侧桥接.
  * @param mappings - 需要应用的 Vim 映射数组.
  * @returns 无返回值.
  */

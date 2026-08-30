@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\stores\user.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 用户信息 store
+/*
+ * FilePath    : blog-client-nuxt\src\stores\user.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 用户信息 store
  */
 
 import { acceptHMRUpdate, defineStore } from "pinia"
@@ -18,12 +18,27 @@ import { loginAPI, type LoginRequest } from "@/api/user/login"
 import { logoutAPI } from "@/api/user/logout"
 import { socialBind, socialBindCallback, socialLogin, socialLoginCallback, socialUnBind } from "@/api/user/socialLogin"
 import { LocalStorageKey } from "@/stores/local"
-import { PermissionNames } from "@/stores/permissionRole"
+import { PermissionNames } from "@/api/permissionRole/permissionNames"
 import { getAvatarUrl } from "@/utils/avatar"
 import { MessageUtil } from "@/utils/message"
 import { getUserForbiddenMsg } from "@/utils/msg"
 
 import { usePermissionRoleStore } from "./permissionRole"
+
+// SSR 守卫 (计划 1.7): 服务端无 localStorage, 读写替换为 no-op 替身
+const safeLocalStorage: Storage =
+    typeof localStorage !== "undefined"
+        ? localStorage
+        : ({
+              getItem: () => null,
+              setItem: () => {},
+              removeItem: () => {},
+              clear: () => {},
+              key: () => null,
+              get length() {
+                  return 0
+              },
+          } as unknown as Storage)
 
 // 用户信息
 export interface UserInfoStore {
@@ -59,14 +74,14 @@ function createEmptyUserInfoStore(): UserInfoStore {
     }
 }
 
-// 防并发锁：同一时刻只允许一个 getUserInfoByToken 请求在飞行中, 导致意外回到首页
+// 防并发锁: 同一时刻只允许一个 getUserInfoByToken 请求在飞行中, 避免并发导致意外回到首页
 let getUserInfoPromise: Promise<void> | null = null
 
 export const useUserStore = defineStore("user", {
     state: () => createEmptyUserInfoStore(),
 
     getters: {
-        // 获取用户ID
+        // 获取用户 ID
         getUserID(): string {
             return this.data.user.id
         },
@@ -118,7 +133,7 @@ export const useUserStore = defineStore("user", {
     },
 
     actions: {
-        // 刷新access token
+        // 刷新 access token
         async accessTokenRefresh(isRefreshPage: boolean = true): Promise<boolean> {
             // 尝试从其他标签获取 token, 避免触发 refresh 导致 JWI 轮换
             const syncedToken = await tabSyncManager.requestTokenFromOtherTabs()
@@ -139,17 +154,19 @@ export const useUserStore = defineStore("user", {
                 // 成功刷新访问令牌
                 this.setAccessToken(res.data.data.access_token)
 
-                // localStorage.setItem(LocalStorageKey.AccessToken, res.data.data.access_token)
+                // feature01 (反馈第 1 轮): refresh 成功说明用户实际处于登录态, 补齐登录态提示标记
+                safeLocalStorage.setItem(LocalStorageKey.LoginHint, "1")
+
                 return true
             } else if (res.data.code === ResponseCode.UserLoggedInElsewhere) {
                 // 用户在其他设备登录
                 MessageUtil.error(handleResErr(res))
 
-                // 使用 false 说明当前的token 已经失效，不需要再请求后端接口
+                // 使用 false 说明当前的 token 已经失效, 不需要再请求后端接口
                 await this.logout(false, isRefreshPage)
                 return false
             } else {
-                // 若用户正在编辑，只清空 token，保留编辑状态（由 axiosHandlers 负责弹出提示）
+                // 若用户正在编辑, 只清空 token, 保留编辑状态 (由 axiosHandlers 负责弹出提示)
                 // 避免 logout 清空 isEditing 导致编辑器保护失效、内容丢失
                 if (this.isEditing) {
                     this.setAccessToken("")
@@ -234,7 +251,7 @@ export const useUserStore = defineStore("user", {
 
         /**
          * @description: 通过 token 获取用户信息
-         * @param isUpdate 是否强制从服务器获取用户信息 默认为 false
+         * @param isUpdate 是否强制从服务器获取用户信息, 默认为 false
          * @return
          */
         async getUserInfoByToken(isUpdate: boolean = false) {
@@ -247,6 +264,17 @@ export const useUserStore = defineStore("user", {
             }
 
             getUserInfoPromise = (async () => {
+                // 对齐 SPA: 刷新页面/新标签无内存 token 时, 先尝试经 refresh_token cookie
+                // 换取新 access token (SPA 由 axios 401 拦截器等效触发); 恢复成功继续拉用户信息,
+                // 失败则保持未登录 (守卫跳登录), 与 SPA 行为一致
+                if (!this.accessToken) {
+                    const refreshed = await this.accessTokenRefresh(false)
+                    if (!refreshed) {
+                        this.$patch(createEmptyUserInfoStore())
+                        return
+                    }
+                }
+
                 const userInfoStore: UserInfoStore = await apiGetUserInfoByToken(this.accessToken)
                 if (!userInfoStore.isLogin && this.isLogin) {
                     return
@@ -299,15 +327,15 @@ async function apiLogin(loginName: string, password: string): Promise<UserInfoSt
     return await handleLoginResult(resObj, ResponseCode.UserLoginSuccess)
 }
 
-// 从token中获取用户信息
+// 从 token 中获取用户信息
 async function apiGetUserInfoByToken(accessToken: string): Promise<UserInfoStore> {
     try {
-        // 如果没有token 则返回空值用户信息
+        // 如果没有 token 则返回空值用户信息
         if (!accessToken) {
             return createEmptyUserInfoStore()
         }
 
-        // 通过token获取用户信息
+        // 通过 token 获取用户信息
         const resUser = await getUserInfoAPI()
         const { data: dataUser } = resUser.data
 
@@ -316,13 +344,13 @@ async function apiGetUserInfoByToken(accessToken: string): Promise<UserInfoStore
         const dataRole = permissionRoleStore.getSystemRoles
 
         // 判断是否获取成功
-        if (resUser.data.code === ResponseCode.UserGetInfoSuccess && dataRole.roles.length > 0) {
+        if (resUser.data.code === ResponseCode.UserGetInfoSuccess && dataRole.roles?.length > 0) {
             const meta = dataUser.user_meta.find((item) => item.meta_key === "role_name")
             const roleName = meta ? meta.meta_value : void 0
 
             // 循环 dataRole 获取权限列表
             const permissions: PermissionNames[] = []
-            for (const role of dataRole.roles) {
+            for (const role of dataRole.roles ?? []) {
                 if (role.role_name === roleName) {
                     for (const permission of role.permission_names) {
                         permissions.push(permission)
@@ -350,7 +378,7 @@ async function apiGetUserInfoByToken(accessToken: string): Promise<UserInfoStore
 }
 
 /**
- * @description: 辅助函数：处理请求并解析数据
+ * @description: 辅助函数: 处理请求并解析数据
  * @param requestPromise 请求对象
  * @return  {T} 返回解析后的数据
  */
@@ -359,7 +387,7 @@ async function handleResponse<T>(requestPromise: Promise<ResResponse<T>>): Promi
 }
 
 /**
- * @description: 辅助函数：处理社交登录重定向
+ * @description: 辅助函数: 处理社交登录重定向
  * @param requestPromise 请求对象
  * @param successCode 请求成功的状态码
  * @return {void}
@@ -368,12 +396,12 @@ async function redirectToSocialLogin(requestPromise: Promise<ResResponse<Res<str
     const resObj = await handleResponse<Res<string>>(requestPromise) // 使用辅助函数处理请求
 
     if (resObj.code === successCode) {
-        window.location.href = resObj.data // 重定向到第社交登录页面
+        window.location.href = resObj.data // 重定向到社交登录页面
     }
 }
 
 /**
- * @description: 辅助函数：处理登录结果
+ * @description: 辅助函数: 处理登录结果
  * @param resObj 请求对象
  * @param successCode 请求成功的状态码
  * @return {UserInfoStore} 用户信息
@@ -383,13 +411,15 @@ async function handleLoginResult(resObj: Res<AccessTokenResponse>, successCode: 
         // 显示登录成功提示
         MessageUtil.success(resObj.msg, 3000)
 
-        // 登录成功 存入token
+        // 登录成功, 存入 token
         if (resObj.data.access_token) {
-            // localStorage.setItem(LocalStorageKey.AccessToken, resObj.data.access_token)
             useUserStore().setAccessToken(resObj.data.access_token)
 
+            // feature01 (反馈第 1 轮): 写入登录态提示标记, 列表页首屏据此走隐藏式 CSR (登录态列表与匿名 SSR 不同)
+            safeLocalStorage.setItem(LocalStorageKey.LoginHint, "1")
+
             // 删除旧的编辑权限缓存
-            localStorage.removeItem(LocalStorageKey.PostDetailEditEnable)
+            safeLocalStorage.removeItem(LocalStorageKey.PostDetailEditEnable)
         }
 
         // 获取用户信息
@@ -403,11 +433,11 @@ async function handleLoginResult(resObj: Res<AccessTokenResponse>, successCode: 
 
     MessageUtil.error(msg, 10000)
 
-    return createEmptyUserInfoStore() // 获取用户信息
+    return createEmptyUserInfoStore() // 登录失败返回空值用户信息
 }
 
 /**
- * @description: 辅助函数：处理绑定结果
+ * @description: 辅助函数: 处理绑定结果
  */
 async function handleBindResult(resObj: Res<void>, successCode: ResponseCode, token: string): Promise<IsSuccessStore> {
     // 初始化结果
@@ -440,11 +470,13 @@ async function tokenClearByLogout(isRemote: boolean = true) {
             MessageUtil.success(res.data.msg, 3000)
         }
     }
-    // localStorage.removeItem(LocalStorageKey.AccessToken)
     useUserStore().setAccessToken("")
+
+    // feature01 (反馈第 1 轮): 登出时清除登录态提示标记, 列表页首屏恢复 SSR 直出
+    safeLocalStorage.removeItem(LocalStorageKey.LoginHint)
 }
 
-// 允许开发环境下进行热更新 HMR(Hot Module Replacement)
+// 允许开发环境下进行热更新 HMR (Hot Module Replacement)
 if (import.meta.hot) {
     import.meta.hot.accept(acceptHMRUpdate(useUserStore, import.meta.hot))
 }

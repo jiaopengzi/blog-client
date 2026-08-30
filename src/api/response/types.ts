@@ -1,13 +1,21 @@
-/**
- * @FilePath     : \blog-client\src\api\response\types.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 响应类型
+/*
+ * FilePath    : blog-client-nuxt\src\api\response\types.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : 响应类型 (阶段 1 重写: 去除 axios 依赖, 保持 ResPromise/ResResponse 命名兼容)
  */
 
-import type { AxiosPromise, AxiosResponse } from "axios"
-export type { AxiosPromise as ResPromise, AxiosResponse as ResResponse }
+// axios 风格响应形状 (data/status/statusText/headers/config), 由 ofetch 请求层塑形返回
+export interface ResResponse<T = unknown> {
+    data: T
+    status: number
+    statusText: string
+    headers: Record<string, string>
+    config: unknown
+}
+
+export type ResPromise<T = unknown> = Promise<ResResponse<T>>
 
 // 统一响应结构
 export interface Res<T> {

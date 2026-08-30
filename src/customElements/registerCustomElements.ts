@@ -1,43 +1,30 @@
 /*
- * FilePath    : blog-client\src\customElements\registerCustomElements.ts
+ * FilePath    : blog-client-nuxt\src\customElements\registerCustomElements.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 注册自定义元素
  */
 
-// 自定义元素名称
-export enum Names {
-    PayDownload = "pay-download", // 付费下载
-    PayRead = "pay-read", // 付费阅读
-    PayKey = "pay-key", // 付费密钥
-    PayMembership = "pay-membership", // 付费会员
-    PayVideo = "pay-video", // 付费视频
-    WechatCaptcha = "wechat-captcha",
-    LoginView = "login-view", // 登录查看
-    VideoPlayer = "video-player", // 视频播放器
-    PowerBi = "power-bi", // Power BI 嵌入
-}
+// 自定义元素名称 (从 constants 复用, 保持 SSR 安全)
+import { Names } from "./constants"
+
+export { Names }
 
 import { BaseCustomElement } from "./base"
 
 /**
- * 为给定的自定义元素名创建一个动态的 Custom Element 类, 该类继承自 BaseCustomElement。
+ * 为给定的自定义元素名创建一个动态的 Custom Element 类, 该类继承自 BaseCustomElement
  *
- * 这个工厂函数返回一个运行时创建的类(extends BaseCustomElement), 适合用于后续调用
- * customElements.define 注册或直接实例化。返回的类会额外设置一个便于调试的静态
- * "name" 属性, 形式为 "CustomElement" + 将 elementName 转为 PascalCase(并移除连字符)。
+ * 这个工厂函数返回一个运行时创建的类 (extends BaseCustomElement), 适合用于后续调用
+ * customElements.define 注册或直接实例化
  *
- * 说明：
- * - 不会在函数内部自动注册到 customElements registry; 需自行调用 customElements.define。
- * - 该函数不会对 elementName 做严格的规范校验(例如是否包含连字符); 建议调用者在传入前, 确保遵循 Custom Elements 命名规范。
+ * 说明:
+ * - 不会在函数内部自动注册到 customElements registry; 需自行调用 customElements.define
+ * - 该函数不会对 elementName 做严格的规范校验 (例如是否包含连字符); 建议调用者在传入前, 确保遵循 Custom Elements 命名规范
  *
- * @param elementName - 要创建类的自定义元素标签名(例如 "my-widget")。推荐遵循 Custom Elements 的命名规范(通常包含连字符)。
- * @returns 一个继承自 BaseCustomElement 的构造函数(类), 可用于 customElements.define 或 new 来创建元素实例。
- *
- * @remarks
- * - 返回的类在构造器内调用了 super(), 因此应保证 BaseCustomElement 的构造器可被安全调用。
- * - 静态 name 的生成规则：将 elementName 的首字母大写并移除所有连字符, 再在前面加上 "CustomElement"。
+ * @param elementName - 要创建类的自定义元素标签名 (例如 "my-widget"), 推荐遵循 Custom Elements 的命名规范 (通常包含连字符)
+ * @returns 一个继承自 BaseCustomElement 的构造函数 (类), 可用于 customElements.define 或 new 来创建元素实例
  *
  * @example
  * // 创建类并注册
@@ -45,7 +32,7 @@ import { BaseCustomElement } from "./base"
  * customElements.define('my-widget', MyWidget);
  *
  * @example
- * // 直接实例化(通常在注册后由浏览器创建)
+ * // 直接实例化 (通常在注册后由浏览器创建)
  * const instance = new (createCustomElementClass('demo-item'))();
  */
 function createCustomElementClass(elementName: string): typeof BaseCustomElement {
@@ -55,12 +42,6 @@ function createCustomElementClass(elementName: string): typeof BaseCustomElement
     }
 
     class DynamicCustomElement extends BaseCustomElement {}
-
-    // // 可以给类加一个静态名称, 便于调试
-    // Object.defineProperty(DynamicCustomElement, "name", {
-    //     value: `CustomElement${elementName.charAt(0).toUpperCase() + elementName.slice(1).replace(/-/g, "")}`,
-    //     configurable: true,
-    // })
 
     return DynamicCustomElement
 }
@@ -107,7 +88,6 @@ export function registerAllCustomElements() {
         if (!customElements.get(name)) {
             const CustomElementClass = createCustomElementClass(name)
             customElements.define(name, CustomElementClass)
-            // console.info(`✅ Registered custom element: <${name}>`)
         } else {
             console.warn(`ℹ️ Custom element already defined: <${name}>`)
         }

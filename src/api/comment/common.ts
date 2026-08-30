@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\comment\common.ts
+ * FilePath    : blog-client-nuxt\src\api\comment\common.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -59,13 +59,13 @@ export interface CommentRes extends DataWithImg {
 
 // 按照评论状态统计评论数量
 export interface CommentCountByStatus {
-    status: CommentReviewCode // 文章状态
+    status: CommentReviewCode // 评论状态
     count: number // 评论数量
 }
 
 // 评论对应的文章信息
 export interface CommentPostRes {
-    id: string // 标签id
+    id: string // 文章ID
     created_at: string // 创建时间
     comment_count: string // 评论数量
     comment_count_by_status: CommentCountByStatus[] // 评论数量

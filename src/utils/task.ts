@@ -1,7 +1,12 @@
-/**
- * @FilePath     : \blog-client\src\utils\task.ts
- * @Description  : 任务队列 参考袁老师 https://fe.duyiedu.com/p/t_pc/goods_pc_detail/goods_detail/course_2hzyLq1i84ydVnT200svNMYPFVH
+/*
+ * FilePath    : blog-client-nuxt\src\utils\task.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : 可并发执行的任务队列
  */
+
+// 参考袁老师: https://fe.duyiedu.com/p/t_pc/goods_pc_detail/goods_detail/course_2hzyLq1i84ydVnT200svNMYPFVH
 
 import { EventEmitter } from "@/utils/eventEmitter"
 
@@ -19,7 +24,7 @@ export class Task {
         try {
             await this.taskFunc()
         } catch (error) {
-            // 任务执行失败，重试
+            // 任务执行失败, 重试
             if (this.retryCount < this.maxRetryCount) {
                 this.retryCount++
                 throw error
@@ -79,17 +84,17 @@ export class TaskQueue extends EventEmitter<TaskQueueEvents> {
     // 启动任务
     start() {
         if (this.status === TaskStatus.RUNNING) {
-            return // 任务正在进行中，结束
+            return // 任务正在进行中, 结束
         }
         if (this.tasks.size === 0) {
-            // 当前已无任务，触发drain事件
+            // 当前已无任务, 触发 drain 事件
             this.emit(TaskQueueEvents.DRAIN)
             return
         }
-        // 设置任务状态为running
+        // 设置任务状态为 running
         this.status = TaskStatus.RUNNING
-        this.emit(TaskQueueEvents.START) // 触发start事件
-        this.runNext() // 开始执行下一个任务
+        this.emit(TaskQueueEvents.START)
+        this.runNext()
     }
 
     // 取出第一个任务
@@ -104,22 +109,22 @@ export class TaskQueue extends EventEmitter<TaskQueueEvents> {
     // 执行任务
     private runNext() {
         if (this.status !== TaskStatus.RUNNING) {
-            return // 如果整体的任务状态不是running，结束
+            return // 如果整体的任务状态不是 running, 结束
         }
         while (this.currentCount < this.concurrency) {
-            // 如果并发数未满，继续执行任务
+            // 如果并发数未满, 继续执行任务
             const task = this.takeHeadTask()
             if (!task) {
-                this.status = TaskStatus.PAUSED // 没有任务了，暂停执行
-                this.emit(TaskQueueEvents.DRAIN) // 触发drain事件
+                this.status = TaskStatus.PAUSED // 没有任务了, 暂停执行
+                this.emit(TaskQueueEvents.DRAIN) // 触发 drain 事件
                 return
             }
 
-            this.currentCount++ // 当前任务数+1
+            this.currentCount++ // 当前任务数 +1
 
             // 执行任务
             Promise.resolve(task.run()).finally(() => {
-                // 任务执行完成后，当前任务数-1，继续执行下一个任务
+                // 任务执行完成后, 当前任务数 -1, 继续执行下一个任务
                 this.currentCount--
                 this.runNext()
             })

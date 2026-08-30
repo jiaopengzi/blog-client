@@ -1,9 +1,9 @@
 /*
- * FilePath    : blog-client\src\api\post\pagePathToID.ts
+ * FilePath    : blog-client-nuxt\src\api\post\pagePathToID.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 通过自定义页面的路径获取文章ID
+ * Description : 通过自定义页面的路径获取文章 ID
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -14,7 +14,7 @@ export interface PagePathToIDRequest {
     slug: string // 别名
 }
 
-// 通过自定义页面的路径获取文章ID
+// 通过自定义页面的路径获取文章 ID
 export function pagePathToIDAPI(requestData: PagePathToIDRequest): ResPromise<Res<string>> {
     const urlStr = routerGroup + "/post/page-id"
     return request({

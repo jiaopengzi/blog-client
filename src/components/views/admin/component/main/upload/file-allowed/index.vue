@@ -1,0 +1,202 @@
+<!--
+ * FilePath    : blog-client-nuxt\src\components\views\admin\component\main\upload\file-allowed\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 文件限制表单组件
+-->
+
+<template>
+    <div class="form-page">
+        <el-form :label-position="labelPosition" ref="formRef" :model="formData" :rules="rules" class="form-content" :size="formSize" status-icon>
+            <h2 class="title">文件上传限制</h2>
+            <div class="attention">原则上文件上传限制按照默认即可，修改可能造成后端服务不稳定，除非您知道是在做什么。</div>
+            <el-form-item v-for="(fItem, index) in formData" :key="index" class="form-row">
+                <el-form-item label="类型" :prop="`[${index}].type`" :rules="rules.type">
+                    <el-input v-model="fItem.type" placeholder="文件类型" clearable class="form-cell" />
+                </el-form-item>
+                <el-form-item label="拓展名" :prop="`[${index}].extension`" :rules="rules.extension" class="form-cell">
+                    <el-input v-model="fItem.extension" placeholder="文件拓展名" clearable />
+                </el-form-item>
+                <el-form-item label="文件大小" :prop="`[${index}].max_size`" :rules="rules.max_size" class="form-cell">
+                    <el-input-number v-model="fItem.max_size" :min="1" controls-position="right" clearable placeholder="文件大小(MB)">
+                        <template #suffix>
+                            <span>MB</span>
+                        </template>
+                    </el-input-number>
+                </el-form-item>
+                <el-form-item label="后端处理" :prop="`[${index}].is_server_process`" class="form-cell">
+                    <el-checkbox v-model="fItem.is_server_process" />
+                </el-form-item>
+                <el-form-item label="视频 FFmpeg 处理" :prop="`[${index}].is_ffmpeg_process`" class="form-cell">
+                    <el-checkbox v-model="fItem.is_ffmpeg_process" />
+                </el-form-item>
+                <el-button type="danger" @click="removeRule(index)" size="small" class="form-cell">删除</el-button>
+            </el-form-item>
+            <el-button type="primary" @click="addRule" size="small" class="form-row-add">增加</el-button>
+        </el-form>
+    </div>
+</template>
+
+<script lang="ts" setup>
+import type { FormInstance, FormRules } from "element-plus"
+import { computed, reactive, ref, useTemplateRef, watch } from "vue"
+
+import { type FileAllowed } from "@/api/setting/getUpload"
+import { ByteUnit, convertBytes } from "@/utils/byte"
+import { MessageUtil } from "@/utils/message"
+
+defineOptions({ name: "FileAllowed" })
+
+const { data } = defineProps<{
+    data: FileAllowed[]
+}>()
+
+// 表单 label 位置, 可选 top | left | right
+const labelPosition = ref<"left" | "right" | "top">("left")
+
+// 表单尺寸, 可选 '' | 'default' | 'small' | 'large'
+const formSize = ref<"" | "default" | "small" | "large">("default")
+
+const formRef = useTemplateRef<FormInstance>("formRef")
+
+// 转换 data 数据的 max_size 单位
+const dataConvert = (data: FileAllowed[], fromUnit: ByteUnit, toUnit: ByteUnit): FileAllowed[] => {
+    return data.map((item) => {
+        return {
+            ...item,
+            max_size: convertBytes(item.max_size, fromUnit, toUnit),
+        }
+    })
+}
+
+const formData = ref<FileAllowed[]>(dataConvert(data, ByteUnit.B, ByteUnit.MB))
+
+const addRule = () => {
+    formData.value.push({
+        type: "",
+        extension: "",
+        max_size: 1,
+        is_server_process: false,
+        is_ffmpeg_process: false,
+    })
+}
+
+const removeRule = (index: number) => {
+    // 确保至少保留一条规则
+    if (formData.value.length === 1) {
+        MessageUtil.warning("至少需要一条上传规则")
+        return
+    }
+
+    formData.value.splice(index, 1)
+}
+
+watch(
+    () => data,
+    (newVal) => {
+        formData.value = dataConvert(newVal, ByteUnit.B, ByteUnit.MB)
+    },
+    {
+        deep: true,
+    },
+)
+
+// 结果数据, 单位转回字节 B
+const formDataResult = computed<FileAllowed[]>(() => dataConvert(formData.value, ByteUnit.MB, ByteUnit.B))
+
+const rules = reactive<FormRules<FileAllowed>>({
+    type: [
+        {
+            required: true,
+            message: "文件类型不能为空",
+            trigger: "blur",
+        },
+    ],
+    extension: [
+        {
+            required: true,
+            message: "文件拓展名不能为空",
+            trigger: "blur",
+        },
+    ],
+    max_size: [
+        {
+            required: true,
+            message: "文件大小不能为空",
+            trigger: "blur",
+        },
+        {
+            validator: (rule, value, callback) => {
+                // 判断是否为正整数
+                if (!/^[1-9]\d*$/.test(value.toString())) {
+                    callback(new Error("文件大小必须为正整数"))
+                } else {
+                    callback()
+                }
+            },
+            trigger: "blur",
+        },
+    ],
+})
+
+defineExpose({
+    formDataResult,
+    validateForm: async (): Promise<boolean> => {
+        if (formRef.value) {
+            try {
+                await formRef.value.validate()
+                return true
+            } catch {
+                return false
+            }
+        }
+        return false
+    },
+})
+</script>
+
+<style lang="scss" scoped>
+.form-page {
+    height: 100%;
+    width: 100%;
+    background-color: var(--jpz-bg-color-page);
+}
+
+.title {
+    text-align: left;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--jpz-text-color-regular);
+}
+
+.attention {
+    color: var(--jpz-text-color-regular);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 20px 0;
+}
+.form-content {
+    width: 1080px;
+    border: 1px solid var(--jpz-border-color);
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: var(--jpz-box-shadow-light);
+    background-color: var(--jpz-bg-color);
+
+    .form-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .form-cell {
+            margin: 0 10px;
+        }
+    }
+
+    .el-input {
+        width: 140px;
+    }
+}
+</style>

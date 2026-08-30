@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useParams\index.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 路由参数解析回响应式变量
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useParams\index.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 路由参数解析回响应式变量
  */
 
 import { onBeforeMount, type Reactive, type Ref, ref, watch } from "vue"
@@ -18,7 +18,7 @@ import type { Pagination } from "@/api/response"
  * @param search 搜索关键字
  */
 export function useParams<T, K extends PaginationRequest>(params: Reactive<K>, pagination: Reactive<Pagination<T>>, search: Ref<string> = ref("")): void {
-    // 监听搜索关键字
+    // 将路由参数同步回 search 与 pagination
     const update = (p: Reactive<K>) => {
         const { key_word, page_size, current_page } = p
         search.value = key_word || ""
@@ -26,7 +26,7 @@ export function useParams<T, K extends PaginationRequest>(params: Reactive<K>, p
         pagination.current_page = current_page || 1
     }
 
-    // 监控 queryParams
+    // 监控 params, 变化时重新解析
     watch(
         () => params,
         (newVal) => {

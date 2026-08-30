@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\video-toc-tree-display\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\video-toc-tree-display\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -25,7 +25,6 @@ import VideoTocTreeBase, { type Data, type Tree } from "../video-toc-tree-base"
 
 defineOptions({ name: "VideoTocTreeDisplay" })
 
-// 定义 props
 const {
     treeList = [], // 目录树数据
     currentNodeKey, // 当前选中节点的 key
@@ -34,7 +33,6 @@ const {
     currentNodeKey?: string | number
 }>()
 
-// 事件
 const emit = defineEmits<{
     (event: "video-select", val: Data): void
 }>()
@@ -50,13 +48,12 @@ watch(
     },
 )
 
-// 目录选择
 const handleTreeSelect = (val: Data) => {
     emit("video-select", val)
 }
 </script>
 <style scoped lang="scss">
-/* 仅用于展示模式的树样式穿透，实现暗色剧院感和交互效果 */
+/* 仅用于展示模式的树样式穿透, 实现暗色剧院感和交互效果 */
 :deep(.el-tree) {
     background-color: transparent;
     color: var(--jpz-text-color-primary);
@@ -67,7 +64,7 @@ const handleTreeSelect = (val: Data) => {
 }
 
 :deep(.el-tree-node__content) {
-    background-color: transparent !important; // override element plus default hover
+    background-color: transparent !important; // 覆盖 element plus 默认 hover 样式
     padding: 0 4px;
     height: auto;
     border: 1px solid transparent;
@@ -94,7 +91,7 @@ const handleTreeSelect = (val: Data) => {
 
     .video-toc-item {
         border-left: 3px solid var(--jpz-color-primary);
-        padding-left: 9px; // 原来是 12px，减去 3px border，保持内容对齐
+        padding-left: 9px; // 原为 12px, 减去 3px border 后保持内容对齐
         border-radius: 2px 0 0 2px;
     }
 

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\common\media-add\uploadByEl.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 使用 Element Plus 的上传组件上传文件
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\media-add\uploadByEl.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 使用 Element Plus 的上传组件上传文件
  */
 
 import { type UploadRequestOptions } from "element-plus"
@@ -16,7 +16,7 @@ import { Task, TaskQueue } from "@/utils/task"
 
 import { RequestStrategyEl } from "./requestStrategyEl"
 
-// 文件级串行队列，同时只处理 1 个文件，避免多文件并行导致内存溢出
+// 文件级串行队列, 同时只处理 1 个文件, 避免多文件并行导致内存溢出
 const fileUploadQueue = new TaskQueue(1)
 
 export const uploadByEl = async (
@@ -32,7 +32,7 @@ export const uploadByEl = async (
             const file: File = options.file
             const requestStrategy = new RequestStrategyEl(options)
             requestStrategy.fileAllowedList = fileAllowedList
-            // MultiThreadSplitter 在 Task 执行时才构造，避免入队时 eager slice
+            // MultiThreadSplitter 在 Task 执行时才构造, 避免入队时 eager slice
             const splitStrategy = new MultiThreadSplitter(file, chunkSizeServer, hashAlgorithmServer)
             const uploadController = new UploadController(file, requestStrategy, splitStrategy)
 
@@ -64,9 +64,8 @@ export const uploadByEl = async (
                     reject(error)
                 })
 
-                // 初始化UploadController
+                // 初始化 UploadController
                 uploadController.init(isEncrypt, !isNoFree).catch((error) => {
-                    // 处理错误
                     console.error(error)
                     options.onError(error)
                     outerReject(error)

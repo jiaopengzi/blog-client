@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\post\viewByID.ts
+ * FilePath    : blog-client-nuxt\src\api\post\viewByID.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -12,7 +12,7 @@ import type { Res, ResPromise } from "@/api/response"
 import { type PostResByID } from "./common"
 
 export interface ViewPostByIDRequest {
-    post_id: string // 文章ID
+    post_id: string // 文章 ID
     password?: string // 文章密码
 }
 

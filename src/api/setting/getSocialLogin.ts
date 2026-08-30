@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\setting\getSocialLogin.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 获取社交登录信息
+/*
+ * FilePath    : blog-client-nuxt\src\api\setting\getSocialLogin.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 获取社交登录信息
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -23,7 +23,6 @@ export interface GetSocialLoginResponse {
     wechat: LoginConfig
 }
 
-// 获取社交登录信息
 export function getSocialLoginAPI(): ResPromise<Res<GetSocialLoginResponse>> {
     const urlStr = routerGroup + "/setting/get-social-login"
     return request({

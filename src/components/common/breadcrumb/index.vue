@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\breadcrumb\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\breadcrumb\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -27,7 +27,6 @@
 <script setup lang="ts">
 import { ArrowRight, Location } from "@element-plus/icons-vue"
 import { storeToRefs } from "pinia"
-import { useRouter } from "vue-router"
 
 import { RouteNames } from "@/router"
 import { type BreadcrumbItem, useBreadcrumbStore } from "@/stores/breadcrumb"
@@ -43,7 +42,7 @@ const deviceStore = useDeviceStore()
 
 const { items } = storeToRefs(breadcrumbStore)
 
-// 点击面包屑
+// 点击面包屑首页
 const clickBreadcrumbHome = () => {
     statusStore.setHome()
     breadcrumbStore.click({ display: "首页", to: RouteNames.Home })
@@ -100,7 +99,6 @@ const clickBreadcrumb = (item: BreadcrumbItem) => {
 .breadcrumb-last {
     margin-right: 4px;
     color: var(--jpz-text-color-secondary);
-    // font-weight: 500;
 }
 
 .breadcrumb-home,

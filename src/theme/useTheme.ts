@@ -1,17 +1,14 @@
-/**
- * FilePath    : blog-client\src\theme\useTheme.ts
+/*
+ * FilePath    : blog-client-nuxt\src\theme\useTheme.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
  * Description : 主题切换相关的组合式函数
  */
 
-/**
- * @FilePath     : \blog-client\src\components\hooks\useTheme\index.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 主题切换
+/*
+ * 补充说明:
+ * 迁移自原项目 src/components/hooks/useTheme/index.ts (2025)
  */
 
 import { computed, ref } from "vue"
@@ -19,7 +16,7 @@ import { computed, ref } from "vue"
 import { AVAILABLE_HLJS_THEMES, getDefaultHljsTheme, setSiteHljsTheme, type HljsThemeName } from "@/pkg/highlight.js/theme-switcher"
 import { getThemeByPreset, ThemeMode } from "@/pkg/codemirror/extension/theme"
 import { LocalStorageKey } from "@/stores/local"
-import { defaultThemePresetId, getThemePreset, isValidThemePresetId, themePresetList, type ThemePresetId } from "@/theme/presets"
+import { defaultThemePresetId, getThemePreset, isValidThemePresetId, themePresetList, type ThemePresetId, type ThemeScheme } from "@/theme/presets"
 
 import { applyThemePresetToDocument } from "@/theme/runtime"
 
@@ -57,8 +54,19 @@ function readStoredSiteCodeBlockTheme(): HljsThemeName {
     return storedValue
 }
 
-const activeThemePresetState = ref<ThemePresetId>(readStoredThemePreset())
+// 当前主题预设 ID 的响应式状态。导出供 app.vue 的 useHead 主题样式 getter 订阅
+// (SSR 直出 + 客户端切换预设时原位更新 theme-preset-style 内容, 260828 顺序修复)
+export const activeThemePresetState = ref<ThemePresetId>(readStoredThemePreset())
 const activeSiteCodeBlockThemeState = ref<HljsThemeName>(readStoredSiteCodeBlockTheme())
+
+/**
+ * 当前主题预设的明暗 scheme, 响应式派生自 activeThemePresetState.
+ * 供 app.vue 的 useHead htmlAttrs.class 使用: 若 useHead 静态写入 class="light",
+ * 客户端水合时 unhead 会把 "light" 重新加回 documentElement, 与运行时主题类叠加成
+ * "dark light", 使 html.light 规则 (如 lightningcss 的 color-scheme 规则) 在暗色下误命中,
+ * 与线上旧站 (仅 "dark") 不一致. 这里改为响应式取值, 水合与主题切换时始终与运行时一致.
+ */
+export const activeThemeSchemeState = computed<ThemeScheme>(() => getThemePreset(activeThemePresetState.value).scheme)
 
 if (typeof document !== "undefined") {
     applyThemePresetToDocument(getThemePreset(activeThemePresetState.value))

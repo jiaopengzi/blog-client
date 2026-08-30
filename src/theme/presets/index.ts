@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\theme\presets\index.ts
+/*
+ * FilePath    : blog-client-nuxt\src\theme\presets\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

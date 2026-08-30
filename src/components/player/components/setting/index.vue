@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\player\components\setting\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 视频设置 - 播放速度、清晰度、字幕
+ * FilePath    : blog-client-nuxt\src\components\player\components\setting\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 视频设置 - 播放速度、清晰度、字幕
 -->
 
 <template>
@@ -23,7 +23,6 @@ import RadioGroup, { type RadioOption } from "./radio-group"
 
 defineOptions({ name: "VideoSetting" })
 
-// 定义props
 const { subtitles, playLevel, playbackRate, isLoop } = defineProps<{
     subtitles: Subtitles | undefined
     playLevel: PlayLevel
@@ -31,23 +30,19 @@ const { subtitles, playLevel, playbackRate, isLoop } = defineProps<{
     isLoop: boolean
 }>()
 
-// 定义 emit
 const emit = defineEmits<{
-    (e: "selected-subtitles-language", language: LanguageKey): void // 选择字幕
-    (e: "get-play-level", level: PlayLevelLabel): void // 播放清晰度
-    (e: "get-playback-rate", playbackRate: PlaybackRate): void // 播放速度
-    (e: "get-is-loop", value: boolean): void // 是否循环播放
+    (e: "selected-subtitles-language", language: LanguageKey): void
+    (e: "get-play-level", level: PlayLevelLabel): void
+    (e: "get-playback-rate", playbackRate: PlaybackRate): void
+    (e: "get-is-loop", value: boolean): void
 }>()
 
-// 是否显示字幕选择组件
 const isShowSubtitlesSelect = computed(() => {
-    // 判断 subtitles?.availableSubtitles 是否存在或者为空对象
     return subtitles?.availableSubtitles && Object.keys(subtitles.availableSubtitles).length > 0
 })
 
-// 可用字幕
 const subtitlesOptions = computed<RadioOption<LanguageKey>[]>(() => {
-    // 增加一个禁用的选项 ,key：disabled，label：disabled
+    // 增加一个禁用的选项, key: disabled, label: disabled
     if (!subtitles || !subtitles.availableSubtitles) return []
     const options: RadioOption<LanguageKey>[] = []
 
@@ -59,10 +54,10 @@ const subtitlesOptions = computed<RadioOption<LanguageKey>[]>(() => {
     return options
 })
 
-// 只有一个清晰度选项时不显示 playLevel.allLevels 是 Record<string, number> 类型
+// 只有一个清晰度选项时不显示; playLevel.allLevels 是 Record<string, number> 类型
 const isShowPlayLevel = computed(() => Object.keys(playLevel.allLevels).length > 1)
 
-// 播放速度选项
+// 清晰度选项
 const levelOptions = computed(() => {
     const options: RadioOption<PlayLevelLabel>[] = []
     for (const [key] of Object.entries(playLevel.allLevels)) {
@@ -85,32 +80,27 @@ const loopOptions: RadioOption<boolean>[] = [
     { label: "循环", value: true },
 ]
 
-// 本地状态
 const selectedSubtitlesLanguage = ref(subtitles?.selectedSubtitlesLanguage)
 const selectedPlayLevel = ref(playLevel.level)
 const selectedPlaybackRate = ref(playbackRate)
 const localIsLoop = ref(isLoop)
 
-// 处理字幕选择变化
 const handleSubtitlesChange = (language: LanguageKey | undefined) => {
     if (!language) return
     selectedSubtitlesLanguage.value = language
     emit("selected-subtitles-language", language)
 }
 
-// 处理播放速度变化
 const handlePlaySpeedChange = (playbackRate: PlaybackRate) => {
     selectedPlaybackRate.value = playbackRate
     emit("get-playback-rate", playbackRate)
 }
 
-// 处理播放清晰度变化
 const handlePlayLevelChange = (level: PlayLevelLabel) => {
     selectedPlayLevel.value = level as PlayLevelLabel
     emit("get-play-level", level)
 }
 
-// 处理是否循环播放变化
 const handleIsLoopChange = (value: boolean) => {
     localIsLoop.value = value
     emit("get-is-loop", value)
@@ -127,8 +117,6 @@ const handleIsLoopChange = (value: boolean) => {
     // 半透明深色底 + 毛玻璃模糊, 保证悬浮面板可读(进一步降低暗度, 更通透)
     background-color: #00000066;
     backdrop-filter: blur(16px);
-    // background-color: var(--jpz-bg-color);
-    // border: 1px solid var(--jpz-border-color);
     border-radius: 4px;
     box-shadow: 0 8px 24px #00000066;
 

@@ -1,9 +1,9 @@
 /*
- * FilePath    : blog-client\src\api\post\postPathToID.ts
+ * FilePath    : blog-client-nuxt\src\api\post\postPathToID.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 通过文章别名获取文章ID
+ * Description : 通过文章别名获取文章 ID
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -15,10 +15,10 @@ export interface PostPathToIDRequest {
 }
 
 /**
- * 通过文章别名获取文章 ID.
+ * 通过文章别名获取文章 ID
  *
- * @param requestData - 包含文章别名的请求参数.
- * @returns 返回文章 ID 查询请求结果.
+ * @param requestData - 包含文章别名的请求参数
+ * @returns 返回文章 ID 查询请求结果
  */
 export function postPathToIDAPI(requestData: PostPathToIDRequest): ResPromise<Res<string>> {
     const urlStr = routerGroup + "/post/post-id"

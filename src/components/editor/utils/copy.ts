@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\editor\utils\copy.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\editor\utils\copy.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -39,10 +39,10 @@ export const KATEX_CAPTURE_PADDING = {
     },
 } as const
 
-// 拷贝流水线每 yield 的间隔时间
+// 拷贝流水线两次 yield 之间处理的元素数量
 export const COPY_PIPELINE_YIELD_INTERVAL = 20
 
-// katex 图片缓存，键为公式的 HTML 内容和截图尺寸的 JSON 字符串，值为包含图片 src 和尺寸信息的对象
+// katex 图片缓存, 键为公式的 HTML 内容和截图尺寸的 JSON 字符串, 值为包含图片 src 和尺寸信息的对象
 export const katexImageCache = new Map<string, KatexImageCacheEntry>()
 
 /**
@@ -291,7 +291,7 @@ export function resetDisplayKatexFontSize(formulaElement: HTMLElement): void {
 
 /**
  * @description: 按父容器宽度缩放超长行间公式, 避免在任意窄容器中被截断.
- * 参考:https://kexue.fm/archives/10474
+ * 参考: https://kexue.fm/archives/10474
  * @param container 预览容器.
  * @return void.
  */
@@ -456,11 +456,11 @@ export function normalizePreparedCopyHtml(html: string): string {
     let normalizedHtml = html
 
     // html 中 `<pre class="pre-code pre-code_nowrap` 替换为 `<pre class="code-snippet code-snippet_nowrap`
-    // 兼容微信微信公众号编辑器代码块和代码片段样式
+    // 兼容微信公众号编辑器代码块和代码片段样式
     normalizedHtml = normalizedHtml.replace(/<pre class="pre-code pre-code_nowrap/g, '<pre class="code-snippet code-snippet_nowrap')
     normalizedHtml = escapeWhitespaceInHtmlContent(normalizedHtml)
 
-    // 将 a 标签替换为 span 标签 防止微信编辑器自动添加链接, 保证样式不变同时不影响内容
+    // 将 a 标签替换为 span 标签, 防止微信编辑器自动添加链接, 保证样式不变同时不影响内容
     return htmlTagReplace(normalizedHtml, "a", "span")
 }
 
@@ -551,7 +551,7 @@ export function normalizeRegularListForCopy(list: HTMLOListElement | HTMLUListEl
 }
 
 /**
- * @description: 将 task list 归一化为微信可接受的“内联 svg + 正文”结构.
+ * @description: 将 task list 归一化为微信可接受的"内联 svg + 正文"结构.
  * @param list 当前 task list 所在的列表元素.
  * @param styleConfig 列表复制样式配置.
  * @return void.

@@ -1,3 +1,11 @@
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\highlight.js\highlight.js.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : highlight.js 封装的单元测试
+ */
+
 import { describe, expect, it } from "vitest"
 
 import createHighlighter from "./highlight.js"

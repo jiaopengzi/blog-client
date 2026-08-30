@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\post\prevNext.ts
+ * FilePath    : blog-client-nuxt\src\api\post\prevNext.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -10,7 +10,7 @@ import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
 export interface PrevNextRequest {
-    post_id: string // 文章ID
+    post_id: string // 文章 ID
 }
 
 export interface PrevNextItem {

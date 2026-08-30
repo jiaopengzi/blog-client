@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\hooks\usePayRolesSwitchItem\index.ts
+ * FilePath    : blog-client-nuxt\src\components\hooks\usePayRolesSwitchItem\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -11,9 +11,7 @@ import { reactive } from "vue"
 import type { UpsertPostForm } from "@/components/common/post-upsert/types"
 import type { SwitchItem, SwitchItemColor, SwitchItemLabel } from "@/components/common/switch-group"
 import { usePermissionRoleStore } from "@/stores/permissionRole"
-// import type { ViewForm as AccountKeyForm } from "@/views/admin/component/main/account-key-all/component/view/types"
 
-// type PayRolesForm = UpsertPostForm | AccountKeyForm
 type PayRolesForm = UpsertPostForm
 
 // 角色付费标签
@@ -27,8 +25,8 @@ const rolePaidLabel = (): SwitchItemLabel => {
 /**
  * 付费角色开关项
  * @param form - 包含 pay_roles 属性的表单对象
- * @param defaultActive - 角色的默认激活状态，默认为 false（付费）
- * @param switchColor - 当前角色开关使用的统一配色。
+ * @param defaultActive - 角色的默认激活状态, 默认为 false (付费)
+ * @param switchColor - 当前角色开关使用的统一配色
  * @returns 角色付费管理列表及相关方法
  */
 export function usePayRolesSwitchItem<T extends PayRolesForm>(form: T, defaultActive: boolean = false, switchColor?: SwitchItemColor) {
@@ -48,7 +46,7 @@ export function usePayRolesSwitchItem<T extends PayRolesForm>(form: T, defaultAc
         }
     }
 
-    // 初始化角色付费管理都为付费状态，后续根据后端数据进行修改
+    // 初始化角色付费管理都为付费状态, 后续根据后端数据进行修改
     const initRolePaidManagement = async () => {
         const permissionRoleStore = usePermissionRoleStore()
         await permissionRoleStore.update(true) // 确保获取最新的角色数据
@@ -56,7 +54,7 @@ export function usePayRolesSwitchItem<T extends PayRolesForm>(form: T, defaultAc
         // 首先从 系统角色列表 获取角色列表
         const { roles: rolesSystem } = permissionRoleStore.getSystemRoles
 
-        // 历遍 rolesSystem 构造 rolePaidList
+        // 遍历 rolesSystem 构造 rolePaidList
         rolesSystem.forEach((role) => {
             const switchItem: SwitchItem = defaultSwitchItem()
             switchItem.name = role.role_name
@@ -68,7 +66,7 @@ export function usePayRolesSwitchItem<T extends PayRolesForm>(form: T, defaultAc
         // 会员角色列表
         const membershipRoles = permissionRoleStore.getMembershipRoles
 
-        // 如果有会员角色，则将其添加到 rolePaidList
+        // 如果有会员角色, 则将其添加到 rolePaidList
         if (membershipRoles.length > 0) {
             membershipRoles.forEach((roleName) => {
                 const switchItem = defaultSwitchItem()
@@ -82,7 +80,7 @@ export function usePayRolesSwitchItem<T extends PayRolesForm>(form: T, defaultAc
 
     // 更新角色付费管理
     const updateRolePaidList = (items: SwitchItem[]) => {
-        // 更新 postInfoForm.pay_roles,筛选出 status 为 true 的角色
+        // 更新 form.pay_roles, 筛选出 status 为 true 的角色
         form.pay_roles = items
             .filter((i) => i.status)
             .map((i) => {

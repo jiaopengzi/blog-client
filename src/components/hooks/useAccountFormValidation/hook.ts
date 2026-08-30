@@ -1,12 +1,10 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useAccountFormValidation\hook.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 用户表单校验
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useAccountFormValidation\hook.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 用户表单校验
  */
-
-// import { CaptchaPurpose } from "@/api/common"
 
 import { RegexPatterns } from "@/utils/regexPatterns"
 
@@ -35,10 +33,10 @@ function shouldSkipRemoteValidation(value: string, pattern: RegExp): boolean {
 }
 
 /**
- * @description:校验确认密码是否与密码一致
+ * @description: 校验确认密码是否与密码一致
  * @param password 密码
  * @param rePassword 确认密码
- * @return  void
+ * @return void
  */
 async function checkRePassword(password: string, rePassword: string): Promise<void> {
     try {
@@ -68,23 +66,13 @@ async function checkAcceptedTerms(acceptedTerms: boolean): Promise<void> {
 }
 
 export function useAccountFormValidation(options: FormValidationOptions = {}) {
-    const {
-        FormUserName = "",
-        FormEmail = "",
-        // FormCaptcha = "",
-        FormPassword = "",
-        FormRePassword = "",
-        FormAcceptedTerms = false,
-        FormExcludingUserID = "",
-    } = options
+    const { FormUserName = "", FormEmail = "", FormPassword = "", FormRePassword = "", FormAcceptedTerms = false, FormExcludingUserID = "" } = options
 
     /**
      * @description: 确认密码 Validator
-     * @return  void
+     * @return void
      */
     function rePasswordValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 在这里处理异步验证逻辑
-
         const formPassword = options.FormPassword?.value || ""
         const formRePassword = options.FormRePassword?.value || ""
 
@@ -107,7 +95,7 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
 
     /**
      * @description: 是否同意 Validator
-     * @return  void
+     * @return void
      */
     function acceptedTermsValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         if (FormAcceptedTerms === undefined) {
@@ -128,10 +116,9 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
      * @description: 用户名查重 Validator
      * @param rule 校验规则
      * @param value 对应输入框的值
-     * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
+     * @param callback 回调函数, 如果用户名存在, 则传入错误提示字符串
      */
     function checkUserNameValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 在这里处理异步验证逻辑
         if (FormUserName === undefined) {
             callback("请输入用户名")
             return
@@ -148,15 +135,15 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
                 callback() // 校验成功
             })
             .catch((err: Error) => {
-                callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
+                callback(err.message) // 如果失败 (用户名已经存在), 则传入错误提示字符串
             })
     }
 
     /**
-     * @description: 用户名查重 Validator 排除指定用户ID
+     * @description: 用户名查重 Validator, 排除指定用户 ID
      * @param rule 校验规则
      * @param value 对应输入框的值
-     * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
+     * @param callback 回调函数, 如果用户名存在, 则传入错误提示字符串
      */
     function checkUserNameExcludingUserIDValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         if (FormExcludingUserID === undefined) {
@@ -164,7 +151,6 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
             return
         }
 
-        // 在这里处理异步验证逻辑
         if (FormUserName === undefined) {
             callback("请输入用户名")
             return
@@ -183,18 +169,17 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
                 callback() // 校验成功
             })
             .catch((err: Error) => {
-                callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
+                callback(err.message) // 如果失败 (用户名已经存在), 则传入错误提示字符串
             })
     }
 
     /**
-     * @description: 用户名查重 Validator
+     * @description: 邮箱查重 Validator
      * @param rule 校验规则
      * @param value 对应输入框的值
-     * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
+     * @param callback 回调函数, 如果邮箱存在, 则传入错误提示字符串
      */
     function checkEmailValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 在这里处理异步验证逻辑
         if (FormEmail === undefined) {
             callback("请输入邮箱")
             return
@@ -211,18 +196,17 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
                 callback() // 校验成功
             })
             .catch((err: Error) => {
-                callback(err.message) // 如果失败（邮箱已经存在），则传入错误提示字符串
+                callback(err.message) // 如果失败 (邮箱已经存在), 则传入错误提示字符串
             })
     }
 
     /**
-     * @description: 用户名查重 Validator 排除指定用户ID
+     * @description: 邮箱查重 Validator, 排除指定用户 ID
      * @param rule 校验规则
      * @param value 对应输入框的值
-     * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
+     * @param callback 回调函数, 如果邮箱存在, 则传入错误提示字符串
      */
     function checkEmailExcludingUserIDValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 在这里处理异步验证逻辑
         if (FormEmail === undefined) {
             callback("请输入邮箱")
             return
@@ -240,43 +224,19 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
                 callback() // 校验成功
             })
             .catch((err: Error) => {
-                callback(err.message) // 如果失败（邮箱已经存在），则传入错误提示字符串
+                callback(err.message) // 如果失败 (邮箱已经存在), 则传入错误提示字符串
             })
     }
 
-    // // 验证码仅在提交表单时校验，不在单独远端校验，当前函数废弃
-    // const checkCaptchaValidatorFactory = (purpose: CaptchaPurpose) => {
-    //     return (rule: unknown, value: string, callback: (error?: string | Error | undefined) => void) => {
-    //         // 在这里处理异步验证逻辑
-    //         if (FormEmail === undefined) {
-    //             callback("请输入邮箱")
-    //             return
-    //         }
-    //         if (FormCaptcha === undefined) {
-    //             callback("请输入验证码")
-    //             return
-    //         }
-
-    //         const formEmail = options.FormEmail?.value || ""
-    //         const formCaptcha = options.FormCaptcha?.value || ""
-    //         checkCaptcha(formEmail, formCaptcha, purpose)
-    //             .then(() => {
-    //                 callback() // 校验成功
-    //             })
-    //             .catch((err: Error) => {
-    //                 callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
-    //             })
-    //     }
-    // }
+    // 验证码仅在提交表单时校验, 不做单独远端校验, checkCaptchaValidatorFactory 已废弃
 
     /**
-     * @description: 用户名查重 Validator
+     * @description: 登录名校验 Validator
      * @param rule 校验规则
      * @param value 对应输入框的值
-     * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
+     * @param callback 回调函数, 校验失败时传入错误提示字符串
      */
     function checkLoginNameValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 在这里处理异步验证逻辑
         if (FormUserName === undefined) {
             callback("请输入用户名")
             return
@@ -293,7 +253,7 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
                 callback() // 校验成功
             })
             .catch((err: Error) => {
-                callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
+                callback(err.message) // 如果失败, 则传入错误提示字符串
             })
     }
 
@@ -308,7 +268,6 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
         checkEmailExcludingUserIDValidator,
         checkCaptcha,
         checkSendCaptcha,
-        // checkCaptchaValidatorFactory,
         checkRePassword,
         rePasswordValidator,
         checkAcceptedTerms,

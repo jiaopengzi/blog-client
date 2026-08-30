@@ -115,28 +115,10 @@ html {
     // --checkbox-unchecked: url("data:image/svg+xml,%3Csvg class='icon' viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cpath d='M810.667 213.333v597.334H213.333V213.333h597.334m0-85.333H213.333C166.4 128 128 166.4 128 213.333v597.334C128 857.6 166.4 896 213.333 896h597.334C857.6 896 896 857.6 896 810.667V213.333C896 166.4 857.6 128 810.667 128z' fill='%23333333'/%3E%3C/svg%3E");
 }
 
-// // 字体
-// @font-face {
-//     font-family: "JBMonoTTF";
-//     src: url("@/assets/fonts/JetBrainsMono-Medium.ttf") format("truetype");
-// }
-
-@font-face {
-    font-family: "JBMonoWOFF2";
-    src: url("@/assets/fonts/JetBrainsMono-Medium.woff2") format("woff2");
-    font-weight: 500;
-}
-
-// @font-face {
-//     font-family: "JBMonoNerdFont";
-//     src: url("@/assets/fonts/JetBrainsMonoNerdFont-Medium.ttf") format("truetype");
-// }
-
-@font-face {
-    font-family: "SmileySans";
-    src: url("@/assets/fonts/SmileySans-Oblique.otf.woff2") format("woff2");
-    font-weight: 500;
-}
+// P0-3(nuxt4-good): 字体 @font-face 已由 @nuxt/fonts 生成（families 配置见 nuxt.config.ts,
+// 文件位于 public/fonts/）, 此处手写声明移除; family 名 JBMonoWOFF2/SmileySans 保持不变,
+// 15+ 处引用（preview/highlight/codemirror/platform 等）零改动。roboto 未定义 @font-face,
+// 保持系统回退渲染（与 SPA 线上一致）。
 
 // 主题样式
 body {
@@ -149,11 +131,47 @@ body {
     background-color: var(--jpz-bg-color-page);
 }
 
-#app {
+// G1(Element Plus 主色随主题): 将 EP 主色系整体映射为站内 --jpz-color-primary 的派生,
+// 消除分页/输入框 focus/勾选态等处的默认蓝(#409eff), 一处生效全站.
+// 浅色变体向背景色混合: 亮色=向白靠拢, 暗色=向深底靠拢, 由 --el-bg-color 随主题切换天然实现.
+html.light,
+html.dark {
+    --el-color-primary: var(--jpz-color-primary);
+    --el-color-primary-light-3: color-mix(in srgb, var(--el-bg-color) 30%, var(--jpz-color-primary));
+    --el-color-primary-light-5: color-mix(in srgb, var(--el-bg-color) 50%, var(--jpz-color-primary));
+    --el-color-primary-light-7: color-mix(in srgb, var(--el-bg-color) 70%, var(--jpz-color-primary));
+    --el-color-primary-light-8: color-mix(in srgb, var(--el-bg-color) 80%, var(--jpz-color-primary));
+    --el-color-primary-light-9: color-mix(in srgb, var(--el-bg-color) 90%, var(--jpz-color-primary));
+    --el-color-primary-dark-2: color-mix(in srgb, #000000 20%, var(--jpz-color-primary));
+
+    // G5(导航激活色): 默认沿用 secondary 金(亮); 暗色的 secondary 为警示红(#bb1818),
+    // 由 html.dark 切换为 primary 金, 保证双主题一致的"金色激活"语言.
+    --jpz-menu-active-color: var(--jpz-color-secondary);
+}
+
+html.dark {
+    --jpz-menu-active-color: var(--jpz-color-primary);
+}
+
+// 260828-2: 保存/提交的顶部提示(ElMessage)必须浮于编辑弹窗与遮罩之上。
+// Element Plus 的 message 与 dialog 共用 z-index 自增计数器, 但 dialog 的遮罩(overlay)
+// 挂载于 body 且与 message 同层竞争, 长会话中多次开关弹窗后 message 会被压在遮罩后面。
+// 固定高 z-index + !important 保证 message 恒在最前(3000 远超弹窗计数器的常规爬升区间)。
+.el-message {
+    z-index: 3000 !important;
+}
+
+// SPA 为 #app（Vite 挂载点），Nuxt 为 #__nuxt：两端同规则。
+// body 为 flex(row)+align-items:center，SPA 单列占满视口无副作用；Nuxt 的 body 下
+// 还有 svg/teleports 等兄弟元素，需显式 align-self:stretch 顶对齐，否则 #__nuxt
+// 被垂直居中、页面顶部出现大片间隙（/page/vip header 与内容之间的大间隙即此因）。
+#app,
+#__nuxt {
     display: flex;
     max-width: pc.$width-page;
     flex-direction: column;
     min-height: 100vh;
+    align-self: stretch;
 }
 
 a {
@@ -241,6 +259,79 @@ header {
     background-color: transparent !important;
     box-shadow: none !important;
 }
+
+// A3(弹窗遮罩加深): 默认遮罩过透, 背景表格/内容与弹窗抢注意力
+.el-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+// A3(禁用字段弱化必填星号): disabled 字段不应保留醒目的红色必填标记
+.el-form-item {
+    &:has(.el-input.is-disabled, .el-textarea.is-disabled) > .el-form-item__label::before {
+        opacity: 0.25;
+        filter: grayscale(1);
+    }
+}
+
+// A3(弹窗面孔统一): 后台新增/编辑弹窗对齐 .jpz-card 的圆角语言
+.add-item-dialog,
+.edit-item-dialog {
+    border-radius: 8px;
+}
+
+// =====================================全局工具类(设计系统) 开始
+// G3(卡片统一面孔): 圆角/描边/浅阴影一套语言, 亮暗双主题靠 token 自动适配
+.jpz-card {
+    border-radius: 8px;
+    background-color: var(--jpz-bg-color);
+    border: 1px solid var(--jpz-border-color-lighter);
+    box-shadow: var(--jpz-box-shadow-lighter);
+}
+
+// H10(kicker 眉题): 404 页同款金色小字前缀, 供空态/营销头/hero 复用
+.jpz-kicker {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--jpz-color-secondary);
+}
+
+// H4(列表页头): 分类/标签/归档/搜索共用的位置标识头,
+// 亮暗均以主色低透明度 tint 打底 + 左侧 secondary 金竖条锚定.
+// 注意: 项目未全局设置 border-box, 显式声明避免 width:100% 叠加 padding/border 撑出横向滚动条.
+.list-page-hero {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background-color: color-mix(in srgb, var(--jpz-color-primary) 6%, var(--jpz-bg-color));
+    border-left: 4px solid var(--jpz-color-secondary);
+
+    .list-page-hero__title {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--jpz-text-color-primary);
+        line-height: 1.3;
+        overflow-wrap: anywhere;
+    }
+
+    .list-page-hero__count {
+        flex-shrink: 0;
+        padding: 2px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        line-height: 18px;
+        color: var(--jpz-color-primary);
+        background-color: color-mix(in srgb, var(--jpz-color-primary) 10%, transparent);
+    }
+}
+// =====================================全局工具类(设计系统) 结束
 
 // 归档组件表格 行样式
 // .month-archive-row-class:hover {
@@ -426,5 +517,25 @@ header {
 html[data-theme] {
     .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
         background: var(--jpz-table-striped-bg-color) !important;
+    }
+
+    // G5(表格行 hover 随主题): 替换 EP 默认灰蓝 hover, 与蓝金体系一致
+    .el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell {
+        background-color: color-mix(in srgb, var(--jpz-color-primary) 6%, var(--jpz-bg-color));
+    }
+
+    // A1(表格规范, 全站生效): 仅作用于数据区——行距收敛与长文本限高;
+    // 表头样式/分隔线保持原有显示(hover 竖线拖拽热区提示), 不做覆盖.
+    .el-table {
+        .el-table__body td.el-table__cell {
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+
+        .el-table__body .el-table__cell > .cell {
+            max-height: 132px;
+            overflow: hidden;
+            overflow-wrap: anywhere;
+        }
     }
 }

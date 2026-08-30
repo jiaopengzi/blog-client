@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\unit.test.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 单位转换测试
+/*
+ * FilePath    : blog-client-nuxt\src\utils\unit.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 单位转换的单元测试
  */
 
 import { describe, expect, it } from "vitest"
@@ -77,7 +77,6 @@ describe("unitNumber", () => {
         expect(unitNumber(-10000)).toBe("-1.00万")
         expect(unitNumber("-250000000")).toBe("-2.50亿")
     })
-    // 自定义小数位
     it("自定义小数位", () => {
         expect(unitNumber(1234567, 3)).toBe("123.457万")
         expect(unitNumber(100000000, 1)).toBe("1.0亿")

@@ -55,3 +55,14 @@ $platforms: (
     background-color: var(--jpz-bg-color-page);
     transition: all 0.3s ease;
 }
+
+// G2(文本截断规范): 多行省略, 统一列表标题/摘要/表格长文的行数控制.
+// 用法: @include line-clamp(2);
+@mixin line-clamp($n: 2) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $n;
+    line-clamp: $n;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}

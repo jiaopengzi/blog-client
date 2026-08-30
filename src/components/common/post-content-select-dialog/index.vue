@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-content-select-dialog\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-content-select-dialog\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -51,7 +51,7 @@ import { computed, ref, watch } from "vue"
 import { PostType, type PostResPaginationByAdmin } from "@/api/post/common"
 import PostListAdmin from "@/components/common/post-list-admin"
 import { RouteNames } from "@/router"
-import { adminMenuItemMap } from "@/views/admin/component/aside"
+import { adminMenuItemMap } from "@/components/views/admin/component/aside"
 import { MessageUtil } from "@/utils/message"
 
 defineOptions({ name: "PostContentSelectDialog" })

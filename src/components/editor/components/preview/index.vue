@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\editor\components\preview\index.vue
+ * FilePath    : blog-client-nuxt\src\components\editor\components\preview\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -24,78 +24,88 @@
         <template v-for="(item, index) in contentParts" :key="index">
             <div v-if="item.type === 'html'" v-stable-html="item.content"></div>
 
-            <div v-if="item.type === Names.VideoPlayer" :key="(item.content as PlayerState).videoID" class="video-player-box">
-                <VideoPlayer :player-state="item.content as PlayerState" />
-            </div>
+            <!-- 视频播放器（ClientOnly：HLS 播放器仅客户端） -->
+            <ClientOnly v-else-if="item.type === Names.VideoPlayer">
+                <div :key="(item.content as PlayerState).videoID" class="video-player-box">
+                    <VideoPlayer :player-state="item.content as PlayerState" />
+                </div>
+            </ClientOnly>
 
-            <!-- Power BI 预览组件 -->
-            <PowerBi
-                v-else-if="item.type === Names.PowerBi"
-                :key="`${(item.content as PowerBIState).src}-${(item.content as PowerBIState).maskcolor}`"
-                :src="(item.content as PowerBIState).src"
-                :maskcolor="(item.content as PowerBIState).maskcolor"
-            />
+            <!-- Power BI 预览组件（ClientOnly：嵌入逻辑仅客户端） -->
+            <ClientOnly v-else-if="item.type === Names.PowerBi">
+                <PowerBi
+                    :key="`${(item.content as PowerBIState).src}-${(item.content as PowerBIState).maskcolor}`"
+                    :src="(item.content as PowerBIState).src"
+                    :maskcolor="(item.content as PowerBIState).maskcolor"
+                />
+            </ClientOnly>
 
-            <WechatCaptcha
-                v-else-if="item.type === Names.WechatCaptcha"
-                :key="`${postIdAc}-${(item.content as WechatCaptchaState).verifyKey}-${(item.content as WechatCaptchaState).reply}`"
-                :name="(item.content as WechatCaptchaState).name"
-                :codeurl="(item.content as WechatCaptchaState).codeurl"
-                :verify-key="(item.content as WechatCaptchaState).verifyKey"
-                :reply="(item.content as WechatCaptchaState).reply"
-                :hidden-html="(item.content as WechatCaptchaState).hiddenHtml"
-                :post-id="postIdAc"
-            />
+            <!-- 微信验证码（ClientOnly：验证码逻辑仅客户端） -->
+            <ClientOnly v-else-if="item.type === Names.WechatCaptcha">
+                <WechatCaptcha
+                    :key="`${postIdAc}-${(item.content as WechatCaptchaState).verifyKey}-${(item.content as WechatCaptchaState).reply}`"
+                    :name="(item.content as WechatCaptchaState).name"
+                    :codeurl="(item.content as WechatCaptchaState).codeurl"
+                    :verify-key="(item.content as WechatCaptchaState).verifyKey"
+                    :reply="(item.content as WechatCaptchaState).reply"
+                    :hidden-html="(item.content as WechatCaptchaState).hiddenHtml"
+                    :post-id="postIdAc"
+                />
+            </ClientOnly>
 
-            <LoginView
-                v-else-if="item.type === Names.LoginView"
-                :key="`login-view-${index}`"
-                :hidden-html="(item.content as LoginViewState).hiddenHtml"
-                :post-id="postIdAc"
-                :is-admin-video="isAdminVideoAc"
-            />
+            <!-- 登录可见（ClientOnly：登录态校验仅客户端） -->
+            <ClientOnly v-else-if="item.type === Names.LoginView">
+                <LoginView
+                    :key="`login-view-${index}`"
+                    :hidden-html="(item.content as LoginViewState).hiddenHtml"
+                    :post-id="postIdAc"
+                    :is-admin-video="isAdminVideoAc"
+                />
+            </ClientOnly>
 
-            <PayKey
-                v-else-if="item.type === Names.PayKey"
-                :key="(item.content as PayKeyProps).productId"
-                :product-id="(item.content as PayKeyProps).productId"
-                :title="(item.content as PayKeyProps).title"
-                :description="(item.content as PayKeyProps).description"
-                :loading="createOrderLoadingAc"
-                @pay-key="emitPayKey"
-            />
+            <!-- 付费密钥（ClientOnly：下单/校验仅客户端） -->
+            <ClientOnly v-else-if="item.type === Names.PayKey">
+                <PayKey
+                    :key="(item.content as PayKeyProps).productId"
+                    :product-id="(item.content as PayKeyProps).productId"
+                    :title="(item.content as PayKeyProps).title"
+                    :description="(item.content as PayKeyProps).description"
+                    :loading="createOrderLoadingAc"
+                    @pay-key="emitPayKey"
+                />
+            </ClientOnly>
 
-            <PayMembership
-                v-else-if="item.type === Names.PayMembership"
-                :key="Names.PayMembership"
-                :loading="createOrderLoadingAc"
-                @pay-membership="emitPayMembership"
-            />
+            <!-- 付费会员（ClientOnly：下单/会员校验仅客户端） -->
+            <ClientOnly v-else-if="item.type === Names.PayMembership">
+                <PayMembership :key="Names.PayMembership" :loading="createOrderLoadingAc" @pay-membership="emitPayMembership" />
+            </ClientOnly>
 
-            <PayContent
-                v-else-if="isPayContentItem(item.type as Names)"
-                :key="item.type"
-                :post-id="postIdAc"
-                :is-admin-video="isAdminVideoAc"
-                :markdown="item.content as string"
-                :has-material="item.hasMaterial ?? false"
-                :content-pay-type="getPayContentType(item.type)"
-                :loading="createOrderLoadingAc"
-                :is-paid="isPaidAc"
-                :pay-strategy="payStrategyAc"
-                :pay-roles="payRolesAc"
-                :price="priceAc"
-                :video-toc="item.type === Names.PayVideo ? videoTocAc : void 0"
-                @pay-vip="emitPayVip"
-                @pay-single="emitPaySingle"
-            />
+            <!-- 付费内容（ClientOnly：付费墙/解锁仅客户端） -->
+            <ClientOnly v-else-if="isPayContentItem(item.type as Names)">
+                <PayContent
+                    :key="item.type"
+                    :post-id="postIdAc"
+                    :is-admin-video="isAdminVideoAc"
+                    :markdown="item.content as string"
+                    :has-material="item.hasMaterial ?? false"
+                    :content-pay-type="getPayContentType(item.type)"
+                    :loading="createOrderLoadingAc"
+                    :is-paid="isPaidAc"
+                    :pay-strategy="payStrategyAc"
+                    :pay-roles="payRolesAc"
+                    :price="priceAc"
+                    :video-toc="item.type === Names.PayVideo ? videoTocAc : void 0"
+                    @pay-vip="emitPayVip"
+                    @pay-single="emitPaySingle"
+                />
+            </ClientOnly>
         </template>
     </div>
 
-    <!-- 微信预览 / 预复制 staging 节点：
-         isShowPreviewWechat=true  → 正常显示，作为可见预览
-         isShowPreviewWechat=false → v-show 隐藏（离屏），作为预复制数据源
-         v-if 保证仅 isEnableCopyCache 或微信模式时才挂载，普通读者页面零开销 -->
+    <!-- 微信预览 / 预复制 staging 节点:
+         isShowPreviewWechat=true  → 正常显示, 作为可见预览
+         isShowPreviewWechat=false → v-show 隐藏(离屏), 作为预复制数据源
+         v-if 保证仅 isEnableCopyCache 或微信模式时才挂载, 普通读者页面零开销 -->
     <div
         v-if="isShowPreviewWechat || isEnableCopyCache"
         v-show="isShowPreviewWechat"
@@ -115,7 +125,7 @@
         @mouseleave="onMouseLeave"
     ></div>
 
-    <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
+    <!-- 参考: https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
     <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" />
 </template>
 
@@ -138,7 +148,8 @@ import LoginView from "@/components/common/login-view"
 import { ScrollElementTagHeading } from "@/components/editor/command"
 import VideoPlayer, { type PlayerState } from "@/components/player"
 import PowerBi from "@/components/common/power-bi/index.vue"
-import { Names, parseHtmlToContentParts } from "@/customElements"
+import { Names } from "@/customElements/constants"
+import { parseHtmlToContentParts } from "@/customElements/parseHtml"
 import { mountLoginViewOnCustomElements, mountPayContentOnCustomElements } from "@/customElementsMount"
 import { type LoginViewState } from "@/customElementsMount/LoginView"
 import { type PowerBIState } from "@/customElementsMount/PowerBI"
@@ -154,7 +165,6 @@ import type { HeadingObject, PreparedCopyCache, PreviewProps } from "./types"
 
 defineOptions({ name: "HtmlPreview" })
 
-// 定义 props
 const {
     html, // html 内容
     imgUrls, // 图片地址 list
@@ -178,13 +188,12 @@ const {
     isPaid = false, // 是否付费阅读
     payStrategy = PayStrategy.All, // 付费策略
     payRoles = [], // 付费角色
-    price = "0", // 价格(单位：分)
-    postId = "", // 文章ID
+    price = "0", // 价格(单位: 分)
+    postId = "", // 文章 ID
     isAdminVideo = false, // 是否使用管理员视频接口
     videoToc = [], // 付费视频目录
 } = defineProps<PreviewProps>()
 
-// 定义 emits 子组件 传参
 const emit = defineEmits<{
     (event: "show-image-viewer", imgUrls: string[], isShowElImageViewer: boolean): void
     (event: "close-image-viewer", isShowElImageViewer: boolean): void
@@ -204,14 +213,14 @@ const setPreviewRef = (el: HTMLElement | null) => {
     previewRef.value = el
 }
 
-// 微信预览节点引用：始终指向微信 div（无论可见还是离屏），供预复制使用
+// 微信预览节点引用: 始终指向微信 div (无论可见还是离屏), 供预复制使用
 const wechatRef = ref<HTMLElement | null>(null)
 const setWechatRef = (el: HTMLElement | null) => {
     wechatRef.value = el
 }
 
 let displayKatexScaleAnimationFrameId = 0 // 缩放 katex 的动画帧 ID
-const COPY_CACHE_DEBOUNCE_MS = 2000 // 复制缓存的防抖时间，单位毫秒
+const COPY_CACHE_DEBOUNCE_MS = 2000 // 复制缓存的防抖时间, 单位毫秒
 let copyPreparationVersion = 0 // 当前准备复制的缓存版本
 let copyPreparationInFlight: Promise<void> | null = null // 当前正在进行的复制准备任务
 
@@ -228,8 +237,8 @@ const wechatHtml = computed(() => {
 })
 
 /**
- * @description: 在 DOM 更新后调度行间公式缩放, 避免重复重排.
- * @return void.
+ * @description: 在 DOM 更新后调度行间公式缩放, 避免重复重排
+ * @return void
  */
 const scheduleDisplayKatexScale = (): void => {
     nextTick(() => {
@@ -247,8 +256,8 @@ const scheduleDisplayKatexScale = (): void => {
 }
 
 /**
- * @description: 使当前复制缓存失效, 并返回新的缓存版本号.
- * @return 新的复制缓存版本号.
+ * @description: 使当前复制缓存失效, 并返回新的缓存版本号
+ * @return 新的复制缓存版本号
  */
 const invalidatePreparedCopyCache = (): number => {
     copyPreparationVersion += 1
@@ -257,9 +266,9 @@ const invalidatePreparedCopyCache = (): number => {
 }
 
 /**
- * @description: 在预览内容稳定后预生成复制 HTML, 为点击复制时复用缓存做准备.
- * @param version 当前缓存版本号.
- * @return void.
+ * @description: 在预览内容稳定后预生成复制 HTML, 为点击复制时复用缓存做准备
+ * @param version 当前缓存版本号
+ * @return void
  */
 const prepareCopyCacheIfNeeded = async (version: number): Promise<void> => {
     const targetEl = wechatRef.value ?? previewRef.value
@@ -267,7 +276,7 @@ const prepareCopyCacheIfNeeded = async (version: number): Promise<void> => {
         return
     }
 
-    // 预生成复制内容时复用最终定稿后的复制链路, 用户点击复制时可直接命中缓存.
+    // 预生成复制内容时复用最终定稿后的复制链路, 用户点击复制时可直接命中缓存
     const html = await prepareCopyWithCustomStyle(targetEl)
     if (version !== copyPreparationVersion) {
         return
@@ -279,7 +288,7 @@ const prepareCopyCacheIfNeeded = async (version: number): Promise<void> => {
     }
 }
 
-// 缓存预生成复制内容的调度函数, 避免频繁调用 invalidatePreparedCopyCache 导致重复预生成.
+// 缓存预生成复制内容的调度函数, 避免频繁调用 invalidatePreparedCopyCache 导致重复预生成
 const schedulePreparedCopyCache = debounce(COPY_CACHE_DEBOUNCE_MS, () => {
     const version = invalidatePreparedCopyCache()
     copyPreparationInFlight = prepareCopyCacheIfNeeded(version)
@@ -298,8 +307,8 @@ const schedulePreparedCopyCache = debounce(COPY_CACHE_DEBOUNCE_MS, () => {
 })
 
 /**
- * @description: 在 DOM 更新并完成一帧渲染后调度复制缓存预生成, 避免与当前渲染竞争.
- * @return void.
+ * @description: 在 DOM 更新并完成一帧渲染后调度复制缓存预生成, 避免与当前渲染竞争
+ * @return void
  */
 const schedulePreparedCopyAfterRender = (): void => {
     if (!isEnableCopyCache) {
@@ -315,21 +324,21 @@ const schedulePreparedCopyAfterRender = (): void => {
 }
 
 /**
- * @description: 优先复用预生成缓存执行复制, 未命中缓存时回退到完整复制链路.
- * @return void.
+ * @description: 优先复用预生成缓存执行复制, 未命中缓存时回退到完整复制链路
+ * @return void
  */
 const copyPreparedContent = async (): Promise<void> => {
     const currentVersion = copyPreparationVersion
     const cachedHtml = preparedCopyCache.value
 
-    // 缓存命中时只保留剪贴板写入, 避免把重的预处理工作放在用户点击瞬间执行.
+    // 缓存命中时只保留剪贴板写入, 避免把重的预处理工作放在用户点击瞬间执行
     if (cachedHtml && cachedHtml.version === currentVersion) {
         await writePreparedHtmlToClipboard(cachedHtml.html)
         return
     }
 
     if (copyPreparationInFlight) {
-        // 如果后台预生成尚未完成, 先等待同一轮任务结束, 避免重复启动一条完整复制链路.
+        // 如果后台预生成尚未完成, 先等待同一轮任务结束, 避免重复启动一条完整复制链路
         await copyPreparationInFlight
         const latestCache = preparedCopyCache.value
         if (latestCache && latestCache.version === copyPreparationVersion) {
@@ -363,24 +372,22 @@ const getPayContentType = (type: string): ContentPayType => {
     }
 }
 
-// 鼠标进入
 const onMouseEnter = () => {
     if (!isWatchMouse) return
     emit("is-mouse-in-element", true)
 }
 
-// 鼠标离开
 const onMouseLeave = () => {
     if (!isWatchMouse) return
     emit("is-mouse-in-element", false)
 }
 
 /**
- * initializeCssVariable 初始化预览区域宽高 CSS 变量。
- * 该实现与 CodeMirror 保持一致, 会为缺省值补 100%, 并为纯数字补齐 px 单位。
- * @param w - 预览区域宽度。
- * @param h - 预览区域高度。
- * @returns 无返回值。
+ * initializeCssVariable 初始化预览区域宽高 CSS 变量
+ * 该实现与 CodeMirror 保持一致, 会为缺省值补 100%, 并为纯数字补齐 px 单位
+ * @param w - 预览区域宽度
+ * @param h - 预览区域高度
+ * @returns 无返回值
  */
 const initializeCssVariable = (w: string | undefined, h: string | undefined) => {
     if (!w) {
@@ -411,12 +418,12 @@ watch(
     () => isShowPreviewWechat,
     async (newVal) => {
         await nextTick()
-        // v-show 不触发 ref 回调，需要手动同步 previewRef
+        // v-show 不触发 ref 回调, 需要手动同步 previewRef
         if (newVal && wechatRef.value) {
-            // 切换到微信预览：previewRef 指向微信 div
+            // 切换到微信预览: previewRef 指向微信 div
             setPreviewRef(wechatRef.value)
         }
-        // 切换到 web 预览：web div 因 v-if 重新挂载，其 ref 回调会自动更新 previewRef
+        // 切换到 web 预览: web div 因 v-if 重新挂载, 其 ref 回调会自动更新 previewRef
         scheduleDisplayKatexScale()
     },
     { flush: "post" },
@@ -441,7 +448,7 @@ watch(
     },
 )
 
-// 监听 props 宽高 变化
+// 监听 props 宽高变化
 watch(
     () => [height, width],
     ([newHeight, newWidth]) => {
@@ -454,7 +461,7 @@ watch(
     },
 )
 
-// 点击事件委托 用于处理 pre 按钮和图片点击事件
+// 点击事件委托, 用于处理 pre 按钮和图片点击事件
 const handleDelegateClick = async (event: MouseEvent) => {
     const target = event.target as HTMLElement
 
@@ -485,9 +492,9 @@ const handlePreCopy = async (preElement: HTMLPreElement) => {
 }
 
 /**
- * @description: 将预览代码块 DOM 还原为可复制的源码文本, 避免空行占位符污染源码.
- * @param preElement 代码块 pre 元素.
- * @return 还原后的源码文本.
+ * @description: 将预览代码块 DOM 还原为可复制的源码文本, 避免空行占位符污染源码
+ * @param preElement 代码块 pre 元素
+ * @return 还原后的源码文本
  */
 const normalizePreCodeCopyText = (preElement: HTMLPreElement): string => {
     const codeLines = Array.from(preElement.children).filter((element): element is HTMLElement => {
@@ -510,16 +517,14 @@ const normalizePreCodeCopyText = (preElement: HTMLPreElement): string => {
 }
 
 // 锁定/解锁页面滚动时使用的样式备份
-//
-// 说明：el-image-viewer 打开时，若直接设置 body { overflow: hidden }，viewport 滚动条消失，
-// window.innerWidth 变化，导致 position:fixed 元素和主内容区产生左右抖动。
-//
-// 解决：
+// 说明: el-image-viewer 打开时, 若直接设置 body { overflow: hidden }, viewport 滚动条消失,
+// window.innerWidth 变化, 导致 position:fixed 元素和主内容区产生左右抖动
+// 解决:
 // 1. html { overflow-y: scroll } 强制滚动条始终可见 → innerWidth 不变 → 无偏移
 // 2. body { overflow: hidden } 阻止页面内容滚动
-// 3. 拦截 wheel/touchmove 事件阻止背景滚动，但不影响图片查看器的 JS 缩放逻辑
+// 3. 拦截 wheel/touchmove 事件阻止背景滚动, 但不影响图片查看器的 JS 缩放逻辑
 // 4. 注入 CSS !important 规则覆盖 el-image-viewer 内部 useLockscreen 的 width 设置
-// 5. 关闭时延迟 250ms 还原，确保 useLockscreen 200ms cleanup 先完成
+// 5. 关闭时延迟 250ms 还原, 确保 useLockscreen 200ms cleanup 先完成
 let bodyOverflowBackup: string | null = null
 let htmlOverflowYBackup: string | null = null
 let unlockTimer: ReturnType<typeof setTimeout> | null = null
@@ -527,10 +532,10 @@ let widthOverrideStyle: HTMLStyleElement | null = null
 let wheelBlocker: ((e: WheelEvent) => void) | null = null
 let touchBlocker: ((e: TouchEvent) => void) | null = null
 
-// 计算当前纵向滚动条宽度（无滚动条时返回 0）
+// 计算当前纵向滚动条宽度(无滚动条时返回 0)
 const getScrollbarWidth = () => Math.max(0, window.innerWidth - document.documentElement.clientWidth)
 
-// 锁定 body 滚动，保持滚动条可见
+// 锁定 body 滚动, 保持滚动条可见
 const lockBodyScroll = () => {
     if (unlockTimer !== null) {
         clearTimeout(unlockTimer)
@@ -540,13 +545,13 @@ const lockBodyScroll = () => {
 
     bodyOverflowBackup = document.body.style.overflow
     htmlOverflowYBackup = document.documentElement.style.overflowY
-    // 仅当 viewport 原本就有滚动条时，强制 html 保持渲染（pad/PC 端）
+    // 仅当 viewport 原本就有滚动条时, 强制 html 保持渲染(pad/PC 端)
     if (getScrollbarWidth() > 0) {
         document.documentElement.style.overflowY = "scroll"
     }
     document.body.style.overflow = "hidden"
 
-    // 阻止滚轮/touch 事件触发背景滚动，不影响图片查看器的 JS 缩放
+    // 阻止滚轮/touch 事件触发背景滚动, 不影响图片查看器的 JS 缩放
     wheelBlocker = (e: WheelEvent) => e.preventDefault()
     touchBlocker = (e: TouchEvent) => e.preventDefault()
     document.addEventListener("wheel", wheelBlocker, { passive: false })
@@ -636,7 +641,7 @@ const navigateToHeading = (index: number): void => {
     // 获取目标标题元素
     const target = allHeadings.value[index] as HTMLHeadingElement
 
-    // 如果目标元素不存在或者是用户手动滚动预览，则不执行跳转
+    // 如果目标元素不存在或者是用户手动滚动预览, 则不执行跳转
     if (!target || isUserScrollPreview) return
 
     // 使用不同的方法滚动到目标元素
@@ -655,7 +660,7 @@ const navigateToHeading = (index: number): void => {
 watch(
     () => headingShowCurrentIndex,
     (newIndex) => {
-        // 如果没有目录或者索引小于0则不执行
+        // 如果没有目录或者索引小于 0 则不执行
         if (newIndex === void 0 || newIndex < 0) return
         // 跳转目标标题
         navigateToHeading(newIndex)
@@ -681,8 +686,8 @@ const isIntersectingHeadings = ref<string[]>([]) // 交叉观察者的标题数�
 const isBestMatchHeading = ref<string>("") // 最佳匹配的标题
 
 /**
- * @description: 停止所有已注册的 IntersectionObserver 并清空缓存状态，防止多次调用 observeHeadings 时累积大量无效 observer。
- * @return void.
+ * @description: 停止所有已注册的 IntersectionObserver 并清空缓存状态, 防止多次调用 observeHeadings 时累积大量无效 observer
+ * @return void
  */
 const stopAllHeadingObservers = (): void => {
     stopFuncs.forEach((stop) => stop())
@@ -690,7 +695,7 @@ const stopAllHeadingObservers = (): void => {
     isIntersectingHeadings.value = []
 }
 
-// 历遍 allHeadings 观察每个标题的可见性
+// 遍历 allHeadings 观察每个标题的可见性
 const observeHeadings = () => {
     allHeadings.value?.forEach((headingEl) => {
         // 使用 useIntersectionObserver 对单个 heading 进行监听
@@ -701,11 +706,9 @@ const observeHeadings = () => {
                 let isFromTopShow = false // 是否从上方出现
                 if (entry!.isIntersecting) {
                     if (entry!.intersectionRect.top === 0) {
-                        // console.log("============>从上出现")
                         isFromTopShow = true
                     } else {
                         isFromTopShow = false
-                        // console.log("============>从下出现")
                     }
                     // 如果标题在视口内，设置当前标题索引
                     if (isFromTopShow) {
@@ -717,15 +720,6 @@ const observeHeadings = () => {
                     }
                     isBestMatchHeading.value = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]!
                 } else {
-                    // let isFromTopHidden = false // 是否从上方隐藏
-                    // if (entry.intersectionRect.top > entry.boundingClientRect.bottom) {
-                    //     console.log("============>从上隐藏")
-                    //     isFromTopHidden = true
-                    // }
-                    // if (entry.intersectionRect.bottom < entry.boundingClientRect.top) {
-                    //     isFromTopHidden = false
-                    //     console.log("============>从下隐藏")
-                    // }
                     if (isIntersectingHeadings.value.length === 1) {
                         isBestMatchHeading.value = isIntersectingHeadings.value[0]!
                         isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== entry!.target.id)
@@ -733,7 +727,6 @@ const observeHeadings = () => {
                         isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== entry!.target.id)
                         // 等于数组最后一个
                         isBestMatchHeading.value = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]!
-                        // isBestMatchHeading.value = isIntersectingHeadings.value[0]
                     }
                 }
 
@@ -743,9 +736,9 @@ const observeHeadings = () => {
                 }
             },
             {
-                root, // 监听的根元素
+                root: root as unknown as HTMLElement, // 监听的根元素(Nuxt 适配: vueuse 类型收紧, window 断言为 HTMLElement)
                 rootMargin, // 例如: 让在距顶部 88px 时视为未进入
-                threshold, // 交叉比例阈值，表示多少比例的元素可见时触发回调
+                threshold, // 交叉比例阈值, 表示多少比例的元素可见时触发回调
             },
         )
         stopFuncs.push(stop) // 将停止函数存储到数组中
@@ -787,26 +780,26 @@ const isPaidAc = computed(() => {
     return isPaid
 })
 
-// 价格(单位：分)
+// 价格(单位: 分)
 const priceAc = computed(() => {
-    if (isShowPreviewWechat) return "0" // 微信预览默认价格为0
+    if (isShowPreviewWechat) return "0" // 微信预览默认价格为 0
     return price
 })
 
-const postIdAc = computed(() => postId) // 文章ID
+const postIdAc = computed(() => postId) // 文章 ID
 const videoTocAc = computed(() => videoToc) // 付费视频目录
 
-// 监控 html 变化, 获取所有的 h 标签 并挂载自定义元素
+// 监控 html 变化, 获取所有的 h 标签并挂载自定义元素
 watch(
     () => contentParts.value,
     (newHtml) => {
         if (newHtml) {
-            // 注意：这里使用 nextTick，确保 html 已经渲染完成
+            // 注意: 这里使用 nextTick, 确保 html 已经渲染完成
             nextTick(() => {
                 // 获取标题
                 getAllHeadings()
 
-                // 停止旧的观察者再重新注册，避免每次内容变化都累积大量无效 observer
+                // 停止旧的观察者再重新注册, 避免每次内容变化都累积大量无效 observer
                 stopAllHeadingObservers()
 
                 // 监听标题的可见性变化
@@ -818,7 +811,7 @@ watch(
     },
 )
 
-// 监控微信预览 html 变化, 在内容更新后重新计算公式缩放.
+// 监控微信预览 html 变化, 在内容更新后重新计算公式缩放
 watch(
     () => wechatHtml.value,
     () => {
@@ -827,12 +820,12 @@ watch(
     },
 )
 
-// 监控 html 变化, 获取所有的 h 标签 并挂载自定义元素
+// 监控 html 变化, 获取所有的 h 标签并挂载自定义元素
 watch(
     () => isShowPreviewWechat,
     (newVal) => {
         if (newVal) {
-            // 注意：这里使用 nextTick，确保 html 已经渲染完成
+            // 注意: 这里使用 nextTick, 确保 html 已经渲染完成
             nextTick(() => {
                 // 获取标题
                 getAllHeadings()

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\editor\command\insert.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : markdown 插入命令
+/*
+ * FilePath    : blog-client-nuxt\src\components\editor\command\insert.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : markdown 插入命令
  */
 
 import type { MarkdownEditorCommandItem } from "@/components/editor/command"
@@ -20,7 +20,6 @@ const insert = (view: EditorView, position: number, content: string) => {
  * @description: 插入格式化内容
  * @param view 对应的编辑器实例
  * @param command 命令对象
- * @return
  */
 export function editorInsertFormatContent(view: EditorView, command: MarkdownEditorCommandItem) {
     let cursorPosMove = 0 // 光标移动位置
@@ -45,7 +44,7 @@ export function editorInsertFormatContent(view: EditorView, command: MarkdownEdi
             }
         }
 
-        // 将光标移动指定位置 cursorPosMove 处 更新状态
+        // 将光标移动到指定位置 cursorPosMove 并更新状态
         view.dispatch({
             selection: {
                 anchor: cursorPosMove,
@@ -61,7 +60,7 @@ export function editorInsertFormatContent(view: EditorView, command: MarkdownEdi
 }
 
 /**
- * @description: 插入化内容
+ * @description: 插入内容
  * @param view 对应的编辑器实例
  * @param content 要插入的内容
  */

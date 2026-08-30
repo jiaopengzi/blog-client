@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useScroll\useScrollActions.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 滚动事件
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useScroll\useScrollActions.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 滚动事件
  */
 
 import type { Ref } from "vue"
@@ -13,10 +13,10 @@ import type { ScrollData } from "./types"
 import { useScroll } from "./useScroll"
 
 /**
- * @description:  滚动事件
+ * @description: 滚动事件
  * @param actionUp 向上滚动事件
  * @param actionDown 向下滚动事件
- * @return {Ref<ScrollData>} 滚动数据 ref 对象  position 滚动位置 direction 滚动方向
+ * @return {Ref<ScrollData>} 滚动数据 ref 对象, position 滚动位置, direction 滚动方向
  */
 export function useScrollActions(actionUp: () => void, actionDown: () => void, container?: MaybeElementRef): Ref<ScrollData> {
     const scrollData = ref<ScrollData>({
@@ -29,30 +29,13 @@ export function useScrollActions(actionUp: () => void, actionDown: () => void, c
         scrollData.value = data
 
         if (data.direction === "up") {
-            actionUp() // 向上滚动事件
+            actionUp()
         } else {
-            actionDown() // 向下滚动事件
+            actionDown()
         }
     }
 
-    useScroll(handleScroll, container) // 滚动事件
+    useScroll(handleScroll, container)
 
     return scrollData
 }
-
-// 示例代码
-
-// import { ref } from 'vue';
-// import type { Ref } from 'vue';
-// import type { ScrollData } from '@/hooks/useScroll.types';
-// import { useScrollActions } from '@/hooks/useScrollActions';
-
-// const scrollUpAction = () => {
-//     console.log(`===>Up, 位置：${scrollData.value.position.toFixed(2)}, 速度：${scrollData.value.speed.toFixed(2)} px/s`);
-// };
-
-// const scrollDownAction = () => {
-//     console.log(`===>Down, 位置：${scrollData.value.position.toFixed(2)}, 速度：${scrollData.value.speed.toFixed(2)} px/s`);
-// };
-
-// const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownAction);

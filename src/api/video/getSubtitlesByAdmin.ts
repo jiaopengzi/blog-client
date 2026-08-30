@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\video\getSubtitlesByAdmin.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 获取字幕(管理员)
+/*
+ * FilePath    : blog-client-nuxt\src\api\video\getSubtitlesByAdmin.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 获取字幕(管理员)
  */
 
 import { request, routerGroup } from "@/api/request"

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\common\post-upsert\types.ts
+ * FilePath    : blog-client-nuxt\src\components\common\post-upsert\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -16,7 +16,7 @@ export const queryKey = {
 }
 
 export interface UpsertPostForm {
-    id: string // 文章ID
+    id: string // 文章 ID
     post_author: string // 文章作者
     post_content: string // 文章内容
     post_title: string // 文章标题
@@ -24,12 +24,12 @@ export interface UpsertPostForm {
     post_password: string // 文章密码
     comment_status: CommentStatusCode // 评论是否开启 0 关闭 1 开启
     price: number // 价格
-    seo_title: string // SEO标题
-    seo_keywords: string // SEO关键词
-    seo_description: string // SEO描述
+    seo_title: string // SEO 标题
+    seo_keywords: string // SEO 关键词
+    seo_description: string // SEO 描述
     slug: string // 别名
     thumbnail: string // 缩略图
-    category_ids: string[] // 分类id
+    category_ids: string[] // 分类 id
     tag_names: string[] // 标签
     pay_roles: string[] // 付费角色
     pay_strategy: PayStrategy // 付费策略
@@ -39,7 +39,7 @@ export interface UpsertPostForm {
     is_recommended: number // 是否推荐阅读
     post_type: PostType // 文章类型
     video_toc: SimplePostVideoTocTree[] // 文章视频目录
-    video_file_id_hash_list: string[] // 文章封面视频文件ID哈希
+    video_file_id_hash_list: string[] // 文章封面视频文件 ID 哈希
 }
 
 export interface UpdatePostForm extends UpsertPostForm {

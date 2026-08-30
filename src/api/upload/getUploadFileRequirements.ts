@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\upload\getUploadFileRequirements.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 上传文件的要求
+/*
+ * FilePath    : blog-client-nuxt\src\api\upload\getUploadFileRequirements.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 上传文件的要求
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -13,8 +13,8 @@ import { HashAlgorithm } from "@/utils/hash"
 export interface FileAllowed {
     type: string // 文件类型
     extension: string // 文件扩展名
-    max_size: number // 最大上传文件大小Byte
-    is_server_process: boolean // 是否服务端处理,否则客户端可直传存储桶
+    max_size: number // 最大上传文件大小 Byte
+    is_server_process: boolean // 是否服务端处理, 否则客户端可直传存储桶
     is_ffmpeg_process: boolean // 是否使用 FFmpeg 处理
 }
 

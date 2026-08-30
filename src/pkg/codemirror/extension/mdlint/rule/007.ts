@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\rule\007.ts
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\mdlint\rule\007.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -38,7 +38,7 @@ export function run(doc: DocLike): Diagnostic[] {
             const grp = headingMatch[1] ?? ""
             const level = grp.length
 
-            // 检查前一行是否为空（若存在前一行）
+            // 检查前一行是否为空(若存在前一行)
             if (i > 1) {
                 const prev = doc.line(i - 1).text
                 if (prev.trim() !== "") {
@@ -52,7 +52,7 @@ export function run(doc: DocLike): Diagnostic[] {
                 }
             }
 
-            // 检查下一行是否为空（若存在下一行）
+            // 检查下一行是否为空(若存在下一行)
             if (i < lineCount) {
                 const next = doc.line(i + 1).text
                 if (next.trim() !== "") {

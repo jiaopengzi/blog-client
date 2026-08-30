@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\player\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 视频播放器
+ * FilePath    : blog-client-nuxt\src\components\player\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 视频播放器
 -->
 
 <template>
@@ -18,7 +18,7 @@
         @mouseleave="handleMouseleave"
     >
         <VideoWatermark :text-watermark="localPlayerState.textWatermark" :logo-watermark="localPlayerState.logoWatermark">
-            <!-- video元素不使用默认的  controls-->
+            <!-- video 元素不使用默认的 controls -->
             <video
                 class="my-video"
                 :class="{ 'my-video-web-full-screen': localPlayerState.isWebFullScreen }"
@@ -37,7 +37,6 @@
                 x5-video-player-type="h5"
                 x5-video-player-fullscreen="true"
             >
-                <!-- <track v-if="isShowSubtitles" src="http://10.10.2.222:5426/api/v1/uploads/cn.vtt" kind="subtitles" srclang="cn" label="中文" default /> -->
                 <track
                     v-if="isShowSubtitles"
                     default
@@ -105,6 +104,7 @@ import { IconKeys } from "@/components/common/icons"
 import JIcon from "@/components/common/icons"
 import Controls from "@/components/player/components/controls"
 import VideoWatermark from "@/components/player/components/watermark"
+import { useUserStore } from "@/stores/user"
 
 import { useFullscreen } from "./hooks/fullScreen"
 import { useHls } from "./hooks/hls"
@@ -117,16 +117,13 @@ import { getVideoQualityLabel } from "./utils"
 
 defineOptions({ name: "VideoPlayer" })
 
-// 定义props
 const { playerState } = defineProps<{
-    playerState: PlayerState // 播放器状态
+    playerState: PlayerState
 }>()
 
-// 初始化播放器状态管理器
 const localManager = new PlayerStateManager(playerState)
 const localPlayerState = reactive(localManager.getState())
 
-// 通过控制器更新播放器状态
 const updatePlayerByControls = (playerProps: PlayerState) => {
     localManager.updateState(playerProps)
 }
@@ -134,50 +131,41 @@ const updatePlayerByControls = (playerProps: PlayerState) => {
 // 根据当前环境更新 isMobile
 localManager.setIsMobile(/mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
 
-// 判断是否是 iphone
 localManager.setIsIphone(/iPhone/i.test(navigator.userAgent))
 
-// 定义 video 元素的 ref
 const videoContainerRef = useTemplateRef<HTMLElement | null>("videoContainerRef")
 const videoRef = useTemplateRef<HTMLVideoElement | null>("videoRef")
 const controlsContainerRef = useTemplateRef<HTMLElement | null>("controlsContainerRef")
 
-// 状态
 const showPlayButton = computed(() => localPlayerState.playStatus !== PlayStatus.PLAYING)
 const showLoader = computed(() => localPlayerState.playStatus === PlayStatus.BUFFERING)
 const { queueSeekTime, syncPendingSeekTime, updateStateByVideo } = useProgress(videoRef, localManager, localPlayerState)
 
-// 切换播放暂停
 const togglePlayPause = () => {
     localManager.togglePlayPause()
 }
 
-// 处理视频页面双击事件
 const handleDblclick = () => {
-    // 判断是否是网页全屏
     if (localPlayerState.isWebFullScreen) {
         localManager.toggleWebFullScreen()
         return
     }
 
-    // 判断是否是画中画
     if (localPlayerState.isPictureInPicture) {
         localManager.togglePictureInPicture()
         return
     }
 
-    // 判断是否是全屏
     localManager.toggleFullScreen()
 }
 
-// 处理视频进度
 const handleProgress = () => {
     handleProgressBuffered()
 }
 
 /**
  * 获取方向媒体查询列表
- * @returns {MediaQueryList|null} 返回横屏方向的媒体查询列表，如果环境不支持则返回 null
+ * @returns {MediaQueryList|null} 返回横屏方向的媒体查询列表, 如果环境不支持则返回 null
  */
 const getOrientationMediaQueryList = (): MediaQueryList | null => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
@@ -194,7 +182,7 @@ const handleEnded = () => {
 
 // 视频缓冲事件
 const handleWaiting = () => {
-    // 如果是播放状态, 则缓冲,否则保持原状态
+    // 如果是播放状态, 则缓冲, 否则保持原状态
     if (localPlayerState.playStatus === PlayStatus.PLAYING) {
         localManager.buffering()
     }
@@ -204,13 +192,12 @@ const handleWaiting = () => {
 const handleCanplay = () => {
     syncPendingSeekTime()
 
-    // 如果是缓冲状态, 则播放,否则保持原状态
+    // 如果是缓冲状态, 则播放, 否则保持原状态
     if (localPlayerState.playStatus === PlayStatus.BUFFERING) {
         localManager.play()
     }
 }
 
-// 处理缓存进度
 const handleProgressBuffered = () => {
     if (videoRef.value) {
         const buffered = videoRef.value.buffered
@@ -231,7 +218,6 @@ const videoContainerWH = computed(() => {
     }
 })
 
-// 使用字幕 hook
 const { isShowSubtitles, subtitlesSrc, srclang, subtitlesLabel } = useSubtitles(localPlayerState)
 const activeSubtitleCues = shallowRef<VTTCue[]>([])
 const subtitleFontSize = ref("16px")
@@ -293,11 +279,10 @@ const getSubtitleCueHtml = (cue: VTTCue): string => {
     return container.innerHTML
 }
 
-// 更新字幕字体大小
 const updateCueFontSize = () => {
     if (videoRef.value) {
         const width = videoRef.value.clientWidth
-        let fontSize = "16px" // 默认字体大小
+        let fontSize = "16px"
 
         if (width <= 600) {
             fontSize = "16px"
@@ -313,9 +298,6 @@ const updateCueFontSize = () => {
 
 // 监控 video 元素的宽度, 设置 ::cue 的字体大小
 useResizeObserver(videoContainerRef, () => {
-    // const entry = entries[0]
-    // const { width, height } = entry.contentRect
-    // console.log(`尺寸变化了 width: ${width}, height: ${height}`)
     updateCueFontSize()
 })
 
@@ -323,7 +305,6 @@ const { handleFullscreenChange, handleOrientationChange } = useFullscreen(videoC
 
 const { controlsHidden, handleMousemove, handleMouseenter, handleMouseleave } = useMouse(controlsContainerRef, localManager)
 
-// 监控画中画状态
 watch(
     () => localPlayerState.isPictureInPicture,
     (isPictureInPicture) => {
@@ -386,7 +367,6 @@ watch(
     },
 )
 
-// 监控音量变化
 watch(
     () => localPlayerState.volume.volume,
     (volume) => {
@@ -394,7 +374,6 @@ watch(
     },
 )
 
-// 监控播放速度变化
 watch(
     () => localPlayerState.playbackRate,
     (playbackRate) => {
@@ -402,7 +381,6 @@ watch(
     },
 )
 
-// 监控是否循环播放
 watch(
     () => localPlayerState.isLoop,
     (isLoop) => {
@@ -410,7 +388,6 @@ watch(
     },
 )
 
-// 使用 hls hook
 const { hls, destroyHls, loadHls } = useHls(videoRef, localManager, localPlayerState)
 
 // 监听用户选择清晰度的变化
@@ -442,9 +419,7 @@ watch(
     },
 )
 
-// 更新视频
 const updateVideo = () => {
-    // 判断视频类型
     if (localPlayerState.mediaType === MediaTypes.HLS) {
         loadHls()
     }
@@ -481,8 +456,25 @@ watch(
     { immediate: true },
 )
 
+// Nuxt 适配: 公开文章页 SSR 水合不阻塞渲染, 视频播放器可能先于 initStores 的登录恢复挂载,
+// 首次 HLS 请求无 token 会被后端拒绝并显示"请登录后观看视频"; 登录恢复(accessToken 由空变非空)后
+// 清除错误提示并重载视频, 与 SPA 中间件阻塞首帧后的登录态时序保持一致.
+const userStore = useUserStore()
+watch(
+    () => userStore.accessToken,
+    (token, prevToken) => {
+        // 仅在登录恢复(空 → 非空)且已有视频源时重载; token 轮换与退出登录不触发重载
+        if (!token || prevToken || !localPlayerState.videoID) {
+            return
+        }
+
+        localManager.setShowError(false)
+        localManager.setErrMsg("")
+        updateVideo()
+    },
+)
+
 onMounted(() => {
-    // 初始化字幕字体大小
     updateCueFontSize()
 })
 
@@ -495,10 +487,8 @@ onBeforeUnmount(() => {
 
     detachSubtitleTrack()
 
-    // 销毁 state 管理器
     localManager.destroy()
 
-    // 显式销毁 hls
     destroyHls()
 })
 </script>

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\response\utils.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 处理响应错误
+/*
+ * FilePath    : blog-client-nuxt\src\api\response\utils.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 处理响应错误
  */
 
 import type { Pagination, Res, ResResponse } from "./types"
@@ -14,7 +14,7 @@ import type { Pagination, Res, ResResponse } from "./types"
  * @param msgTitle 根据不同的接口传入不同的标题 默认为空
  * @return {string} 返回错误信息
  */
-export const handleResErr = <T>(res: ResResponse<Res<T>, unknown> | Res<T>, msgTitle: string = ""): string => {
+export const handleResErr = <T>(res: ResResponse<Res<T>> | Res<T>, msgTitle: string = ""): string => {
     // 处理响应数据
     const resAc = "data" in res ? (res as ResResponse<Res<T>>).data : (res as Res<T>)
 
@@ -23,14 +23,14 @@ export const handleResErr = <T>(res: ResResponse<Res<T>, unknown> | Res<T>, msgT
 
     const resData = resAc.data
 
-    // 如果data不为空且不是对象
+    // 如果 data 不为空且不是对象
     if (resData !== null && typeof resData !== "object" && resData !== "") {
         return (errMsg += "：" + resData)
     }
 
-    // 如果data不为空且是对象
+    // 如果 data 不为空且是对象
     if (resData !== null && typeof resData === "object") {
-        // 历遍对象取出错误信息，不需要key
+        // 遍历对象取出错误信息, 不需要 key
         const errData: string[] = []
 
         const data = resData as Record<string, unknown>
@@ -40,7 +40,7 @@ export const handleResErr = <T>(res: ResResponse<Res<T>, unknown> | Res<T>, msgT
             return errMsg
         }
 
-        // 非空对象，只取出非空字符串值作为错误信息，过滤数字、布尔、null、嵌套对象等无意义值
+        // 非空对象, 只取出非空字符串值作为错误信息, 过滤数字、布尔、null、嵌套对象等无意义值
         for (const key in data) {
             const val = data[key]
             if (typeof val === "string" && val !== "") {
@@ -65,10 +65,10 @@ export const handleResErr = <T>(res: ResResponse<Res<T>, unknown> | Res<T>, msgT
  */
 export const getEmptyPagination = <T>(): Pagination<T> => {
     return {
-        total: 0, // 默认总记录数量为0
-        current_page: 1, // 默认当前页为1
-        page_size: 10, // 默认每页显示条数为10
-        page_count: 0, // 默认总页数为0
+        total: 0, // 默认总记录数量为 0
+        current_page: 1, // 默认当前页为 1
+        page_size: 10, // 默认每页显示条数为 10
+        page_count: 0, // 默认总页数为 0
         page_sizes: [10, 20, 30, 50], // 默认的每页显示个数选择器的选项设置
         records: [], // 默认数据为空数组
         highlight: [], // 默认高亮内容为空数组

@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\utils\singleDblClickDirective.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\singleDblClickDirective.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -17,7 +17,7 @@ export type ClickHandler = (event: MouseEvent) => void
  *
  * double: 双击回调函数
  *
- * delay: 判定单击 vs. 双击的时间间隔（毫秒）
+ * delay: 判定单击 vs. 双击的时间间隔(毫秒)
  */
 export interface SingleDblClickBinding {
     single?: ClickHandler
@@ -29,10 +29,10 @@ const clickHandlerMap = new WeakMap<HTMLElement, (event: MouseEvent) => void>()
 const clickTimerMap = new WeakMap<HTMLElement, ReturnType<typeof setTimeout> | null>()
 
 /**
- * 使用方式：
+ * 使用方式:
  * v-single-dbl-click="{ single: handleSingle, double: handleDouble, delay: 300 }"
  * single / double 分别对应单击、双击时执行的回调函数
- * delay 为判定单击 vs. 双击的时间间隔（毫秒），默认 300
+ * delay 为判定单击 vs. 双击的时间间隔(毫秒), 默认 300
  */
 export const singleDblClickDirective: Directive = {
     mounted(el: HTMLElement, binding: DirectiveBinding<SingleDblClickBinding>): void {
@@ -48,7 +48,7 @@ export const singleDblClickDirective: Directive = {
                 return
             }
 
-            // 否则开启定时器，等待 delay 毫秒后认定为单击
+            // 否则开启定时器, 等待 delay 毫秒后认定为单击
             const nextTimer = setTimeout((): void => {
                 single?.(event)
                 clickTimerMap.set(el, null)

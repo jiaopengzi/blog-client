@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\hooks\useWebFullscreen\index.ts
+ * FilePath    : blog-client-nuxt\src\components\hooks\useWebFullscreen\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -12,8 +12,8 @@ import { onMounted, onUnmounted, ref, unref } from "vue"
 const WEB_FULLSCREEN_CLASS = "web__fullscreen"
 
 /**
- * UseWebFullscreenOptions 网页全屏 hook 的可选配置。
- * 用于在特定键盘交互场景下忽略默认的 Escape 退出行为。
+ * UseWebFullscreenOptions 网页全屏 hook 的可选配置
+ * 用于在特定键盘交互场景下忽略默认的 Escape 退出行为
  */
 export interface UseWebFullscreenOptions {
     shouldIgnoreEscape?: (event: KeyboardEvent) => boolean
@@ -35,7 +35,7 @@ export const useWebFullscreen = (target: MaybeElementRef, options: UseWebFullscr
 
     // 应用全屏样式
     const applyFullscreenStyle = () => {
-        targetElement = getTargetElement()
+        targetElement = getTargetElement() as HTMLElement | SVGElement
         if (!targetElement) return
 
         targetElement.classList.add(WEB_FULLSCREEN_CLASS)
@@ -73,7 +73,7 @@ export const useWebFullscreen = (target: MaybeElementRef, options: UseWebFullscr
         }
     }
 
-    // ESC键监听
+    // ESC 键监听
     const handleEscape = (e: KeyboardEvent) => {
         if (e.key !== "Escape" || !isWebFullscreen.value) return
 

@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\common\thumbnail-select-dialog\types.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\thumbnail-select-dialog\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

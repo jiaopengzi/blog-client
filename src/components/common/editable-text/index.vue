@@ -1,10 +1,11 @@
 <!--
- * FilePath    : blog-client\src\components\common\editable-text\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\editable-text\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 可编辑文本
 -->
+
 <template>
     <div class="editable-text">
         <!-- 默认显示文本 -->
@@ -23,10 +24,9 @@ defineOptions({ name: "EditableText" })
 
 const { text = "", isEdit = true } = defineProps<{
     text?: string
-    isEdit?: boolean // 是否可编辑，默认可编辑
+    isEdit?: boolean // 是否可编辑, 默认可编辑
 }>()
 
-// 事件
 const emit = defineEmits<{
     (event: "finishEdit", val: string): void
 }>()
@@ -34,7 +34,6 @@ const emit = defineEmits<{
 const isEditing = ref(false)
 const textAc = ref(text)
 
-// 开始编辑
 const startEdit = async () => {
     if (!isEdit) return
     if (isEditing.value) return
@@ -64,17 +63,6 @@ const cancelEdit = () => {
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
-    // transition: background-color 0.3s;
-    // max-width: 400px;
-    // white-space: nowrap;
-    // overflow: auto;
-    // text-overflow: ellipsis;
-    // 文字居左对齐
-    // text-align: left;
-    //自动换行
-    // white-space: pre-wrap; // 保留空白符序列,但允许换行
-    // word-wrap: break-word; // 长单词或 URL 地址换行到下一行
-    // word-break: break-word;
 
     // 允许换行
     white-space: normal;

@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\pay-key\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\pay-key\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -33,7 +33,7 @@ import { accountKeyGetProductAPI } from "@/api/accountKey/getProduct"
 import { ProductType } from "@/api/order/common"
 import { type Product as KeyRes } from "@/api/order/create"
 import { ResponseCode } from "@/api/response"
-import { Names } from "@/customElements"
+import { Names } from "@/customElements/constants"
 import { useCustomElementsDataCacheStore } from "@/stores/customElementsDataCache"
 import { fenToYuan } from "@/utils/amount"
 import { MessageUtil } from "@/utils/message"
@@ -42,10 +42,8 @@ import { type PayKeyProps } from "./types"
 
 defineOptions({ name: "PayKey" })
 
-// 定义 props
 const { productId, title = "账号密钥", description = "", loading = false } = defineProps<PayKeyProps>()
 
-// 事件
 const emit = defineEmits<{
     (event: "pay-key", val: KeyRes): void
 }>()
@@ -141,10 +139,9 @@ onBeforeMount(async () => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    // height: 100%;
     text-align: center;
     position: relative;
-    border: 1px dashed #c1401f; // 虚线边框
+    border: 1px dashed #c1401f;
     border-radius: 10px;
     margin: 20px 0;
     padding: 20px;
@@ -158,7 +155,7 @@ onBeforeMount(async () => {
     }
 
     .key-item {
-        // 网格布局，三列标题、价格、库存，其中标题自适应，价格和库存宽度固定
+        // 网格布局, 三列标题、价格、库存, 其中标题自适应, 价格和库存宽度固定
         display: grid;
         grid-template-columns: 3fr 2fr 1fr;
         align-items: center;
@@ -169,7 +166,6 @@ onBeforeMount(async () => {
         transition: background-color 0.3s;
         margin-bottom: 10px;
         background-color: var(--jpz-bg-color);
-        // 展示下边框
         border-bottom: 1px solid var(--jpz-border-color);
 
         .title {
@@ -187,12 +183,6 @@ onBeforeMount(async () => {
             color: var(--jpz-text-color-secondary);
         }
     }
-
-    // @include respond-to("pc") {
-    // }
-
-    // @include respond-to("pad") {
-    // }
 
     @include respond-to("phone") {
         .key-item {

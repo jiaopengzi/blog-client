@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\media-edit\media-show\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\media-edit\media-show\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
+    <!-- 参考: https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
     <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" />
     <div class="show">
         <div class="not-video" @click="handleDelegateClick">
@@ -28,10 +28,8 @@ import { isVideo } from "@/utils/isVideo"
 
 import type { MediaShowProps } from "./types"
 
-// 定义组件名称
 defineOptions({ name: "EditMedia" })
 
-// props
 const { hashId, data, updateSubtitlesTimestamp } = defineProps<{
     hashId: string
     data: MediaShowProps // 编辑媒体数据
@@ -60,7 +58,7 @@ watch(
         if (newVal) {
             // 设置视频宽度
             playerStateManager.setSize(videoWidth.value, (videoWidth.value * 9) / 16) // 16:9
-            playerStateManager.setVideoID(hashId) // 设置视频hashID
+            playerStateManager.setVideoID(hashId) // 设置视频 hashID
 
             if (!data.is_generate_hls) {
                 playerStateManager.setMediaType(MediaTypes.MP4) // 设置视频类型
@@ -88,17 +86,15 @@ watch(
 const isShowElImageViewer = ref(false)
 const imgUrls = ref<string[]>([])
 
-// 关闭图片预览
 const closeElImageViewer = () => {
     isShowElImageViewer.value = false
     document.body.style.overflow = "auto"
 }
 
-// 点击事件委托,图片预览.
+// 点击事件委托, 图片预览
 const handleDelegateClick = (event: MouseEvent) => {
     const target = event.target as HTMLElement
     if (target.tagName.toLowerCase() === "img" && "src" in target) {
-        // img 图片
         const imgElement = target as HTMLImageElement // 断言 img 元素
         isShowElImageViewer.value = true // 显示图片预览
         imgUrls.value = [imgElement.src] // 图片地址

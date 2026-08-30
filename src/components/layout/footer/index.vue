@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\layout\footer\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 底部
+ * FilePath    : blog-client-nuxt\src\components\layout\footer\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 底部
 -->
 
 <template>
@@ -43,11 +43,10 @@
 </template>
 <script setup lang="ts">
 import FooterStatistics from "@/components/layout/footer-statistics"
-import { useOptionsStore } from "@/stores/options" // 网站配置选项
+import { useOptionsStore } from "@/stores/options"
 
 defineOptions({ name: "LayoutFooter" })
 
-// 获取网站配置选项
 const optionsStore = useOptionsStore()
 const footerData = optionsStore.getFooterInfo
 const isShowFooter = optionsStore.isShowFooter

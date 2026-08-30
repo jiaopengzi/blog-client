@@ -1,28 +1,26 @@
+/*
+ * FilePath    : blog-client-nuxt\tsconfig.vitest.json
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : 测试专用 tsconfig(仅 IDE 使用; 不被根 tsconfig 引用, 避免 nuxt typecheck 展开)
+ */
+
+/*
+ * 补充说明:
+ * include 含 .vue; 不引入 unplugin 生成的 components.d.ts(计划坑位 7).
+ * 2026-08-29 清理: types 移除 "jsdom"——DOM 环境统一 happy-dom 后 jsdom/@types/jsdom
+ * 已从依赖移除, 保留该条目会让 IDE 报 "Cannot find type definition file for 'jsdom'".
+ * DOM 全局类型由继承的 tsconfig.nuxt.json 的 lib("DOM"/"DOM.Iterable") 提供;
+ * happy-dom 不发布 @types 包, 其 .d.ts 随包分发由 vitest 运行时解析, 不走 tsconfig types 机制.
+ */
+
 {
-  "extends": "./tsconfig.app.json",
-  "include": [
-    "env.d.ts",
-    "auto-imports.d.ts",
-    "components.d.ts",
-    "types/**/*.d.ts",
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "coverage"
-  ],
-  "compilerOptions": {
-    "composite": true,
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.vitest.tsbuildinfo",
-    "lib": [
-      "ES2025",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "types": [
-      "node",
-      "jsdom"
-    ]
-  }
+    "extends": "./tsconfig.nuxt.json",
+    "include": ["env.d.ts", "src/types/**/*.d.ts", "src/**/*.ts", "src/**/*.vue"],
+    "exclude": ["dist", "node_modules", "coverage", ".nuxt", ".output"],
+    "compilerOptions": {
+        "composite": false,
+        "types": ["node"]
+    }
 }

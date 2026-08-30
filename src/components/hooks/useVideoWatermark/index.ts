@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\hooks\useVideoWatermark\index.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useVideoWatermark\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -23,7 +23,7 @@ export function useVideoWatermark(manager: PlayerStateManager) {
 
     // 文字水印
     const textWatermark: ComputedRef<TextWatermark> = computed(() => {
-        // 如果没有开启文字水印，返回空内容
+        // 如果没有开启文字水印, 返回空内容
         if (!video_watermark.value.text_enable) {
             return defaultTextWatermark("")
         }
@@ -40,7 +40,7 @@ export function useVideoWatermark(manager: PlayerStateManager) {
 
     // logo 水印
     const logoWatermark: ComputedRef<LogoWatermark> = computed(() => {
-        // 如果没有开启 logo 水印，返回空 url
+        // 如果没有开启 logo 水印, 返回空 url
         if (!video_watermark.value.logo_enable) {
             return defaultLogoWatermark("")
         }

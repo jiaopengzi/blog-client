@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\stores\options.ts
+ * FilePath    : blog-client-nuxt\src\stores\options.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -13,12 +13,28 @@ import { ResponseCode } from "@/api/response"
 import { getAPPOptionAPI, type GetAPPOptionResponse } from "@/api/setting/getAPPOption"
 import { PayType, type PayTypeEnable } from "@/api/pay/common"
 import { getPayConfigStatusAPI, type GetPayConfigStatusResponse } from "@/api/setting/getPayConfigStatus"
-import { type CarouselItem } from "@/components/common/carousel-manage"
-import { type HeadProps } from "@/components/common/head-tag"
-import { type SlideVerifyImgItem } from "@/components/common/slide-verify-manage"
-import { type NavItemProps } from "@/views/admin/component/main/app-nav/nav-item"
+import { type CarouselItem } from "@/components/common/carousel-manage/types"
+import { type HeadProps } from "@/components/common/head-tag/types"
+import { type SlideVerifyImgItem } from "@/components/common/slide-verify-manage/types"
+import { type NavItemProps } from "@/components/views/admin/component/main/app-nav/nav-item/types"
 
 import { LocalStorageKey } from "./local"
+
+// SSR 守卫 (计划 1.7): 服务端无 localStorage, 读写替换为 no-op 替身; SSR 下按"未加载"处理,
+// 客户端首轮 initStores 时通过 update(true) 强制从服务器拉取
+const safeLocalStorage: Storage =
+    typeof localStorage !== "undefined"
+        ? localStorage
+        : ({
+              getItem: () => null,
+              setItem: () => {},
+              removeItem: () => {},
+              clear: () => {},
+              key: () => null,
+              get length() {
+                  return 0
+              },
+          } as unknown as Storage)
 
 export interface FooterLeftInfo {
     title?: string
@@ -92,6 +108,54 @@ export interface OptionsStore {
     custom_style_css: string // 自定义样式 CSS
     footer_statistics_code: string // 底部统计代码
     video_watermark: VideoWatermark // 视频水印信息
+}
+
+/**
+ * 公开端渲染链路直接读取的配置键白名单(payload 瘦身, bugfix 260825-03).
+ * 全量配置约 90 个键, 其中仅以下键被公开组件经 app_options.* 直接读取;
+ * 其余键(后台专用 subscribe_*、carousel_manage、nav 原始 JSON 等)只被后台配置表单使用,
+ * 不随每个 SSR 页面的 pinia payload 注水重复传输. 后台表单已改为自取全量(见 app-option/index.vue).
+ * 新增公开端读取键时, 必须同步补充到本白名单, 否则该键在 payload 中缺失.
+ */
+const PUBLIC_APP_OPTION_KEYS = [
+    "logo", // 页头 logo(getLogo / 分享海报)
+    "favicon", // 站点图标(updateFavicon / 分享海报)
+    "like_enable", // 点赞交互开关(useInteraction)
+    "star_enable", // 收藏交互开关(useInteraction)
+    "share_poster_enable", // 分享海报开关(useInteraction)
+    "link_enable", // 链接交互开关(useInteraction)
+    "show_like_enable", // 文章 meta 点赞展示(post-meta)
+    "show_star_enable", // 文章 meta 收藏展示(post-meta)
+    "word_count_enable", // 文章 meta 字数/阅读时长(post-meta)
+    "immersion_read_enable", // 沉浸阅读(post-meta)
+    "show_category_enable", // 详情分类展示(category-tag)
+    "show_tags_enable", // 详情标签展示(category-tag)
+    "show_copyright_enable", // 详情版权展示(copyright)
+    "show_copyright_info", // 详情版权内容(copyright)
+    "post_footer_info_enable", // 详情文末内容开关(bottom-same)
+    "post_footer_info", // 详情文末内容(bottom-same)
+    "is_remove_first_h1", // 移除首个 h1(update/updateFromServer 派生字段来源)
+    "post_list_summary_truncate", // 列表摘要截断(派生字段来源)
+    "custom_style_css", // 自定义 CSS(派生字段来源)
+    // 注意: footer_statistics_code 不在白名单. 统计脚本经派生字段 footer_statistics_code
+    // 单独注水, 白名单内再存一份会造成 payload 重复传输(约 680B); update(false) 的
+    // localStorage 回放改为"存在才覆盖", 兼容旧版本全量缓存(见 update 实现).
+] as const satisfies readonly (keyof GetAPPOptionResponse)[]
+
+/**
+ * 从全量配置中挑出公开端渲染链路需要的键, 其余键不进 pinia payload.
+ * @param raw 后端返回的全量配置.
+ * @returns 仅含白名单键的瘦身配置(类型仍标注为全量: 公开端只读白名单键, 后台表单自取全量).
+ */
+function pickPublicAppOptions(raw: GetAPPOptionResponse): GetAPPOptionResponse {
+    const slim = {} as Partial<GetAPPOptionResponse>
+    for (const key of PUBLIC_APP_OPTION_KEYS) {
+        const item = raw[key]
+        if (item) {
+            slim[key] = item
+        }
+    }
+    return slim as GetAPPOptionResponse
 }
 
 // 创建一个空的选项存储
@@ -178,7 +242,7 @@ export const useOptionsStore = defineStore("options", {
             return this.navActiveIndex
         },
 
-        // 获取ip信息
+        // 获取 ip 信息
         getIpInfo(): IpInfoRes {
             return this.ipInfo
         },
@@ -262,7 +326,7 @@ export const useOptionsStore = defineStore("options", {
     },
 
     actions: {
-        // 获取网站配置, 参数为是否强制从服务器获取, 默认为false
+        // 获取网站配置, 参数为是否强制从服务器获取, 默认为 false
         async update(is_get_from_server: boolean = false): Promise<void> {
             if (is_get_from_server) {
                 await this.updateFromServer()
@@ -270,42 +334,49 @@ export const useOptionsStore = defineStore("options", {
             }
 
             // 从本地获取网站配置
-            const app_options = localStorage.getItem(LocalStorageKey.OptionsApp)
+            const app_options = safeLocalStorage.getItem(LocalStorageKey.OptionsApp)
             if (app_options) {
                 this.app_options = JSON.parse(app_options) as GetAPPOptionResponse
                 this.isLoadedOptions = true
-                this.is_remove_first_h1 = this.app_options.is_remove_first_h1.value === "true"
+                // bugfix(260827 app-nav 报错): 本地缓存可能为瘦身版/旧版, 部分键缺失时
+                // 无防护访问 .value 会抛 "Cannot read properties of undefined (reading 'value')"
+                this.is_remove_first_h1 = this.app_options.is_remove_first_h1?.value === "true"
                 this.post_list_summary_truncate = parseInt(this.app_options.post_list_summary_truncate?.value) || 100
                 this.custom_style_css = this.app_options.custom_style_css?.value || ""
-                this.footer_statistics_code = this.app_options.footer_statistics_code?.value || ""
+                // payload 瘦身(bugfix 260825-03): 新版 localStorage 的瘦身 app_options 不含
+                // footer_statistics_code(统计脚本走派生字段单独注水), 仅当旧版本全量缓存中存在
+                // 该键时才覆盖, 避免把 payload 水合得到的统计代码清空.
+                if (this.app_options.footer_statistics_code?.value !== undefined) {
+                    this.footer_statistics_code = this.app_options.footer_statistics_code.value
+                }
             }
 
             // 从本地获取头部信息
-            const head = localStorage.getItem(LocalStorageKey.OptionsHeadInfo)
+            const head = safeLocalStorage.getItem(LocalStorageKey.OptionsHeadInfo)
             if (head) {
                 this.head = JSON.parse(head) as HeadProps
             }
 
             // 从本地获取导航列表
-            const navList = localStorage.getItem(LocalStorageKey.OptionsNavList)
+            const navList = safeLocalStorage.getItem(LocalStorageKey.OptionsNavList)
             if (navList) {
                 this.navList = JSON.parse(navList) as NavItemProps[]
             }
 
             // 从本地获取导航对象
-            const navObj = localStorage.getItem(LocalStorageKey.OptionsNavObj)
+            const navObj = safeLocalStorage.getItem(LocalStorageKey.OptionsNavObj)
             if (navObj) {
                 this.navObj = JSON.parse(navObj) as Record<string, NavItemProps>
             }
 
             // 从本地获取底部信息
-            const footer = localStorage.getItem(LocalStorageKey.OptionsFooterInfo)
+            const footer = safeLocalStorage.getItem(LocalStorageKey.OptionsFooterInfo)
             if (footer) {
                 this.footer = JSON.parse(footer) as FooterInfo
             }
 
             // 从本地获取支付类型开启状态
-            const payTypeEnable = localStorage.getItem(LocalStorageKey.PayTypeEnable)
+            const payTypeEnable = safeLocalStorage.getItem(LocalStorageKey.PayTypeEnable)
             if (payTypeEnable) {
                 const enableObj = JSON.parse(payTypeEnable) as PayTypeEnable
                 this.wechatPayStatus = enableObj[PayType.WechatPay]
@@ -313,13 +384,13 @@ export const useOptionsStore = defineStore("options", {
             }
 
             // 从本地获取轮播图信息
-            const carousel = localStorage.getItem(LocalStorageKey.OptionsCarousel)
+            const carousel = safeLocalStorage.getItem(LocalStorageKey.OptionsCarousel)
             if (carousel) {
                 this.carousel = JSON.parse(carousel) as CarouselInfo
             }
 
             // 从本地获取滑动验证信息
-            const slideVerify = localStorage.getItem(LocalStorageKey.OptionsSlideVerify)
+            const slideVerify = safeLocalStorage.getItem(LocalStorageKey.OptionsSlideVerify)
             if (slideVerify) {
                 const slideVerifyInfo = JSON.parse(slideVerify) as SlideVerifyInfo
                 this.slide_verify_enable = slideVerifyInfo.enable
@@ -327,7 +398,7 @@ export const useOptionsStore = defineStore("options", {
             }
 
             // 从本地获取视频水印信息
-            const videoWatermark = localStorage.getItem(LocalStorageKey.OptionsVideoWatermark)
+            const videoWatermark = safeLocalStorage.getItem(LocalStorageKey.OptionsVideoWatermark)
             if (videoWatermark) {
                 this.video_watermark = JSON.parse(videoWatermark) as VideoWatermark
             }
@@ -337,26 +408,27 @@ export const useOptionsStore = defineStore("options", {
         async updateFromServer() {
             const res = await getAPPOptionAPI()
             if (res.data.code === ResponseCode.GetAPPOptionSuccess) {
-                this.app_options = res.data.data
-
-                // 存入本地
-                localStorage.setItem(LocalStorageKey.OptionsApp, JSON.stringify(this.app_options))
+                // 先保存全量原始配置用于格式化派生字段, 格式化完成后替换为白名单瘦身版(见下方)
+                const rawOptions = res.data.data
+                this.app_options = rawOptions
 
                 // head 格式化后存储本地
                 this.head = await formatHeadInfo(this.app_options)
 
                 // navList 格式化后存储本地
-                this.navList = await formatNavList(this.app_options.nav.value)
+                // bugfix(260827 app-nav 报错): 后端未配置 nav 键时无防护访问 .value 会抛
+                // "Cannot read properties of undefined (reading 'value')", 容错为空列表
+                this.navList = await formatNavList(this.app_options.nav?.value)
 
-                // navObg 格式化后存储本地
+                // navObj 格式化后存储本地
                 this.navObj = await formatNavObj(this.navList)
 
-                // footer格式化后存储本地
+                // footer 格式化后存储本地
                 this.footer = await formatFooterInfo(this.app_options)
 
                 this.isLoadedOptions = true
 
-                this.is_remove_first_h1 = this.app_options.is_remove_first_h1.value === "true"
+                this.is_remove_first_h1 = this.app_options.is_remove_first_h1?.value === "true"
 
                 // 自定义样式 CSS
                 this.custom_style_css = this.app_options.custom_style_css?.value || ""
@@ -376,6 +448,15 @@ export const useOptionsStore = defineStore("options", {
                 this.video_watermark = await formatVideoWatermark(this.app_options)
 
                 this.post_list_summary_truncate = parseInt(this.app_options.post_list_summary_truncate?.value) || 100
+
+                // payload 瘦身(bugfix 260825-03): 派生字段已全部格式化完成,
+                // 将 app_options 替换为白名单瘦身版. SSR 页面的 pinia payload 不再携带
+                // 后台专用配置键(约 70 个键的 {key,value,type} 冗余结构 + nav 原始 JSON 等),
+                // 每个 SSR 页注水体积显著下降. 后台配置表单已改为自取全量(见 app-option/index.vue).
+                this.app_options = pickPublicAppOptions(rawOptions)
+
+                // 存入本地(存白名单后的瘦身版, 与 update(false) 的本地回放读取保持一致)
+                safeLocalStorage.setItem(LocalStorageKey.OptionsApp, JSON.stringify(this.app_options))
             }
 
             // 更新支付配置状态
@@ -396,7 +477,7 @@ export const useOptionsStore = defineStore("options", {
             }
 
             // 存入本地
-            localStorage.setItem(
+            safeLocalStorage.setItem(
                 LocalStorageKey.PayTypeEnable,
                 JSON.stringify({ [PayType.WechatPay]: this.wechatPayStatus, [PayType.Alipay]: this.alipayStatus }),
             )
@@ -410,7 +491,7 @@ export const useOptionsStore = defineStore("options", {
             }
 
             // 从本地获取头部信息
-            const head = localStorage.getItem(LocalStorageKey.OptionsHeadInfo)
+            const head = safeLocalStorage.getItem(LocalStorageKey.OptionsHeadInfo)
             if (head) {
                 this.head = JSON.parse(head) as HeadProps
             }
@@ -434,10 +515,6 @@ export const useOptionsStore = defineStore("options", {
                 if (oldHref === neoHref) return
 
                 faviconLink.href = neoHref
-
-                // // 强制刷新
-                // const timestamp = new Date().getTime()
-                // faviconLink.href = `${neoHref}?v=${timestamp}`
             }
         },
 
@@ -446,7 +523,7 @@ export const useOptionsStore = defineStore("options", {
             this.navActiveIndex = index
         },
 
-        // 更新ip信息
+        // 更新 ip 信息
         async updateIpInfo(): Promise<void> {
             const res = await getIpInfoAPI()
             if (res.status === 200 && res.data.status === "success") {
@@ -517,7 +594,7 @@ export const formatFooterInfo = async (data: GetAPPOptionResponse): Promise<Foot
     }
 
     // 存入本地
-    localStorage.setItem(LocalStorageKey.OptionsFooterInfo, JSON.stringify({ left, middle, right }))
+    safeLocalStorage.setItem(LocalStorageKey.OptionsFooterInfo, JSON.stringify({ left, middle, right }))
 
     return {
         left,
@@ -535,13 +612,13 @@ const formatHeadInfo = async (data: GetAPPOptionResponse): Promise<HeadProps> =>
         type: "article",
         locale: "zh-CN",
         author: "jiaopengzi",
-        siteName: title,
+        siteName: data.custom_home_title?.value, // 站名仅主标题 (不带副标题), 供列表页 title 拼接使用
         url: "https://jiaopengzi.com",
         releaseDate: new Date().toISOString(),
     }
 
     // 存入本地
-    localStorage.setItem(LocalStorageKey.OptionsHeadInfo, JSON.stringify(headInfo))
+    safeLocalStorage.setItem(LocalStorageKey.OptionsHeadInfo, JSON.stringify(headInfo))
 
     return headInfo
 }
@@ -557,14 +634,14 @@ const formatNavList = async (navStr: string | undefined | null): Promise<NavItem
     // 将 navList 按照 index 升序排序
     // oxlint-disable-next-line unicorn/no-array-sort
     const navListOrder = navList.sort((a: NavItemProps, b: NavItemProps) => {
-        // 将 index 转换为字符数字
+        // 将 index 转换为数字
         const indexA = parseInt(a.index) || 0
         const indexB = parseInt(b.index) || 1
         return indexA - indexB
     })
 
     // 存入本地
-    localStorage.setItem(LocalStorageKey.OptionsNavList, JSON.stringify(navListOrder))
+    safeLocalStorage.setItem(LocalStorageKey.OptionsNavList, JSON.stringify(navListOrder))
 
     return navListOrder
 }
@@ -573,7 +650,7 @@ const formatNavList = async (navStr: string | undefined | null): Promise<NavItem
 const formatNavObj = async (navList: NavItemProps[]): Promise<Record<string, NavItemProps>> => {
     const navObj: Record<string, NavItemProps> = {}
     navList.forEach((nav) => {
-        // 筛选出未启用的导航
+        // 跳过未启用的导航
         if (!nav.is_enabled) {
             return
         }
@@ -587,7 +664,7 @@ const formatNavObj = async (navList: NavItemProps[]): Promise<Record<string, Nav
     })
 
     // 存入本地
-    localStorage.setItem(LocalStorageKey.OptionsNavObj, JSON.stringify(navObj))
+    safeLocalStorage.setItem(LocalStorageKey.OptionsNavObj, JSON.stringify(navObj))
 
     return navObj
 }
@@ -619,7 +696,7 @@ const formatCarouselInfo = async (data: GetAPPOptionResponse): Promise<CarouselI
     }
 
     // 存入本地
-    localStorage.setItem(LocalStorageKey.OptionsCarousel, JSON.stringify(carouselInfo))
+    safeLocalStorage.setItem(LocalStorageKey.OptionsCarousel, JSON.stringify(carouselInfo))
 
     return carouselInfo
 }
@@ -647,12 +724,12 @@ const formatSlideVerify = async (data: GetAPPOptionResponse): Promise<SlideVerif
     }
 
     // 存入本地
-    localStorage.setItem(LocalStorageKey.OptionsSlideVerify, JSON.stringify(slideVerifyInfo))
+    safeLocalStorage.setItem(LocalStorageKey.OptionsSlideVerify, JSON.stringify(slideVerifyInfo))
 
     return slideVerifyInfo
 }
 
-// 格式化滑动验证信息
+// 格式化视频水印信息
 const formatVideoWatermark = async (data: GetAPPOptionResponse): Promise<VideoWatermark> => {
     // 构造 VideoWatermark
     const videoWatermark: VideoWatermark = {
@@ -681,12 +758,12 @@ const formatVideoWatermark = async (data: GetAPPOptionResponse): Promise<VideoWa
     }
 
     // 存入本地
-    localStorage.setItem(LocalStorageKey.OptionsVideoWatermark, JSON.stringify(videoWatermark))
+    safeLocalStorage.setItem(LocalStorageKey.OptionsVideoWatermark, JSON.stringify(videoWatermark))
 
     return videoWatermark
 }
 
-// 允许开发环境下进行热更新 HMR(Hot Module Replacement)
+// 允许开发环境下进行热更新 HMR (Hot Module Replacement)
 if (import.meta.hot) {
     import.meta.hot.accept(acceptHMRUpdate(useOptionsStore, import.meta.hot))
 }

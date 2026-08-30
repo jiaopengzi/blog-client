@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\poster-share\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\poster-share\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -40,14 +40,11 @@
 
 <script lang="ts" setup>
 import { snapdom } from "@zumer/snapdom"
-// import html2canvas from "html2canvas"
 import { computed, type ComputedRef, nextTick } from "vue"
 
 import QrCode from "@/components/common/qr-code"
-// import { copyImg } from "@/utils/clipboard"
 import { waitForImagesLoaded } from "@/utils/img"
 
-// import { MessageUtil } from "@/utils/message"
 import { type PosterPropsOptions } from "./types"
 
 // 标题区域内容宽度: 容器 320px - 左右 padding 各 24px = 272px
@@ -56,9 +53,9 @@ import { type PosterPropsOptions } from "./types"
 const TITLE_MAX_VISUAL_WIDTH = 40
 
 /**
- * truncateByVisualWidth 按视觉宽度截断文本。
- * CJK/全角字符计为 1 个单位, ASCII/半角字符计为 0.5 个单位。
- * 超出 maxWidth 时在截断处追加 "..."。
+ * truncateByVisualWidth 按视觉宽度截断文本
+ * CJK/全角字符计为 1 个单位, ASCII/半角字符计为 0.5 个单位
+ * 超出 maxWidth 时在截断处追加 "..."
  */
 function truncateByVisualWidth(text: string, maxWidth: number): string {
     let width = 0
@@ -80,7 +77,7 @@ const { data } = defineProps<{
     data: PosterPropsOptions
 }>()
 
-// 事件
+// 事件声明
 const emit = defineEmits<{
     (event: "poster-complete"): void // 生成海报完成
 }>()
@@ -108,13 +105,13 @@ const dataAc: ComputedRef<PosterPropsOptions> = computed(() => {
     // 基于视觉宽度截断标题: snapdom 不支持 CSS line-clamp, 改用 JS 计算
     titleText = truncateByVisualWidth(titleText ?? "", TITLE_MAX_VISUAL_WIDTH)
 
-    // 合并默认配置和用户配置，并使用处理后的标题
+    // 合并默认配置和用户配置, 并使用处理后的标题
     return { ...defaultOptions, ...incoming, titleText }
 })
 
 /**
- * 构造二维码配置.
- * 仅在存在有效中心图标时传入 image, 避免二维码库在移动端因图标资源异常而不触发完成事件.
+ * 构造二维码配置
+ * 仅在存在有效中心图标时传入 image, 避免二维码库在移动端因图标资源异常而不触发完成事件
  */
 const qrCodeOptions = computed(() => {
     const options = {
@@ -146,24 +143,6 @@ const draw = async () => {
 
     await waitForImagesLoaded(el)
 
-    // // 使用 html2canvas 生成图片
-    // const canvas = await html2canvas(el, {
-    //     scale: 3,
-    //     logging: false,
-    //     useCORS: true, // 允许跨域图片
-    // })
-
-    // // 将图片转换为 Blob 对象并复制到剪贴板
-    // canvas.toBlob((blob) => {
-    //     if (blob) {
-    //         // 复制到剪贴板
-    //         copyImg(blob, "poster.png").then(() => {
-    //             emit("poster-complete")
-    //             MessageUtil.success("分享海报已复制到剪贴板")
-    //         })
-    //     }
-    // })
-
     // 使用 snapdom 生成图片 (替代 html2canvas)
     const result = await snapdom(el, {
         embedFonts: true,
@@ -176,7 +155,6 @@ const draw = async () => {
 
     // 下载完成回调
     emit("poster-complete")
-    // MessageUtil.success("分享海报已复制到剪贴板")
 }
 </script>
 

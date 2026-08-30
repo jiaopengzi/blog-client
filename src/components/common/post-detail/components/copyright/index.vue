@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\post-detail\components\copyright\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\post-detail\components\copyright\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -28,7 +28,6 @@ import type { CopyrightProps } from "./types"
 
 defineOptions({ name: "DetailCopyright" })
 
-// 定义 props
 const { data } = defineProps<{ data: CopyrightProps }>()
 
 const optionsStore = useOptionsStore()
@@ -61,7 +60,6 @@ const copyrightPost = computed(() => {
 
 <style lang="scss" scoped>
 .copyright {
-    // 网格布局
     display: grid;
     grid-template-columns: 40px 1fr; // 头像和文字的比例
     grid-template-rows: 1fr; // 头像和文字的高度相同

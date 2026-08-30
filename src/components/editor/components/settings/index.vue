@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\editor\components\settings\index.vue
+ * FilePath    : blog-client-nuxt\src\components\editor\components\settings\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -56,7 +56,7 @@ const emit = defineEmits<{
     (event: "vim-save", data: VimDefaults): void
 }>()
 
-// 弹窗标题映射，扩展时在此添加新条目
+// 弹窗标题映射, 扩展时在此添加新条目
 const dialogTitleMap: Partial<Record<CommandsKey, string>> = {
     [CommandsKey.PowerBi]: "PowerBi 默认设置",
     [CommandsKey.Vim]: "Vim 映射与输入法设置",
@@ -84,7 +84,7 @@ const vimInitialValues = computed(() => {
 
 const wechatCaptchaInitialValues = computed(() => (dialogVisible.value && props.command === CommandsKey.WechatCaptcha ? loadWechatCaptchaDefaults() : null))
 
-// 保存 PowerBi 设置，data 为 null 时清除 localStorage
+// 保存 PowerBi 设置, data 为 null 时清除 localStorage
 const handlePowerBiSave = (data: PowerBiDefaults | null) => {
     if (data) {
         savePowerBiDefaults(data)
@@ -95,9 +95,9 @@ const handlePowerBiSave = (data: PowerBiDefaults | null) => {
 }
 
 /**
- * handleVimSave 保存 Vim 设置, 并同步通知父组件刷新当前编辑器状态.
- * @param data - 最新 Vim 配置.
- * @returns 无返回值.
+ * handleVimSave 保存 Vim 设置, 并同步通知父组件刷新当前编辑器状态
+ * @param data - 最新 Vim 配置
+ * @returns 无返回值
  */
 const handleVimSave = (data: VimDefaults) => {
     saveVimDefaults(data)
@@ -105,7 +105,7 @@ const handleVimSave = (data: VimDefaults) => {
     handleClose()
 }
 
-// 保存 WechatCaptcha 设置，data 为 null 时清除 localStorage
+// 保存 WechatCaptcha 设置, data 为 null 时清除 localStorage
 const handleWechatCaptchaSave = (data: WechatCaptchaDefaults | null) => {
     if (data) {
         saveWechatCaptchaDefaults(data)

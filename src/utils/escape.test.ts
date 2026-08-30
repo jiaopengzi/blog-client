@@ -1,3 +1,11 @@
+/*
+ * FilePath    : blog-client-nuxt\src\utils\escape.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : escape 的单元测试
+ */
+
 import { describe, expect, it } from "vitest"
 
 import { escapeWhitespaceInHtmlContent } from "./escape"
@@ -39,7 +47,7 @@ describe("escapeWhitespaceInHtmlContent 的测试", () => {
 
     it("以正确顺序合并空格和制表符的转义", () => {
         const input = "<span> \t </span>"
-        // 空格先转为 &nbsp;，然后制表符转为 4 个 &nbsp;，所以总共 6 个 &nbsp;
+        // 空格先转为 &nbsp;, 然后制表符转为 4 个 &nbsp;, 所以总共 6 个 &nbsp;
         const out = escapeWhitespaceInHtmlContent(input, { escapeSpaces: true, escapeTabs: true })
         expect(out).toBe("<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>")
     })

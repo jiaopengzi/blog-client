@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\common\icons\types.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 类型定义
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\icons\types.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 类型定义
  */
 
 // 图标字典
@@ -11,7 +11,7 @@ export interface IconMap {
     [key: string]: string
 }
 
-// 图标 json 数据 格式
+// 图标 json 数据格式
 export interface IconJSON {
     id: string
     name: string
@@ -29,7 +29,7 @@ export interface IconJSON {
     ]
 }
 
-// 枚举值使用小横线命名法 例如: 'wechat-official-account'
+// 枚举值使用小横线命名法, 例如: 'wechat-official-account'
 export enum IconKeys {
     Announcement = "announcement",
     Archive = "archive",

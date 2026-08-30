@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\common\base-table\utils.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 工具
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\base-table\utils.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 工具
  */
 
 import { ImgFit } from "@/components/common"
@@ -23,7 +23,7 @@ type ColumnWidthStore = Record<string, Record<string, number>>
  * @param width 图片宽度
  * @param height 图片高度
  * @param imgFit 图片填充方式
- * @return  {T} 格式化后的用户信息
+ * @return {T} 格式化后的表格数据
  */
 export function formatTableData<T extends FormatTableData>(
     { thumbnail, created_at, updated_at, price, ...tableData }: T,
@@ -34,13 +34,12 @@ export function formatTableData<T extends FormatTableData>(
 ): T {
     const formatTableData = {
         ...tableData,
-        // 使用 formatTime 进行格式化
         created_at: created_at ? formatTime(created_at) : "-",
         updated_at: updated_at ? formatTime(updated_at) : "-",
-        price: price ? (parseFloat(price) / 100.0).toFixed(2) : "-", //分转成元
+        price: price ? (parseFloat(price) / 100.0).toFixed(2) : "-", // 分转成元
     } as T
 
-    // 如果 thumbnail 不为空，添加 img 属性
+    // 如果 thumbnail 不为空, 添加 img 属性
     if (thumbnail) {
         formatTableData.img = {
             url: thumbnail,
@@ -50,7 +49,7 @@ export function formatTableData<T extends FormatTableData>(
         }
     }
 
-    // 如果 thumbnail 为空，添加 icon 属性
+    // 如果 thumbnail 为空且文件为 zip 类型, 添加压缩包图标
     if (!thumbnail && tableData.file_type === "application/zip") {
         formatTableData.img = {
             url: "",
@@ -83,9 +82,10 @@ export function createListOrGridSwitchItems(showListOrGridStatus: boolean): Swit
         inactive: "宫格",
     }
 
+    // 跟随主题主色(260828): 不再写死 #409EFF, 状态区分由 inline-prompt 文案(表格/宫格)承担
     const switchItemColor: SwitchItemColor = {
-        active: "#409EFF",
-        inactive: "#409EFF",
+        active: "var(--jpz-color-primary)",
+        inactive: "var(--jpz-color-primary)",
     }
 
     return [

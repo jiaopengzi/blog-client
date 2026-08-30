@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\setting\getUpload.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 获取上传配置
+/*
+ * FilePath    : blog-client-nuxt\src\api\setting\getUpload.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 获取上传配置
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -25,7 +25,7 @@ export interface Local {
     path: string
 }
 
-// 阿里云OSS配置
+// 阿里云 OSS 配置
 export interface OSS {
     is_enabled: boolean
     is_url_belong: boolean
@@ -73,7 +73,6 @@ export interface GetUploadNoCloudResponse {
     ffmpeg: FFmpeg
 }
 
-// 获取上传配置
 export function getUploadAPI(): ResPromise<Res<GetUploadResponse>> {
     const urlStr = routerGroup + "/setting/get-upload"
     return request({

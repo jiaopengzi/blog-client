@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\hash.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 哈希计算器
+/*
+ * FilePath    : blog-client-nuxt\src\utils\hash.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 哈希计算器
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -17,16 +17,16 @@ export enum HashAlgorithm {
     SHA512 = "SHA-512",
 }
 
-//  哈希计算器类
+// 哈希计算器类
 export class HashCalculator {
     protected algorithm: HashAlgorithm // 存储哈希算法的名称
     protected hashFunction: any // hash函数
     protected chunkSize: number // 块大小
 
     constructor(algorithm: HashAlgorithm = HashAlgorithm.SHA256, chunkSize: number = 1024 * 1024) {
-        this.algorithm = algorithm // 保存哈希算法 默认哈希算法为SHA-256
-        this.chunkSize = chunkSize // 保存块大小 默认块大小为 1024 * 1024 字节即 1MB
-        this.hashFunction = this.createHashFunction() // 创建hash函数
+        this.algorithm = algorithm
+        this.chunkSize = chunkSize // 默认块大小为 1024 * 1024 字节即 1MB
+        this.hashFunction = this.createHashFunction()
     }
 
     // 创建一个hash函数 用于计算整个文件的hash
@@ -44,28 +44,28 @@ export class HashCalculator {
     }
 
     /**
-     * @description: 将data读取为ArrayBuffer
-     * @param {Blob | File} data Blob或File对象
+     * @description: 将 data 读取为 ArrayBuffer
+     * @param {Blob | File} data Blob 或 File 对象
      * @return  ArrayBuffer
      */
     protected readFileAsArrayBuffer = (data: Blob | File): Promise<ArrayBuffer> => {
         return new Promise((resolve, reject) => {
-            const reader = new FileReader() // 创建文件读取器
+            const reader = new FileReader()
             reader.addEventListener(
                 "load",
                 () => {
-                    resolve(reader.result as ArrayBuffer) // 读取成功，返回结果
+                    resolve(reader.result as ArrayBuffer) // 读取成功, 返回结果
                 },
                 { once: true },
             )
             reader.addEventListener(
                 "error",
                 () => {
-                    reject(reader.error ?? new Error("Failed to read file as ArrayBuffer")) // 读取失败，抛出错误
+                    reject(reader.error ?? new Error("Failed to read file as ArrayBuffer")) // 读取失败, 抛出错误
                 },
                 { once: true },
             )
-            reader.readAsArrayBuffer(data) // 读取data为ArrayBuffer
+            reader.readAsArrayBuffer(data)
         })
     }
 
@@ -74,22 +74,22 @@ export class HashCalculator {
      * @param blob 文件块 Blob
      */
     updateIncrementalHash = async (blob: Blob) => {
-        const arrayBuffer = await this.readFileAsArrayBuffer(blob) // 将文件块读取为ArrayBuffer
-        const wordArray = crypto.lib.WordArray.create(arrayBuffer) // 创建WordArray
-        this.hashFunction.update(wordArray) // 更新hash
+        const arrayBuffer = await this.readFileAsArrayBuffer(blob) // 将文件块读取为 ArrayBuffer
+        const wordArray = crypto.lib.WordArray.create(arrayBuffer)
+        this.hashFunction.update(wordArray)
     }
 
     // 获取整个文件的 hash 值
     getWholeFileHash = (): string => {
-        const hash = this.hashFunction.finalize().toString() // 保存计算结果
-        return hash // 保存计算结果
+        const hash = this.hashFunction.finalize().toString() // 计算结果
+        return hash
     }
     // 获取算法
     getAlgorithm = (): HashAlgorithm => {
         return this.algorithm
     }
 
-    // 获取hash函数
+    // 获取 hash 函数
     getHashFunction = (): any => {
         return this.hashFunction
     }
@@ -97,11 +97,11 @@ export class HashCalculator {
     /**
      * @description: 计算文件块的哈希值
      * @param data 文件块 Blob 或 File 对象
-     * @param algorithm 哈希算法，可以是 'SHA-256', 'SHA-384', 'SHA-512'，默认是 'SHA-256'
+     * @param algorithm 哈希算法, 可以是 'SHA-256', 'SHA-384', 'SHA-512', 默认是 'SHA-256'
      * @return 哈希值
      */
     calcHash = async (data: Blob | File): Promise<string> => {
-        const arrayBuffer = await this.readFileAsArrayBuffer(data) // 将文件块读取为ArrayBuffer
+        const arrayBuffer = await this.readFileAsArrayBuffer(data) // 将文件块读取为 ArrayBuffer
         const wordArray = crypto.lib.WordArray.create(arrayBuffer) // 创建WordArray
         let chunkHash
         switch (this.algorithm) {

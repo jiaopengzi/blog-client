@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\editor\components\toolbar\components\pay\index.vue
+ * FilePath    : blog-client-nuxt\src\components\editor\components\toolbar\components\pay\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -33,18 +33,16 @@
 
 <script lang="ts" setup>
 import type { IconKeys } from "@/components/common/icons"
-import { Names } from "@/customElements"
+import { Names } from "@/customElements/constants"
 
 import { type PayTagItem, payTags } from "./types"
 
 defineOptions({ name: "BarPay" })
 
-// 定义 props
 const { icon } = defineProps<{
-    icon: IconKeys // 预览内容
+    icon: IconKeys // 图标名称
 }>()
 
-// 子组件 传参
 const emit = defineEmits<{
     (e: "pay-select", val: PayTagItem): void
 }>()

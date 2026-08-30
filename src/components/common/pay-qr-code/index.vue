@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\pay-qr-code\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\pay-qr-code\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -112,7 +112,7 @@ const onIframeLoaded = () => {
     }
 }
 
-/* 参考：https://css-loaders.com/classic/ */
+/* 参考: https://css-loaders.com/classic/ */
 // HTML: <div class="loader"></div>
 .loader {
     margin: 40px auto;

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\order\couponApply.ts
+ * FilePath    : blog-client-nuxt\src\api\order\couponApply.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -12,13 +12,13 @@ import type { Res, ResPromise } from "@/api/response"
 
 // 优惠券应用请求参数
 export interface OrderCouponApplyRequest {
-    id: string // 订单ID
+    id: string // 订单 ID
     coupon_codes: string[] // 优惠券码列表
 }
 
-// OrderCouponApply 优惠券应用响应模型
+// 优惠券应用响应模型
 export interface OrderCouponApplyRes extends StreamsStatusRes {
-    order_id: string // 订单ID
+    order_id: string // 订单 ID
     coupon_codes: string[] // 优惠券码列表
     total_amount: number // 总金额(分)
     discount_amount: number // 优惠金额(分)

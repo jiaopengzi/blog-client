@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\editor\components\toolbar\components\tool\index.vue
+ * FilePath    : blog-client-nuxt\src\components\editor\components\toolbar\components\tool\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -60,9 +60,7 @@ const emit = defineEmits<{
     (e: "tool-settings", name: CommandsKey): void // 点击齿轮设置按钮
 }>()
 
-// 每列最多显示行数
 const maxRowsPerColumn = 8
-// 每列宽度
 const columnWidth = 150
 
 // 根据菜单项数量计算列数
@@ -75,7 +73,7 @@ const popoverWidth = computed(() => {
     return columnCount.value === 1 ? 200 : columnCount.value * columnWidth + 20
 })
 
-// grid 布局样式：按列优先排列
+// grid 布局样式: 按列优先排列
 const gridStyle = computed(() => {
     return {
         gridTemplateColumns: `repeat(${columnCount.value}, minmax(0, 1fr))`,

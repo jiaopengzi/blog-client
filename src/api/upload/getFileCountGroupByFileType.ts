@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\upload\getFileCountGroupByFileType.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 文件统计
+/*
+ * FilePath    : blog-client-nuxt\src\api\upload\getFileCountGroupByFileType.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 文件统计
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -16,7 +16,7 @@ export interface FileCountGroupByFileType {
     file_count: number // 文件数量
 }
 
-// 获取文件信息
+// 获取按类型分组的文件统计
 export function getFileCountGroupByFileTypeAPI(): ResPromise<Res<FileCountGroupByFileType[]>> {
     const urlStr = routerGroup + "/upload/count-group-by-type"
     return request({

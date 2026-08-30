@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\router\types.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 路由名称
+/*
+ * FilePath    : blog-client-nuxt\src\router\types.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 路由名称
  */
 
 // public 路由名称
@@ -26,17 +26,12 @@ export enum RouteNamesDefault {
     Unsubscribe = "unsubscribe",
     Page = "page",
     Md = "md",
-    // PostPublic = "post-public",
-    // VideoPublic = "video-public",
-    // Doc = "doc",
-    // Tool = "tool",
-    // Vip = "vip",
     Admin = "admin",
     NoPermission = "no-permission",
     UserPublicProfile = "user-public-profile",
 }
 
-// public 路由名称
+// social 第三方登录/绑定回调路由名称
 export enum RouteNamesSocial {
     SocialQQLoginCallback = "social-qq-login-callback",
     SocialQQBindCallback = "social-qq-bind-callback",
@@ -54,23 +49,11 @@ export enum RouteNamesAdmin {
     PostCategory = "post-category",
     Media = "media",
     Links = "links",
-    // LinkAll = "link-all",
-    // LinkAdd = "link-add",
-    // LinkCategory = "link-category",
     PageAdmin = "page-admin",
     PageAll = "page-all",
     PageWrite = "page-write",
     Comment = "comment",
-    // Announcement = "announcement",
-    // AnnouncementAll = "announcement-all",
-    // AnnouncementPublish = "announcement-publish",
-    // AnnouncementCategory = "announcement-category",
-    // Video = "video",
-    // VideoAll = "video-all",
-    // VideoPublish = "video-publish",
-    // VideoCategory = "video-category",
     Shop = "shop",
-    // Product = "product",
     AccountKey = "account-key",
     AccountKeyAll = "account-key-all",
     AccountKeyItem = "account-key-item",
@@ -81,9 +64,6 @@ export enum RouteNamesAdmin {
     Coupon = "coupon",
     PayConfig = "pay-config",
     BillingCenter = "billing-center",
-    // ShortLink = "short-link",
-    // ShortLinkAll = "short-link-all",
-    // ShortLinkAdd = "short-link-add",
     User = "user",
     UserView = "user-view",
     LoginLog = "login-log",
@@ -96,7 +76,6 @@ export enum RouteNamesAdmin {
     SettingSocial = "social",
     SettingUpload = "upload",
     Notification = "notification",
-    // Backup = "backup",
 }
 
 // 枚举转换为对象

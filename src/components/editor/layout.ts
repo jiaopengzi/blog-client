@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\editor\layout.ts
+ * FilePath    : blog-client-nuxt\src\components\editor\layout.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -44,18 +44,18 @@ const DEFAULT_MIN_PANE_WIDTHS: Record<EditorPaneName, number> = {
 }
 
 /**
- * 判断值是否为有效的正数比例。
- * @param value - 待判断的值。
- * @returns 仅在 value 为大于 0 的有限数字时返回 true。
+ * 判断值是否为有效的正数比例
+ * @param value - 待判断的值
+ * @returns 仅在 value 为大于 0 的有限数字时返回 true
  */
 const isPositiveFiniteNumber = (value: unknown): value is number => {
     return typeof value === "number" && Number.isFinite(value) && value > 0
 }
 
 /**
- * 过滤并规范化布局比例。
- * @param ratios - 外部传入的布局比例对象。
- * @returns 仅保留有效正数, 其余字段回退到默认比例。
+ * 过滤并规范化布局比例
+ * @param ratios - 外部传入的布局比例对象
+ * @returns 仅保留有效正数, 其余字段回退到默认比例
  */
 export function normalizeEditorPaneRatios(ratios?: Partial<EditorPaneRatios> | null): EditorPaneRatios {
     const normalized: EditorPaneRatios = { ...DEFAULT_EDITOR_PANE_RATIOS }
@@ -74,25 +74,25 @@ export function normalizeEditorPaneRatios(ratios?: Partial<EditorPaneRatios> | n
 }
 
 /**
- * 将编辑器三栏比例保存到 localStorage。
- * @param ratios - 当前布局比例。
- * @returns 无返回值。
+ * 将编辑器三栏比例保存到 localStorage
+ * @param ratios - 当前布局比例
+ * @returns 无返回值
  */
 export function saveEditorPaneRatios(ratios: EditorPaneRatios): void {
     localStorage.setItem(LocalStorageKey.EditorPaneRatios, JSON.stringify(normalizeEditorPaneRatios(ratios)))
 }
 
 /**
- * 清除 localStorage 中保存的编辑器三栏比例。
- * @returns 无返回值。
+ * 清除 localStorage 中保存的编辑器三栏比例
+ * @returns 无返回值
  */
 export function clearEditorPaneRatios(): void {
     localStorage.removeItem(LocalStorageKey.EditorPaneRatios)
 }
 
 /**
- * 从 localStorage 读取编辑器三栏比例。
- * @returns 读取成功时返回比例对象, 否则返回 null。
+ * 从 localStorage 读取编辑器三栏比例
+ * @returns 读取成功时返回比例对象, 否则返回 null
  */
 export function loadEditorPaneRatios(): EditorPaneRatios | null {
     const raw = localStorage.getItem(LocalStorageKey.EditorPaneRatios)
@@ -108,9 +108,9 @@ export function loadEditorPaneRatios(): EditorPaneRatios | null {
 }
 
 /**
- * 判断当前三栏比例是否已回到默认值。
- * @param ratios - 待比较的布局比例。
- * @returns 与默认比例一致时返回 true, 否则返回 false。
+ * 判断当前三栏比例是否已回到默认值
+ * @param ratios - 待比较的布局比例
+ * @returns 与默认比例一致时返回 true, 否则返回 false
  */
 export function isDefaultEditorPaneRatios(ratios: EditorPaneRatios): boolean {
     const normalized = normalizeEditorPaneRatios(ratios)
@@ -122,11 +122,11 @@ export function isDefaultEditorPaneRatios(ratios: EditorPaneRatios): boolean {
 }
 
 /**
- * 根据当前可见栏位生成 grid 模板字符串。
- * @param visiblePanes - 当前可见的栏位顺序。
- * @param ratios - 三栏布局比例。
- * @param handleWidthPx - 拖拽分隔条宽度。
- * @returns CSS grid-template-columns 字符串。
+ * 根据当前可见栏位生成 grid 模板字符串
+ * @param visiblePanes - 当前可见的栏位顺序
+ * @param ratios - 三栏布局比例
+ * @param handleWidthPx - 拖拽分隔条宽度
+ * @returns CSS grid-template-columns 字符串
  */
 export function buildEditorGridTemplate(
     visiblePanes: EditorPaneName[],
@@ -151,9 +151,9 @@ export function buildEditorGridTemplate(
 }
 
 /**
- * 根据拖拽位移重新计算左右两栏的比例。
- * @param options - 拖拽计算所需的容器宽度、位移与栏位信息。
- * @returns 更新后的三栏比例对象。
+ * 根据拖拽位移重新计算左右两栏的比例
+ * @param options - 拖拽计算所需的容器宽度, 位移与栏位信息
+ * @returns 更新后的三栏比例对象
  */
 export function resizeEditorPaneRatios(options: ResizeEditorPaneRatiosOptions): EditorPaneRatios {
     const { ratios, visiblePanes, leftPane, rightPane, containerWidth, deltaPx, handleWidthPx = DEFAULT_EDITOR_PANE_HANDLE_WIDTH, minPaneWidths } = options

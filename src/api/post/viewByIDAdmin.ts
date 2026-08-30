@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\post\viewByIDAdmin.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 查看文章
+/*
+ * FilePath    : blog-client-nuxt\src\api\post\viewByIDAdmin.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 查看文章
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -12,7 +12,7 @@ import type { Res, ResPromise } from "@/api/response"
 import { type PostResByAdmin } from "./common"
 
 export interface ViewPostByIDRequest {
-    post_id: string // 文章ID
+    post_id: string // 文章 ID
 }
 
 // 查看文章

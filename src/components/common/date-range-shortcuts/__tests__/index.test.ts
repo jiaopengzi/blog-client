@@ -1,6 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\common\date-range-shortcuts\__tests__\index.test.ts
- * @Description  : DateRangeShortcuts 组件测试
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\date-range-shortcuts\__tests__\index.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : DateRangeShortcuts 组件测试
  */
 
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest"

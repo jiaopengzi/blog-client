@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\billingCenter\recharge.ts
+ * FilePath    : blog-client-nuxt\src\api\billingCenter\recharge.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\pkg\hls\index.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : hls 自定义 loader
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\hls\index.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : hls 自定义 loader
  */
 
 import type { KeyLoaderContext } from "custom-hls"
@@ -26,16 +26,16 @@ enum CustomLoaderError {
 const loaderClassCache = new Map<string, new (config: HlsConfig) => Loader<LoaderContext>>()
 
 /**
- * 创建一个自定义的 HLS Loader 类。
+ * 创建一个自定义的 HLS Loader 类
  *
- * 根据传入的 isAdmin 标志，生成一个继承自 Hls.DefaultConfig.loader 的自定义 Loader 类。
- * 该类会拦截 manifest(level)/level/key 类型的请求，分别使用自定义的 API 接口进行处理(管理员模式和普通模式使用不同的后端接口)，
- * 对非加密或非上述类型的请求则使用父类的 load 实现。
+ * 根据传入的 isAdmin 标志, 生成一个继承自 Hls.DefaultConfig.loader 的自定义 Loader 类
+ * 该类会拦截 manifest(level)/level/key 类型的请求, 分别使用自定义的 API 接口进行处理(管理员模式和普通模式使用不同的后端接口),
+ * 对非加密或非上述类型的请求则使用父类的 load 实现
  *
- * @param isAdmin - 是否以管理员模式创建 Loader。
- *                   若为 true，则在请求主 m3u8、子 m3u8 与解密密钥时使用管理员接口(getMainM3u8AdminAPI、getM3u8AdminAPI、getKeyAdminAPI)。
- *                   否则使用普通用户接口(getMainM3u8API、getM3u8API、getKeyAPI)。
- * @returns 返回一个自定义 Loader 的类构造器 (new (config: HlsConfig) => Loader<LoaderContext>)，可直接用于 Hls 配置中的 loader 字段。
+ * @param isAdmin - 是否以管理员模式创建 Loader
+ *                  若为 true, 则在请求主 m3u8、子 m3u8 与解密密钥时使用管理员接口(getMainM3u8AdminAPI、getM3u8AdminAPI、getKeyAdminAPI)
+ *                  否则使用普通用户接口(getMainM3u8API、getM3u8API、getKeyAPI)
+ * @returns 返回一个自定义 Loader 的类构造器 (new (config: HlsConfig) => Loader<LoaderContext>), 可直接用于 Hls 配置中的 loader 字段
  *
  * @example
  * const CustomLoader = createCustomLoaderClass(true);
@@ -50,18 +50,18 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
     }
 
     /**
-     * 自定义 Loader 类：扩展并覆盖默认的 HLS Loader 行为以支持通过后端接口获取 m3u8 与解密密钥。
+     * 自定义 Loader 类: 扩展并覆盖默认的 HLS Loader 行为以支持通过后端接口获取 m3u8 与解密密钥
      *
-     * 主要职责：
-     * - 根据 Context 的类型(manifest / level / key)调用对应的后端接口获取数据；
-     * - 将后端响应转换为 HLS 所需的格式并通过 callbacks 通知 HLS(onSuccess / onError)；
-     * - 对 key 请求，调用解密函数将后端返回的加密密钥转换为 Uint8Array，并将解密结果写回 context.keyInfo.decryptdata.key；
-     * - 维护并传递 loader 统计信息(LoaderStats)，记录请求开始、首次响应与结束时间等。
+     * 主要职责:
+     * - 根据 Context 的类型(manifest / level / key)调用对应的后端接口获取数据;
+     * - 将后端响应转换为 HLS 所需的格式并通过 callbacks 通知 HLS(onSuccess / onError);
+     * - 对 key 请求, 调用解密函数将后端返回的加密密钥转换为 Uint8Array, 并将解密结果写回 context.keyInfo.decryptdata.key;
+     * - 维护并传递 loader 统计信息(LoaderStats), 记录请求开始、首次响应与结束时间等
      *
-     * 特性与注意事项：
-     * - 使用闭包中的 isAdmin 标志决定调用管理员端点还是普通端点；
-     * - 对于未加密的视频或不需要特殊处理的请求，会调用 super.load 来保持默认行为；
-     * - 在处理 m3u8 的时候，会将后端返回的占位符 _url_ 替换为真实 base_url(并保证以 '/' 结尾)，以便 HLS 正确解析片段 URL。
+     * 特性与注意事项:
+     * - 使用闭包中的 isAdmin 标志决定调用管理员端点还是普通端点;
+     * - 对于未加密的视频或不需要特殊处理的请求, 会调用 super.load 来保持默认行为;
+     * - 在处理 m3u8 的时候, 会将后端返回的占位符 _url_ 替换为真实 base_url(并保证以 '/' 结尾), 以便 HLS 正确解析片段 URL
      */
     const CustomLoader = class CustomLoader extends Hls.DefaultConfig.loader {
         // 用于区分是否是管理员模式
@@ -77,20 +77,23 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
         }
 
         /**
-         * 重写 load 方法，按 context.type 或 context.keyInfo 类型分流：
-         *   - manifest: 调用 handleMainM3u8，使用后端接口获取主 m3u8(索引或变体列表)；
-         *   - level: 调用 handleLevelM3u8，获取实际播放的子 m3u8 并替换内部占位符为 base_url；
-         *   - key (通过 context.keyInfo 判断): 调用 handleKey，从后端获取并解密播放密钥，然后把解密后的二进制设置回 context；
-         *   - 其它场景: 回退到 super.load。
-         * - 在每次加载前会初始化 LoaderStats(通过 initLoaderStats)。
+         * 重写 load 方法, 按 context.type 或 context.keyInfo 类型分流:
+         *   - manifest: 调用 handleMainM3u8, 使用后端接口获取主 m3u8(索引或变体列表);
+         *   - level: 调用 handleLevelM3u8, 获取实际播放的子 m3u8 并替换内部占位符为 base_url;
+         *   - key (通过 context.keyInfo 判断): 调用 handleKey, 从后端获取并解密播放密钥, 然后把解密后的二进制设置回 context;
+         *   - 其它场景: 回退到 super.load
+         * - 在每次加载前会初始化 LoaderStats(通过 initLoaderStats)
          *
-         * @param context - LoaderContext，包含请求的 URL、类型等信息。
-         * @param config - LoaderConfiguration，加载配置参数。
-         * @param callbacks - LoaderCallbacks，包含 onSuccess、onError 等回调函数。
+         * @param context - LoaderContext, 包含请求的 URL、类型等信息
+         * @param config - LoaderConfiguration, 加载配置参数
+         * @param callbacks - LoaderCallbacks, 包含 onSuccess、onError 等回调函数
          * @returns void
          */
-        async load(context: KeyLoaderContext | PlaylistLoaderContext, config: LoaderConfiguration, callbacks: LoaderCallbacks<LoaderContext>): Promise<void> {
-            // 初始化 loaderStats
+        override async load(
+            context: KeyLoaderContext | PlaylistLoaderContext,
+            config: LoaderConfiguration,
+            callbacks: LoaderCallbacks<LoaderContext>,
+        ): Promise<void> {
             const loaderStats: LoaderStats = this.initLoaderStats()
 
             // 主 m3u8
@@ -107,7 +110,7 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
             else if ("keyInfo" in context && context.keyInfo) {
                 await this.handleKey(context, config, callbacks, loaderStats)
             } else {
-                // 对于未加密的视频，直接调用父类的 load 方法
+                // 对于未加密的视频, 直接调用父类的 load 方法
                 super.load(context, config, callbacks)
             }
         }
@@ -116,7 +119,6 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
          * 初始化 LoaderStats 对象
          */
         private initLoaderStats(): LoaderStats {
-            // 初始化 loaderStats
             const loaderStats: LoaderStats = {
                 aborted: false,
                 loaded: 0,
@@ -221,9 +223,9 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
             callbacks: LoaderCallbacks<LoaderContext>,
             stats: LoaderStats,
         ): Promise<void> {
-            // context.keyInfo.decryptdata.uri 在后端使用的是相对路径，hls在这里会自动拼接成绝url路径
+            // context.keyInfo.decryptdata.uri 在后端使用的是相对路径, hls 在这里会自动拼接成绝对 url 路径
             // 例如:http://10.10.2.222:5426/api/v1/uploads/2024/10/17/2-7f9d0d9c/2-7f9d0d9c
-            // 但是这个路径在后端是无法访问的，所以需要将这个路径截取出来，拿到 path 中最后一个 / 后面的字符串就是 videoId
+            // 但是这个路径在后端是无法访问的, 所以需要将这个路径截取出来, 拿到 path 中最后一个 / 后面的字符串就是 videoId
             const videoId = context.keyInfo.decryptdata.uri.substring(context.keyInfo.decryptdata.uri.lastIndexOf("/") + 1)
 
             // 获取解密密钥
@@ -269,11 +271,9 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
 }
 
 /**
- * @description: 播放密钥解密函数
+ * 播放密钥解密函数
  * @param playKeyEncrypt 加密的播放密钥
  * @return  返回 Uint8Array 的二进制播放密钥
-    const playKeyEncrypt = "51e8bdb7f5bed6d7c8149e0c0767ecefeFJcNUsjmwT2ZQKjS+e5pV/oz0OGyxB9HKX0LsB7/LL1mB9BFXoCV4sRcHVXD8sr56fbdd4fd665d8fa"
-    const expectedOutput = new Uint8Array([63, 219, 19, 240, 217, 90, 85, 53, 28, 66, 214, 119, 240, 84, 89, 53])
  */
 export function playKeyDecryptAES2Bin(playKeyEncrypt: string): Uint8Array<ArrayBuffer> {
     // 获取 playKeyEncrypt 字符长度
@@ -282,7 +282,7 @@ export function playKeyDecryptAES2Bin(playKeyEncrypt: string): Uint8Array<ArrayB
     // 获取 playKeyKey 从 playKeyEncrypt 中从左至右截取 32 长度的字符串并逆序排列
     const playKeyKey = reverseString(playKeyEncrypt.substring(0, 32))
 
-    // 获取 iv 从 playKeyEncrypt 中从右至左截取 16 长度的字符串,并逆序排列
+    // 获取 iv 从 playKeyEncrypt 中从右至左截取 16 长度的字符串, 并逆序排列
     const iv = reverseString(playKeyEncrypt.substring(playKeyEncryptLen - 16, playKeyEncryptLen))
 
     // 获取 encryptedPlayKeyBase64 从 playKeyEncrypt 中从 32 开始到 playKeyEncryptLen - 16 的字符串
@@ -292,7 +292,7 @@ export function playKeyDecryptAES2Bin(playKeyEncrypt: string): Uint8Array<ArrayB
     const encryptPlayKey = decryptData(encryptedPlayKeyBase64, playKeyKey, iv)
 
     const playKeyDecryptBin = new Uint8Array(
-        encryptPlayKey.match(/[\da-f]{2}/gi)!.map(function (h) {
+        encryptPlayKey.match(/[\da-f]{2}/gi)!.map(function (h: string) {
             return parseInt(h, 16)
         }),
     )
@@ -300,9 +300,9 @@ export function playKeyDecryptAES2Bin(playKeyEncrypt: string): Uint8Array<ArrayB
 }
 
 /**
- * @description: 将 url 转换为 fileIdHash/resolution/分辨率格式
- * @param url 原始 url，格式为 fileIdHash/分辨率，例如 m-5-8e72860c/1080p
- * @return 转换后的字符串，格式为 fileIdHash/resolution/分辨率，例如 m-5-8e72860c/resolution/1080p
+ * 将 url 转换为 fileIdHash/resolution/分辨率格式
+ * @param url 原始 url, 格式为 fileIdHash/分辨率, 例如 m-5-8e72860c/1080p
+ * @return 转换后的字符串, 格式为 fileIdHash/resolution/分辨率, 例如 m-5-8e72860c/resolution/1080p
  */
 const convertResolutionParam = (url: string) => {
     const parts = url.split("/")

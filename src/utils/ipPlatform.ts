@@ -1,16 +1,17 @@
-/**
- * @FilePath     : \blog-client\src\utils\ipPlatform.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 获取公网IP地址
+/*
+ * FilePath    : blog-client-nuxt\src\utils\ipPlatform.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 获取公网IP地址
  */
 
 import { request } from "@/api/request"
 
 export async function getPublicIp(): Promise<string> {
     try {
-        const response = await request.get("https://api.ipify.org?format=json")
+        // 阶段 1 适配: request 为配置对象风格(axios 风格 request.get 不再支持)
+        const response = await request<{ ip: string }>({ url: "https://api.ipify.org?format=json", method: "get" })
         return response.data.ip
     } catch (error) {
         console.error("获取公网IP地址失败:", error)
@@ -37,7 +38,7 @@ export function parsePlatform(userAgent: string) {
     return platform
 }
 
-// isMobile
+// 判断是否为移动端
 export function isMobile(userAgent: string) {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
 }

@@ -1,9 +1,9 @@
-/**
- * FilePath    : blog-client\src\components\editor\utils\css-shorthand.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\editor\utils\css-shorthand.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : CSS 简写属性展开工具模块, 提供简写→长写映射、属性查询与值归一化。新增简写类型只需在 SHORTHAND_REGISTRY 中添加条目。
+ * Description : CSS 简写属性展开工具, 提供简写到长写映射与值归一化
  */
 
 /** 简写属性注册条目 */
@@ -13,10 +13,10 @@ interface ShorthandEntry {
 }
 
 /**
- * CSS 简写属性注册表。
+ * CSS 简写属性注册表
  * 复制链路中 getComputedStyle 对简写属性返回不稳定(常为空), 需将简写展开为长写,
- * 循环结束后统一从 computedStyle 读取长写值下发, 避免简写之间的级联覆盖问题。
- * 新增简写类型只需在此添加条目, 无需修改其他模块。
+ * 循环结束后统一从 computedStyle 读取长写值下发, 避免简写之间的级联覆盖问题
+ * 新增简写类型只需在此添加条目, 无需修改其他模块
  */
 const SHORTHAND_REGISTRY: Readonly<Record<string, ShorthandEntry>> = {
     // === border 系列 ===
@@ -74,29 +74,29 @@ const SHORTHAND_REGISTRY: Readonly<Record<string, ShorthandEntry>> = {
 }
 
 /**
- * isShorthand 判断属性是否为已注册的 CSS 简写属性。
- * @param property CSS 属性名。
- * @returns 若为已注册简写则返回 true。
+ * isShorthand 判断属性是否为已注册的 CSS 简写属性
+ * @param property CSS 属性名
+ * @returns 若为已注册简写则返回 true
  */
 export function isShorthand(property: string): boolean {
     return property in SHORTHAND_REGISTRY
 }
 
 /**
- * getLonghands 获取简写属性对应的长写属性列表。
- * @param property CSS 简写属性名。
- * @returns 对应的长写属性名数组, 未注册时返回空数组。
+ * getLonghands 获取简写属性对应的长写属性列表
+ * @param property CSS 简写属性名
+ * @returns 对应的长写属性名数组, 未注册时返回空数组
  */
 export function getLonghands(property: string): readonly string[] {
     return SHORTHAND_REGISTRY[property]?.longhands ?? []
 }
 
 /**
- * normalizeValue 归一化 CSS 属性值, 消除浏览器缩放等产生的偏差。
- * 当前仅处理 border-*-width 的分数像素问题, 后续可扩展其他属性的归一化逻辑。
- * @param property CSS 属性名。
- * @param value CSS 属性值。
- * @returns 归一化后的值, 无需处理时返回原值。
+ * normalizeValue 归一化 CSS 属性值, 消除浏览器缩放等产生的偏差
+ * 当前仅处理 border-*-width 的分数像素问题, 后续可扩展其他属性的归一化逻辑
+ * @param property CSS 属性名
+ * @param value CSS 属性值
+ * @returns 归一化后的值, 无需处理时返回原值
  */
 export function normalizeValue(property: string, value: string): string {
     if (/^border-(top|right|bottom|left)-width$/.test(property)) {
@@ -111,7 +111,7 @@ export function normalizeValue(property: string, value: string): string {
 }
 
 /**
- * BORDER_SIDE_SHORTHAND border 侧边简写到方向名的映射, 用于 applyBorderLonghandsFromComputedStyle。
+ * BORDER_SIDE_SHORTHAND border 侧边简写到方向名的映射, 用于 applyBorderLonghandsFromComputedStyle
  */
 export const BORDER_SIDE_SHORTHAND: Readonly<Record<string, "top" | "right" | "bottom" | "left">> = {
     "border-top": "top",

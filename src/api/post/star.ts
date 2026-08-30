@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\post\star.ts
+ * FilePath    : blog-client-nuxt\src\api\post\star.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -11,7 +11,7 @@ import type { Res, ResPromise } from "@/api/response"
 
 // 星标、收藏请求
 export interface PostStarRequest {
-    post_id: string // 文章ID
+    post_id: string // 文章 ID
     star: boolean // 星标、收藏或取消星标、收藏
 }
 

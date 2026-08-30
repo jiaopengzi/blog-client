@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\roles-tag\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\roles-tag\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

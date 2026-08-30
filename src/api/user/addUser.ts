@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\user\addUser.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 添加用户
+/*
+ * FilePath    : blog-client-nuxt\src\api\user\addUser.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 添加用户
  */
 
 import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
@@ -18,7 +18,7 @@ export interface AddUserRequest {
     is_send_email: boolean // 是否发送邮件
 }
 
-// 注册
+// 添加用户
 export function AddUserAPI(requestData: AddUserRequest): ResPromise<Res<StreamsStatusRes>> {
     const urlStr = routerGroup + "/user/add"
     return request({

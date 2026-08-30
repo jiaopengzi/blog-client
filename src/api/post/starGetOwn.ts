@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\post\starGetOwn.ts
+ * FilePath    : blog-client-nuxt\src\api\post\starGetOwn.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -14,7 +14,7 @@ import { type PostStatusCode } from "./common"
 
 // 文章
 export interface PostStarRes extends DataWithImg {
-    id: string // 标签id
+    id: string // 文章 ID
     post_status: PostStatusCode // 文章状态
     post_title: string // 文章标题
     slug: string // 别名

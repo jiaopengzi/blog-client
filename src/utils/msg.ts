@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\msg.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 消息提示
+/*
+ * FilePath    : blog-client-nuxt\src\utils\msg.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 消息提示
  */
 
 import type { Res } from "@/api/response"
@@ -37,7 +37,7 @@ export function getUserForbiddenMsg(res: Res<AccessTokenResponse | number>) {
         }
     }
 
-    // 客户端IP请求频繁 和 客户端ID请求频繁
+    // 客户端 IP 请求频繁和客户端 ID 请求频繁
     if ((res.code === ResponseCode.ClientIPTooManyRequests || res.code === ResponseCode.ClientIDTooManyRequests) && res.data) {
         return handleResErr(res)
     }
@@ -47,7 +47,7 @@ export function getUserForbiddenMsg(res: Res<AccessTokenResponse | number>) {
 
 // 格式化禁用消息
 function isFormatMsg(disableExpiresAtNum: number, msg: string) {
-    // 小于等于7天的禁用时间，显示倒计时, 大于7天的禁用时间，显示禁用信息
+    // 小于等于 7 天的禁用时间, 显示倒计时; 大于 7 天的禁用时间, 显示禁用信息
     if (disableExpiresAtNum <= 60 * 60 * 24 * 7) {
         const countdown = formatDurationTime(disableExpiresAtNum)
         return { isFormat: true, msg: `${msg}, ${countdown} 后解禁!` } // 占位符替换

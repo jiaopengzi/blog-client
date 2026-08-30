@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useMedia\useData.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 数据处理
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useMedia\useData.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 数据处理
  */
 
 import { reactive, ref } from "vue"
@@ -20,8 +20,8 @@ import { formatterVideoIsEncrypt, formatterVideoIsFree, formatterVideoIsHLS, for
 import { queryKey } from "./types"
 
 /**
- * @description: 读取媒体列表默认展示模式.
- * @return true 表示默认使用列表模式, false 表示默认使用宫格模式.
+ * @description: 读取媒体列表默认展示模式
+ * @return true 表示默认使用列表模式, false 表示默认使用宫格模式
  */
 export function getInitialShowListOrGridStatus(): boolean {
     const storageValue = localStorage.getItem(LocalStorageKey.IsShowListOrGridAtMedia)
@@ -39,8 +39,8 @@ const MEDIA_GRID_CELL_SIZE_MIN = 140
 const MEDIA_GRID_CELL_SIZE_MAX = 420
 
 /**
- * @description: 读取宫格模式单元格最小宽度, 未存储或非法时返回默认值.
- * @return 单元格最小宽度 (px).
+ * @description: 读取宫格模式单元格最小宽度, 未存储或非法时返回默认值
+ * @return 单元格最小宽度 (px)
  */
 export function getInitialGridCellSize(): number {
     const storageValue = localStorage.getItem(LocalStorageKey.MediaGridCellSize)
@@ -169,10 +169,10 @@ export function useData() {
 
     // 编辑数据
     const editMediaData: EditMediaProps = reactive({
-        file_id: "", // 文件ID
+        file_id: "", // 文件 ID
         file_name: "", // 文件名
         file_type: "", // 文件类型
-        file_url: "", // 文件地址S
+        file_url: "", // 文件地址
         thumbnail: "", // 缩略图
         file_name_display: "", // 显示名称
         description: "", // 描述
@@ -180,7 +180,7 @@ export function useData() {
         is_free: false, // 是否免费
         subtitles_language_list: [], // 字幕
         editDialogVisible: false, // 编辑对话框是否显示
-        is_generate_hls: true, // 是否生成HLS
+        is_generate_hls: true, // 是否生成 HLS
     })
 
     const editWidth = ref("90%")

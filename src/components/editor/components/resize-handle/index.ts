@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\editor\components\resize-handle\index.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\editor\components\resize-handle\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\setting\getAPPOption.ts
+ * FilePath    : blog-client-nuxt\src\api\setting\getAPPOption.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -40,8 +40,8 @@ export const convert = (item: APPOptionItem): string | number | boolean | object
 
 export interface GetAPPOptionResponse {
     // logo 相关
-    logo: APPOptionItem // logo
-    favicon: APPOptionItem // favicon
+    logo: APPOptionItem
+    favicon: APPOptionItem
 
     // 滑动验证相关
     slide_verify_enable: APPOptionItem // 滑动验证开启
@@ -70,8 +70,8 @@ export interface GetAPPOptionResponse {
 
     // 视频水印
     video_watermark_logo_enable: APPOptionItem // 视频水印 logo 是否开启
-    video_watermark_logo_url: APPOptionItem // 视频水印 logo url
-    video_watermark_logo_style: APPOptionItem // 视频水印文字样式
+    video_watermark_logo_url: APPOptionItem
+    video_watermark_logo_style: APPOptionItem // 视频水印 logo 样式
     video_watermark_text_enable: APPOptionItem // 视频水印文字是否开启
     video_watermark_text_default: APPOptionItem // 视频水印文字默认内容
     video_watermark_text_style: APPOptionItem // 视频水印文字样式
@@ -83,10 +83,10 @@ export interface GetAPPOptionResponse {
     link_enable: APPOptionItem // 链接
 
     // seo 相关
-    seo_title: APPOptionItem // seo title
-    seo_keywords: APPOptionItem // seo KeyWords
-    seo_description: APPOptionItem // seo Description
-    custom_home_title: APPOptionItem // 自定义网站首页title
+    seo_title: APPOptionItem
+    seo_keywords: APPOptionItem
+    seo_description: APPOptionItem
+    custom_home_title: APPOptionItem // 自定义网站首页 title
     custom_home_subtitle: APPOptionItem // 自定义网站首页副标题
     separator: APPOptionItem // 分隔符
     sitemap: APPOptionItem // 站点地图
@@ -98,17 +98,17 @@ export interface GetAPPOptionResponse {
     footer_right_title: APPOptionItem // 底部右侧标题
     footer_right_content: APPOptionItem // 底部右侧内容
 
-    footer_qrcode1_enable: APPOptionItem // 底部二维码1是否开启
-    footer_qrcode1: APPOptionItem // 底部二维码1
-    footer_qrcode1_description: APPOptionItem // 底部二维码1显示描述
+    footer_qrcode1_enable: APPOptionItem // 底部二维码 1 是否开启
+    footer_qrcode1: APPOptionItem // 底部二维码 1
+    footer_qrcode1_description: APPOptionItem // 底部二维码 1 显示描述
 
-    footer_qrcode2_enable: APPOptionItem // 底部二维码2是否开启
-    footer_qrcode2: APPOptionItem // 底部二维码2
-    footer_qrcode2_description: APPOptionItem // 底部二维码2显示描述
+    footer_qrcode2_enable: APPOptionItem // 底部二维码 2 是否开启
+    footer_qrcode2: APPOptionItem // 底部二维码 2
+    footer_qrcode2_description: APPOptionItem // 底部二维码 2 显示描述
 
-    footer_qrcode3_enable: APPOptionItem // 底部二维码3是否开启
-    footer_qrcode3: APPOptionItem // 底部二维码3
-    footer_qrcode3_description: APPOptionItem // 底部二维码3显示描述
+    footer_qrcode3_enable: APPOptionItem // 底部二维码 3 是否开启
+    footer_qrcode3: APPOptionItem // 底部二维码 3
+    footer_qrcode3_description: APPOptionItem // 底部二维码 3 显示描述
 
     // 备案相关
     beian_mps_icon: APPOptionItem // 公网安备图标
@@ -119,7 +119,7 @@ export interface GetAPPOptionResponse {
     beian_miit_link: APPOptionItem // 工信部备案查询链接
 
     // 样式相关
-    custom_style_css: APPOptionItem // 定制风格颜色css
+    custom_style_css: APPOptionItem // 定制风格颜色 css
 
     // 样式相关
     nav: APPOptionItem // 导航栏
@@ -142,11 +142,10 @@ export interface GetAPPOptionResponse {
     subscribe_member_expired_to_user: APPOptionItem // 会员已到期通知用户
 
     // 支付相关
-    pay_wechat_config: APPOptionItem // 支付配置
+    pay_wechat_config: APPOptionItem // 微信支付配置
     pay_alipay_config: APPOptionItem // 支付宝支付配置
 }
 
-// 获取网站配置
 export function getAPPOptionAPI(): ResPromise<Res<GetAPPOptionResponse>> {
     const urlStr = routerGroup + "/setting/get-app-option"
     return request({

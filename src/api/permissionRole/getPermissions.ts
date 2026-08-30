@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\permissionRole\getPermissions.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 获取权限列表
+/*
+ * FilePath    : blog-client-nuxt\src\api\permissionRole\getPermissions.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 获取权限列表
  */
 
 import { request, routerGroup } from "@/api/request"

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\isVideo.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 判断是否为视频
+/*
+ * FilePath    : blog-client-nuxt\src\utils\isVideo.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 判断是否为视频
  */
 
 /**

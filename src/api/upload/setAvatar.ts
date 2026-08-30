@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\upload\setAvatar.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 上传头像
+/*
+ * FilePath    : blog-client-nuxt\src\api\upload\setAvatar.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 上传头像
  */
 
 import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
@@ -11,8 +11,8 @@ import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
 export interface SetAvatarRequest {
-    user_id: string // 用户ID
-    avatar_url: string // 头像URL
+    user_id: string // 用户 ID
+    avatar_url: string // 头像 URL
 }
 
 export function setAvatarAPI(req: SetAvatarRequest): ResPromise<Res<StreamsStatusRes>> {

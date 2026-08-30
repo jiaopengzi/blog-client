@@ -1,59 +1,33 @@
-/**
- * @FilePath     : \blog-client\src\components\player\command\constant.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 播放器命令常量
+/*
+ * FilePath    : blog-client-nuxt\src\components\player\command\constant.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 播放器命令常量
  */
 
 import { IconKeys } from "@/components/common/icons"
 import { PlayerStateManager } from "@/components/player"
 
 export enum PlayerCommandsKey {
-    // 播放暂停
     PalyPause = "palyPause",
-    // 全屏
     Fullscreen = "fullscreen",
-    // 网页全屏
     WebFullscreen = "webFullscreen",
-    // 画中画
     PictureInPicture = "pictureInPicture",
-    // 静音
     Mute = "mute",
-    // 音量增加
     VolumeUp = "volumeUp",
-    // 音量减小
     VolumeDown = "volumeDown",
-    // 快进
     FastForward = "fastForward",
-    // 快退
     Rewind = "rewind",
-    // 退出全屏
     ExitFullscreen = "exitFullscreen",
-
-    // // 上一个
-    // Previous = 'previous',
-    // // 下一个
-    // Next = 'next',
-    // // 循环播放
-    // RepeatOne = 'repeatOne',
-    // // 随机播放
-    // Shuffle = 'shuffle',
-    // // 列表循环
-    // Repeat = 'repeat',
-    // // 播放速度
-    // PlaybackRate = 'playbackRate',
-    // // 展示列表
-    // ShowList = 'showList',
 }
 
-// 播放器命令类型
 export interface PlayerCommandItemType {
-    tip?: string // 前端提示
-    hotKey?: string // 快捷键
-    action?: () => void // 执行函数
-    longPressAction?: () => void // 长按执行函数
-    icon?: IconKeys // 图标名称
+    tip?: string
+    hotKey?: string
+    action?: () => void
+    longPressAction?: () => void
+    icon?: IconKeys
 }
 
 // 使用映射类型定义 PlayerCommandsType
@@ -136,33 +110,5 @@ export function createPlayerCommands(playerStateManager: PlayerStateManager): Pl
             hotKey: "Escape",
             action: () => playerStateManager.exitFullScreen(),
         },
-        // [PlayerCommandsKey.Previous]: {
-        //   tip: '上一个',
-        //   hotKey: 'Ctrl+Shift+ArrowLeft',
-        // },
-        // [PlayerCommandsKey.Next]: {
-        //   tip: '下一个',
-        //   hotKey: 'Ctrl+Shift+ArrowRight',
-        // },
-        // [PlayerCommandsKey.RepeatOne]: {
-        //   tip: '循环播放',
-        //   hotKey: 'R',
-        // },
-        // [PlayerCommandsKey.Shuffle]: {
-        //   tip: '随机播放',
-        //   hotKey: 'S',
-        // },
-        // [PlayerCommandsKey.Repeat]: {
-        //   tip: '列表循环',
-        //   hotKey: 'L',
-        // },
-        // [PlayerCommandsKey.PlaybackRate]: {
-        //   tip: '播放速度',
-        //   hotKey: 'P',
-        // },
-        // [PlayerCommandsKey.ShowList]: {
-        //   tip: '展示列表',
-        //   hotKey: 'L',
-        // },
     }
 }

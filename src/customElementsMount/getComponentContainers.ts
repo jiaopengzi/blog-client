@@ -1,12 +1,12 @@
 /*
- * FilePath    : blog-client\src\customElementsMount\getComponentContainers.ts
+ * FilePath    : blog-client-nuxt\src\customElementsMount\getComponentContainers.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 获取自定义组件容器
  */
 
-import { Names } from "../customElements"
+import { Names } from "../customElements/constants"
 
 /**
  * @description: 获取自定义组件容器

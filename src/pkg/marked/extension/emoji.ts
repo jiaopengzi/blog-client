@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\pkg\marked\extension\emoji.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 扩展 marked 的解析器, 支持 emoji 标记
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\marked\extension\emoji.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 扩展 marked 的解析器, 支持 emoji 标记
  */
 
 import emojiJson from "emoji.json"

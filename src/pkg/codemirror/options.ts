@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\pkg\codemirror\options.ts
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\options.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -24,10 +24,10 @@ export type ImageUploadResult = {
 
 export type ImageUploadHandler = ((file: File, context: ImageUploadContext) => Promise<ImageUploadResult | string | undefined>) | null
 
-// createDefaultSetup 定义options 类型
+// createDefaultSetup 定义 options 类型
 export type DefaultSetupOptions = {
     vimMode?: boolean // 是否开启 vim 模式
-    theme?: Extension // 主题名称
+    theme?: Extension // 主题扩展
     mention?: Completion[] // @提及补全
     placeholderText?: string // 占位符文本
     onSave?: (view: EditorView) => void // 保存回调, Mod-s 自动修复后触发
@@ -44,7 +44,7 @@ export type DefaultSetupOptions = {
 export const defaultOptions = (): DefaultSetupOptions => {
     return {
         vimMode: false, // 默认不开启 vim 模式
-        theme: getTheme(Theme.MD, ThemeMode.Light), // 默认主题 vscode light
+        theme: getTheme(Theme.MD, ThemeMode.Light), // 默认主题 md light
         mention: [], // 默认不开启 @ 提及补全
         placeholderText: "请开始创作...", // 默认占位符文本
         imageUploadHandler: void 0, // 默认使用编辑器内置上传实现

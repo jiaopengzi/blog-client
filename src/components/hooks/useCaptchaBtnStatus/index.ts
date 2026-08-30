@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\hooks\useCaptchaBtnStatus\index.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useCaptchaBtnStatus\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -10,7 +10,7 @@ import { ref } from "vue"
 
 /**
  * 验证码按钮状态管理
- * @param timer - 倒计时秒数, 默认60秒
+ * @param timer - 倒计时秒数, 默认 60 秒
  * @returns 验证码按钮文本、禁用状态和倒计时函数
  */
 export const useCaptchaBtnStatus = (timer: number = 60) => {
@@ -24,7 +24,7 @@ export const useCaptchaBtnStatus = (timer: number = 60) => {
 
     // 倒计时函数
     const countdown = () => {
-        // 如果已有计时器，先清理
+        // 如果已有计时器, 先清理
         if (intervalId !== null) {
             clearInterval(intervalId)
             intervalId = null

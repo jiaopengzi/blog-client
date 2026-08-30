@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\pkg\marked\extension\renderer.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 自定义 renderer 主要是为了加类名
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\marked\extension\renderer.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 自定义 renderer 主要是为了加类名
  */
 
 import type { Tokens } from "marked"
@@ -160,7 +160,6 @@ export const renderer = {
         }
         if (body) body = `<tbody>${body}</tbody>`
 
-        // return "<table>\n" + "<thead>\n" + header + "</thead>\n" + body + "</table>\n"
         const tableHtml = `<table>\n<thead>\n${header}</thead>\n${body}</table>\n`
         // 在 table 外套一个 div 添加类名 以便于样式控制
         return `<div class="jpz-marked-table-container">${tableHtml}</div>\n`
@@ -247,10 +246,10 @@ function constructWeChatPreCode(htmlStr: string, sourceHasTrailingEmptyLine = fa
         lineNumber += 1
     })
 
-    // 计算行号宽度，最小宽度 2em
+    // 计算行号宽度, 最小宽度 2em
     const lineNumberWidth = Math.max(lineNumber.toString().length, 2)
 
-    // 微信代码块行号类名 code-snippet code-snippet_nowrap; 不要添加 code-snippet__js, 会操作样式丢失
+    // 微信代码块行号类名 code-snippet code-snippet_nowrap; 不要添加 code-snippet__js, 会造成样式丢失
     const tagStart = `<section class="pre-code-container" style="--line-number-width: ${lineNumberWidth}em;">`
     const tagEnd = `</section>`
     const copyBtnStart = `<button type="button" class="copy-button">`
@@ -264,7 +263,7 @@ function constructWeChatPreCode(htmlStr: string, sourceHasTrailingEmptyLine = fa
         copyBtn = copyBtnStart + "TEXT" + copyBtnEnd
     }
 
-    // 微信 pre 代码块开始标签添 加类名和语言
+    // 微信 pre 代码块开始标签添加类名和语言
     const lang = wechatPreCodeLang.replace("language-", "").toLowerCase()
     const wechatPreCodeStart = `<pre class="pre-code pre-code_nowrap ${wechatPreCodeLang}" data-lang="${lang}">`
     const wechatPreCodeEnd = `</pre>`
@@ -276,9 +275,9 @@ function constructWeChatPreCode(htmlStr: string, sourceHasTrailingEmptyLine = fa
 }
 
 /**
- * @description: 处理指定 class 属性的 span 标签多行情况，将跨行 span 拆分为每行独立 span.
+ * @description: 处理指定 class 属性的 span 标签多行情况, 将跨行 span 拆分为每行独立 span.
  * @param spanTagStr   原始跨行 span 字符串
- * @param className    span 的 class 属性值，例如 "hljs-string" / "hljs-meta prompt_"
+ * @param className    span 的 class 属性值, 例如 "hljs-string" / "hljs-meta prompt_"
  * @return 处理后每行各自带有完整 span 的字符串
  */
 function handleMultiLineSpanTag(spanTagStr: string, className: string): string {
@@ -286,7 +285,7 @@ function handleMultiLineSpanTag(spanTagStr: string, className: string): string {
 
     let targetStr = ""
     const spanStart = `<span class="${className}">` // span 开始标签
-    let spanEnd = "</span>\n" // span 结束标签，默认带换行
+    let spanEnd = "</span>\n" // span 结束标签, 默认带换行
     const regexStart = /<span class="[^"]+">/
     const regexEnd = /<\/span>/
 
@@ -303,10 +302,10 @@ function handleMultiLineSpanTag(spanTagStr: string, className: string): string {
 
         if (matchEnd) {
             item = item.replace(matchEnd[0], "") // 删除 span 结束标签
-            spanEnd = "</span>" // 注意：末尾行无换行符
+            spanEnd = "</span>" // 注意: 末尾行无换行符
         }
 
-        // 仅包含开始标签的那一行本质上还是源码空行, 继续保留空字符串给后续空行占位逻辑处理。
+        // 仅包含开始标签的那一行本质上还是源码空行, 继续保留空字符串给后续空行占位逻辑处理
         if (item === "") {
             targetStr += "\n"
             return
@@ -320,14 +319,14 @@ function handleMultiLineSpanTag(spanTagStr: string, className: string): string {
 }
 
 /**
- * @description: 处理所有可能跨行的 hljs span 标签，将其按行拆分使每行各自带有完整 span.
+ * @description: 处理所有可能跨行的 hljs span 标签, 将其按行拆分使每行各自带有完整 span.
  * @param html  marked 渲染后的 html 字符串
  * @return      处理后的 html 字符串
  */
 function replaceAllHljsStringSpanTag(html: string): string {
     let result = html
 
-    // shell 等语言会生成带多个 class 的跨行 span, 这里统一按 class 属性抓取并拆行。
+    // shell 等语言会生成带多个 class 的跨行 span, 这里统一按 class 属性抓取并拆行
     const multiLineSpanRegex = /<span class="([^"]*hljs[^"]*)">[\s\S]*?<\/span>/g
     result = result.replace(multiLineSpanRegex, (match, className: string) => {
         if (!match.includes("\n")) {

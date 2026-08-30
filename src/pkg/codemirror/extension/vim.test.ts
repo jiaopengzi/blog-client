@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\pkg\codemirror\extension\vim.test.ts
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\vim.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -285,6 +285,10 @@ describe("applyVimMappings", () => {
     it("原生 clipboard 写入失败时会回退到 execCommand, 不会递归卡死", async () => {
         vi.resetModules()
 
+        // 本用例刻意触发回退路径, 源码会 console.warn 提示语——静音预期告警保持输出干净,
+        // 并顺带断言回退提示确实发出(锁行为)
+        const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+
         const originalWriteTextMock = vi.fn(async () => {
             throw new Error("clipboard denied")
         })
@@ -331,10 +335,12 @@ describe("applyVimMappings", () => {
 
         expect(originalWriteTextMock).toHaveBeenCalledTimes(1)
         expect(execCommandMock).toHaveBeenCalledWith("copy")
+        expect(warnSpy.mock.calls.some((call) => String(call[0]).includes("Falling back to execCommand"))).toBe(true)
         expect(document.activeElement).toBe(view.contentDOM)
 
         vimModule.Vim.mapclear("normal")
         vimModule.Vim.mapclear("visual")
         vimModule.Vim.mapclear("operatorPending")
+        warnSpy.mockRestore()
     })
 })

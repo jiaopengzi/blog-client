@@ -1,9 +1,9 @@
-/**
- * FilePath    : blog-client\src\utils\clipboard\copy-html.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\clipboard\copy-html.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : copyHtml 函数的单元测试，验证在不同环境下正确使用现代 Clipboard API 或回退到 execCommand 模式。
+ * Description : copyHtml 函数的单元测试, 验证在不同环境下正确使用现代 Clipboard API 或回退到 execCommand 模式
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"

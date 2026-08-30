@@ -1,10 +1,11 @@
 <!--
- * FilePath    : blog-client\src\components\common\chart-bar-basic\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\chart-bar-basic\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 柱状图-基础版
 -->
+
 <template>
     <div class="chart-container" ref="chartContainer">
         <h1>
@@ -13,7 +14,7 @@
         </h1>
 
         <div class="chart" v-if="hasData">
-            <!-- Y轴刻度 -->
+            <!-- Y 轴刻度 -->
             <div class="y-axis">
                 <span class="y-axis-item" v-for="(tick, index) in yTicks" :key="'y-tick-' + index">{{ unitNumber(tick, 0) }}</span>
             </div>
@@ -54,7 +55,6 @@ import type { BarItem, ChartBarBasicProps } from "./types"
 
 defineOptions({ name: "ChartBarBasic" })
 
-// 定义 props
 const {
     title = "柱状图",
     data = [
@@ -76,15 +76,12 @@ const {
     color = "",
 } = defineProps<ChartBarBasicProps>()
 
-// 事件
 const emit = defineEmits<{
     (event: "bar-click", item: BarItem): void
 }>()
 
-// 默认颜色
 const defaultColors = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD", "#FFB347"]
 
-// 柱状图数据
 const localData = ref<BarItem[]>([...data])
 
 // 计算所有柱子的总和
@@ -108,12 +105,12 @@ let resizeFrameId: number | null = null
  */
 function roundUpByDigitCount(num: number): number {
     const numStr = Math.abs(num).toString() // 支持负数, 取绝对值计算位数
-    const digitCount = numStr.length // 计算位数
+    const digitCount = numStr.length
 
-    // 特殊情况：如果 num 是 0，直接返回 0
+    // 特殊情况: 如果 num 是 0, 直接返回 0
     if (num === 0) return 0
 
-    // 计算单位：10^digitCount
+    // 计算单位: 10^digitCount
     const unit = Math.pow(10, digitCount)
 
     // 如果 digitCount 大于 1, 则将 num 从左到右取出两位
@@ -130,14 +127,14 @@ function roundUpByDigitCount(num: number): number {
 
 // 计算最大值
 const maxValue = computed(() => {
-    // 默认最小值10, 防止全部数据为 0 时无法显示
+    // 取所有柱子的最大值
     const maxVal = Math.max(...localData.value.map((item) => item.value))
 
-    // 向上取整最近的 整十 / 整百 / 整千 ...
+    // 向上取整到最近的整十 / 整百 / 整千 ...
     return roundUpByDigitCount(maxVal)
 })
 
-// 计算Y轴刻度
+// 计算 Y 轴刻度
 const yTicks = computed(() => {
     const ticks = []
     const maxTicks = 5
@@ -160,7 +157,7 @@ const animateBars = () => {
         const bar = barRefs[index]
         if (!bar) return
 
-        // 设置初始高度为0
+        // 设置初始高度为 0
         bar.style.height = "0%"
 
         // 延时设置目标高度, 形成动画效果
@@ -189,7 +186,6 @@ const handleBarClick = (item: BarItem) => {
  */
 const setChartContainerCssVars = (width: number, height: number) => {
     if (chartContainer.value) {
-        // 在 chartContainer 上设置高度和宽度的 css 变量
         chartContainer.value.style.setProperty("--bars-width", `${width}px`)
         chartContainer.value.style.setProperty("--bars-height", `${height}px`)
     }
@@ -227,7 +223,6 @@ const calcCssVars = () => {
     // 在 chartContainer 上设置高度和宽度的 css 变量
     setChartContainerCssVars(widthLocal, height)
 
-    // 在 bars 上设置 bar 的宽度的 css 变量
     const barWidth = Math.max(initBarWidth, (widthLocal - localData.value.length * barMargin) / localData.value.length - barMargin)
     bars.value.style.setProperty("--bar-width", `${barWidth}px`)
 }

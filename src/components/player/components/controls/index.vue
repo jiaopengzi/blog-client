@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\player\components\controls\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 视频控制器
+ * FilePath    : blog-client-nuxt\src\components\player\components\controls\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 视频控制器
 -->
 
 <template>
@@ -96,58 +96,46 @@ import { PlayerStateManager } from "@/components/player/state"
 import { type LanguageKey, PlaybackRate, type PlayerState, PlayLevelLabel, PlayStatus } from "@/components/player/types"
 import { formatDurationTime } from "@/utils/dateTime"
 
-// 名称
 defineOptions({ name: "VideoControls" })
 
-// 定义 props
 const { playerState } = defineProps<{
-    playerState: PlayerState // 播放器状态
+    playerState: PlayerState
 }>()
 
-// 定义 emit
 const emit = defineEmits<{
     (e: "update-status", status: PlayerState): void
 }>()
 
-// 将 playerProps 包裹成 ref
+// 将 playerState 包裹为本地响应式对象
 const localPlayerState = reactive<PlayerState>(playerState)
 
-// 拿到播放器的状态
 const localManager = new PlayerStateManager(localPlayerState)
 
-// 定义图标名称
 const IconNamePlayPause = ref(IconKeys.Pause)
 const IconNameMute = ref(IconKeys.Unmute)
 
-// 本地状态
 const localVolume = ref(localPlayerState.volume.volume)
 
-// 设置视频进度值
 const seekVideo = (currentTime: number) => {
     localManager.setUserInput(true)
-    // 设置当前时间
     localManager.setCurrentTime(currentTime)
 }
 
 // 是否正在拖拽进度条
 const handleIsDragging = (isDragging: boolean) => localManager.setIsDragging(isDragging)
 
-// 注册快捷键 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
+// 注册快捷键: useMagicKeys() 之后可通过 keys 获取键盘按键状态
 const keys = useMagicKeys()
 
-// 注册的监听器
 let registeredWatchers: (() => void)[] = []
 
-// 注销快捷键
 const unRegisterHotKeys = () => {
     registeredWatchers.forEach((stop) => stop())
     registeredWatchers = []
 }
 
-// 播放器命令
 const playerCommands = createPlayerCommands(localManager)
 
-// 注册快捷键
 const registerHotKeys = () => {
     // 注册前先注销之前的快捷键监听
     unRegisterHotKeys()
@@ -158,15 +146,12 @@ const registerHotKeys = () => {
             let intervalId: number | null = null // 用于存储长按的定时器 id
 
             watch(keys[hotKey]!, (v) => {
-                // v 为 true 时表示按下了快捷键 v 为 false 时释放了快捷键
-                // console.log('hotKey', hotKey, v)
-                // console.log('item[0]', item)
+                // v 为 true 时表示按下了快捷键, 为 false 时释放了快捷键
                 // 只有当快捷键功能开启时才响应
                 if (v && localPlayerState.isShortcutKey) {
                     // 执行普通按键逻辑
                     if (playerCommands[item].action) playerCommands[item].action()
 
-                    // 按下快捷键
                     if (playerCommands[item].longPressAction) {
                         // 开始检测长按
                         intervalId = window.setInterval(() => {
@@ -182,21 +167,17 @@ const registerHotKeys = () => {
                 }
             })
 
-            // 注册监听器
             registeredWatchers.push(stop)
         }
     })
 }
 
-// 切换播放暂停
 const togglePlayPause = () => localManager.togglePlayPause()
 
-// 切换静音
 const toggleMute = () => {
     localManager.toggleMute()
 }
 
-// 设置音量
 const seekVolume = (volume: number) => {
     localManager.setVolume(volume)
     localVolume.value = volume
@@ -231,7 +212,6 @@ const onSettingToggle = () => {
     toggleSetting()
 }
 
-// 视频时间显示
 const formattedTimeDisplay = computed(() => {
     const currentFormatted = formatDurationTime(localPlayerState.playProgress.currentTime)
     const durationFormatted = formatDurationTime(localPlayerState.playProgress.duration)
@@ -254,10 +234,8 @@ const handleSelectedSubtitleLanguage = (language: LanguageKey) => {
 // 处理播放清晰度
 const handelPlayLevel = (level: PlayLevelLabel) => localManager.setSelectedPlayLevel(level)
 
-// 处理播放速度
 const handelPlaybackRate = (playbackRate: PlaybackRate) => localManager.setPlaybackRate(playbackRate)
 
-// 处理是否循环播放
 const handelIsLoop = () => localManager.toggleLoop()
 
 // 切换目录显示
@@ -266,13 +244,11 @@ const toggleIsShowToc = () => localManager.toggleIsShowToc()
 // 切换画中画
 const togglePIP = () => localManager.togglePictureInPicture()
 
-// 切换网页全屏
 const toggleWebFullscreen = () => localManager.toggleWebFullScreen()
 
-// 切换全屏
 const toggleFullscreen = () => localManager.toggleFullScreen()
 
-// 处理按钮点击事件,点击完成后失去焦点, 防止键盘事件冲突,主要是快捷键.
+// 处理按钮点击事件, 点击完成后失去焦点, 防止键盘事件冲突 (主要是快捷键)
 const handleButtonClick = (action: () => void) => {
     action()
     const activeElement = document.activeElement as HTMLElement | null
@@ -298,17 +274,17 @@ watch(
     () => localPlayerState.playStatus,
     (playStatus) => {
         if (playStatus === PlayStatus.PLAYING) {
-            // 当播放状态为播放时，显示暂停图标
+            // 播放中显示暂停图标
             IconNamePlayPause.value = IconKeys.Pause
         } else {
-            // 当播放状态为暂停时，显示播放图标
+            // 暂停时显示播放图标
             IconNamePlayPause.value = IconKeys.Play
         }
     },
     { immediate: true },
 )
 
-// 监控播放器状态,有变化就 emit
+// 监控播放器状态, 有变化就 emit
 watch(
     () => localPlayerState,
     (newVal) => {
@@ -318,13 +294,13 @@ watch(
 )
 
 onMounted(() => {
-    registerHotKeys() // 注册快捷键
+    registerHotKeys()
 })
 
 onUnmounted(() => {
-    unRegisterHotKeys() // 注销快捷键
-    volumeDestroy() // 销毁音量条延时切换
-    settingDestroy() // 销毁设置菜单延时切换
+    unRegisterHotKeys()
+    volumeDestroy()
+    settingDestroy()
 })
 </script>
 
@@ -334,7 +310,6 @@ onUnmounted(() => {
     height: 60px;
     background-color: rgba(0, 0, 0, 0.1);
 
-    // 垂直居中
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -361,7 +336,6 @@ onUnmounted(() => {
             align-items: center;
 
             .timeDisplay {
-                // 等宽字体
                 font-family: "JBMonoWOFF2", monospace;
                 white-space: nowrap;
                 margin: 0 10px;
@@ -451,7 +425,7 @@ onUnmounted(() => {
 }
 
 @include respond-to("pad") {
-    // pad端隐藏如下按钮
+    // pad 端隐藏如下按钮
     .pip,
     .web-fullscreen {
         display: none;

@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\rule\005.ts
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\codemirror\extension\mdlint\rule\005.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -28,7 +28,7 @@ export const defaultOptions = {}
  * run: 检查文档中付费标签的合法性, 包括成对闭合、属性完整、标签前后空行等, 若存在不合法情况则返回 error 类型的 Diagnostic
 
 <pay-video>
-除视频外的其他隐藏内容, 如附件下载等；若没有则将标签设置为一行
+除视频外的其他隐藏内容, 如附件下载等; 若没有则将标签设置为一行
 </pay-video>
 
 <pay-membership></pay-membership>
@@ -69,11 +69,11 @@ export function run(doc: DocLike): Diagnostic[] {
 
         // 查找当前行中的所有付费标签
         while ((match = payTagRegex.exec(lineText)) !== null) {
-            // 跳过行内代码片段（单个反引号包裹）中的标签
+            // 跳过行内代码片段(单个反引号包裹)中的标签
             if (isInsideInlineCode(lineText, match.index)) continue
             const fullMatch = match[0]
             const isClosing = fullMatch.startsWith("</")
-            // 通用检查：开始标签前/结束标签后不能有同一行内的其它内容
+            // 通用检查: 开始标签前/结束标签后不能有同一行内的其它内容
             validateNoSurroundingContent({
                 doc,
                 lineText,
@@ -120,7 +120,7 @@ export function run(doc: DocLike): Diagnostic[] {
                     const containerPayTags = new Set(["pay-video", "pay-read", "pay-download"])
                     const allowedTags = containerPayTags.has(open.tag) ? new Set(["video-player", "power-bi"]) : undefined
 
-                    // 自定义标签内部不允许再嵌套任何项目自定义标签。
+                    // 自定义标签内部不允许再嵌套任何项目自定义标签
                     const hasNestedCustomTags = validateNoNestedCustomTags({
                         doc,
                         openLine: openLn,
@@ -174,7 +174,7 @@ export function run(doc: DocLike): Diagnostic[] {
                     }
                 }
             } else {
-                // 开始标签, 记录位置与属性。保存完整标签名(包含 pay- 前缀)
+                // 开始标签, 记录位置与属性, 保存完整标签名(包含 pay- 前缀)
                 const tagName = `pay-${match[1] as string}`
                 const attrsText = match[2] ? match[2] : ""
                 tagStack.push({ tag: tagName, line: i, fromIndex: match.index, length: fullMatch.length, attrs: attrsText })

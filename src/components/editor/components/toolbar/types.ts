@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\editor\components\toolbar\types.ts
+ * FilePath    : blog-client-nuxt\src\components\editor\components\toolbar\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -17,8 +17,8 @@ import type { IconKeys } from "@/components/common/icons"
 import type { CommandsKey } from "../../command"
 
 /**
- * EditorExternalToolbarButton 定义编辑器工具栏可注入的外部按钮。
- * 仅用于承接业务侧传入的附加动作, 不参与编辑器内置命令分发。
+ * EditorExternalToolbarButton 定义编辑器工具栏可注入的外部按钮
+ * 仅用于承接业务侧传入的附加动作, 不参与编辑器内置命令分发
  */
 export interface EditorExternalToolbarButton {
     name: string
@@ -28,8 +28,8 @@ export interface EditorExternalToolbarButton {
 }
 
 /**
- * EditorToolbarButton 定义编辑器工具栏实际渲染的按钮。
- * isExternal 用于区分内置命令与业务侧注入的附加动作。
+ * EditorToolbarButton 定义编辑器工具栏实际渲染的按钮
+ * isExternal 用于区分内置命令与业务侧注入的附加动作
  */
 export interface EditorToolbarButton {
     name: CommandsKey | string
@@ -39,11 +39,11 @@ export interface EditorToolbarButton {
 }
 
 /**
- * mergeEditorToolbarButtons 按内置按钮顺序合并外部工具栏按钮。
- * 外部按钮可通过 insertAfter 指定插入锚点; 若锚点不存在, 则回退到工具栏末尾。
- * @param toolbarButtons - 当前编辑器内置工具栏按钮。
- * @param externalToolbarButtons - 业务侧注入的外部工具栏按钮。
- * @returns 合并后的工具栏按钮列表。
+ * mergeEditorToolbarButtons 按内置按钮顺序合并外部工具栏按钮
+ * 外部按钮可通过 insertAfter 指定插入锚点; 若锚点不存在, 则回退到工具栏末尾
+ * @param toolbarButtons - 当前编辑器内置工具栏按钮
+ * @param externalToolbarButtons - 业务侧注入的外部工具栏按钮
+ * @returns 合并后的工具栏按钮列表
  */
 export const mergeEditorToolbarButtons = (
     toolbarButtons: EditorToolbarButton[],

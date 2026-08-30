@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\requestStrategyBase.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 上传请求策略基类
+/*
+ * FilePath    : blog-client-nuxt\src\utils\requestStrategyBase.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 上传请求策略基类
  */
 
 import { type UploadRequestOptions } from "element-plus"
@@ -36,12 +36,6 @@ export abstract class RequestStrategyBase implements RequestStrategy {
         }
     }
     abstract confirmBeforeUploadAPI(req: ConfirmBeforeUploadRequest): ResPromise<Res<UploadFileInfo>>
-    // abstract uploadFileBySignedUrlAPI(
-    //   file: File,
-    //   signedUrl: string,
-    //   headers: Record<string, string>,
-    //   onProgress: (percent: number) => void,
-    // ): AxiosPromise<Res>
     abstract confirmAfterUploadBySignedUrlAPI(req: ConfirmAfterUploadBySignedUrlRequest): ResPromise<Res<void>>
     abstract handleConfirmBeforeUploadError(errorMessage: string): void
     abstract uploadChunkAPI(formData: FormData, meta: ChunkMetadata): ResPromise<Res<string>>
@@ -82,7 +76,6 @@ export abstract class RequestStrategyBase implements RequestStrategy {
 
     async uploadFileBySignedUrl(file: File, signedUrl: string, headers: Record<string, string>, onProgress: (percent: number) => void): Promise<void> {
         if (this.uploadFileInfo?.upload_strategy.signed_url) {
-            // await this.uploadFileBySignedUrlAPI(file, signedUrl, headers, onProgress)
             await uploadFileBySignedUrlAPI(file, signedUrl, headers, onProgress)
         }
     }

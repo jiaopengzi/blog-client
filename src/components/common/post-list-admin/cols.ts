@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\common\post-list-admin\cols.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\post-list-admin\cols.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -171,18 +171,15 @@ const authorColumns: TableColumn[] = [
 
 // 获取文章统计数据
 export function generateCols(postType: PostType) {
-    // 创建基础列
     const columns = [...baseColumns]
 
-    // 添加分类和标签列 仅文章类型
+    // 添加分类和标签列, 仅文章类型
     if (postType === PostType.Post) {
         columns.push(...categoryColumns)
     }
 
-    // 添加统计信息列
     columns.push(...statsColumns)
 
-    // 添加作者和状态列
     columns.push(...authorColumns, ...statusColumns, ...displayTimeColumns)
 
     return reactive(columns)
@@ -191,17 +188,11 @@ export function generateCols(postType: PostType) {
 // 获取用户中心收藏字段
 export function generateColsUserInfoFavorite() {
     const baseColumns: TableColumn[] = [
-        // {
-        //     prop: "id",
-        //     label: "ID",
-        //     sortable: true,
-        //     width: 200,
-        //     align: "center",
-        // },
         {
             prop: "thumbnail",
             label: "图片",
-            width: 120,
+            // 反馈第 1 轮: 与前台主文章列表缩略图(200px)一致, 列宽=图宽+单元格左右内边距(12+12)+2px 冗余
+            width: 226,
             align: "center",
             isImg: true,
         },

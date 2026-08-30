@@ -1,9 +1,9 @@
-/**
- * FilePath    : blog-client\src\utils\uploadFileName.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\uploadFileName.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 上传文件命名通用工具单元测试
+ * Description : 上传文件命名工具的单元测试
  */
 
 import { describe, expect, it } from "vitest"

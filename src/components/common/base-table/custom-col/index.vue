@@ -1,22 +1,26 @@
 <!--
- * @FilePath     : \blog-client\src\components\common\base-table\custom-col\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 自定义列 
+ * FilePath    : blog-client-nuxt\src\components\common\base-table\custom-col\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 自定义列
 -->
 
 <template>
     <el-table-column :prop="String(col.prop)" :width="width ?? col.width" :min-width="col.minWidth" :align="col.align" :label="col.label">
         <template #default="scope">
             <!-- 标题 -->
-            <h4 v-if="col.isHeading" :class="{ 'heading-clickable': !!col.onHeadingClick }" @click="col.onHeadingClick && col.onHeadingClick(scope.row)">
+            <h4
+                v-if="col.isHeading"
+                :class="{ 'heading-clickable': !!col.onHeadingClick }"
+                @click="col.onHeadingClick && col.onHeadingClick(scope.row as TableData)"
+            >
                 {{ scope.row[col.prop] }}
             </h4>
 
-            <!-- 标题包含标题ID -->
+            <!-- 标题包含标题 ID -->
             <div v-if="col.isHeadingWithId" class="title-with-id-wrap">
-                <el-button @click="handleViewWithID(scope.row)" class="title-with-id" type="">{{ scope.row[col.prop] }}</el-button>
+                <el-button @click="handleViewWithID(scope.row as TableData)" class="title-with-id" type="">{{ scope.row[col.prop] }}</el-button>
                 <!-- 复制标题按钮, 复用通用复制按钮组件 -->
                 <CopyButton :text="String(scope.row[col.prop] ?? '')" />
             </div>
@@ -40,11 +44,11 @@
                 v-if="col.isCopyText"
                 :key="scope.row[col.prop]"
                 :text="String(scope.row[col.prop] ?? '')"
-                :display-text="col.formatter ? String(col.formatter(scope.row) ?? '') : undefined"
+                :display-text="col.formatter ? String(col.formatter(scope.row as TableData) ?? '') : undefined"
                 :placeholder="col.copyPlaceholder"
             />
 
-            <!-- markdown渲染 -->
+            <!-- markdown 渲染 -->
             <div class="markdown-preview" v-if="col.isMarkdownPreview" :style="{ maxHeight: markdownPreviewMaxHeight }">
                 <CommentMarkdownPreview :markdown-content="scope.row[col.prop]" :key="`${scope.row['id']}-${scope.row[col.prop]}`" />
             </div>
@@ -63,7 +67,7 @@
             <div v-if="col.isTags || col.isCategories" class="tag-wrap">
                 <!-- 注意 key 需要使用 id + 文章数量 -->
                 <TagItem
-                    v-for="item in getSortedTagItems(scope.row)"
+                    v-for="item in getSortedTagItems(scope.row as TableData)"
                     :tag-data="item"
                     :is-admin="true"
                     :key="item.id + item.post_count_admin"
@@ -73,12 +77,12 @@
 
             <!-- 可滚动的格式化文本 -->
             <div v-if="col.isScrollFormatter && col.formatter && !col.isCopyText" class="scroll-formatter-box" :style="{ maxHeight: tagsItemMaxHeight }">
-                <div class="scroll-formatter-text">{{ col.formatter(scope.row) }}</div>
+                <div class="scroll-formatter-text">{{ col.formatter(scope.row as TableData) }}</div>
             </div>
 
             <!-- 格式化(isCopyText 时由 CopyText 组件负责显示, 此处不重复渲染) -->
             <!-- 使用 formatter-text 类保留 formatter 返回值中的换行符, 便于状态列等场景将标签与时间分行展示 -->
-            <span class="formatter-text" v-if="col.formatter && !col.isCopyText && !col.isScrollFormatter">{{ col.formatter(scope.row) }}</span>
+            <span class="formatter-text" v-if="col.formatter && !col.isCopyText && !col.isScrollFormatter">{{ col.formatter(scope.row as TableData) }}</span>
         </template>
     </el-table-column>
 </template>
@@ -135,9 +139,9 @@ const handleTagClick = (item: PostCategory | PostTag) => {
 }
 
 /**
- * 获取当前单元格要渲染的分类或标签列表.
- * @param row - 当前行数据.
- * @returns 按列配置排序后的分类或标签列表.
+ * 获取当前单元格要渲染的分类或标签列表
+ * @param row - 当前行数据
+ * @returns 按列配置排序后的分类或标签列表
  */
 const getSortedTagItems = (row: TableData): Array<PostCategory | PostTag> => {
     const rawItems = Reflect.get(row, String(col.prop))
@@ -179,7 +183,7 @@ const handleViewWithID = (row: TableData) => {
     if (!row || !row.id) {
         return
     }
-    // 有文字选中时不触发跳转，让用户可以复制
+    // 有文字选中时不触发跳转, 让用户可以复制
     const selection = window.getSelection()
     if (selection && selection.toString().length > 0) {
         return
@@ -233,7 +237,7 @@ const handleViewWithID = (row: TableData) => {
     }
 
     // el-button 内部文本被包裹在 display:inline-flex 的 span 中, 直接在按钮上加 text-decoration 不会生效;
-    // 需穿透到内部 span 并将其改为 inline 才能让下划线渲染, 更显著地提示 hover 可点击效果.
+    // 需穿透到内部 span 并将其改为 inline 才能让下划线渲染, 更显著地提示 hover 可点击效果
     :deep(span) {
         display: inline;
     }
@@ -275,7 +279,7 @@ const handleViewWithID = (row: TableData) => {
 }
 
 // formatter 通用文本: 保留返回值中的换行符 (pre-line), 使状态列的标签与时间可分行展示;
-// 仅当 formatter 返回值包含换行符时才产生分行, 对无换行的 formatter 无视觉影响.
+// 仅当 formatter 返回值包含换行符时才产生分行, 对无换行的 formatter 无视觉影响
 .formatter-text {
     white-space: pre-line;
 }

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\post\common.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 文章共用内容
+/*
+ * FilePath    : blog-client-nuxt\src\api\post\common.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 文章共用内容
  */
 
 import { type PgSqlDateTime } from "@/api/common"
@@ -11,7 +11,7 @@ import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
 import { type User } from "@/api/user/getUserInfo"
 import { type DataWithImg } from "@/components/common" // 图片填充方式
-import { type MediaTypes } from "@/components/player"
+import { type MediaTypes } from "@/components/player/types"
 
 export enum PostType {
     Post = "post", // 文章
@@ -25,7 +25,7 @@ export const PostTypeDisplay: Record<PostType, string> = {
     [PostType.Video]: "视频",
 }
 
-// 获取订单状态选项
+// 获取文章类型选项
 export const getPostTypeOptions = () => {
     return Object.values(PostType)
         .filter((value) => typeof value === "string")
@@ -87,7 +87,7 @@ export const CustomFieldsDisplay: Record<CustomFields, string> = {
     [CustomFields.WordsCount]: "字数",
 }
 
-// 文章状态选项
+// 评论状态
 export enum CommentStatusCode {
     Close = 1, // 关闭
     Open = 2, // 开启
@@ -145,16 +145,16 @@ export interface InsertPostRequest {
     post_author: string // 文章作者
     post_content: string // 文章内容
     post_title: string // 文章标题
-    post_status: PostStatusCode // 文章状态 0 草稿 1 待审核 2 私密 3 定时发布 4 已发布 5 过期 6 回收站
+    post_status: PostStatusCode // 文章状态 1 草稿 2 私密 3 定时 4 密码 5 发布 6 过期
     post_password?: string // 文章密码
-    comment_status: CommentStatusCode // 评论是否开启 0 关闭 1 开启
+    comment_status: CommentStatusCode // 评论是否开启 1 关闭 2 开启
     price?: string // 价格
     seo_title?: string // SEO标题
     seo_keywords?: string // SEO关键词
     seo_description?: string // SEO描述
     slug?: string // 别名
     thumbnail?: string // 缩略图
-    category_ids: string[] // 分类id
+    category_ids: string[] // 分类 id
     tag_names?: string[] // 标签
     pay_roles?: string[] // 付费角色
     post_push_time?: PgSqlDateTime // 发布时间
@@ -164,7 +164,7 @@ export interface InsertPostRequest {
     post_type?: PostType // 文章类型
     pay_strategy?: PayStrategy // 付费策略
     video_toc?: PostVideoTocTree[] // 文章视频目录
-    video_file_id_hash_list?: string[] // 文章封面视频文件ID哈希
+    video_file_id_hash_list?: string[] // 文章封面视频文件 ID 哈希
     words_count?: number // 文章字数, 由前端编辑器统计传入
 }
 
@@ -172,20 +172,20 @@ export type UpdateFields = keyof InsertPostRequest
 
 // 更新文章请求
 export interface UpdatePostRequest {
-    id: string // 文章ID
+    id: string // 文章 ID
     post_author?: string // 文章作者
     post_content?: string // 文章内容
     post_title?: string // 文章标题
-    post_status?: PostStatusCode // 文章状态 0 草稿 1 待审核 2 私密 3 定时发布 4 已发布 5 过期 6 回收站
+    post_status?: PostStatusCode // 文章状态 1 草稿 2 私密 3 定时 4 密码 5 发布 6 过期
     post_password?: string // 文章密码
-    comment_status?: CommentStatusCode // 评论是否开启 0 关闭 1 开启
+    comment_status?: CommentStatusCode // 评论是否开启 1 关闭 2 开启
     price?: string // 价格
     seo_title?: string // SEO标题
     seo_keywords?: string // SEO关键词
     seo_description?: string // SEO描述
     slug?: string // 别名
     thumbnail?: string // 缩略图
-    category_ids?: string[] // 分类id
+    category_ids?: string[] // 分类 id
     tag_names?: string[] // 标签
     pay_roles?: string[] // 付费角色
     post_push_time?: PgSqlDateTime // 发布时间
@@ -195,14 +195,14 @@ export interface UpdatePostRequest {
     post_type?: PostType // 文章类型
     pay_strategy?: PayStrategy // 付费策略
     video_toc?: PostVideoTocTree[] // 文章视频目录
-    video_file_id_hash_list?: string[] // 文章封面视频文件ID哈希
+    video_file_id_hash_list?: string[] // 文章封面视频文件 ID 哈希
     words_count?: number // 文章字数, 由前端编辑器统计传入
-    update_fields: UpdateFields[] // 显示指出需要更新的字段便于后端处理零值
+    update_fields: UpdateFields[] // 显式指出需要更新的字段, 便于后端处理零值
 }
 
 // 文章
 export interface PostResCommon extends DataWithImg {
-    id: string // 标签id
+    id: string // 文章 ID
     created_at: string // 创建时间
     post_push_time?: PgSqlDateTime // 展示发布时间
     comment_count: string // 评论数量
@@ -295,8 +295,8 @@ export interface PostResByID extends PostResCommon {
     video_toc: PostVideoTocRes // 文章视频目录
 }
 
-// getPostDisplayTime 获取文章对用户展示的发布时间。
-// 优先使用 post_push_time.Time, 无有效发布时间时回退到 created_at, 保证列表, 搜索和详情页展示语义一致。
+// getPostDisplayTime 获取文章对用户展示的发布时间
+// 优先使用 post_push_time.Time, 无有效发布时间时回退到 created_at, 保证列表, 搜索和详情页展示语义一致
 export function getPostDisplayTime(postData: Pick<PostResCommon, "created_at" | "post_push_time">): string {
     const postPushTime = postData.post_push_time
     if (postPushTime?.Valid && postPushTime.Time) {

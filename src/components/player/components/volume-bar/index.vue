@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\player\components\volume-bar-inner\index.vue
+ * FilePath    : blog-client-nuxt\src\components\player\components\volume-bar\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -46,11 +46,9 @@ const emit = defineEmits<{
     (e: "is-dragging", status: boolean): void
 }>()
 
-// 定义所有元素的 ref
 const volumeBarInnerRef = useTemplateRef<HTMLDivElement | null>("volumeBarInnerRef")
 const currentVolumeRef = useTemplateRef<HTMLDivElement | null>("currentVolumeRef")
 const sliderRef = useTemplateRef<HTMLDivElement | null>("sliderRef")
-// const clickAreaRef = useTemplateRef<HTMLDivElement | null>("clickAreaRef")
 
 const localVolume = ref(volume)
 
@@ -68,17 +66,14 @@ const setCurrentVolumeHeight = (heightPercent: number, enableTransition = true) 
     }
 }
 
-// 根据 Y 坐标计算音量(0-100)
 const getVolumeFromY = (offsetY: number, totalHeight: number) => {
     const ratio = 1 - offsetY / totalHeight // 顶部=100%, 底部=0%
     const vol = Math.round(ratio * 100)
-    return Math.max(0, Math.min(100, vol)) // clamp to [0, 100]
+    return Math.max(0, Math.min(100, vol)) // 限制在 [0, 100] 区间
 }
 
-// 标记是否正在拖拽
 let isDragging = false
 
-// 添加全局事件监听器
 const addDocumentEventListeners = () => {
     document.addEventListener("mousemove", onSliderPointerMove)
     document.addEventListener("touchmove", onSliderPointerMove)
@@ -86,7 +81,6 @@ const addDocumentEventListeners = () => {
     document.addEventListener("touchend", onSliderPointerUp)
 }
 
-// 移除全局事件监听器
 const removeDocumentEventListeners = () => {
     document.removeEventListener("mousemove", onSliderPointerMove)
     document.removeEventListener("touchmove", onSliderPointerMove)
@@ -94,7 +88,6 @@ const removeDocumentEventListeners = () => {
     document.removeEventListener("touchend", onSliderPointerUp)
 }
 
-// 获取音量条数据(Y 方向)
 const getVolumeBarData = (event: MouseEvent | TouchEvent): { rect: DOMRect; offsetY: number; totalHeight: number; volume: number } | null => {
     if (volumeBarInnerRef.value) {
         const rect = volumeBarInnerRef.value.getBoundingClientRect()
@@ -117,14 +110,13 @@ const getClientY = (event: MouseEvent | TouchEvent) => {
     }
 }
 
-// 点击音量条
 const onVolumeBarClick = (event: MouseEvent | TouchEvent) => {
     if (isDragging) return
 
     const data = getVolumeBarData(event)
     if (data) {
         const { offsetY, totalHeight, volume: newVol } = data
-        // 点击非拖拽，启用 transition
+        // 点击非拖拽, 启用 transition
         updateSliderAndVolume(offsetY, totalHeight, false)
         if (newVol !== volume) {
             emit("update-volume", newVol)
@@ -154,30 +146,28 @@ watch(
     },
 )
 
-// 更新 滑块 top 表示音量位置（0%=顶部，100%=底部），CSS 用 translateY(-50%) 居中圆心
+// 更新滑块 top 表示音量位置 (0%=顶部, 100%=底部), CSS 用 translateY(-50%) 居中圆心
 const updateSliderAndVolume = (offsetY: number, totalHeight: number, isDragging = false) => {
     if (sliderRef.value && currentVolumeRef.value) {
-        // 填充条：从底部向上(高度 = 音量比例)
+        // 填充条: 从底部向上(高度 = 音量比例)
         const ratio = 1 - offsetY / totalHeight
         const heightPercent = ratio * 100
 
         // 根据是否拖拽决定是否禁用 transition
         setCurrentVolumeHeight(heightPercent, !isDragging)
 
-        // 滑块 top = 音量位置百分比（offsetY / totalHeight * 100%）
+        // 滑块 top = 音量位置百分比 (offsetY / totalHeight * 100%)
         const positionPercent = (offsetY / totalHeight) * 100
         sliderRef.value.style.top = `${positionPercent}%`
     }
 }
 
-// 滑块按下
 const onSliderDown = () => {
     isDragging = true
     emit("is-dragging", isDragging)
     addDocumentEventListeners()
 }
 
-// 滑块拖动
 const onSliderPointerMove = (event: MouseEvent | TouchEvent) => {
     if (!isDragging) return
     const data = getVolumeBarData(event)
@@ -189,7 +179,6 @@ const onSliderPointerMove = (event: MouseEvent | TouchEvent) => {
     }
 }
 
-// 滑块释放
 const onSliderPointerUp = () => {
     isDragging = false
     emit("is-dragging", isDragging)
@@ -210,7 +199,6 @@ const onSliderPointerUp = () => {
     }
 }
 
-// 更新 UI
 const updateUI = () => {
     if (volumeBarInnerRef.value && sliderRef.value) {
         const rect = volumeBarInnerRef.value.getBoundingClientRect()
@@ -221,7 +209,7 @@ const updateUI = () => {
 }
 
 // 当元素尺寸变化时更新 UI
-// 主要解决音量调初始化时，元素通常为 none 导致获取高度为 0 的问题
+// 主要解决音量条初始化时, 元素通常为 none 导致获取高度为 0 的问题
 useResizeObserver(volumeBarInnerRef, () => {
     updateUI()
 })
@@ -249,7 +237,7 @@ $slider-size: 16px;
     background-color: #00000066;
     backdrop-filter: blur(16px);
     border-radius: 4px;
-    user-select: none; // 禁止选中
+    user-select: none;
 
     .tip {
         position: absolute;
@@ -300,18 +288,12 @@ $slider-size: 16px;
             cursor: grab;
 
             background-color: #fff;
-            // background-color: var(--jpz-color-primary);
-            // 水平+垂直居中：让滑块圆心对齐 top 指定位置
+            // 水平+垂直居中: 让滑块圆心对齐 top 指定位置
             border: 2px solid var(--jpz-color-primary);
             transform: translateX(-50%) translateY(-50%);
 
-            // &:hover {
-            //     transform: translateX(-50%) translateY(-50%);
-            // }
-
             &:active {
                 cursor: grabbing;
-                // transform: translateX(-50%) translateY(-50%);
             }
         }
 
@@ -320,7 +302,7 @@ $slider-size: 16px;
             left: 50%;
             top: 0;
             transform: translateX(-50%);
-            width: 26px; // 横向扩大点击区域
+            width: 26px;
             height: 100%;
             background: transparent;
             z-index: 0;

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\pay\query.ts
+ * FilePath    : blog-client-nuxt\src\api\pay\query.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -14,12 +14,12 @@ import type { PayType, TradeState } from "./common"
 // 查询订单支付请求数据
 export interface PayQueryRequest {
     pay_type: PayType // 支付类型
-    order_id: string // 订单ID
+    order_id: string // 订单 ID
 }
 
 // 查询订单支付响应数据
 export interface PayQueryRes {
-    order_id: string // 订单ID
+    order_id: string // 订单 ID
     pay_status: TradeState // 支付状态
 }
 

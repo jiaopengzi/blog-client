@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useAccountFormValidation\type.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 类型定义
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useAccountFormValidation\type.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 类型定义
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

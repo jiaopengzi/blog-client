@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\pkg\marked\extension\katex.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 公式扩展配置 https://katex.org/docs/options
+/*
+ * FilePath    : blog-client-nuxt\src\pkg\marked\extension\katex.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 公式扩展配置 https://katex.org/docs/options
  */
 
 import type { KatexOptions } from "katex" // 公式

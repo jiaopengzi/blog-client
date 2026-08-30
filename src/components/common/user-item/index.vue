@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\user-item\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\user-item\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -45,7 +45,6 @@ import type { UserProps } from "./types"
 
 defineOptions({ name: "UserItem" })
 
-// 定义 props
 const {
     user,
     size = 40, // 默认为 40px
@@ -57,7 +56,6 @@ const {
     createdAt = "", // 默认没有创建时间
 } = defineProps<UserProps>()
 
-// 事件
 const emit = defineEmits<{
     (event: "user-click", userID: string): void
 }>()
@@ -101,7 +99,6 @@ const handleUserClick = () => {
     min-width: 0; // 允许 grid 1fr 列收缩时内容不撑开
 
     .user-title {
-        // 行高
         line-height: 1.1em;
         // 约束最大宽度, 防止长文本溢出父容器
         max-width: 100%;
@@ -159,13 +156,4 @@ const handleUserClick = () => {
     display: inline-block;
     font-weight: 700;
 }
-
-// @include respond-to("pc") {
-// }
-
-// @include respond-to("pad") {
-// }
-
-// @include respond-to("phone") {
-// }
 </style>

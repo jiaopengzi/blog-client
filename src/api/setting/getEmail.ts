@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\api\setting\getEmail.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 获取邮箱信息
+/*
+ * FilePath    : blog-client-nuxt\src\api\setting\getEmail.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 获取邮箱信息
  */
 
 import { request, routerGroup } from "@/api/request"
@@ -20,7 +20,6 @@ export interface GetEmailResponse {
     pool_size: number
 }
 
-// 获取邮箱信息
 export function getEmailAPI(): ResPromise<Res<GetEmailResponse>> {
     const urlStr = routerGroup + "/setting/get-email"
     return request({

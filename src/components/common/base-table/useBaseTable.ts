@@ -1,11 +1,13 @@
-/**
- * FilePath    : blog-client\src\components\common\base-table\useBaseTable.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\base-table\useBaseTable.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
  * Description : BaseTable 内部状态与交互逻辑
  */
 
+// Nuxt 适配: ElMessage 显式导入 (原项目由 unplugin auto-import 提供)
+import { ElMessage } from "element-plus"
 import { storeToRefs } from "pinia"
 import { nextTick, ref, useTemplateRef, watch } from "vue"
 

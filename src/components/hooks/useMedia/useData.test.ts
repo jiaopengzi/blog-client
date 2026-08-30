@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\components\hooks\useMedia\useData.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useMedia\useData.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

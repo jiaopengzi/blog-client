@@ -1,9 +1,9 @@
-/**
- * FilePath    : blog-client\src\components\common\post-list-admin\permissions.test.ts
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\post-list-admin\permissions.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 后台文章列表角色权限工具测试
+ * Description : 后台文章列表角色权限工具的单元测试
  */
 
 import { describe, expect, it } from "vitest"
@@ -14,9 +14,9 @@ import { emptyUserInfo } from "@/api/user/getUserInfo"
 import { canUseAdvancedPostAdminTools, getPostAdminRoleName, shouldShowAdvancedPostAdminTools, shouldShowPostAdminMutationTools } from "./permissions"
 
 /**
- * buildUserInfoWithRole 构造带指定角色的用户信息。
- * @param roleName - 目标角色名。
- * @returns 带 role_name 元数据的用户信息。
+ * buildUserInfoWithRole 构造带指定角色的用户信息.
+ * @param roleName - 目标角色名.
+ * @returns 带 role_name 元数据的用户信息.
  */
 function buildUserInfoWithRole(roleName: string) {
     const userInfo = emptyUserInfo()

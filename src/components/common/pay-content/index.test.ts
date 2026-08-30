@@ -1,3 +1,11 @@
+/*
+ * FilePath    : blog-client-nuxt\src\components\common\pay-content\index.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : PayContent 的单元测试
+ */
+
 import { flushPromises, mount } from "@vue/test-utils"
 import { reactive } from "vue"
 import { afterEach, describe, expect, it, vi } from "vitest"
@@ -40,7 +48,8 @@ vi.mock("../icons", () => ({
 vi.mock("../pay-video", () => ({
     default: {
         name: "PostVideo",
-        template: '<div class="mock-post-video"></div>',
+        props: ["isPaid"],
+        template: '<div class="mock-post-video" :data-is-paid="String(isPaid)"></div>',
     },
 }))
 
@@ -254,6 +263,62 @@ describe("PayContent", () => {
 
         expect(wrapper.emitted("pay-single")).toEqual([[ContentPayType.Download]])
         expect(wrapper.emitted("pay-vip")).toEqual([[ContentPayType.Download]])
+    })
+
+    it("合集未收费 (price=0) 时剧集按已解锁渲染, 不显示锁/播放 icon", async () => {
+        permissionRoleStoreState.getIsLoaded = true
+
+        // bug02(260829-05 二轮): 合集未收费时 isPaid=false 但内容直接展示,
+        // PostVideo 应收到有效解锁态 true (VideoEpisode 不显示 icon)
+        const wrapper = mountComponent({
+            contentPayType: ContentPayType.Video,
+            isPaid: false,
+            price: "0",
+            payStrategy: PayStrategy.All,
+            markdown: "",
+        })
+
+        await flushPromises()
+
+        const postVideo = wrapper.find(".mock-post-video")
+        expect(postVideo.exists()).toBe(true)
+        expect(postVideo.attributes("data-is-paid")).toBe("true")
+    })
+
+    it("合集已收费且未购买时, 预览分支的剧集保留 icon (isPaid=false)", async () => {
+        permissionRoleStoreState.getIsLoaded = true
+
+        const wrapper = mountComponent({
+            contentPayType: ContentPayType.Video,
+            isPaid: false,
+            price: "100",
+            payStrategy: PayStrategy.All,
+            markdown: "",
+        })
+
+        await flushPromises()
+
+        const postVideo = wrapper.find(".mock-post-video")
+        expect(postVideo.exists()).toBe(true)
+        expect(postVideo.attributes("data-is-paid")).toBe("false")
+    })
+
+    it("合集已收费且已购买时, 剧集按已解锁渲染", async () => {
+        permissionRoleStoreState.getIsLoaded = true
+
+        const wrapper = mountComponent({
+            contentPayType: ContentPayType.Video,
+            isPaid: true,
+            price: "100",
+            payStrategy: PayStrategy.All,
+            markdown: "",
+        })
+
+        await flushPromises()
+
+        const postVideo = wrapper.find(".mock-post-video")
+        expect(postVideo.exists()).toBe(true)
+        expect(postVideo.attributes("data-is-paid")).toBe("true")
     })
 
     it("付费视频无资料内容时展示仅视频保护文案", async () => {

@@ -1,17 +1,14 @@
 /*
- * FilePath    : blog-client\src\api\helper\getStreamIDStatus.ts
+ * FilePath    : blog-client-nuxt\src\api\helper\ipInfo.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
- * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 获取streamID状态
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : 获取公网 IP 信息(阶段 1 重写: axios -> ofetch; 绝对地址不走后端 baseURL)
  */
 
-import axios from "axios"
+import { $fetch } from "ofetch"
 
 import type { ResPromise } from "@/api/response"
-
-//1. 创建axios对象
-const request = axios.create()
 
 export interface IpInfoRes {
     status: string
@@ -31,10 +28,18 @@ export interface IpInfoRes {
 }
 
 // http://ip-api.com/json/?lang=zh-CN
-export function getIpInfoAPI(): ResPromise<IpInfoRes> {
+export async function getIpInfoAPI(): ResPromise<IpInfoRes> {
     const urlStr = "http://ip-api.com/json/?lang=zh-CN"
-    return request({
-        url: urlStr,
-        method: "get",
+
+    const res = await $fetch.raw<IpInfoRes>(urlStr, {
+        method: "GET",
     })
+
+    return {
+        data: res._data as IpInfoRes,
+        status: res.status,
+        statusText: res.statusText || "",
+        headers: Object.fromEntries(new Headers(res.headers).entries()),
+        config: {},
+    }
 }

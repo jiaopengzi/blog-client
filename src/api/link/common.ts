@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\api\link\common.ts
+ * FilePath    : blog-client-nuxt\src\api\link\common.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -38,7 +38,7 @@ export interface InsertLinkRequest {
 }
 
 export interface UpdateLinkRequest extends InsertLinkRequest {
-    id: string // 链接id
+    id: string // 链接 id
 }
 
 // 链接
@@ -46,10 +46,10 @@ export interface LinkRes extends DataWithImg {
     id: string // id
     created_at: string // 创建时间
     updated_at: string // 更新时间
-    name: string // 评论者名称
-    url: string // 评论者链接
-    thumbnail: string // 评论者头像
-    description: string // 评论内容
-    status: LinkStatusCode // 评论状态
+    name: string // 名称
+    url: string // 链接地址
+    thumbnail: string // 图片地址
+    description: string // 描述
+    status: LinkStatusCode // 状态
     order: string // 排序
 }

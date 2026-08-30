@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useMedia\index.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 媒体 hooks
+/*
+ * FilePath    : blog-client-nuxt\src\components\hooks\useMedia\index.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 媒体 hooks
  */
 
 import { computed, onBeforeMount, ref, watch } from "vue"
@@ -26,9 +26,9 @@ import { MessageUtil } from "@/utils/message"
 import { useData } from "./useData"
 
 /**
- * @description: 点击图片行后复制媒体链接.
- * @param row 表格行数据.
- * @return void.
+ * @description: 点击图片行后复制媒体链接
+ * @param row 表格行数据
+ * @return void
  */
 const clickRowByPicture = async (row: TableData): Promise<void> => {
     if ("url_belong" in row && "path" in row && row.url_belong && row.path) {
@@ -44,7 +44,6 @@ const clickRowByPicture = async (row: TableData): Promise<void> => {
  * @param isUpdateRouter 是否更新路由, 默认为 true 更新路由
  */
 export function useMedia() {
-    // 数据 hooks
     const {
         cols,
         AllFileType,
@@ -138,12 +137,12 @@ export function useMedia() {
     )
 
     /**
-     * @description: 将当前媒体行同步到编辑态数据中.
-     * @param row 当前需要展示的媒体行数据.
-     * @return void.
+     * @description: 将当前媒体行同步到编辑态数据中
+     * @param row 当前需要展示的媒体行数据
+     * @return void
      */
     const applyEditMediaRow = (row: TableData) => {
-        // 断言 row 中有 file_name_display, 避免 TS 对媒体字段报错.
+        // 断言 row 中有 file_name_display, 避免 TS 对媒体字段报错
         if (!("file_name_display" in row)) {
             return
         }
@@ -161,7 +160,7 @@ export function useMedia() {
         editMediaData.editDialogVisible = true
         editMediaData.is_generate_hls = row.is_generate_hls
 
-        // 如果是视频则设置宽高.
+        // 如果是视频则设置宽高
         if (isVideo(row.file_type)) {
             editWidth.value = "90%"
             editTop.value = "3vh"
@@ -172,16 +171,16 @@ export function useMedia() {
     }
 
     /**
-     * @description: 计算当前编辑媒体在当前分页数据中的索引.
-     * @return 当前编辑媒体索引, 未命中时返回 -1.
+     * @description: 计算当前编辑媒体在当前分页数据中的索引
+     * @return 当前编辑媒体索引, 未命中时返回 -1
      */
     const currentEditMediaIndex = computed(() => {
         return visibleMediaRows.value.findIndex((item) => item.id.toString() === editMediaData.file_id)
     })
 
     /**
-     * @description: 当前编辑媒体是否仍在当前列表可见范围内.
-     * @return true 表示仍在当前列表中, false 表示已不在当前列表中.
+     * @description: 当前编辑媒体是否仍在当前列表可见范围内
+     * @return true 表示仍在当前列表中, false 表示已不在当前列表中
      */
     const isCurrentEditMediaVisible = computed(() => {
         if (!editMediaData.file_id) {
@@ -192,22 +191,22 @@ export function useMedia() {
     })
 
     /**
-     * @description: 是否可以切换到上一条媒体.
-     * @return true 表示可切换, false 表示不可切换.
+     * @description: 是否可以切换到上一条媒体
+     * @return true 表示可切换, false 表示不可切换
      */
     const canSwitchPrevMedia = computed(() => currentEditMediaIndex.value > 0)
 
     /**
-     * @description: 是否可以切换到下一条媒体.
-     * @return true 表示可切换, false 表示不可切换.
+     * @description: 是否可以切换到下一条媒体
+     * @return true 表示可切换, false 表示不可切换
      */
     const canSwitchNextMedia = computed(() => {
         return currentEditMediaIndex.value > -1 && currentEditMediaIndex.value < visibleMediaRows.value.length - 1
     })
 
     /**
-     * @description: 返回当前媒体导航不可用时的提示文案.
-     * @return 媒体导航提示文案, 无需提示时返回空字符串.
+     * @description: 返回当前媒体导航不可用时的提示文案
+     * @return 媒体导航提示文案, 无需提示时返回空字符串
      */
     const mediaSwitchTip = computed(() => {
         if (isCurrentEditMediaVisible.value) {
@@ -218,19 +217,19 @@ export function useMedia() {
     })
 
     /**
-     * @description: 用当前列表的实际显示顺序覆盖媒体导航顺序.
-     * @param rows 当前界面显示顺序.
-     * @return void.
+     * @description: 用当前列表的实际显示顺序覆盖媒体导航顺序
+     * @param rows 当前界面显示顺序
+     * @return void
      */
     const updateVisibleMediaRows = (rows: TableData[]) => {
         visibleMediaRows.value = rows
     }
 
     /**
-     * @description: 编辑指定媒体行, 并打开编辑弹窗.
-     * @param index 当前行索引, 保留用于兼容 BaseTable 的事件签名.
-     * @param row 当前行数据.
-     * @return void.
+     * @description: 编辑指定媒体行, 并打开编辑弹窗
+     * @param index 当前行索引, 保留用于兼容 BaseTable 的事件签名
+     * @param row 当前行数据
+     * @return void
      */
     const editRow = (index: number, row: TableData) => {
         void index
@@ -239,8 +238,8 @@ export function useMedia() {
     }
 
     /**
-     * @description: 切换到上一条媒体, 保持当前编辑弹窗开启.
-     * @return void.
+     * @description: 切换到上一条媒体, 保持当前编辑弹窗开启
+     * @return void
      */
     const handlePrevMedia = () => {
         if (!canSwitchPrevMedia.value) {
@@ -254,8 +253,8 @@ export function useMedia() {
     }
 
     /**
-     * @description: 切换到下一条媒体, 保持当前编辑弹窗开启.
-     * @return void.
+     * @description: 切换到下一条媒体, 保持当前编辑弹窗开启
+     * @return void
      */
     const handleNextMedia = () => {
         if (!canSwitchNextMedia.value) {
@@ -286,7 +285,7 @@ export function useMedia() {
 
     // 更新字幕
     const updateSubtitles = async (language: string, isUpdateRouter: boolean = true) => {
-        // 如果已经存在则不添加,否则添加
+        // 如果已经存在则不添加, 否则添加
         if (!editMediaData.subtitles_language_list.includes(language)) {
             editMediaData.subtitles_language_list.push(language)
         }
@@ -299,9 +298,8 @@ export function useMedia() {
         await updateData(isUpdateRouter)
     }
 
-    // 将 params 解析回对应的响应式变量中(不需要请求)
+    // 将 params 解析回对应的响应式变量中 (不需要请求)
     const parseParamsNotLoaded = () => {
-        // 在加载前将 params 解析回对应的响应式变量中
         const { file_type } = queryParams
 
         if (file_type) {
@@ -309,7 +307,7 @@ export function useMedia() {
         }
     }
 
-    // 监控 queryParams
+    // 监控 queryParams, 变化时重新解析
     watch(
         () => queryParams,
         () => {

@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\obj.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 对象相关工具函数
+/*
+ * FilePath    : blog-client-nuxt\src\utils\obj.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 对象相关工具函数
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -14,7 +14,7 @@
  * @return {T} 克隆后的对象
  */
 export function deepClone<T>(objSource: T): T {
-    // 如果不是对象或者为null，直接返回
+    // 如果不是对象或者为 null, 直接返回
     if (typeof objSource !== "object" || objSource === null) {
         return objSource
     }
@@ -65,7 +65,7 @@ export function deepClone<T>(objSource: T): T {
  * @return  {boolean} 是否相等
  */
 export function deepEqual<T>(obj1: T, obj2: T): boolean {
-    // 如果两个对象相等直接返回true
+    // 如果两个对象相等直接返回 true
     if (obj1 === obj2) {
         return true
     }
@@ -75,29 +75,29 @@ export function deepEqual<T>(obj1: T, obj2: T): boolean {
         return obj1 instanceof Date && obj2 instanceof Date && obj1.getTime() === obj2.getTime()
     }
 
-    // 如果两个对象不是对象或者为null，直接返回false
+    // 如果两个对象不是对象或者为 null, 直接返回 false
     if (typeof obj1 !== "object" || obj1 === null || typeof obj2 !== "object" || obj2 === null) {
         return false
     }
 
-    // 获取两个对象的key
+    // 获取两个对象的 key
     const keys1 = Object.keys(obj1)
     const keys2 = Object.keys(obj2)
 
-    // 如果两个对象的key数量不相等，直接返回false
+    // 如果两个对象的 key 数量不相等, 直接返回 false
     if (keys1.length !== keys2.length) {
         return false
     }
 
-    // 遍历对象的key
+    // 遍历对象的 key
     for (const key of keys1) {
-        // 检查key是否存在于obj2中，并递归调用deepEqual进行深度比较
+        // 检查 key 是否存在于 obj2 中, 并递归调用 deepEqual 进行深度比较
         if (!keys2.includes(key) || !deepEqual((obj1 as any)[key], (obj2 as any)[key])) {
             return false
         }
     }
 
-    // 如果所有key都相等，返回true
+    // 如果所有 key 都相等, 返回 true
     return true
 }
 
@@ -106,7 +106,7 @@ export function deepEqual<T>(obj1: T, obj2: T): boolean {
  * @param original 原始数据
  * @param current 当前数据
  * @param primaryKey 主键字段
- * @return {Partial<T>} 已经更新的字段 如果没有更新则返只有主键的对象
+ * @return {Partial<T>} 已经更新的字段, 如果没有更新则返回空对象
  */
 export function getUpdatedFields<T>(original: T, current: T, primaryKey: keyof T): Partial<T> {
     // 存储已经更新的字段

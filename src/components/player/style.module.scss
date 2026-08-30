@@ -53,6 +53,13 @@ video::cue {
     position: relative;
     background-color: transparent;
 
+    // H6(占位高度保护): 非全屏时限制容器最大高度, 避免未登录/加载失败的黑底占位
+    // 主导首屏; 画面经 object-fit 居中呈现, 全屏模式(web-full-screen)不受影响
+    &:not(.web-full-screen) {
+        max-width: 100%;
+        max-height: 62vh;
+    }
+
     &.web-full-screen {
         position: fixed;
         top: 0;
@@ -191,14 +198,18 @@ video::cue {
         @extend %absolute-all;
         z-index: 3;
 
-        // 错误文字
+        // H6(错误浮层收敛): 纯红大字观感突兀, 改为白字 + 深底 + 危险色左条,
+        // 保持警示语义的同时与主题协调
         .show-error-text {
-            font-weight: bold;
-            color: red;
+            display: inline-block;
+            font-weight: 500;
+            color: #ffffff;
             background-color: #000000cc;
+            border-left: 3px solid var(--jpz-color-danger, var(--el-color-danger));
             padding: 10px 20px;
-            border-radius: 10px;
-            font-size: 20px;
+            border-radius: 6px;
+            font-size: 16px;
+            letter-spacing: 0.02em;
         }
     }
 }

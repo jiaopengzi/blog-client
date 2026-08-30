@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\thumbnail-select-dialog\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\thumbnail-select-dialog\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

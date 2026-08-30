@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\utils\tagSort.ts
+/*
+ * FilePath    : blog-client-nuxt\src\utils\tagSort.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -30,9 +30,9 @@ const fallbackTagNameCollator = new Intl.Collator(["en", "zh-Hans-CN", "zh-CN"],
 })
 
 /**
- * 将字符串形式的数量安全转换为数字.
- * @param value - 接口返回的数量字段.
- * @returns 可用于排序比较的数字值, 非法输入回退为 0.
+ * 将字符串形式的数量安全转换为数字
+ * @param value - 接口返回的数量字段
+ * @returns 可用于排序比较的数字值, 非法输入回退为 0
  */
 function toSafeCount(value: string | number): number {
     const count = Number(value)
@@ -40,9 +40,9 @@ function toSafeCount(value: string | number): number {
 }
 
 /**
- * 获取标签名称的排序分组.
- * @param name - 标签名称.
- * @returns 分组值, 数字越小排序越靠前.
+ * 获取标签名称的排序分组
+ * @param name - 标签名称
+ * @returns 分组值, 数字越小排序越靠前
  */
 function getTagNameSortGroup(name: string): number {
     const firstChar = name.trim().charAt(0)
@@ -63,10 +63,10 @@ function getTagNameSortGroup(name: string): number {
 }
 
 /**
- * 比较两个分类或标签名称, 保证英文排在中文前面, 中文按拼音排序.
- * @param leftName - 左侧名称.
- * @param rightName - 右侧名称.
- * @returns 名称排序结果, 升序时负数表示左侧应排在前面.
+ * 比较两个分类或标签名称, 保证英文排在中文前面, 中文按拼音排序
+ * @param leftName - 左侧名称
+ * @param rightName - 右侧名称
+ * @returns 名称排序结果, 升序时负数表示左侧应排在前面
  */
 export function comparePostTaxonomyName(leftName: string, rightName: string): number {
     const leftGroup = getTagNameSortGroup(leftName)
@@ -88,20 +88,20 @@ export function comparePostTaxonomyName(leftName: string, rightName: string): nu
 }
 
 /**
- * 比较两个标签名称, 保证与通用 taxonomy 排序规则一致.
- * @param leftName - 左侧标签名称.
- * @param rightName - 右侧标签名称.
- * @returns 名称排序结果, 升序时负数表示左侧应排在前面.
+ * 比较两个标签名称, 保证与通用 taxonomy 排序规则一致
+ * @param leftName - 左侧标签名称
+ * @param rightName - 右侧标签名称
+ * @returns 名称排序结果, 升序时负数表示左侧应排在前面
  */
 export function comparePostTagName(leftName: string, rightName: string): number {
     return comparePostTaxonomyName(leftName, rightName)
 }
 
 /**
- * 按指定数量字段对分类或标签列表排序.
- * @param items - 待排序的分类或标签列表.
- * @param countKey - 排序使用的数量字段.
- * @returns 新的排序结果, 不修改原始数组.
+ * 按指定数量字段对分类或标签列表排序
+ * @param items - 待排序的分类或标签列表
+ * @param countKey - 排序使用的数量字段
+ * @returns 新的排序结果, 不修改原始数组
  */
 export function sortPostTaxonomiesByCount<T extends PostTaxonomy>(items: T[], countKey: PostTaxonomyCountKey): T[] {
     const sortedItems: T[] = []
@@ -130,10 +130,10 @@ export function sortPostTaxonomiesByCount<T extends PostTaxonomy>(items: T[], co
 }
 
 /**
- * 按指定数量字段对标签列表排序.
- * @param tags - 待排序的标签列表.
- * @param countKey - 排序使用的数量字段.
- * @returns 新的排序结果, 不修改原始数组.
+ * 按指定数量字段对标签列表排序
+ * @param tags - 待排序的标签列表
+ * @param countKey - 排序使用的数量字段
+ * @returns 新的排序结果, 不修改原始数组
  */
 export function sortPostTagsByCount(tags: PostTag[], countKey: PostTagCountKey): PostTag[] {
     return sortPostTaxonomiesByCount(tags, countKey)

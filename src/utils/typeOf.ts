@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\utils\typeOf.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 类型判断工具类
+/*
+ * FilePath    : blog-client-nuxt\src\utils\typeOf.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 类型判断工具类
  */
 
 /**
@@ -61,90 +61,90 @@ export function isBoolean(bool: unknown): boolean {
 }
 
 /**
- * @description: 判断是否为undefined
+ * @description: 判断是否为 undefined
  * @param val 任意类型
- * @return 是否为undefined
+ * @return 是否为 undefined
  */
 export function isUndefined(val: unknown): boolean {
     return typeof val === "undefined"
 }
 
 /**
- * @description: 判断是否为null
+ * @description: 判断是否为 null
  * @param val 任意类型
- * @return 是否为null
+ * @return 是否为 null
  */
 export function isNull(val: unknown): boolean {
     return val === null
 }
 
 /**
- * @description: 判断是否为NaN
+ * @description: 判断是否为 NaN
  * @param val 任意类型
- * @return 是否为NaN
+ * @return 是否为 NaN
  */
 export function isNaN(val: unknown): boolean {
     return Number.isNaN(val)
 }
 
 /**
- * @description: 判断是否为Symbol
+ * @description: 判断是否为 Symbol
  * @param val 任意类型
- * @return 是否为Symbol
+ * @return 是否为 Symbol
  */
 export function isSymbol(val: unknown): boolean {
     return typeof val === "symbol"
 }
 
 /**
- * @description: 判断是否为Promise
+ * @description: 判断是否为 Promise
  * @param val 任意类型
- * @return 是否为Promise
+ * @return 是否为 Promise
  */
 export function isPromise(val: unknown): boolean {
     return val instanceof Promise
 }
 
 /**
- * @description: 判断是否为Set
+ * @description: 判断是否为 Set
  * @param val 任意类型
- * @return 是否为Set
+ * @return 是否为 Set
  */
 export function isSet(val: unknown): boolean {
     return val instanceof Set
 }
 
 /**
- * @description: 判断是否为Map
+ * @description: 判断是否为 Map
  * @param val 任意类型
- * @return 是否为Map
+ * @return 是否为 Map
  */
 export function isMap(val: unknown): boolean {
     return val instanceof Map
 }
 
 /**
- * @description: 判断是否为Date
+ * @description: 判断是否为 Date
  * @param val 任意类型
- * @return 是否为Date
+ * @return 是否为 Date
  */
 export function isDate(val: unknown): boolean {
     return val instanceof Date
 }
 
 /**
- * @description: 判断是否为RegExp
+ * @description: 判断是否为 RegExp
  * @param val 任意类型
- * @return 是否为RegExp
+ * @return 是否为 RegExp
  */
 export function isRegExp(val: unknown): boolean {
     return val instanceof RegExp
 }
 
 /**
- * @description: 判断是否为Error
+ * @description: 判断是否为 Error
  * @param val 任意类型
- * @return 是否为Error
+ * @return 是否为 Error
  */
 export function isError(val: unknown): boolean {
     return val instanceof Error

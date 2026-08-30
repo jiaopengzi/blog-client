@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\power-bi\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\power-bi\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -46,8 +46,8 @@ const containerRef = ref<HTMLElement | null>(null)
 const isFullscreen = ref(false)
 
 /**
- * @description: 根据当前容器同步浏览器全屏状态, 用于控制按钮显示.
- * @return void.
+ * @description: 根据当前容器同步浏览器全屏状态, 用于控制按钮显示
+ * @return void
  */
 const syncFullscreenState = (): void => {
     isFullscreen.value =
@@ -87,8 +87,8 @@ onBeforeUnmount(() => {
 })
 
 /**
- * @description: 让当前 Power BI 容器进入浏览器原生全屏模式.
- * @return Promise<void>.
+ * @description: 让当前 Power BI 容器进入浏览器原生全屏模式
+ * @return Promise<void>
  */
 const enterFullscreen = () => {
     if (containerRef.value) {

@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\components\common\pay-video\index.vue
+ * FilePath    : blog-client-nuxt\src\components\common\pay-video\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -42,14 +42,12 @@ import { type PayVideoProps } from "./types.ts"
 
 defineOptions({ name: "PayVideo" })
 
-// 定义 props
 const { postId, isAdminVideo = false, toc, isPaid } = defineProps<PayVideoProps>()
 const localPostId = ref<string>(postId)
 const localIsAdminVideo = ref<boolean>(isAdminVideo)
 const localTreeList = ref<PostVideoTocTree[]>(toc || [])
 const localIsPaid = ref<boolean>(isPaid)
 
-// hooks
 const { isShowEpisode, isShowToc, hasVideo, manager, state, switchVideoProgress, currentVideoOrder, currentTreeId, fetchData, setCurrentVideoProgress } =
     usePayVideo(localTreeList, localPostId, localIsAdminVideo)
 
@@ -126,7 +124,6 @@ const handleSelect = (val: Data) => {
     }
 
     .pay-video-player {
-        // 相对定位
         position: relative;
         width: 100%;
 
@@ -136,7 +133,6 @@ const handleSelect = (val: Data) => {
             right: 0;
             width: 100%;
             height: 100%;
-            // border-radius: 8px;
             background-color: color-mix(in srgb, var(--jpz-bg-color) 90%, transparent);
             backdrop-filter: blur(12px);
             display: flex;

@@ -1,5 +1,5 @@
-/**
- * FilePath    : blog-client\src\api\request\tabSyncManager.ts
+/*
+ * FilePath    : blog-client-nuxt\src\api\request\tabSyncManager.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -8,18 +8,18 @@
 
 import { useUserStore } from "@/stores/user"
 
-/** BroadcastChannel 频道名称，同源下所有标签页共享同一频道 */
+/** BroadcastChannel 频道名称, 同源下所有标签页共享同一频道 */
 const AUTH_SYNC_CHANNEL_NAME = "auth_sync"
 
 // 跨标签同步消息类型
 export enum TabSyncMessageType {
-    /** 某标签完成 refresh 后广播新 token，其余标签被动接收 */
+    /** 某标签完成 refresh 后广播新 token, 其余标签被动接收 */
     TOKEN_UPDATED = "TOKEN_UPDATED",
-    /** 用户主动退出登录时广播，其余标签同步清除登录态 */
+    /** 用户主动退出登录时广播, 其余标签同步清除登录态 */
     TOKEN_CLEARED = "TOKEN_CLEARED",
-    /** 新标签启动时主动请求其他标签共享 token（请求-响应模式） */
+    /** 新标签启动时主动请求其他标签共享 token (请求-响应模式) */
     REQUEST_TOKEN = "REQUEST_TOKEN",
-    /** 已有 token 的标签回复请求（请求-响应模式） */
+    /** 已有 token 的标签回复请求 (请求-响应模式) */
     RESPONSE_TOKEN = "RESPONSE_TOKEN",
 }
 
@@ -46,6 +46,27 @@ interface TabSyncTokenClearedMessage {
 type TabSyncMessage = TabSyncRequestMessage | TabSyncResponseMessage | TabSyncTokenUpdatedMessage | TabSyncTokenClearedMessage
 
 /**
+ * isAccessTokenExpired 解析 JWT payload 的 exp 声明, 判断 access token 是否已过期.
+ * 预留 5 秒缓冲, 避免临近过期的 token 被共享后立刻失效.
+ * @param token - access token 字符串.
+ * @returns true 表示已过期; 非 JWT 或解析失败时返回 false (按未过期处理).
+ */
+function isAccessTokenExpired(token: string): boolean {
+    try {
+        const payloadSegment = token.split(".")[1] || ""
+        const normalized = payloadSegment.replace(/-/g, "+").replace(/_/g, "/")
+        const padded = normalized + "=".repeat((4 - (normalized.length % 4)) % 4)
+        const payload = JSON.parse(atob(padded)) as { exp?: unknown }
+        const exp = Number(payload.exp)
+
+        return Number.isFinite(exp) && exp * 1000 <= Date.now() + 5000
+    } catch {
+        // 解析失败按未过期处理, 避免误伤正常 token
+        return false
+    }
+}
+
+/**
  * @description: 负责在同一浏览器标签页之间同步 access token, 并提供静默更新能力以避免广播循环.
  * @returns {void}
  * @throws {void} 当前实现内部兜底处理异常, 不向外抛出.
@@ -53,18 +74,18 @@ type TabSyncMessage = TabSyncRequestMessage | TabSyncResponseMessage | TabSyncTo
 class TabSyncManager {
     private channel: BroadcastChannel | null = null
 
-    /** requestId → resolve 回调；用于将异步 postMessage 响应映射回对应的 Promise */
+    /** requestId → resolve 回调; 用于将异步 postMessage 响应映射回对应的 Promise */
     private pendingRequests = new Map<string, (token: string | null) => void>()
 
     /**
-     * 静默写入深度计数器（非布尔值）。
-     * 使用计数而非布尔，是因为理论上可能存在多个并发的静默写入（如快速连续收到两条 TOKEN_UPDATED），
-     * 计数器在嵌套/重入场景下仍能正确判断"是否处于静默写入中"。
+     * 静默写入深度计数器 (非布尔值).
+     * 使用计数而非布尔, 是因为理论上可能存在多个并发的静默写入 (如快速连续收到两条 TOKEN_UPDATED),
+     * 计数器在嵌套/重入场景下仍能正确判断"是否处于静默写入中".
      */
     private silentUpdateDepth = 0
 
     constructor() {
-        // SSR 环境守卫：Node.js 中无 window / BroadcastChannel
+        // SSR 环境守卫: Node.js 中无 window / BroadcastChannel
         if (typeof window === "undefined" || typeof BroadcastChannel === "undefined") {
             return
         }
@@ -120,17 +141,17 @@ class TabSyncManager {
 
         const requestId = this.createRequestId()
 
-        // 竞态模式：超时与响应谁先到达就 resolve 谁
+        // 竞态模式: 超时与响应谁先到达就 resolve 谁
         return new Promise((resolve) => {
             const timer = window.setTimeout(() => {
                 this.pendingRequests.delete(requestId)
-                resolve(null) // 超时未收到任何标签的响应，视为无可用 token
+                resolve(null) // 超时未收到任何标签的响应, 视为无可用 token
             }, timeoutMs)
 
             this.pendingRequests.set(requestId, (token) => {
                 window.clearTimeout(timer)
                 this.pendingRequests.delete(requestId)
-                resolve(token) // 收到首个响应即完成，忽略后续重复响应
+                resolve(token) // 收到首个响应即完成, 忽略后续重复响应
             })
 
             // oxlint-disable-next-line unicorn/require-post-message-target-origin -- BroadcastChannel.postMessage 无 targetOrigin 参数
@@ -145,7 +166,7 @@ class TabSyncManager {
      * @throws {void} 无.
      */
     async setTokenSilently(token: string): Promise<void> {
-        // 进入静默模式：depth+1 → store.setAccessToken 内的广播守卫生效 → depth-1
+        // 进入静默模式: depth+1 → store.setAccessToken 内的广播守卫生效 → depth-1
         this.silentUpdateDepth += 1
 
         try {
@@ -188,7 +209,9 @@ class TabSyncManager {
     }
 
     /**
-     * @description: 响应其他标签的 token 请求, 仅在当前标签存在 token 时返回结果.
+     * @description: 响应其他标签的 token 请求, 仅在当前标签存在未过期的 token 时返回结果.
+     * 过期 token 不共享: 对端同步到过期 token 后, 重试请求仍会 401 且被标记为已重试,
+     * 无法回落到 refresh_token cookie 刷新, 最终表现为新标签/刷新后登录信息意外丢失.
      * @param {TabSyncRequestMessage} message token 请求消息.
      * @returns {Promise<void>}
      * @throws {void} 无.
@@ -196,6 +219,10 @@ class TabSyncManager {
     private async handleTokenRequest(message: TabSyncRequestMessage): Promise<void> {
         const token = this.getCurrentAccessToken()
         if (!token || !this.channel) return
+
+        if (isAccessTokenExpired(token)) {
+            return
+        }
 
         /* oxlint-disable unicorn/require-post-message-target-origin -- BroadcastChannel.postMessage 无 targetOrigin 参数 */
         this.channel.postMessage({
@@ -236,5 +263,5 @@ class TabSyncManager {
     }
 }
 
-/** 全局单例：所有模块共享同一个 BroadcastChannel 连接 */
+/** 全局单例: 所有模块共享同一个 BroadcastChannel 连接 */
 export const tabSyncManager = new TabSyncManager()
