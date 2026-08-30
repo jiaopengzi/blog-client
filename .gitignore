@@ -34,3 +34,6 @@ coverage
 *.sln
 *.sw?
 .VSCodeCounter
+.dsh-vision-router
+.agent-teams
+.spa2nuxt

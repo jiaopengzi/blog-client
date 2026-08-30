@@ -214,7 +214,9 @@ export default defineConfig(({ mode }) => {
             watch: {
                 // 排除调试素材目录: 截图工具写入 .bug 下的文件时会短暂锁定文件,
                 // chokidar watch 遇到 EBUSY 会抛未捕获异常导致 dev server 崩溃.
-                ignored: ["**/.bug/**"],
+                // TEMP(spa2nuxt 对比验收): 浏览器插件 Chrome profile 位于 .spa2nuxt 下并持续锁定文件,
+                // 临时加入忽略目录, 验收完成后立即 git checkout 还原.
+                ignored: ["**/.feat/**", "**/.bug/**", "**/.spa2nuxt/**", "**/.sisyphus/**"],
             },
         },
 
