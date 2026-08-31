@@ -27,6 +27,7 @@ import { createCssSetup, createJsonSetup } from "@/pkg/codemirror"
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options" // 网站配置选项
 import { invalidateSsrRenderCache } from "@/utils/ssrCache"
+import { syncServerFaviconMirror } from "@/utils/faviconSync"
 import { MessageUtil } from "@/utils/message"
 import { adminMenuItemMap } from "@/components/views/admin/component/aside"
 
@@ -88,6 +89,9 @@ const submitForm = async () => {
         // feature01(260829-08): 站点配置直接影响所有 SSR 页直出内容(SEO/站壳/样式),
         // 保存成功后立即清空 swr 渲染缓存, 下次请求按新配置重新 SSR
         await invalidateSsrRenderCache()
+        // bug05(260831-01): favicon 配置变更后同步服务端 /favicon.ico 镜像(浏览器/外部工具按约定路径
+        // 请求该文件, 不读 HTML 的 <link rel="icon">); 内部吞错, 失败不影响保存结果
+        await syncServerFaviconMirror()
         MessageUtil.success("更新成功")
     } else {
         MessageUtil.error(handleResErr(res), 10000)

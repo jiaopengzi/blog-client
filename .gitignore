@@ -33,6 +33,9 @@ coverage
 .sisyphus
 *.local
 
+# favicon.ico 运行时镜像 (bug05 260831-01): dev 态由 server/utils/favicon.ts 写入 public/, 属运行时产物
+public/favicon.ico
+
 /cypress/videos/
 /cypress/screenshots/
 

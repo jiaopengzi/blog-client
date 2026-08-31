@@ -51,7 +51,8 @@ COPY --from=builder /output-public /usr/share/nginx/html
 # - node SSR 的 serveStatic 依赖 .output/public 服务未被 nginx 静态正则拦截的文件
 #   (VERSION 探活 / LICENSE / _payload.json 等, 实测移除即 500);
 # - symlink 让 node 与 nginx 共读同一份数据, 两个路径内容永远一致;
-# - nitro 运行时回写(如 payload 落盘)经 symlink 写入 html 目录, 容器可写层内正常
+# - nitro 运行时回写(如 payload 落盘 / favicon.ico 镜像同步, 见 server/utils/favicon.ts)
+#   经 symlink 写入 html 目录, 容器可写层内正常(容器重建后由启动 plugin 自愈重同步)
 RUN ln -s /usr/share/nginx/html /app/.output/public
 
 # 复制 nginx 主配置模板(占位符 ${NGINX_SERVER_NAME} / ${NUXT_API_BASE} 由

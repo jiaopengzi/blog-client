@@ -216,6 +216,15 @@ http {
 
         # === 缓存策略开始 ===
 
+        # favicon.ico 是 admin 保存 app-option 时经 node 的 /internal/favicon-sync 落盘的镜像文件
+        # (内容随站点配置变化), 不适用下方静态资源的 1y immutable 长缓存, 单独给短缓存;
+        # 精确匹配优先级高于下方正则, 文件不存在时 nginx 404(不回退 node, 与旧 SPA 静态行为一致)
+        location = /favicon.ico {
+            root /usr/share/nginx/html;
+            expires 1h;
+            add_header Cache-Control "public";
+        }
+
         # 缓存构建产物与指定目录(_nuxt|static|assets)下的静态资源文件一年,
         # 同时匹配根目录下的 .ico .svg 文件
         # (_nuxt 文件名带内容 hash 永不变更, fonts 为自托管字体, 均适合 immutable)

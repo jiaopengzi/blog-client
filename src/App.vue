@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : Nuxt 根组件(站点自定义 CSS 直出 + 顶部加载条 + 布局挂载)
+ * Description : Nuxt 根组件(站点自定义 CSS 直出 + favicon 直出 + 顶部加载条 + 布局挂载)
 -->
 
 <!--
@@ -111,6 +111,24 @@ useHead({
 //   (initStores 强制回源 / admin 保存后的 update(true))后由响应式 getter 原位更新
 const optionsStore = useOptionsStore()
 const { custom_style_css } = storeToRefs(optionsStore)
+
+// bug05(260831-01): favicon 直出 —— 旧 SPA 的 index.html 携带 <link rel="icon" id="dynamic-favicon" href="/favicon.ico">,
+// 迁移后该静态入口消失, optionsStore.updateFavicon() 的 getElementById("dynamic-favicon") 永远落空。
+// 这里经 useHead 响应式注入:
+// - SSR/水合首帧直出 app-option 配置的 favicon(favicon 在 PUBLIC_APP_OPTION_KEYS 白名单内, payload 注水可用);
+// - 未配置时回退 /favicon.ico —— 该路径是 server 端的 app-option 运行时镜像(admin 保存时经
+//   /internal/favicon-sync 落盘, 服务启动时自愈同步, 见 server/utils/favicon.ts), 不再是打包写死的静态文件;
+// - id="dynamic-favicon" 保留 updateFavicon() 的 DOM 原位更新路径(admin 保存后 store 刷新, 两路语义一致)
+useHead({
+    link: [
+        {
+            key: "dynamic-favicon",
+            rel: "icon",
+            id: "dynamic-favicon",
+            href: () => optionsStore.app_options.favicon?.value || "/favicon.ico",
+        },
+    ],
+})
 
 useHead({
     style: [

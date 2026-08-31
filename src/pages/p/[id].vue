@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 文章详情页 (阶段 4 终版拆分: 头部/面包屑/内容/侧栏/页脚在本页组合)
+ * Description : 文章详情页 (阶段 4 终版拆分: 头部/面包屑/内容/侧栏/页脚在本页组合; SSR 取数失败不误判 404)
 -->
 
 <!--
@@ -118,6 +118,7 @@ interface PostDetailSsrPayload {
 
 const {
     data: detailData,
+    error: detailError,
     pending,
     refresh,
 } = await useAsyncData<PostDetailSsrPayload>(
@@ -146,9 +147,23 @@ const detailMeta = computed(() => detailData.value?.post ?? null)
 usePostSeo(() => detailMeta.value)
 
 // 404 语义: 接口明确「文章不存在」才 404; 密码空 (2042) 走客户端密码流程
-if (!pending.value && detailMeta.value === null) {
+// bug04(260831-01): SSR 直连后端失败 (NUXT_API_BASE 不可达/为空) 时 asyncData 抛错、data 为 null,
+// 此前与「文章不存在」混同判定 404 —— 线上表现为详情页刷新即 404、/_payload.json 同步 404(bug03)。
+// 这里以 error 区分: 请求失败不抛 404, 渲染空详情(v-if 守卫), 客户端挂载后 refresh 走同源 /api
+// 重拉恢复(对齐 SPA 纯 CSR 的请求失败行为); warn 双端打印, 服务端侧进容器日志便于排查部署链路
+if (detailError.value) {
+    console.warn(`[post-detail] 取数失败(post_id=${postId.value}): ${detailError.value.message}`)
+} else if (!pending.value && detailMeta.value === null) {
     throw createError({ statusCode: 404, message: "文章不存在或已删除" })
 }
+
+// bug04(260831-01): SSR 取数失败的客户端恢复 —— 水合后重拉(浏览器走同源 /api, 不依赖 SSR 直连链路),
+// 成功后 detailError 重置为 null、detailData 更新, 页面恢复正常渲染; 仍失败时保持空详情, 不误判 404
+onMounted(() => {
+    if (detailError.value && !detailMeta.value) {
+        refresh()
+    }
+})
 
 // 详情页显示状态由本页管理 (符合 SPA statusStore 显示逻辑): 进入即详情态 (同步执行, SSR 前就位)
 watch(
