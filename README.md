@@ -120,24 +120,29 @@ SPA 版是纯静态文件 + nginx; Nuxt 版页面由 SSR 实时渲染, 因此最
 | `Dockerfile` | 完整构建(lint + type-check + test + build), 运行层 `nginx:1.31.3-alpine` + node 二进制 |
 | `Dockerfile.env` | 仅安装依赖的基础镜像(`blog-client:env`), 加速迭代构建 |
 | `Dockerfile.dev` | 基于 `blog-client:env` 的快速构建(跳过 lint/test) |
-| `nginx.conf` | 与 SPA 版保持一致, 仅三处 SSR 必要调整(文件头注释有说明) |
+| `nginx.conf.template` | nginx 主配置模板, 与 SPA 版保持一致, 仅四处 SSR 必要调整(文件头注释有说明); 域名/后端上游用 `${NGINX_SERVER_NAME}` / `${NUXT_API_BASE}` 占位, 容器启动时由 entrypoint 以 envsubst 白名单替换生成 |
 | `redirects.map` | 旧网址 301 重定向映射(可选) |
-| `docker-entrypoint.sh` | 容器入口: node 就绪后启动 nginx, 双进程互相监控 |
+| `docker-entrypoint.sh` | 容器入口: 先由模板生成 nginx 主配置并 `nginx -t` 校验, node 就绪后启动 nginx, 双进程互相监控 |
 
 镜像内置环境变量(均可在 `docker run -e` 覆盖):
 
-- `NITRO_PORT=7364` — node SSR 监听端口(容器内部, 与开发端口统一), 与 `nginx.conf` 的 `proxy_pass` 对应
-- `NUXT_API_BASE=http://blog-server:5426` — SSR 直连后端(docker 服务名, 需与后端容器同网络)
+- `NITRO_PORT=7364` — node SSR 监听端口(容器内部, 与开发端口统一), 与 `nginx.conf.template` 的 `proxy_pass` 对应
+- `NUXT_API_BASE=http://blog-server:5426` — 后端上游地址, 同时供 node SSR 直连与 nginx 代理复用(docker 服务名, 需与后端容器同网络)
 - `NUXT_PUBLIC_BASE_URL=https://jiaopengzi.com` — 正式站点地址
+- `NGINX_SERVER_NAME=jiaopengzi.com` — nginx `server_name` 域名(模板占位符的默认值)
 
 构建层与运行层统一使用 alpine(musl): 运行层基线 `nginx:1.31.3-alpine` 与 SPA 一致; 且 nitro 产物 `.output/server/node_modules` 内的原生依赖二进制(sharp 等)按构建平台的 libc 打包, 必须与运行时一致, 因此构建层用 `node:24.19.0-alpine`, 运行层从同版本 alpine 镜像拷贝 node 二进制. **勿把构建层换成 slim/debian 系**: glibc 构建出的 sharp 在 musl node 下加载失败(ERR_DLOPEN_FAILED), `/_ipx` 缩略图会全部 500.
 
 健康检查: `GET /nginx-health`(nginx)与 `GET /VERSION`(node 直出, 探活). SSL 证书挂载到 `/etc/nginx/ssl`(cert.pem / cert.key).
 
-nginx 配置验证:
+nginx 配置验证(需先做与 entrypoint 相同的占位符替换; 示例 NUXT_API_BASE 用 127.0.0.1 避免验证容器解析不了 blog-server 服务名; 验证容器无 ssl 证书, `nginx -t` 报证书文件缺失即代表语法已通过——nginx 先完成配置解析才会去加载证书):
 
 ```bash
-sudo docker run --rm -v $(pwd)/nginx.conf:/etc/nginx/custom.conf nginx:1.31.3-alpine nginx -t -c /etc/nginx/custom.conf
+NGINX_SERVER_NAME=jiaopengzi.com NUXT_API_BASE=http://127.0.0.1:5426 \
+sudo docker run --rm -e NGINX_SERVER_NAME -e NUXT_API_BASE \
+  -v $(pwd)/nginx.conf.template:/etc/nginx/nginx.conf.template \
+  nginx:1.31.3-alpine sh -c "envsubst '\${NGINX_SERVER_NAME} \${NUXT_API_BASE}' \
+    < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -t"
 ```
 
 ## 项目结构

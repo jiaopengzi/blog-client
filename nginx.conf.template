@@ -1,0 +1,318 @@
+# 本文件是 nginx 主配置模板: 占位符 ${NGINX_SERVER_NAME} / ${NUXT_API_BASE} 由
+# docker-entrypoint.sh 在容器启动时用 envsubst 白名单替换(只替换这两个变量, 不碰 $host 等
+# nginx 运行时变量), 生成 /etc/nginx/nginx.conf 后经 nginx -t 校验再启动。
+#
+# 环境变量(均可在 docker run -e 覆盖, 默认值见 Dockerfile 运行阶段 ENV):
+# - NGINX_SERVER_NAME: server_name 域名(默认 jiaopengzi.com)
+# - NUXT_API_BASE: 后端上游地址, 同时供 nginx 代理与 node SSR 直连复用, 单一来源保证一致
+#   (默认 http://blog-server:5426, 需与后端容器在同一自定义 docker 网络)
+#
+# 使用 docker 验证配置命令(需先做与 entrypoint 相同的替换, ${...} 占位符直接留给 nginx 会解析失败;
+# NUXT_API_BASE 示例值用 127.0.0.1 避免验证容器解析不了 blog-server 服务名;
+# 验证容器没有 ssl 证书, nginx -t 报证书文件缺失即代表语法已通过——nginx 先完成配置解析才会去加载证书):
+#   NGINX_SERVER_NAME=jiaopengzi.com NUXT_API_BASE=http://127.0.0.1:5426 \
+#   sudo docker run --rm -e NGINX_SERVER_NAME -e NUXT_API_BASE \
+#     -v $(pwd)/nginx.conf.template:/etc/nginx/nginx.conf.template \
+#     nginx:1.31.3-alpine sh -c "envsubst '\${NGINX_SERVER_NAME} \${NUXT_API_BASE}' \
+#       < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -t"
+#
+# nuxt4 迁移说明(相对 spa 项目 nginx.conf 的四处必要修改, 其余逐行保持一致):
+# (1)location / 由 spa 的 try_files $uri $uri/ /index.html 改为反向代理到容器内 node SSR 进程
+#    (nuxt 是服务端渲染, 页面 HTML 由 node 实时生成, 不存在静态 index.html 入口);
+# (2)静态资源长缓存正则新增 _nuxt 与 fonts 目录(nuxt 构建产物在 /_nuxt/ 且文件名带 hash,
+#    自托管字体在 /fonts/, 均适合 1y immutable 策略);
+# (3)删除 spa 的 location ~* \.html$ 块——其 try_files 回退目标 /index.html 在 nuxt 的
+#    public 目录不存在, 旧 .html 链接请求会触发内部重定向循环(500); 现此类请求落到
+#    location / 由 node 处理, nuxt 的 catch-all 路由渲染 404 页(与 spa 的 vue-router
+#    404 行为等价);
+# (4)静态资源 root 保持镜像惯例的 /usr/share/nginx/html: 构建期先将镜像自带欢迎页
+#    (index.html / 50x.html)清空, 再填入 nitro 产物 public(镜像内静态资源只保留这一份,
+#    .output/public 为指向本目录的 symlink, node SSR 与 nginx 共读; 外围工具 blog-tool 依赖该目录)。
+
+# 匹配优先级说明(从高到低):
+# (1)精确匹配, 示例: location = /abc { }
+# (2)前缀匹配(不进行正则匹配)如果找到停止搜索, 示例: location ^~ /abc { }
+# (3)正则匹配按顺序从上到下匹配
+#   正则匹配，不区分大小写, 示例:  location ~* /abc { }
+#   正则匹配，区分大小写写, 示例:  location ~ /abc { }
+# (4)普通路径前缀匹配, 示例:  location /abc { }
+
+# 设置工作进程数(根据 CPU 核心数自动设置, 提升并发能力)
+worker_processes auto;
+
+# 设置pid的路径, 确保在镜像中有权限写入 nginx.pid
+pid /tmp/nginx.pid;
+
+events {
+    # 设置每个工作进程的最大连接数
+    worker_connections 1024;
+
+    # Linux下使用高性能 epoll 事件模型
+    use epoll;
+
+    # 一次接受多个新连接, 提高连接效率
+    multi_accept on;
+}
+
+http {
+    # 包含 mime.types 文件
+    include mime.types;
+
+    # 设置默认文件类型
+    default_type application/octet-stream;
+
+    # 开启 sendfile
+    sendfile on;
+
+    # 设置 keepalive 超时时间 120s
+    keepalive_timeout 120;
+
+    # 如果存在预压缩的 .gz 文件, 则直接提供该文件(需配置在 gzip on 之前)
+    # (nuxt 的 nitro compressPublicAssets 已在构建期产出 .gz/.br 预压缩文件, 此处直接复用)
+    gzip_static on;
+
+    # 开启 gzip 压缩
+    gzip on;
+
+    # 设置最小压缩文件大小为 1KB
+    gzip_min_length 1024;
+
+    # 设置 gzip 缓冲区大小
+    gzip_buffers 4 16k;
+
+    # 设置压缩级别(1-9), 数值越大压缩率越高但 CPU 占用也越高
+    gzip_comp_level 6;
+
+    # 设置需要压缩的文件类型
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+    # 告知代理服务器根据 Accept-Encoding 返回不同内容, 提升缓存兼容性
+    gzip_vary on;
+
+    # 对所有代理请求启用 gzip 压缩
+    gzip_proxied any;
+
+    # 设置上传文件大小限制为100MB
+    client_max_body_size 100M;
+
+    # 隐藏 Nginx 版本号, 防止信息泄露
+    server_tokens off;
+
+    # 添加基础安全头保护
+    # 防止点击劫持(Clickjacking), 禁止页面被嵌入到 <iframe> 中(除非同源)
+    add_header X-Frame-Options "SAMEORIGIN" always;
+
+    # 启用浏览器内置的 XSS 过滤器(主要是旧版 IE/Chrome)
+    add_header X-XSS-Protection "1; mode=block" always;
+
+    # 禁止浏览器 "嗅探" MIME 类型(例如把 .txt 当作 JS 执行), 防止 MIME 混淆攻击
+    add_header X-Content-Type-Options "nosniff" always;
+
+    # 控制 Referer 头的发送策略, 防止敏感信息泄露
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
+
+    # 开启高效文件传输模式
+    tcp_nopush on;
+    tcp_nodelay on;
+
+    # 客户端请求体缓冲区设置
+    client_body_buffer_size 16k;
+    client_header_buffer_size 1k;
+    large_client_header_buffers 4 4k;
+
+    # 旧网址重定向映射(map 在请求匹配时按需查表, 不影响性能)
+    # 通配符 include 使 redirects.map 文件可选, 不存在时 nginx 不会报错
+    map $uri $redirect_uri {
+        default "";
+        include /etc/nginx/redirects*.map;
+    }
+
+    # web 服务器
+    server {
+        # 监听 IPv4 HTTP 端口
+        listen 80;
+
+        # 监听 IPv6 HTTP 端口
+        listen [::]:80;
+
+        # 设置服务器名称(模板占位符, 由 entrypoint 按 NGINX_SERVER_NAME 替换)
+        server_name ${NGINX_SERVER_NAME};
+
+        # 设置编码
+        charset utf-8;
+
+        # 将所有 HTTP 请求重定向到 HTTPS
+        location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+
+    server {
+        # 监听 IPv4 HTTPS 端口
+        listen 443 ssl;
+
+        # 监听 IPv6 HTTPS 端口
+        listen [::]:443 ssl;
+
+        # 启用 HTTP/2
+        http2 on;
+
+        # 设置服务器名称(模板占位符, 由 entrypoint 按 NGINX_SERVER_NAME 替换)
+        server_name ${NGINX_SERVER_NAME};
+
+        # 设置编码
+        charset utf-8;
+
+        # SSL 证书路径和密钥路径
+        ssl_certificate /etc/nginx/ssl/cert.pem;
+        ssl_certificate_key /etc/nginx/ssl/cert.key;
+
+        # 仅允许安全的 TLS 协议版本
+        ssl_protocols TLSv1.2 TLSv1.3;
+
+        # 使用现代、安全的加密套件
+        ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
+
+        # 不强制使用服务器端首选加密套件
+        ssl_prefer_server_ciphers off;
+
+        # 共享 SSL 会话缓存, 提升性能
+        ssl_session_cache shared:SSL:10m;
+
+        # 设置 SSL 会话超时时间为 10 分钟
+        ssl_session_timeout 10m;
+
+        # 旧网址 301 重定向(匹配 redirects.map 中的映射)
+        if ($redirect_uri != "") {
+            return 301 $redirect_uri;
+        }
+
+        # 代理到后端服务的 sitemap 接口(上游地址由 entrypoint 按 NUXT_API_BASE 替换)
+        location /sitemap {
+            # 直接代理到后端服务
+            proxy_pass ${NUXT_API_BASE}/api/v1/sitemap;
+
+            # 复用 proxy 设置
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header Connection "";
+            # 不走缓存
+            add_header Cache-Control "no-store, no-cache, must-revalidate";
+        }
+
+        # 添加 Nginx 健康状态检查端点
+        location = /nginx-health {
+            # 关闭健康检查日志
+            access_log off;
+
+            # add_header 必须在 return 之前, 否则部分 nginx 版本不生效
+            add_header Content-Type text/plain;
+
+            # 返回健康状态
+            return 200 "healthy\n";
+        }
+
+        # === 缓存策略开始 ===
+
+        # 缓存构建产物与指定目录(_nuxt|static|assets)下的静态资源文件一年,
+        # 同时匹配根目录下的 .ico .svg 文件
+        # (_nuxt 文件名带内容 hash 永不变更, fonts 为自托管字体, 均适合 immutable)
+        location ~* ^/(?:(?:_nuxt|static|assets|fonts)/.*\.(?:js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|otf|webp|avif|mp4|webm|pdf)|[^/]+\.(ico|svg))$ {
+            root /usr/share/nginx/html;
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+        }
+
+        # API 中的上传的静态资源缓存一年
+        location ~* ^/api/(v1/)?(uploads)/.+\.(png|jpg|jpeg|gif|ico|webp|svg|pdf|mp4|webm|ts)$ {
+            proxy_pass ${NUXT_API_BASE};
+
+            # 复用 proxy 设置
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header Connection "";
+
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+        }
+        # === 缓存策略结束 ===
+
+        # 前端应用配置(nuxt4 SSR)
+        # 页面 HTML 由容器内 node 进程(.output/server/index.mjs, 端口 7364, 与开发端口统一)实时渲染,
+        # 未被上方静态规则命中的请求(页面路由 / _payload.json / _ipx 图片处理 / VERSION 等)
+        # 全部代理给 node; HTML 响应头(node 侧控制)不含长缓存, 每次请求均为最新渲染
+        location / {
+            proxy_pass http://127.0.0.1:7364;
+
+            # 设置 HTTP 版本(keepalive 连接池, 减少与 node 的连接建立开销)
+            proxy_http_version 1.1;
+
+            # 设置主机头
+            proxy_set_header Host $host;
+
+            # 设置真实客户端 IP 头
+            proxy_set_header X-Real-IP $remote_addr;
+
+            # 设置转发链路中的客户端 IP 头
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+            # 告知 node 本次请求的原始协议与主机(SSR 生成 canonical / og:url 等需要),
+            # 否则 node 侧只能看到 http://127.0.0.1:7364 会推导出错误的站点地址
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host $host;
+
+            # 设置代理读取超时时间(秒), 覆盖默认 60s 避免 SSR 慢查询被截断
+            proxy_read_timeout 120;
+
+            # 设置代理连接超时时间(秒)
+            proxy_connect_timeout 120;
+
+            # 设置代理发送超时时间(秒)
+            proxy_send_timeout 120;
+        }
+
+        # 后端服务配置
+        location /api/ {
+            # 上游地址由 entrypoint 按 NUXT_API_BASE 替换(默认 docker 服务名 blog-server:5426,
+            # 需在同一自定义网络下, 否则用 docker run -e NUXT_API_BASE=... 指向宿主机内网地址)
+            proxy_pass ${NUXT_API_BASE}/api/;
+
+            # 设置 HTTP 版本
+            proxy_http_version 1.1;
+
+            # 使用 keepalive 连接池, 减少连接建立开销
+            proxy_set_header Connection "";
+
+            # 设置升级头(用于 WebSocket 等)
+            proxy_set_header Upgrade $http_upgrade;
+
+            # 设置连接头
+            proxy_set_header Connection "upgrade";
+
+            # 设置主机头
+            proxy_set_header Host $host;
+
+            # 设置真实客户端 IP 头
+            proxy_set_header X-Real-IP $remote_addr;
+
+            # 设置转发链路中的客户端 IP 头
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+            # 设置代理读取超时时间(秒)
+            proxy_read_timeout 120;
+
+            # 设置代理连接超时时间(秒)
+            proxy_connect_timeout 120;
+
+            # 设置代理发送超时时间(秒)
+            proxy_send_timeout 120;
+
+            # 不走缓存
+            add_header Cache-Control "no-store, no-cache, must-revalidate";
+        }
+    }
+}

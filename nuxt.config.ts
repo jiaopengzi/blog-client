@@ -331,11 +331,14 @@ export default defineNuxtConfig({
             },
         },
 
-        // P0-2(nuxt4-good): 公开资源预压缩统一由 nitro 官方机制承担(gzip + brotli),
-        // 已移除 SPA 遗产的 vite-plugin-compression(此前与 nitro 双重压缩)
+        // P0-2(nuxt4-good): 公开资源预压缩统一由 nitro 官方机制承担, 已移除 SPA 遗产的
+        // vite-plugin-compression(此前与 nitro 双重压缩)
+        // brotli 刻意关闭(260831-01 问题02): 部署链路的 nginx 官方镜像(nginx:1.31.3-alpine)
+        // 未编译 brotli 模块, .br 预压缩产物无任何消费者, 纯占运行镜像 ~2.6MB 体积;
+        // gzip 保留, 由 nginx 的 gzip_static 直发预压缩文件
         compressPublicAssets: {
             gzip: true,
-            brotli: true,
+            brotli: false,
         },
 
         // element-plus 内联到服务端构建: resolver 注入的 theme-chalk css 副作用导入需要

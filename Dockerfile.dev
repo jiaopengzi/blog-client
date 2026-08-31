@@ -10,49 +10,65 @@ WORKDIR /app
 COPY . .
 
 # 编译 Nuxt 项目(产出 .output; 依赖已由基础镜像预装, 跳过 lint/test 加速迭代)
-RUN pnpm build
+# LICENSE 先复制进 public/, 由 nitro 构建自然带入产物(nginx 静态 root 目录可直出);
+# build 后把 public 从 .output 挪出: 镜像里静态资源只保留一份(见运行阶段 symlink 说明)
+# 同层清理构建中间产物: .nuxt 与 node_modules 下的构建缓存仅构建期使用, 同一 RUN 内
+# 创建又删除的内容不会进入层 diff, 把该层落盘量从 ".nuxt + .output + 缓存" 压到产物本身,
+# 缓解 CI 宿主机磁盘临界时 buildkit 提交层写入 metadata_v2.db 报 input/output error
+# (bugfix 260830-04; 运行镜像只 COPY 产物, 清理不影响产物)
+RUN cp LICENSE public/LICENSE && pnpm build && mv .output/public /output-public && rm -rf .nuxt node_modules/.cache node_modules/.vite
 
 # 使用与 spa 项目一致的 nginx alpine 镜像(TLS 终端 + 静态资源 + 反向代理)
 FROM nginx:1.31.3-alpine
 
-# 安装 tzdata 包 设置时区; libstdc++/libgcc 为 node 二进制的运行依赖
+# 运行阶段依赖: tzdata(时区数据), libstdc++/libgcc(node 二进制的运行时库);
+# 同层完成: 时区固定上海 + nginx 缓存目录属主(支持非 root 启动) + 清理镜像自带死文件
+# (conf.d/default.conf: 本镜像主配置不 include conf.d; /usr/share/nginx/html 欢迎页:
+#  先清空, 稍后只填入构建产物 public, 保证目录内无历史残留——外围工具 blog-tool 依赖该目录)
 RUN apk add --no-cache tzdata libstdc++ libgcc && \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-    echo "Asia/Shanghai" > /etc/timezone
+    echo "Asia/Shanghai" > /etc/timezone && \
+    mkdir -p /var/cache/nginx && \
+    chown -R nginx:nginx /var/cache/nginx && \
+    mkdir -p /app && \
+    rm -f /etc/nginx/conf.d/default.conf && \
+    rm -rf /usr/share/nginx/html
 ENV TZ=Asia/Shanghai
 
 # 仅拷贝 node 二进制(不含 npm/pnpm/corepack, 精简体积; 版本与构建阶段严格一致, musl 架构相同)
 COPY --from=node:24.19.0-alpine /usr/local/bin/node /usr/local/bin/node
 
-# 更改 Nginx 缓存目录的所有权(修复问题使用非 root 用户来启动容器)
-RUN mkdir -p /var/cache/nginx && \
-    chown -R nginx:nginx /var/cache/nginx && \
-    mkdir -p /app
-
-# 将 nitro node-server 产物复制到容器中(server: node SSR 进程入口; public: 静态资源)
+# 将 nitro node-server 产物复制到容器中(server: node SSR 进程入口; public 已在构建层挪出,
+# 静态资源只在镜像中保留 html 一份)
 COPY --from=builder /app/.output /app/.output
 
-# 静态资源同时交给 nginx 直出(保留 spa 的 nginx 静态缓存策略: _nuxt/fonts 长缓存,
-# 以及 nitro compressPublicAssets 预压缩产物的 gzip_static 直发)
-COPY --from=builder /app/.output/public /usr/share/nginx/html
+# 静态资源交给 nginx 直出(保留 spa 的 nginx 静态缓存策略: _nuxt/fonts 长缓存,
+# 以及 nitro compressPublicAssets 预压缩产物的 gzip_static 直发);
+# html 目录已在上方 apk 层清空, 这里只填入构建产物(LICENSE 已随构建期 cp 进入 public)
+COPY --from=builder /output-public /usr/share/nginx/html
 
-# 从源码中添加 LICENSE 到 html 目录
-COPY LICENSE /usr/share/nginx/html/LICENSE
+# .output/public 必须存在但改为指向 html 的 symlink(单份省 ~13MB):
+# - node SSR 的 serveStatic 依赖 .output/public 服务未被 nginx 静态正则拦截的文件
+#   (VERSION 探活 / LICENSE / _payload.json 等, 实测移除即 500);
+# - symlink 让 node 与 nginx 共读同一份数据, 两个路径内容永远一致;
+# - nitro 运行时回写(如 payload 落盘)经 symlink 写入 html 目录, 容器可写层内正常
+RUN ln -s /usr/share/nginx/html /app/.output/public
 
-# 复制自定义 Nginx 配置文件到当前镜像的 Nginx 配置文件目录
-COPY nginx.conf /etc/nginx/nginx.conf
+# 复制 nginx 主配置模板(占位符 ${NGINX_SERVER_NAME} / ${NUXT_API_BASE} 由
+# docker-entrypoint.sh 启动时 envsubst 白名单替换生成 /etc/nginx/nginx.conf)
+COPY nginx.conf.template /etc/nginx/nginx.conf.template
 
 # 复制旧网址重定向映射文件(可选, 不需要时可删除此行及 redirects.map 文件)
 COPY redirects.map /etc/nginx/redirects.map
 
-# 复制双进程启动脚本(node SSR + nginx, 任一退出容器退出)
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+# 复制双进程启动脚本(node SSR + nginx, 任一退出容器退出; --chmod 免去单独的 chmod 层)
+COPY --chmod=755 docker-entrypoint.sh /docker-entrypoint.sh
 
-# node SSR 运行配置(均可在 docker run -e 覆盖, 详见 Dockerfile 同节注释)
+# 运行配置(均可在 docker run -e 覆盖, 详见 Dockerfile 同节注释)
 ENV NITRO_PORT=7364 \
     NUXT_API_BASE=http://blog-server:5426 \
-    NUXT_PUBLIC_BASE_URL=https://jiaopengzi.com
+    NUXT_PUBLIC_BASE_URL=https://jiaopengzi.com \
+    NGINX_SERVER_NAME=jiaopengzi.com
 
 # 挂载 Nginx 配置文件(SSL 证书挂 /etc/nginx/ssl)
 VOLUME ["/etc/nginx"]
