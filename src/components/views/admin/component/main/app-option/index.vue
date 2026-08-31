@@ -28,6 +28,7 @@ import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options" // 网站配置选项
 import { invalidateSsrRenderCache } from "@/utils/ssrCache"
 import { syncServerFaviconMirror } from "@/utils/faviconSync"
+import { syncServerLogoMirror } from "@/utils/logoSync"
 import { MessageUtil } from "@/utils/message"
 import { adminMenuItemMap } from "@/components/views/admin/component/aside"
 
@@ -92,6 +93,9 @@ const submitForm = async () => {
         // bug05(260831-01): favicon 配置变更后同步服务端 /favicon.ico 镜像(浏览器/外部工具按约定路径
         // 请求该文件, 不读 HTML 的 <link rel="icon">); 内部吞错, 失败不影响保存结果
         await syncServerFaviconMirror()
+        // bug02(260831-01 反馈第1轮): logo 配置变更后同步服务端 /logo.png 镜像(页头 logo 恒定渲染
+        // 该路径, 不读 store 原始值); 内部吞错, 失败不影响保存结果
+        await syncServerLogoMirror()
         MessageUtil.success("更新成功")
     } else {
         MessageUtil.error(handleResErr(res), 10000)

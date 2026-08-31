@@ -32,6 +32,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
         return
     }
 
+    // bug01(260831-01 反馈第1轮): 在任何 await 之前捕获 nuxtApp —— 中间件内的 await 会丢失
+    // unctx 上下文, 之后再 useNuxtApp 取不到实例; 水合状态用于下方延后 initStores 触发
+    const nuxtApp = useNuxtApp()
+
     // SPA authMiddleware 对 setup 页直接放行
     if (to.path === SETUP_PATH) {
         return
@@ -85,16 +89,30 @@ export default defineNuxtRouteMiddleware(async (to) => {
     // 初始化未就绪 (公开页整页首载): 不阻塞水合, 初始化完成后补检;
     // 用户已离开目标页则跳过, 由后续导航的就绪态守卫同步拦截;
     // 初始化失败的告警已由 init-stores.client 插件统一输出, 这里静默跳过补检
+    // bug01(260831-01 反馈第1轮): 首载水合中延后触发 —— SSR 直连后端失败时 optionsStore 为空,
+    // initStores 的回源填充若发生在水合中途, 客户端首帧(导航/页脚)与 SSR HTML 不一致,
+    // 触发 "Hydration completed but contains mismatches."; 水合完成后(app:suspense:resolve)
+    // 再触发, 与 init-stores.client 插件共享同一初始化 Promise, 补检语义不变
     const router = useRouter()
-    void getInitStoresPromise()
-        .then(() => {
-            if (router.currentRoute.value.path !== to.path) {
-                return
-            }
-            const blockedTarget = resolveBlockedTarget()
-            if (blockedTarget !== undefined) {
-                void router.push(blockedTarget)
-            }
+    const startInitAndRecheck = () => {
+        void getInitStoresPromise()
+            .then(() => {
+                if (router.currentRoute.value.path !== to.path) {
+                    return
+                }
+                const blockedTarget = resolveBlockedTarget()
+                if (blockedTarget !== undefined) {
+                    void router.push(blockedTarget)
+                }
+            })
+            .catch(() => {})
+    }
+    if (nuxtApp.isHydrating) {
+        // 对齐 onNuxtReady 的实现语义(水合完成 + 空闲回调), 用已捕获的 nuxtApp 引用避免 await 后上下文丢失
+        nuxtApp.hooks.hookOnce("app:suspense:resolve", () => {
+            requestIdleCallback(() => startInitAndRecheck())
         })
-        .catch(() => {})
+    } else {
+        requestIdleCallback(() => startInitAndRecheck())
+    }
 })

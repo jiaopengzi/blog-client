@@ -8,7 +8,8 @@
 
 /*
  * 补充说明:
- * 文章缩略图 → 站点 logo → 默认 logo(demo-logo.svg), og:image 需要绝对地址
+ * 文章缩略图 → 站点 logo(/logo.png 运行时镜像, bug02 260831-01 反馈第1轮) → 默认 logo(demo-logo.svg),
+ * og:image 需要绝对地址
  */
 
 import { describe, expect, it } from "vitest"
@@ -23,9 +24,9 @@ describe("resolveSeoImage 回退链(feature01)", () => {
         expect(resolveSeoImage(thumbnail, "https://cdn.example.com/logo.png", baseUrl)).toBe(thumbnail)
     })
 
-    it("缩略图缺失时回退主站 logo", () => {
-        expect(resolveSeoImage("", "https://cdn.example.com/logo.png", baseUrl)).toBe("https://cdn.example.com/logo.png")
-        expect(resolveSeoImage(undefined, "https://cdn.example.com/logo.png", baseUrl)).toBe("https://cdn.example.com/logo.png")
+    it("缩略图缺失且 logo 已配置时回退 /logo.png 运行时镜像(bug02 260831-01)", () => {
+        expect(resolveSeoImage("", "https://cdn.example.com/logo.png", baseUrl)).toBe("https://jiaopengzi.com/logo.png")
+        expect(resolveSeoImage(undefined, "https://cdn.example.com/logo.png", baseUrl)).toBe("https://jiaopengzi.com/logo.png")
     })
 
     it("缩略图与 logo 均缺失时回退默认 logo", () => {
@@ -35,7 +36,6 @@ describe("resolveSeoImage 回退链(feature01)", () => {
 
     it("相对路径以站点 baseUrl 兜底解析为绝对地址", () => {
         expect(resolveSeoImage("/api/v1/uploads/a.png", undefined, baseUrl)).toBe("https://jiaopengzi.com/api/v1/uploads/a.png")
-        expect(resolveSeoImage("", "/logo.png", baseUrl)).toBe("https://jiaopengzi.com/logo.png")
     })
 
     it("解析失败时原样返回候选值, 不抛异常", () => {

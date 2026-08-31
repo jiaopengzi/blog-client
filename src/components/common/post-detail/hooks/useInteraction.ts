@@ -73,6 +73,8 @@ export function useInteraction(
     const { isLogin } = storeToRefs(userStore)
 
     // 交互项列表
+    // bug03(260831-01 反馈第1轮): SSR 取数失败窗口内 app_options 为空对象, 各开关键缺失时
+    // 无防护访问 .value 会抛 "Cannot read properties of undefined" 并中断详情渲染, 统一 ?. 防护(缺失视为关闭)
     const interactionItems: ComputedRef<InteractionItemProps[]> = computed(() => {
         const result: InteractionItemProps[] = [
             {
@@ -80,24 +82,24 @@ export function useInteraction(
                 text: "点赞",
                 isActive: postMeta.value.interactionStatus?.is_like,
                 tip: postMeta.value.like_count,
-                isShow: app_options.value.like_enable.value === "true",
+                isShow: app_options.value.like_enable?.value === "true",
             },
             {
                 icon: "star",
                 text: "收藏",
                 isActive: postMeta.value.interactionStatus?.is_star,
                 tip: postMeta.value.star_count,
-                isShow: app_options.value.star_enable.value === "true",
+                isShow: app_options.value.star_enable?.value === "true",
             },
             {
                 icon: "share",
                 text: "分享",
-                isShow: app_options.value.share_poster_enable.value === "true",
+                isShow: app_options.value.share_poster_enable?.value === "true",
             },
             {
                 icon: "link",
                 text: "复制链接",
-                isShow: app_options.value.link_enable.value === "true",
+                isShow: app_options.value.link_enable?.value === "true",
             },
         ]
 
@@ -117,7 +119,8 @@ export function useInteraction(
 
     const dataPosterShare = computed(() => {
         return {
-            logoSrc: getPosterQrLogoSrc(app_options.value.favicon.value, app_options.value.logo.value),
+            // bug03(260831-01 反馈第1轮): 空配置窗口内 favicon/logo 键缺失时 ?. 防护(与 interactionItems 同因)
+            logoSrc: getPosterQrLogoSrc(app_options.value.favicon?.value, app_options.value.logo?.value),
             imgSrc: head.value.image,
             titleText: postMeta.value.post_title,
             urlText: shareUrl.value,

@@ -150,18 +150,29 @@ usePostSeo(() => detailMeta.value)
 // bug04(260831-01): SSR 直连后端失败 (NUXT_API_BASE 不可达/为空) 时 asyncData 抛错、data 为 null,
 // 此前与「文章不存在」混同判定 404 —— 线上表现为详情页刷新即 404、/_payload.json 同步 404(bug03)。
 // 这里以 error 区分: 请求失败不抛 404, 渲染空详情(v-if 守卫), 客户端挂载后 refresh 走同源 /api
-// 重拉恢复(对齐 SPA 纯 CSR 的请求失败行为); warn 双端打印, 服务端侧进容器日志便于排查部署链路
+// 重拉恢复(对齐 SPA 纯 CSR 的请求失败行为); 服务端 warn 进容器日志便于排查部署链路
+// bug03(260831-01 反馈第1轮): 水合期客户端会从 payload 还原 SSR 侧错误对象再打印一次, 浏览器控制台
+// 出现携带内部直连地址(blog-server:5426)的取数失败噪音; 水合中的还原错误不打印(下方 onMounted
+// 重拉仍失败时才在客户端输出), 服务端与水合后的真实客户端错误保持原样打印。
+// 注意 error 分支不得落入 404 判定(嵌套结构): 取数失败 ≠ 文章不存在
+const nuxtApp = useNuxtApp()
 if (detailError.value) {
-    console.warn(`[post-detail] 取数失败(post_id=${postId.value}): ${detailError.value.message}`)
+    if (import.meta.server || !nuxtApp.isHydrating) {
+        console.warn(`[post-detail] 取数失败(post_id=${postId.value}): ${detailError.value.message}`)
+    }
 } else if (!pending.value && detailMeta.value === null) {
     throw createError({ statusCode: 404, message: "文章不存在或已删除" })
 }
 
 // bug04(260831-01): SSR 取数失败的客户端恢复 —— 水合后重拉(浏览器走同源 /api, 不依赖 SSR 直连链路),
-// 成功后 detailError 重置为 null、detailData 更新, 页面恢复正常渲染; 仍失败时保持空详情, 不误判 404
-onMounted(() => {
+// 成功后 detailError 重置为 null、detailData 更新, 页面恢复正常渲染; 仍失败时保持空详情, 不误判 404,
+// 并补一条客户端侧 warn(与上方水合期降噪配合: 只有真实发生的客户端失败才在浏览器控制台输出)
+onMounted(async () => {
     if (detailError.value && !detailMeta.value) {
-        refresh()
+        await refresh()
+        if (detailError.value) {
+            console.warn(`[post-detail] 客户端重拉仍失败(post_id=${postId.value}): ${detailError.value.message}`)
+        }
     }
 })
 

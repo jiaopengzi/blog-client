@@ -10,7 +10,9 @@
     <header>
         <div class="left">
             <el-button class="btn-logo" @click="goHome">
-                <img :src="logo || '../demo-logo.svg'" alt="logo" />
+                <!-- bug02(260831-01 反馈第1轮): 经 LogoImage 统一渲染 /logo.png 运行时镜像;
+                     原 '../demo-logo.svg' 相对路径在深层级路由下会解析错位, 已由组件内绝对路径兜底 -->
+                <LogoImage />
             </el-button>
         </div>
 
@@ -31,18 +33,16 @@ import { useRouter } from "vue-router"
 
 import ThemePresetSelector from "@/theme/preset-selector"
 import UserInfoDropdown from "@/components/common/user-info-dropdown"
+import LogoImage from "@/components/common/logo-image"
 import { useTheme } from "@/theme/useTheme"
 import { RouteNames } from "@/router"
-import { useOptionsStore } from "@/stores/options"
 import { useUserStore } from "@/stores/user"
 
 defineOptions({ name: "AdminHeader" })
 
 const userStore = useUserStore()
-const optionsStore = useOptionsStore()
 
 const { isLogin } = storeToRefs(userStore)
-const logo = optionsStore.getLogo
 
 const { activeThemePreset, selectThemePreset, themePresetOptions } = useTheme()
 const router = useRouter()

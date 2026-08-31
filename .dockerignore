@@ -45,6 +45,11 @@ coverage
 logs
 .DS_Store
 
+# 运行时镜像产物(bug05/bug02 260831-01): favicon.ico / logo.png 由 node 进程按 app-option
+# 配置在容器内落盘, 构建机上可能存在 dev 态残留的旧文件, 不能烘焙进镜像
+public/favicon.ico
+public/logo.png
+
 # Docker 自身文件(避免 COPY . . 时产生歧义)
 Dockerfile
 Dockerfile.dev

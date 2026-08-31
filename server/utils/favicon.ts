@@ -17,18 +17,17 @@
  *   .output/public 的文件不被服务, 实证见 .spa2nuxt/cache/bug-260831-01-debug-log.md);
  * - 生产由 nginx 拦截 /favicon.ico 直接服务容器内静态文件(nginx 是运行时实时读 root 目录, symlink 让
  *   node 写入目录与 nginx root 指向同一份, 见 Dockerfile 运行阶段说明).
+ * bug02(260831-01 反馈第1轮): public 目录定位 / URL 规范化 / app-option 读取抽至 optionAsset.ts,
+ * 与 logo.png 镜像(server/utils/logo.ts)共用, 本文件只保留 favicon 特有的落盘与服务路径逻辑.
  */
 
-import { existsSync } from "node:fs"
 import fs from "node:fs/promises"
 import path from "node:path"
-import { fileURLToPath } from "node:url"
+
+import { normalizeOptionAssetUrl, readAppOptionAssetValue, resolveOptionPublicDir } from "./optionAsset"
 
 // 镜像文件名固定为 favicon.ico(约定路径), 落盘目标永远是 <public>/favicon.ico, 无任何用户输入参与路径拼接
 const MIRROR_FILE_NAME = "favicon.ico"
-
-// public 目录的存在性标记文件(仓库自带, dev/build 产物中均存在), 用于把探测候选收敛到真实 public 目录
-const PUBLIC_DIR_MARKER = "demo-logo.svg"
 
 // favicon 内容上限(2MB): 正常站点图标远小于此, 超限视为异常配置拒绝落盘
 const FAVICON_MAX_BYTES = 2 * 1024 * 1024
@@ -42,122 +41,22 @@ export interface FaviconSyncResult {
     reason?: string
 }
 
-/**
- * isPrivateOrReservedHost 判断主机名是否落在环回/链路本地/私有/保留段(SSRF 防护, 260831-01 收紧).
- * 阻断清单: 环回(本机服务)、169.254.0.0/16(链路本地, 含云元数据 169.254.169.254)、
- * RFC1918 私有段(10/8, 172.16/12, 192.168/16)与保留地址(0.0.0.0, ::).
- * 唯一例外: hostname 与 apiBase 同源的请求不经本函数(部署方配置的后端自身, 私网 apiBase 是合法形态,
- * 且 SSR 层全部数据本就来自该地址), 见 normalizeFaviconUrl.
- * @param hostname URL 解析出的 hostname(小写).
- * @returns true 表示命中阻断段.
- */
-function isPrivateOrReservedHost(hostname: string): boolean {
-    return (
-        hostname === "localhost" ||
-        hostname === "0.0.0.0" ||
-        hostname === "::" ||
-        hostname === "::1" ||
-        hostname === "[::1]" ||
-        hostname.startsWith("127.") ||
-        hostname.startsWith("169.254.") ||
-        hostname.startsWith("10.") ||
-        /^172\.(1[6-9]|2\d|3[01])\./.test(hostname) ||
-        hostname.startsWith("192.168.")
-    )
-}
-
-/**
- * normalizeFaviconUrl 把 app-option 配置的 favicon 值规范化为可安全请求的绝对地址(导出供单测).
- * 相对路径(/api/v1/uploads/...)拼 apiBase(后端自身, 部署方控制, 不走 SSRF 校验);
- * 绝对 URL 要求 http/https 协议, 且 hostname 与 apiBase 同源(后端自身)或为非私网/非保留地址.
- * @param raw app-option 的 favicon.value.
- * @param apiBase 后端直连地址(runtimeConfig.apiBase).
- * @returns 规范化后的绝对 URL; 不合法时返回 null.
- */
-export function normalizeFaviconUrl(raw: string, apiBase: string): string | null {
-    const value = raw.trim()
-    if (!value) {
-        return null
-    }
-
-    // 相对路径: 后端上传资源的常见形态, 拼后端直连地址(受信来源, 私网 apiBase 是合法部署形态);
-    // 仅接受以 "/" 开头的站内路径——其他非 http(s) scheme 的值(file:///、javascript: 等)直接拒绝,
-    // 避免被拼接成畸形 URL 透传到请求层
-    if (!/^https?:\/\//i.test(value)) {
-        if (!value.startsWith("/")) {
-            return null
-        }
-        return `${apiBase.replace(/\/+$/, "")}${value}`
-    }
-
-    // 绝对 URL: 协议白名单 + 主机校验(260831-01 收紧)——
-    // hostname 与 apiBase 同源(后端自身, 私网 apiBase 是合法部署形态)放行;
-    // 其余主机落在环回/链路本地/私有/保留段的拒绝(SSRF 防护, 见 isPrivateOrReservedHost)
-    try {
-        const parsed = new URL(value)
-        if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-            return null
-        }
-        const apiHost = new URL(apiBase).hostname.toLowerCase()
-        const host = parsed.hostname.toLowerCase()
-        if (host !== apiHost && isPrivateOrReservedHost(host)) {
-            return null
-        }
-        return parsed.toString()
-    } catch {
-        return null
-    }
-}
-
-/**
- * resolveFaviconMirrorPath 解析 favicon 镜像落盘文件 的绝对路径(模块级缓存, 进程内首次解析后固定).
- * 候选链(按序探测, 全部失败返回 null):
- * 1. 环境变量 NUXT_FAVICON_MIRROR_DIR 显式覆盖(特殊部署布局的逃生口);
- * 2. 相对本源码文件的 ../../public(dev 态: server/utils/favicon.ts -> <root>/public);
- * 3. 相对 node 入口脚本 process.argv[1] 的 ../public(生产态: .output/server/index.mjs -> .output/public,
- *    Docker 内该路径是指向 nginx html 目录的 symlink, node 写入与 nginx 服务同一份文件).
- * 每个候选用"目录存在且含 PUBLIC_DIR_MARKER"收敛, 避免误写任意目录.
- * @returns 镜像文件绝对路径; 无法定位 public 目录时返回 null.
- */
-/**
- * safeFileURLToPath 容错版 fileURLToPath.
- * build 态 rolldown 会把 new URL("../../public", import.meta.url) 重写为基址丢失的 file URL
- * (如 file:///public), Windows 下 fileURLToPath 对其抛 ERR_INVALID_FILE_URL_PATH;
- * 解析失败的候选直接跳过(返回 null), 由候选链的后续项(如 argv[1] 推导)接管.
- * @param url 待转换的 file URL.
- * @returns 绝对路径; 无法转换时返回 null.
- */
-function safeFileURLToPath(url: URL): string | null {
-    try {
-        return fileURLToPath(url)
-    } catch {
-        return null
-    }
-}
+// normalizeFaviconUrl 保留既有导出名(favicon.test.ts 依赖), 实现共享自 optionAsset.normalizeOptionAssetUrl
+export const normalizeFaviconUrl = normalizeOptionAssetUrl
 
 let cachedMirrorPath: string | null | undefined
 
+/**
+ * resolveFaviconMirrorPath 解析 favicon 镜像落盘文件 的绝对路径(模块级缓存, 进程内首次解析后固定).
+ * 目录定位候选链见 optionAsset.resolveOptionPublicDir; 本函数仅拼接固定文件名.
+ * @returns 镜像文件绝对路径; 无法定位 public 目录时返回 null.
+ */
 export function resolveFaviconMirrorPath(): string | null {
     if (cachedMirrorPath !== undefined) {
         return cachedMirrorPath
     }
-
-    const candidates: string[] = []
-    if (process.env.NUXT_FAVICON_MIRROR_DIR) {
-        candidates.push(process.env.NUXT_FAVICON_MIRROR_DIR)
-    }
-    // import.meta.url: dev 态是源码文件位置; build 态被 rolldown 重写后可能解析失败(见 safeFileURLToPath),
-    // 失败候选跳过, 由 marker 校验兜底
-    const devRelative = safeFileURLToPath(new URL("../../public", import.meta.url))
-    if (devRelative) {
-        candidates.push(devRelative)
-    }
-    if (process.argv[1]) {
-        candidates.push(path.resolve(path.dirname(process.argv[1]), "../public"))
-    }
-
-    const matchedDir = candidates.find((dir) => existsSync(path.join(dir, PUBLIC_DIR_MARKER)))
-    cachedMirrorPath = matchedDir ? path.join(matchedDir, MIRROR_FILE_NAME) : null
+    const dir = resolveOptionPublicDir()
+    cachedMirrorPath = dir ? path.join(dir, MIRROR_FILE_NAME) : null
     return cachedMirrorPath
 }
 
@@ -180,12 +79,7 @@ export async function syncFaviconMirror(apiBase: string): Promise<FaviconSyncRes
     // 读后端全量配置取 favicon 值(与 optionsStore.updateFromServer 同一接口)
     let faviconValue = ""
     try {
-        const res = await $fetch<{ code: number; data?: { favicon?: { value?: string } } }>(`${apiBase}/api/v1/setting/get-app-option`, {
-            method: "GET",
-            timeout: FAVICON_FETCH_TIMEOUT_MS,
-            retry: 0,
-        })
-        faviconValue = res.data?.favicon?.value ?? ""
+        faviconValue = await readAppOptionAssetValue(apiBase, "favicon", FAVICON_FETCH_TIMEOUT_MS)
     } catch (err) {
         return { ok: false, action: "failed", reason: `app-option-fetch-failed: ${err instanceof Error ? err.message : String(err)}` }
     }
@@ -196,7 +90,7 @@ export async function syncFaviconMirror(apiBase: string): Promise<FaviconSyncRes
         return { ok: true, action: "removed" }
     }
 
-    const targetUrl = normalizeFaviconUrl(faviconValue, apiBase)
+    const targetUrl = normalizeOptionAssetUrl(faviconValue, apiBase)
     if (!targetUrl) {
         return { ok: false, action: "failed", reason: "favicon-url-invalid(blocked-or-non-http)" }
     }

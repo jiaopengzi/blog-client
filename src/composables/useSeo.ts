@@ -27,15 +27,18 @@ const useBaseUrl = (): string => {
 
 /**
  * resolveSeoImage 解析页面 SEO 分享图(feature01).
- * 优先级: 文章缩略图 → 站点 logo → 默认 logo(demo-logo.svg, 与页头 logo 组件回退一致).
+ * 优先级: 文章缩略图 → 站点 logo(/logo.png 运行时镜像, 与页头 logo 组件渲染一致, bug02 260831-01)
+ * → 默认 logo(demo-logo.svg, 未配置 logo 时的最终兜底).
  * og:image 需要绝对地址, 相对路径统一以站点 baseUrl 兜底解析; 解析失败时原样返回候选值.
  * @param thumbnail 文章缩略图地址.
- * @param logo 站点配置的 logo 地址.
+ * @param logo 站点配置的 logo 地址(仅判断是否配置, 渲染统一走 /logo.png 镜像).
  * @param baseUrl 站点基准 URL.
  * @returns 解析后的 SEO 图片绝对地址, 无任何候选值时返回空字符串.
  */
 export const resolveSeoImage = (thumbnail: string | undefined, logo: string | undefined, baseUrl: string): string => {
-    const candidate = (thumbnail || logo || "/demo-logo.svg").trim()
+    // bug02(260831-01 反馈第1轮): logo 已配置时走 /logo.png 服务端镜像(内容与 app-option 一致),
+    // 避免直接引用原始远端 URL 在 SSR 失败窗口产生与页头不一致的分享图
+    const candidate = (thumbnail || (logo ? "/logo.png" : "/demo-logo.svg")).trim()
     if (!candidate) {
         return ""
     }

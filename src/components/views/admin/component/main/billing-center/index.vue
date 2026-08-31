@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 计费中心
+ * Description : 计费中心 (bug06 260831-01: 证书失效分支补接查看协议弹窗)
 -->
 
 <template>
@@ -22,7 +22,9 @@
         <!-- 证书失效: 引导用户重置证书 -->
         <div v-else-if="isCertInvalid" class="billing-register">
             <div class="billing-register-wrapper">
-                <ResetCertForm @reset-cert-status="handleResetCertStatus" />
+                <!-- bug06(260831-01 反馈第1轮): 补接 view-agreement 事件 —— 此前该事件无监听,
+                     证书失效分支点击「查看协议」无任何响应(transaction-view 内的同名表单已接, 此处漏接) -->
+                <ResetCertForm @reset-cert-status="handleResetCertStatus" @view-agreement="showAgreementDialog" />
             </div>
         </div>
 
@@ -37,15 +39,28 @@
         <div v-else class="billing-content">
             <TransactionView :account-info="accountInfo!" @refresh="getAccountInfo" />
         </div>
+
+        <!-- 查看协议弹窗 (bug06 260831-01 反馈第1轮: 与 transaction-view 的同名弹窗同结构) -->
+        <el-dialog v-model="agreementDialogVisible" width="960px" destroy-on-close class="billing-dialog billing-dialog--agreement">
+            <template #header>
+                <div class="billing-dialog-header">
+                    <el-icon :size="22"><Document /></el-icon>
+                    <span>查看协议</span>
+                </div>
+            </template>
+            <Agreement />
+        </el-dialog>
     </section>
 </template>
 
 <script lang="ts" setup>
-import { onBeforeMount } from "vue"
+import { Document } from "@element-plus/icons-vue"
+import { onBeforeMount, ref } from "vue"
 
 import { RouteNames } from "@/router"
 import { adminMenuItemMap } from "@/components/views/admin/component/aside"
 
+import Agreement from "./component/agreement"
 import RegisterForm from "./component/register"
 import ResetCertForm from "./component/reset-cert"
 import TransactionView from "./component/transaction-view"
@@ -59,6 +74,13 @@ useHead({
 })
 
 const { accountInfo, isRegistered, isForbidden, isVersionTooLow, isCertInvalid, accountLoading, getAccountInfo } = useBillingCenter()
+
+// 查看协议弹窗可见性 (bug06 260831-01 反馈第1轮)
+const agreementDialogVisible = ref(false)
+
+const showAgreementDialog = () => {
+    agreementDialogVisible.value = true
+}
 
 /**
  * handleRegisterStatus 注册成功回调
@@ -110,5 +132,36 @@ onBeforeMount(async () => {
     border-radius: 12px;
     padding: 32px;
     border: 1px solid var(--jpz-border-color-lighter);
+}
+
+// 弹窗统一商务风格 (bug06 260831-01 反馈第1轮: 与 transaction-view 的同名样式一致)
+:deep(.billing-dialog) {
+    border-radius: 12px;
+    overflow: hidden;
+
+    .el-dialog__header {
+        padding: 20px 24px 16px;
+        margin: 0;
+        border-bottom: 1px solid var(--jpz-border-color-lighter);
+        background: var(--jpz-bg-color);
+    }
+
+    .el-dialog__body {
+        padding: 24px;
+    }
+}
+
+// 弹窗头部图标 + 标题
+.billing-dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--jpz-text-color-primary);
+
+    .el-icon {
+        color: var(--jpz-color-primary);
+    }
 }
 </style>
