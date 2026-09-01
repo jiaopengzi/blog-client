@@ -118,11 +118,34 @@ export function useInteraction(
         isShowPosterShare.value = false
     }
 
+    /**
+     * resolvePosterImgSrc 解析分享海报主图地址.
+     * head.image 在客户端水合后会被 initHead 用 localStorage 首页缓存覆盖而丢失,
+     * 因此按可靠度依次回退: head.image -> og:image meta(SSR 直出且水合不变) -> 正文已渲染的第一张图.
+     * @returns 图片地址, 均无值时返回空字符串(海报走无图布局)
+     */
+    const resolvePosterImgSrc = (): string => {
+        if (head.value.image) {
+            return head.value.image
+        }
+        if (typeof window !== "undefined") {
+            const ogImage = document.querySelector<HTMLMetaElement>("meta[property='og:image']")?.content
+            if (ogImage) {
+                return ogImage
+            }
+            const contentImg = document.querySelector<HTMLImageElement>(".post-detail img")
+            if (contentImg?.src) {
+                return contentImg.src
+            }
+        }
+        return ""
+    }
+
     const dataPosterShare = computed(() => {
         return {
             // bug03(260831-01 反馈第1轮): 空配置窗口内 favicon/logo 键缺失时 ?. 防护(与 interactionItems 同因)
             logoSrc: getPosterQrLogoSrc(app_options.value.favicon?.value, app_options.value.logo?.value),
-            imgSrc: head.value.image,
+            imgSrc: resolvePosterImgSrc(),
             titleText: postMeta.value.post_title,
             urlText: shareUrl.value,
         }

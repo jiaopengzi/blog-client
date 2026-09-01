@@ -160,8 +160,10 @@ export function useGetData(manager: EditorStateManager, hash: Ref<string>) {
         head.value.type = "article"
         head.value.locale = "zh-CN"
         head.value.author = postData.author_info.user_display_name
-        // feature01: 分享图默认使用文章缩略图, 缺失时回退主站 logo(与 usePostSeo 回退链一致)
-        head.value.image = postData.thumbnail || optionsStore.getLogo
+        // feature01: 分享图默认使用文章缩略图; 无缩略图时取正文第一张图片(封面缺失的常见场景).
+        // manager.updateState 已经 renderMarkdownDocument 管线提取了全部图片到 imgUrls (与编辑器
+        // "从文章中选择缩略图" 同源), 直接取 imgUrls[0], 不再另行正则提取; 仍无图时回退主站 logo.
+        head.value.image = postData.thumbnail || manager.getState().imgUrls[0] || optionsStore.getLogo
         head.value.siteName = postData.post_title
         head.value.releaseDate = displayTime
         // feature02: 复刻 SPA updateHead 路由中间件, head.url 指向当前文章地址, 供版权信息/分享链接拼接
