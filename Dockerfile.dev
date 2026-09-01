@@ -53,7 +53,8 @@ COPY --from=builder /output-public /usr/share/nginx/html
 # - symlink 让 node 与 nginx 共读同一份数据, 两个路径内容永远一致;
 # - nitro 运行时回写(如 payload 落盘 / favicon.ico 镜像同步, 见 server/utils/favicon.ts)
 #   经 symlink 写入 html 目录, 容器可写层内正常(容器重建后由启动 plugin 自愈重同步)
-RUN ln -s /usr/share/nginx/html /app/.output/public
+RUN ln -s /usr/share/nginx/html /app/.output/public && \
+    chown -R nginx:nginx /usr/share/nginx/html
 
 # 复制 nginx 主配置模板(占位符 ${NGINX_SERVER_NAME} / ${NUXT_API_BASE} 由
 # docker-entrypoint.sh 启动时 envsubst 白名单替换生成 /etc/nginx/nginx.conf)
