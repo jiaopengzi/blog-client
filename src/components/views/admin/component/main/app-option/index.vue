@@ -28,7 +28,6 @@ import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options" // 网站配置选项
 import { invalidateSsrRenderCache } from "@/utils/ssrCache"
 import { syncServerFaviconMirror } from "@/utils/faviconSync"
-import { syncServerLogoMirror } from "@/utils/logoSync"
 import { MessageUtil } from "@/utils/message"
 import { adminMenuItemMap } from "@/components/views/admin/component/aside"
 
@@ -86,8 +85,7 @@ const submitForm = async () => {
     const req = { options: reqList } as UpdateAPPOptionRequest
     const res = await updateAPPOptionAPI(req)
     if (res.data.code === ResponseCode.UpdateAPPOptionSuccess) {
-        // 等待新配置进入 store: LogoImage 的镜像 URL 以 logo 配置生成缓存版本, 不能让后续同步
-        // 与成功提示先于该响应式更新完成, 否则当前后台页仍会短暂引用旧 logo.png 缓存.
+        // 等待新配置进入 store: 页头 logo 直接读取 app-option, 确保保存后立即响应式更新为新 URL.
         await optionsStore.update(true)
         // feature01(260829-08): 站点配置直接影响所有 SSR 页直出内容(SEO/站壳/样式),
         // 保存成功后立即清空 swr 渲染缓存, 下次请求按新配置重新 SSR
@@ -95,9 +93,6 @@ const submitForm = async () => {
         // bug05(260831-01): favicon 配置变更后同步服务端 /favicon.ico 镜像(浏览器/外部工具按约定路径
         // 请求该文件, 不读 HTML 的 <link rel="icon">); 内部吞错, 失败不影响保存结果
         await syncServerFaviconMirror()
-        // bug02(260831-01 反馈第1轮): logo 配置变更后同步服务端 /logo.png 镜像(页头 logo 恒定渲染
-        // 该路径, 不读 store 原始值); 内部吞错, 失败不影响保存结果
-        await syncServerLogoMirror()
         MessageUtil.success("更新成功")
     } else {
         MessageUtil.error(handleResErr(res), 10000)

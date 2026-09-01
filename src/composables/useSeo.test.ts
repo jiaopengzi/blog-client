@@ -8,7 +8,7 @@
 
 /*
  * 补充说明:
- * 文章缩略图 → 站点 logo(/logo.png 运行时镜像, bug02 260831-01 反馈第1轮) → 默认 logo(demo-logo.svg),
+ * 文章缩略图 → 站点配置 logo → 默认 logo(demo-logo.svg),
  * og:image 需要绝对地址
  */
 
@@ -24,9 +24,9 @@ describe("resolveSeoImage 回退链(feature01)", () => {
         expect(resolveSeoImage(thumbnail, "https://cdn.example.com/logo.png", baseUrl)).toBe(thumbnail)
     })
 
-    it("缩略图缺失且 logo 已配置时回退 /logo.png 运行时镜像(bug02 260831-01)", () => {
-        expect(resolveSeoImage("", "https://cdn.example.com/logo.png", baseUrl)).toBe("https://jiaopengzi.com/logo.png")
-        expect(resolveSeoImage(undefined, "https://cdn.example.com/logo.png", baseUrl)).toBe("https://jiaopengzi.com/logo.png")
+    it("缩略图缺失且 logo 已配置时使用配置 URL(SPA 对齐, bug01 260901-01 反馈第3轮)", () => {
+        expect(resolveSeoImage("", "https://cdn.example.com/logo.png", baseUrl)).toBe("https://cdn.example.com/logo.png")
+        expect(resolveSeoImage(undefined, "https://cdn.example.com/logo.png", baseUrl)).toBe("https://cdn.example.com/logo.png")
     })
 
     it("缩略图与 logo 均缺失时回退默认 logo", () => {

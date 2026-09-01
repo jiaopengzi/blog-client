@@ -3,14 +3,13 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 头部 logo (bug02 260831-01: 图片经 LogoImage 统一渲染 /logo.png 运行时镜像)
+ * Description : 头部 logo (bug01 260901-01 反馈第3轮: 复用 LogoImage 的 app-option 直接渲染)
 -->
 
 <template>
     <div class="logo-container">
         <router-link :to="{ name: RouteNames.Home }" @click="clickLogo">
-            <!-- 使用绝对路径来解析公共资源, 以便在嵌套路由中正确解析;
-                 class 经单根属性透传落到 LogoImage 的 img 上, 尺寸样式仍由本组件约束 -->
+            <!-- LogoImage 直接读取 app-option logo, class 经单根属性透传落到 img, 尺寸仍由本组件约束 -->
             <LogoImage class="logo" />
         </router-link>
     </div>

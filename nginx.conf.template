@@ -230,15 +230,6 @@ http {
             add_header Cache-Control "public";
         }
 
-        # logo.png 是页头 logo 恒定引用的 app-option 运行时镜像 (bug02 260831-01 反馈第1轮,
-        # admin 保存时经 node 的 /internal/logo-sync 落盘, 服务启动时自愈同步), 与 favicon.ico
-        # 同机制给短缓存; 若不拦截会落入 location / 代理到 node, 多一跳且占用 SSR 进程
-        location = /logo.png {
-            root /usr/share/nginx/html;
-            expires 1h;
-            add_header Cache-Control "public";
-        }
-
         # 缓存构建产物与指定目录(_nuxt|static|assets)下的静态资源文件一年,
         # 同时匹配根目录下的 .ico .svg 文件
         # (_nuxt 文件名带内容 hash 永不变更, fonts 为自托管字体, 均适合 immutable)

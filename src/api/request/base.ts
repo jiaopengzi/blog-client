@@ -13,7 +13,7 @@
  * 非 Nuxt 运行时 (vitest 等) 回退 process.env 并由 stub 兜底
  */
 
-import { tryUseNuxtApp } from "#imports"
+import { tryUseNuxtApp, useRuntimeConfig } from "#imports"
 
 /**
  * @description: 解析后端 baseURL
@@ -29,6 +29,16 @@ export function resolveApiBase(): string {
     const apiBase = tryUseNuxtApp()?.$config?.apiBase
     if (typeof apiBase === "string" && apiBase) {
         return apiBase
+    }
+
+    // 路由中间件的异步请求链中可能无法保留 Nuxt app 上下文, 此时从 runtimeConfig 重新取值.
+    try {
+        const runtimeApiBase = useRuntimeConfig().apiBase
+        if (typeof runtimeApiBase === "string" && runtimeApiBase) {
+            return runtimeApiBase
+        }
+    } catch {
+        // 非 Nuxt 运行时 (vitest 等) 没有 runtimeConfig, 继续使用环境变量回退.
     }
 
     return process.env.NUXT_API_BASE || ""

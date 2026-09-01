@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 注册管理员页(CSR, 原 views/register-admin 视图已并入本页面; definePageMeta/useHead 来自原 pages 包装, 逻辑与模板来自原视图)
+ * Description : 注册管理员页(CSR, 复刻 SPA 注册路由守卫; 已存在管理员时跳转 404)
 -->
 
 <!--
@@ -28,7 +28,7 @@ import { MessageUtil } from "@/utils/message"
 
 import type { RegisterForm } from "@/components/views/register-admin/types"
 
-definePageMeta({ layout: false, name: "register-admin" })
+definePageMeta({ layout: false, name: "register-admin", middleware: "register-admin" })
 
 defineOptions({ name: "RegisterAdmin" })
 

@@ -10,8 +10,7 @@
     <header>
         <div class="left">
             <el-button class="btn-logo" @click="goHome">
-                <!-- bug02(260831-01 反馈第1轮): 经 LogoImage 统一渲染 /logo.png 运行时镜像;
-                     原 '../demo-logo.svg' 相对路径在深层级路由下会解析错位, 已由组件内绝对路径兜底 -->
+                <!-- LogoImage 与前台页头统一直接读取 app-option logo, 缺失时回退绝对路径 /demo-logo.svg. -->
                 <LogoImage />
             </el-button>
         </div>
