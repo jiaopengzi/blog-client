@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : Nuxt 4 配置文件(阶段 0: 环境与脚手架)
+ * Description : Nuxt 4 配置文件(SWR 水合快照一致性修复)
  */
 
 /*
@@ -248,12 +248,11 @@ export default defineNuxtConfig({
         https: runtimeEnv.httpsOptions,
     },
 
-    // payload 瘦身(bugfix 260825-03): 把 SSR payload 从 HTML 内联抽离为独立 /_payload.json.
-    // - 初始 HTML 体积下降(首页约 -10KB), 利于 SEO 爬虫抓取与 CDN 对 payload 独立缓存;
-    // - 客户端启动时并行拉取 _payload.json 后再水合(公开页 SSR 直出内容不受影响).
-    // 注: renderJsonPayloads(JSON 序列化格式)在 Nuxt 4.5 已默认开启, 无需重复配置.
+    // bug01(260901-04): SWR 首访保持 payload 内联, 避免缓存 HTML 与独立 _payload.json 分别
+    // 渲染时实时字段(浏览量/点赞等)不一致而 hydration mismatch. "client" 模式仅在客户端
+    // 路由跳转时抽离 payload, 兼顾首访快照一致与后续导航的独立缓存; renderJsonPayloads 仍由 Nuxt 4.5 默认开启.
     experimental: {
-        payloadExtraction: true,
+        payloadExtraction: "client",
     },
 
     // SSR HTML 瘦身(bug01 260829-02): 关闭 Nuxt 默认的组件样式内联(features.inlineStyles).
@@ -280,6 +279,7 @@ export default defineNuxtConfig({
         "/checkout": { ssr: false },
         // 系统初始化/数据库配置页走纯 CSR(表单与重启流程均为客户端语义, 与 SPA 行为一致)
         "/setup": { ssr: false },
+        // 首页保持 SWR: payload 已内联于缓存 HTML, hydration 使用同一渲染快照.
         "/": { swr: 300 },
         "/category/**": { swr: 300 },
         "/tag/**": { swr: 300 },
