@@ -12,6 +12,7 @@ import { copyHtml } from "@/utils/clipboard"
 import { escapeWhitespaceInHtmlContent } from "@/utils/escape"
 import { HasParentByClass } from "@/utils/getParentByClass"
 import { MessageUtil } from "@/utils/message"
+import { inlineLocalImagesForCopy } from "@/utils/mdLocalImage"
 import { htmlTagReplace } from "@/utils/tagReplace"
 
 import { applyInlineStylesInBatches, getCssStyleRules, getSortedStyleSheets } from "./css-inline"
@@ -402,6 +403,9 @@ export async function prepareCopyWithCustomStyle(element: HTMLElement): Promise<
     try {
         // 将 KaTeX 公式转换为图片, 避免脱离预览容器后样式失真
         await katexToImage(clonedElement)
+
+        // /md 页本地图片为当前会话专属 blob URL, 复制到微信前必须内联, 否则外部编辑器无法读取.
+        await inlineLocalImagesForCopy(clonedElement)
 
         // 获取用户样式表
         const cssStyleSheets = getSortedStyleSheets()

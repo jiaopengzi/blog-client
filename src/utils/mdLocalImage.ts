@@ -256,6 +256,50 @@ export function resolveLocalImageUrl(id: string): string | undefined {
 }
 
 /**
+ * inlineLocalImagesForCopy 将待复制 DOM 中的本地 blob 图片转换为 data URL.
+ * 微信编辑器无法访问当前页面的 blob URL, 而 data URL 可随富文本一并写入剪贴板.
+ * @param container - 待复制的 DOM 容器.
+ * @returns 图片转换完成后结束; 单张图片转换失败时保留原地址, 不阻断其余内容复制.
+ */
+export async function inlineLocalImagesForCopy(container: HTMLElement): Promise<void> {
+    const localImageUrls = new Set(localImageUrlMap.values())
+    if (localImageUrls.size === 0) {
+        return
+    }
+
+    const imageElements = Array.from(container.querySelectorAll("img"))
+    await Promise.all(
+        imageElements.map(async (imageElement) => {
+            const source = imageElement.getAttribute("src")
+            if (!source || !localImageUrls.has(source)) {
+                return
+            }
+
+            try {
+                const blob = await (await fetch(source)).blob()
+                imageElement.setAttribute("src", await readBlobAsDataUrl(blob))
+            } catch (error) {
+                console.warn("本地图片转换为复制数据失败", error)
+            }
+        }),
+    )
+}
+
+/**
+ * readBlobAsDataUrl 将 Blob 编码为可嵌入 HTML 的 data URL.
+ * @param blob - 待编码的图片二进制数据.
+ * @returns data URL 字符串.
+ */
+function readBlobAsDataUrl(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.addEventListener("load", () => resolve(String(reader.result)))
+        reader.addEventListener("error", () => reject(reader.error ?? new Error("读取本地图片失败")))
+        reader.readAsDataURL(blob)
+    })
+}
+
+/**
  * clearLocalImageUrls 清空内存注册表并释放全部 blob URL.
  * @returns 无返回值.
  */

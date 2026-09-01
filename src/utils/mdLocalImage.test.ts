@@ -6,7 +6,7 @@
  * Description : /md 页本地图片工具单测, 覆盖注册表、引用、配额策略和引用剥离.
  */
 
-import { afterEach, describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
 import {
     applyLocalImageRefs,
@@ -14,6 +14,7 @@ import {
     clearLocalImageUrls,
     extractLocalImageIds,
     formatLocalImageBytes,
+    inlineLocalImagesForCopy,
     MAX_LOCAL_IMAGE_COUNT,
     MAX_LOCAL_IMAGE_SINGLE_BYTES,
     MAX_LOCAL_IMAGE_TOTAL_BYTES,
@@ -69,22 +70,38 @@ describe("mdLocalImage 本地图片引用", () => {
         expect(applyLocalImageRefs(html)).toBe(html)
     })
 
-    it("7. checkLocalImagePolicy 单图超限被拒绝", () => {
+    it("7. inlineLocalImagesForCopy 仅将注册的 blob 图片内联为 data URL", async () => {
+        const localImageUrl = "blob:http://127.0.0.1:7364/local-image"
+        const container = document.createElement("div")
+        container.innerHTML = `<img src="${localImageUrl}" /><img src="https://example.com/image.png" />`
+        registerLocalImageUrl(IMAGE_ID_A, localImageUrl)
+        const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(new Blob(["image"], { type: "image/png" })))
+
+        await inlineLocalImagesForCopy(container)
+
+        const imageElements = container.querySelectorAll("img")
+        expect(imageElements[0]?.getAttribute("src")).toBe("data:image/png;base64,aW1hZ2U=")
+        expect(imageElements[1]?.getAttribute("src")).toBe("https://example.com/image.png")
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+        expect(fetchMock).toHaveBeenCalledWith(localImageUrl)
+    })
+
+    it("8. checkLocalImagePolicy 单图超限被拒绝", () => {
         const rejection = checkLocalImagePolicy(MAX_LOCAL_IMAGE_SINGLE_BYTES + 1, { count: 0, totalBytes: 0 })
         expect(rejection).toContain("单张图片不能超过")
     })
 
-    it("8. checkLocalImagePolicy 数量达上限被拒绝", () => {
+    it("9. checkLocalImagePolicy 数量达上限被拒绝", () => {
         const rejection = checkLocalImagePolicy(1024, { count: MAX_LOCAL_IMAGE_COUNT, totalBytes: 0 })
         expect(rejection).toContain("数量已达上限")
     })
 
-    it("9. checkLocalImagePolicy 总量达上限被拒绝", () => {
+    it("10. checkLocalImagePolicy 总量达上限被拒绝", () => {
         const rejection = checkLocalImagePolicy(1024, { count: 1, totalBytes: MAX_LOCAL_IMAGE_TOTAL_BYTES })
         expect(rejection).toContain("总大小已达上限")
     })
 
-    it("10. checkLocalImagePolicy 配额内返回 null 放行", () => {
+    it("11. checkLocalImagePolicy 配额内返回 null 放行", () => {
         expect(checkLocalImagePolicy(1024, { count: 0, totalBytes: 0 })).toBeNull()
         expect(
             checkLocalImagePolicy(MAX_LOCAL_IMAGE_SINGLE_BYTES, {
@@ -94,7 +111,7 @@ describe("mdLocalImage 本地图片引用", () => {
         ).toBeNull()
     })
 
-    it("11. stripLocalImageRefs 整行引用删除并收敛空行, 行内引用仅移除标记", () => {
+    it("12. stripLocalImageRefs 整行引用删除并收敛空行, 行内引用仅移除标记", () => {
         const src = `# 标题\n\n![](md-img:${IMAGE_ID_A})\n\n前文 ![](md-img:${IMAGE_ID_B}) 后文\n\n![外链](https://example.com/a.png)`
         const result = stripLocalImageRefs(src)
         expect(result).not.toContain("md-img:")
@@ -104,12 +121,12 @@ describe("mdLocalImage 本地图片引用", () => {
         expect(result).not.toMatch(/\n{3,}/)
     })
 
-    it("12. stripLocalImageRefs 无本地引用时原样返回", () => {
+    it("13. stripLocalImageRefs 无本地引用时原样返回", () => {
         const src = "# 标题\n\n正文"
         expect(stripLocalImageRefs(src)).toBe(src)
     })
 
-    it("13. formatLocalImageBytes 输出 KB / MB 文本", () => {
+    it("14. formatLocalImageBytes 输出 KB / MB 文本", () => {
         expect(formatLocalImageBytes(512 * 1024)).toBe("512.0 KB")
         expect(formatLocalImageBytes(5 * 1024 * 1024)).toBe("5.0 MB")
         expect(formatLocalImageBytes(MAX_LOCAL_IMAGE_TOTAL_BYTES)).toBe("100.0 MB")
