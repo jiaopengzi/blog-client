@@ -98,6 +98,11 @@ http {
     # 隐藏 Nginx 版本号, 防止信息泄露
     server_tokens off;
 
+    # 前端与 API 请求的审计已由后端统一记录, nginx 不再重复输出每一条访问日志;
+    # 保留 warn 及更高等级错误到 Docker stdout/stderr, 便于发现代理和静态资源异常.
+    access_log off;
+    error_log /dev/stderr warn;
+
     # 添加基础安全头保护
     # 防止点击劫持(Clickjacking), 禁止页面被嵌入到 <iframe> 中(除非同源)
     add_header X-Frame-Options "SAMEORIGIN" always;
