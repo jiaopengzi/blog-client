@@ -86,7 +86,9 @@ const submitForm = async () => {
     const req = { options: reqList } as UpdateAPPOptionRequest
     const res = await updateAPPOptionAPI(req)
     if (res.data.code === ResponseCode.UpdateAPPOptionSuccess) {
-        optionsStore.update(true) // 强制刷新
+        // 等待新配置进入 store: LogoImage 的镜像 URL 以 logo 配置生成缓存版本, 不能让后续同步
+        // 与成功提示先于该响应式更新完成, 否则当前后台页仍会短暂引用旧 logo.png 缓存.
+        await optionsStore.update(true)
         // feature01(260829-08): 站点配置直接影响所有 SSR 页直出内容(SEO/站壳/样式),
         // 保存成功后立即清空 swr 渲染缓存, 下次请求按新配置重新 SSR
         await invalidateSsrRenderCache()
