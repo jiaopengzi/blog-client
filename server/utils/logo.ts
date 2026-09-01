@@ -62,9 +62,10 @@ export function resolveLogoMirrorPath(): string | null {
  * syncLogoMirror 从后端 app-option 读取 logo 配置并同步落盘镜像.
  * 有配置时拉取内容写入 <public>/logo.png; 配置为空时删除镜像文件(幂等).
  * @param apiBase 后端直连地址(runtimeConfig.apiBase, 调用方在 nitro 上下文中取).
+ * @param publicBaseUrl 站点公网地址, 用于将本站上传资源直连到 apiBase.
  * @returns 同步结果(ok=false 时 reason 说明失败环节).
  */
-export async function syncLogoMirror(apiBase: string): Promise<LogoSyncResult> {
+export async function syncLogoMirror(apiBase: string, publicBaseUrl = ""): Promise<LogoSyncResult> {
     if (!apiBase) {
         return { ok: false, action: "failed", reason: "api-base-empty" }
     }
@@ -88,7 +89,7 @@ export async function syncLogoMirror(apiBase: string): Promise<LogoSyncResult> {
         return { ok: true, action: "removed" }
     }
 
-    const targetUrl = normalizeOptionAssetUrl(logoValue, apiBase)
+    const targetUrl = normalizeOptionAssetUrl(logoValue, apiBase, publicBaseUrl)
     if (!targetUrl) {
         return { ok: false, action: "failed", reason: "logo-url-invalid(blocked-or-non-http)" }
     }

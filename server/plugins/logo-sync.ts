@@ -18,12 +18,12 @@
 import { syncLogoMirror } from "../utils/logo"
 
 export default defineNitroPlugin(() => {
-    const { apiBase } = useRuntimeConfig()
+    const { apiBase, public: publicConfig } = useRuntimeConfig()
     if (!apiBase) {
         return
     }
 
-    void syncLogoMirror(apiBase)
+    void syncLogoMirror(apiBase, publicConfig.baseUrl)
         .then((result) => {
             if (result.ok) {
                 console.log(`[logo-sync] 启动镜像同步完成: ${result.action}`)

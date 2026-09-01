@@ -10,7 +10,8 @@
  * 补充说明:
  * 从 server/utils/favicon.ts 抽离的公共部分, 供 favicon.ico 与 logo.png 两类运行时镜像复用:
  * - public 目录定位(候选链 + marker 收敛);
- * - 配置值 URL 规范化(SSRF 防护: 协议白名单 + 私网/保留段阻断, apiBase 同源例外);
+ * - 配置值 URL 规范化(SSRF 防护: 协议白名单 + 私网/保留段阻断, apiBase 同源例外), 并将本站
+ *   公网上传地址重写为 apiBase, 避免容器启动阶段 nginx 尚未监听时自回源失败;
  * - 后端 app-option 配置读取.
  * 镜像各自的落盘/删除/路由服务逻辑见 favicon.ts / logo.ts.
  */
@@ -99,13 +100,15 @@ function isPrivateOrReservedHost(hostname: string): boolean {
 
 /**
  * normalizeOptionAssetUrl 把 app-option 配置的静态资产值(favicon/logo)规范化为可安全请求的绝对地址.
- * 相对路径(/api/v1/uploads/...)拼 apiBase(后端自身, 部署方控制, 不走 SSRF 校验);
- * 绝对 URL 要求 http/https 协议, 且 hostname 与 apiBase 同源(后端自身)或为非私网/非保留地址.
+ * 相对路径(/api/v1/uploads/...)拼 apiBase(后端自身, 部署方控制, 不走 SSRF 校验); 与 publicBaseUrl
+ * 同源的绝对上传地址也改走 apiBase, 避免容器启动阶段 nginx 尚未监听造成自回源失败. 其余绝对 URL
+ * 要求 http/https 协议, 且 hostname 与 apiBase 同源(后端自身)或为非私网/非保留地址.
  * @param raw app-option 中资产键的 value.
  * @param apiBase 后端直连地址(runtimeConfig.apiBase).
+ * @param publicBaseUrl 站点公网地址(runtimeConfig.public.baseUrl), 用于识别可改写的本站上传地址.
  * @returns 规范化后的绝对 URL; 不合法时返回 null.
  */
-export function normalizeOptionAssetUrl(raw: string, apiBase: string): string | null {
+export function normalizeOptionAssetUrl(raw: string, apiBase: string, publicBaseUrl = ""): string | null {
     const value = raw.trim()
     if (!value) {
         return null
@@ -121,13 +124,22 @@ export function normalizeOptionAssetUrl(raw: string, apiBase: string): string | 
         return `${apiBase.replace(/\/+$/, "")}${value}`
     }
 
-    // 绝对 URL: 协议白名单 + 主机校验——hostname 与 apiBase 同源(后端自身, 私网 apiBase 是合法部署形态)放行;
-    // 其余主机落在环回/链路本地/私有/保留段的拒绝(SSRF 防护, 见 isPrivateOrReservedHost)
+    // 绝对 URL: 本站公网上传地址在容器内改走 apiBase. nginx 尚未监听时自回源会失败, 但 apiBase
+    // 是 Nitro 已用于读取 app-option 的受信后端地址; 仅保留路径与 query, 不透传 fragment.
     try {
         const parsed = new URL(value)
         if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
             return null
         }
+        if (publicBaseUrl) {
+            const publicOrigin = new URL(publicBaseUrl).origin
+            if (parsed.origin === publicOrigin) {
+                return new URL(`${parsed.pathname}${parsed.search}`, apiBase).toString()
+            }
+        }
+
+        // 非本站绝对 URL: hostname 与 apiBase 同源(后端自身, 私网 apiBase 是合法部署形态)放行;
+        // 其余主机落在环回/链路本地/私有/保留段的拒绝(SSRF 防护, 见 isPrivateOrReservedHost)
         const apiHost = new URL(apiBase).hostname.toLowerCase()
         const host = parsed.hostname.toLowerCase()
         if (host !== apiHost && isPrivateOrReservedHost(host)) {

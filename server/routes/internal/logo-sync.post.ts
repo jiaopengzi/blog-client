@@ -23,7 +23,7 @@ import { ResponseCode } from "@/api/response/code"
 import { syncLogoMirror } from "../../utils/logo"
 
 export default defineEventHandler(async (event) => {
-    const { apiBase } = useRuntimeConfig()
+    const { apiBase, public: publicConfig } = useRuntimeConfig()
 
     // 未配置后端地址: 明确失败(与 server/routes/api/[...].ts 同语义)
     if (!apiBase) {
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 401, message: "无权限" })
     }
 
-    const result = await syncLogoMirror(apiBase)
+    const result = await syncLogoMirror(apiBase, publicConfig.baseUrl)
     if (!result.ok) {
         // 同步失败用 502 语义(依赖后端/远端资源不可用), reason 供 admin 排查配置问题
         throw createError({ statusCode: 502, message: `logo 镜像同步失败: ${result.reason ?? "unknown"}` })

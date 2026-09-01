@@ -18,12 +18,12 @@
 import { syncFaviconMirror } from "../utils/favicon"
 
 export default defineNitroPlugin(() => {
-    const { apiBase } = useRuntimeConfig()
+    const { apiBase, public: publicConfig } = useRuntimeConfig()
     if (!apiBase) {
         return
     }
 
-    void syncFaviconMirror(apiBase)
+    void syncFaviconMirror(apiBase, publicConfig.baseUrl)
         .then((result) => {
             if (result.ok) {
                 console.log(`[favicon-sync] 启动镜像同步完成: ${result.action}`)

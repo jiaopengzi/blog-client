@@ -64,9 +64,10 @@ export function resolveFaviconMirrorPath(): string | null {
  * syncFaviconMirror 从后端 app-option 读取 favicon 配置并同步落盘镜像.
  * 有配置时拉取内容写入 <public>/favicon.ico; 配置为空时删除镜像文件(幂等).
  * @param apiBase 后端直连地址(runtimeConfig.apiBase, 调用方在 nitro 上下文中取).
+ * @param publicBaseUrl 站点公网地址, 用于将本站上传资源直连到 apiBase.
  * @returns 同步结果(ok=false 时 reason 说明失败环节).
  */
-export async function syncFaviconMirror(apiBase: string): Promise<FaviconSyncResult> {
+export async function syncFaviconMirror(apiBase: string, publicBaseUrl = ""): Promise<FaviconSyncResult> {
     if (!apiBase) {
         return { ok: false, action: "failed", reason: "api-base-empty" }
     }
@@ -90,7 +91,7 @@ export async function syncFaviconMirror(apiBase: string): Promise<FaviconSyncRes
         return { ok: true, action: "removed" }
     }
 
-    const targetUrl = normalizeOptionAssetUrl(faviconValue, apiBase)
+    const targetUrl = normalizeOptionAssetUrl(faviconValue, apiBase, publicBaseUrl)
     if (!targetUrl) {
         return { ok: false, action: "failed", reason: "favicon-url-invalid(blocked-or-non-http)" }
     }

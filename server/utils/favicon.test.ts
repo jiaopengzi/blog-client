@@ -26,36 +26,42 @@ describe("normalizeFaviconUrl", () => {
         expect(normalizeFaviconUrl("http://example.com/favicon.ico", API_BASE)).toBe("http://example.com/favicon.ico")
     })
 
-    it("4、非 http/https 协议被拒绝(SSRF 防护: file/javascript 等)", () => {
+    it("4、本站公网绝对上传地址改走 apiBase, 避免容器启动时 nginx 自回源", () => {
+        expect(normalizeFaviconUrl("https://test.jiaopengzi.com/api/v1/uploads/a.ico?version=1#ignored", API_BASE, "https://test.jiaopengzi.com")).toBe(
+            `${API_BASE}/api/v1/uploads/a.ico?version=1`,
+        )
+    })
+
+    it("5、非 http/https 协议被拒绝(SSRF 防护: file/javascript 等)", () => {
         expect(normalizeFaviconUrl("file:///etc/passwd", API_BASE)).toBeNull()
         expect(normalizeFaviconUrl("javascript:alert(1)", API_BASE)).toBeNull()
         expect(normalizeFaviconUrl("ftp://example.com/favicon.ico", API_BASE)).toBeNull()
     })
 
-    it("5、环回地址被拒绝(SSRF 防护: 本机服务)", () => {
+    it("6、环回地址被拒绝(SSRF 防护: 本机服务)", () => {
         expect(normalizeFaviconUrl("http://127.0.0.1:8080/favicon.ico", API_BASE)).toBeNull()
         expect(normalizeFaviconUrl("http://localhost/favicon.ico", API_BASE)).toBeNull()
         expect(normalizeFaviconUrl("http://0.0.0.0/favicon.ico", API_BASE)).toBeNull()
         expect(normalizeFaviconUrl("http://[::1]/favicon.ico", API_BASE)).toBeNull()
     })
 
-    it("6、链路本地段被拒绝(SSRF 防护: 含云元数据 169.254.169.254)", () => {
+    it("7、链路本地段被拒绝(SSRF 防护: 含云元数据 169.254.169.254)", () => {
         expect(normalizeFaviconUrl("http://169.254.169.254/latest/meta-data/", API_BASE)).toBeNull()
         expect(normalizeFaviconUrl("http://169.254.1.1/favicon.ico", API_BASE)).toBeNull()
     })
 
-    it("7、与 apiBase 同源的私网绝对地址放行(后端自身, 私有部署合法形态)", () => {
+    it("8、与 apiBase 同源的私网绝对地址放行(后端自身, 私有部署合法形态)", () => {
         expect(normalizeFaviconUrl("http://10.10.2.222:5426/api/v1/uploads/a.ico", API_BASE)).toBe("http://10.10.2.222:5426/api/v1/uploads/a.ico")
     })
 
-    it("8、非 apiBase 同源的私网/保留地址被拒绝(SSRF 防护: 260831-01 收紧)", () => {
+    it("9、非 apiBase 同源的私网/保留地址被拒绝(SSRF 防护: 260831-01 收紧)", () => {
         expect(normalizeFaviconUrl("http://192.168.1.10:9000/favicon.ico", API_BASE)).toBeNull()
         expect(normalizeFaviconUrl("http://172.16.0.1/favicon.ico", API_BASE)).toBeNull()
         expect(normalizeFaviconUrl("http://172.31.255.1/favicon.ico", API_BASE)).toBeNull()
         expect(normalizeFaviconUrl("http://10.99.99.99/favicon.ico", API_BASE)).toBeNull()
     })
 
-    it("9、空值与无法解析的 URL 返回 null", () => {
+    it("10、空值与无法解析的 URL 返回 null", () => {
         expect(normalizeFaviconUrl("", API_BASE)).toBeNull()
         expect(normalizeFaviconUrl("   ", API_BASE)).toBeNull()
         expect(normalizeFaviconUrl("http://", API_BASE)).toBeNull()

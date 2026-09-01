@@ -46,6 +46,8 @@
         "demi",
         "doctag",
         "documentclass",
+        "EACCES",
+        "envsubst",
         "epoll",
         "fcolorbox",
         "fleqn",

@@ -93,8 +93,10 @@ COPY --from=builder /output-public /usr/share/nginx/html
 #   (VERSION 探活 / LICENSE / _payload.json 等, 实测移除即 500);
 # - symlink 让 node 与 nginx 共读同一份数据, 两个路径内容永远一致;
 # - nitro 运行时回写(如 payload 落盘 / favicon.ico 镜像同步, 见 server/utils/favicon.ts)
-#   经 symlink 写入 html 目录, 容器可写层内正常(容器重建后由启动 plugin 自愈重同步)
-RUN ln -s /usr/share/nginx/html /app/.output/public
+#   经 symlink 写入 html 目录. 容器可能以 nginx 用户运行, 因此静态目录必须由 nginx 用户持有,
+#   否则保存 app-option 时 favicon/logo 同步会因 EACCES 失败(260901-01 bug03).
+RUN ln -s /usr/share/nginx/html /app/.output/public && \
+    chown -R nginx:nginx /usr/share/nginx/html
 
 # 复制 nginx 主配置模板(占位符 ${NGINX_SERVER_NAME} / ${NUXT_API_BASE} 由
 # docker-entrypoint.sh 启动时 envsubst 白名单替换生成 /etc/nginx/nginx.conf)
