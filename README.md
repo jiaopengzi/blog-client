@@ -126,6 +126,7 @@ SPA 版是纯静态文件 + nginx; Nuxt 版页面由 SSR 实时渲染, 因此最
 
 镜像内置环境变量(均可在 `docker run -e` 覆盖):
 
+- `NODE_ENV=production` — Node 生产运行标识
 - `NITRO_PORT=7364` — node SSR 监听端口(容器内部, 与开发端口统一), 与 `nginx.conf.template` 的 `proxy_pass` 对应
 - `NUXT_API_BASE=http://blog-server:5426` — 后端上游地址, 同时供 node SSR 直连与 nginx 代理复用(docker 服务名, 需与后端容器同网络)
 - `NUXT_PUBLIC_BASE_URL=https://jiaopengzi.com` — 正式站点地址

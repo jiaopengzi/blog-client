@@ -109,12 +109,14 @@ COPY redirects.map /etc/nginx/redirects.map
 COPY --chmod=755 docker-entrypoint.sh /docker-entrypoint.sh
 
 # 运行配置(均可在 docker run -e 覆盖):
+# - NODE_ENV: Node 生产运行标识, 避免依赖按开发环境分支执行
 # - NITRO_PORT: node 监听端口, 需与 nginx.conf.template 中 location / 的 proxy_pass 端口一致
 # - NUXT_API_BASE: 后端上游地址, 同时供 node SSR 直连与 nginx 代理复用(单一来源保证一致;
 #   默认 docker 服务名, 需与后端容器在同一自定义网络)
 # - NUXT_PUBLIC_BASE_URL: 站点正式地址(canonical/SEO, 经 nginx https 对外)
 # - NGINX_SERVER_NAME: nginx server_name 域名(模板占位符的默认值)
-ENV NITRO_PORT=7364 \
+ENV NODE_ENV=production \
+    NITRO_PORT=7364 \
     NUXT_API_BASE=http://blog-server:5426 \
     NUXT_PUBLIC_BASE_URL=https://jiaopengzi.com \
     NGINX_SERVER_NAME=jiaopengzi.com

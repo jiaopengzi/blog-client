@@ -67,7 +67,8 @@ COPY redirects.map /etc/nginx/redirects.map
 COPY --chmod=755 docker-entrypoint.sh /docker-entrypoint.sh
 
 # 运行配置(均可在 docker run -e 覆盖, 详见 Dockerfile 同节注释)
-ENV NITRO_PORT=7364 \
+ENV NODE_ENV=production \
+    NITRO_PORT=7364 \
     NUXT_API_BASE=http://blog-server:5426 \
     NUXT_PUBLIC_BASE_URL=https://jiaopengzi.com \
     NGINX_SERVER_NAME=jiaopengzi.com
