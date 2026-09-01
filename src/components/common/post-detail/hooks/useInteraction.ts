@@ -6,6 +6,7 @@
  * Description : 交互相关的 hook
  */
 
+import { useResizeObserver } from "@vueuse/core"
 import { storeToRefs } from "pinia"
 import { computed, type ComputedRef, type Ref, ref, watch } from "vue"
 
@@ -191,6 +192,14 @@ export function useInteraction(
             setAffixLeft()
         },
     )
+
+    // bug01(260901-02): 登录态首屏由 data-list-pending 经 CSS display:none 隐藏详情容器时,
+    // onMounted 触发的 setAffixLeft 读到 offsetLeft=0(隐藏元素无布局盒), 误判定为 --affix-left=-100px(移出视口);
+    // 复拉完成移除标记后容器由 display:none 变为可见, 尺寸从 0 变为真实值, ResizeObserver 借此重新计算,
+    // 修复交互按钮永久停留在视口外("消失")的问题, 不影响窗口缩放场景(windowWidth 监听仍保留作为补充)
+    useResizeObserver(postDetailRef, () => {
+        setAffixLeft()
+    })
 
     return {
         interactionItems, // 交互项
