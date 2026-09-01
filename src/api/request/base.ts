@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 后端 baseURL 解析 (SSR/CSR/单测三态)
+ * Description : 后端 baseURL 解析 (SSR/CSR/单测三态, 无上下文安全回退)
  */
 
 /*
@@ -13,7 +13,7 @@
  * 非 Nuxt 运行时 (vitest 等) 回退 process.env 并由 stub 兜底
  */
 
-import { tryUseNuxtApp, useRuntimeConfig } from "#imports"
+import { tryUseNuxtApp } from "#imports"
 
 /**
  * @description: 解析后端 baseURL
@@ -31,15 +31,7 @@ export function resolveApiBase(): string {
         return apiBase
     }
 
-    // 路由中间件的异步请求链中可能无法保留 Nuxt app 上下文, 此时从 runtimeConfig 重新取值.
-    try {
-        const runtimeApiBase = useRuntimeConfig().apiBase
-        if (typeof runtimeApiBase === "string" && runtimeApiBase) {
-            return runtimeApiBase
-        }
-    } catch {
-        // 非 Nuxt 运行时 (vitest 等) 没有 runtimeConfig, 继续使用环境变量回退.
-    }
-
+    // 无 Nuxt 上下文时不能再调用 useRuntimeConfig, 否则 Nuxt 会先记录 NUXT_E1001 再抛错.
+    // 中间件异步链和单测均由环境变量提供同一回退值.
     return process.env.NUXT_API_BASE || ""
 }

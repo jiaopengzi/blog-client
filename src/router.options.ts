@@ -29,8 +29,7 @@
 
 import { START_LOCATION, type RouteLocationNormalized, type RouteLocationNormalizedLoaded, type RouterScrollBehavior } from "vue-router"
 
-import { useNuxtApp } from "#app/nuxt"
-import { useRouter } from "#app/composables/router"
+import { tryUseNuxtApp } from "#app/nuxt"
 
 // 计算 hash 元素滚动位置补偿 (scroll-margin-top + 根元素 scroll-padding-top, 与内置默认一致)
 const getHashElementScrollMarginTop = (selector: string): number => {
@@ -88,8 +87,10 @@ const calculatePosition = (
 
 export default {
     scrollBehavior: ((to, from, savedPosition) => {
-        const nuxtApp = useNuxtApp()
-        const router = useRouter()
+        // vue-router 在 Nuxt 上下文外调用本回调时, useNuxtApp/useRouter 会触发 NUXT_E1001.
+        // 客户端上下文通常可取得 NuxtApp; 极端竞态则降级为立即计算位置, 不能阻断导航.
+        const nuxtApp = tryUseNuxtApp()
+        const router = nuxtApp?.$router
 
         // 同路径 hash 变化 (如 user-info tab 切换)
         if (to.path.replace(/\/$/, "") === from.path.replace(/\/$/, "")) {
@@ -116,6 +117,10 @@ export default {
         }
 
         if (from === START_LOCATION) {
+            return calculatePosition(to, from, savedPosition)
+        }
+
+        if (!nuxtApp || !router) {
             return calculatePosition(to, from, savedPosition)
         }
 
