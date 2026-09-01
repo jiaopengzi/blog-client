@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : cssExample 的单元测试
+ * Description : cssExample 的单元测试, 包含无首行缩进断言
  */
 
 import { describe, expect, it } from "vitest"
@@ -14,7 +14,7 @@ describe("cssExample", () => {
     it("应包含与预览列表一致的变量化列表样式", () => {
         const css = cssExample()
 
-        expect(css).toContain("--preview-paragraph-indent: 2em;")
+        expect(css).toContain("--preview-paragraph-indent: 0;")
         expect(css).toContain("font-family: var(--preview-font-family-title);")
         expect(css).toContain("--preview-list-text-offset: 1.28em;")
         expect(css).toContain("counter-reset: preview-ordered-list;")
@@ -22,6 +22,7 @@ describe("cssExample", () => {
         expect(css).toContain("#preview ol li > p,")
         expect(css).toContain("#preview blockquote p {")
         expect(css).toContain("text-indent: 0;")
+        expect(css).not.toContain("text-indent: 2em;")
         expect(css).toContain("#preview .task-list-item .task-list-icon {")
         expect(css).not.toContain("list-style: decimal;")
         expect(css).not.toContain("margin-left: -1.5em;")

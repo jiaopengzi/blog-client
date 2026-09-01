@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : /md 页本地图片工具单测(注册表/引用提取/渲染替换/配额策略/引用剥离, 不覆盖 IndexedDB IO)
+ * Description : /md 页本地图片工具单测, 覆盖注册表、引用、配额策略和引用剥离.
  */
 
 import { afterEach, describe, expect, it } from "vitest"
@@ -112,5 +112,6 @@ describe("mdLocalImage 本地图片引用", () => {
     it("13. formatLocalImageBytes 输出 KB / MB 文本", () => {
         expect(formatLocalImageBytes(512 * 1024)).toBe("512.0 KB")
         expect(formatLocalImageBytes(5 * 1024 * 1024)).toBe("5.0 MB")
+        expect(formatLocalImageBytes(MAX_LOCAL_IMAGE_TOTAL_BYTES)).toBe("100.0 MB")
     })
 })

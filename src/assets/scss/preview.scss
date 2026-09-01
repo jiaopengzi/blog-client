@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : preview样式
+ * @Description  : preview样式, 段落无首行缩进
  */
 
 // ========================================== live sass compiler 插件使用 开始 ==========================================
@@ -397,7 +397,7 @@
     p {
         margin: 0.75em 0;
         line-height: 1.8em;
-        text-indent: 2em;
+        text-indent: 0;
         // 自动换行
         overflow-wrap: break-word;
         color: var(--jpz-text-color-primary);

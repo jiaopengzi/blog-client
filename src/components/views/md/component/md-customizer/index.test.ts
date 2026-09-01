@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : /md 自定义弹窗组件测试
+ * Description : /md 自定义弹窗组件测试, 默认关闭首行缩进
  */
 
 import { mount } from "@vue/test-utils"
@@ -30,7 +30,7 @@ vi.mock("@/stores/md-custom", () => {
         fontFamily: "",
         fontSize: "16px",
         themeColor: "",
-        paragraphIndent: "2em",
+        paragraphIndent: "0",
     }
 
     return {

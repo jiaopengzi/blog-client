@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 公用 Markdown 编辑页面
+ * Description : 公用 Markdown 编辑页面, 包含本地图片清空确认层级处理
 -->
 
 <template>
@@ -75,6 +75,8 @@ type SaveStatus = {
 const placeholderText = "开始输入 Markdown..."
 
 const showCustomizer = ref(false)
+const mdCustomizerOverlayZIndex = 10000
+const mdCustomizerFeedbackClass = "md-page-customizer-feedback"
 
 const router = useRouter()
 const deviceStore = useDeviceStore()
@@ -268,9 +270,11 @@ function handlePurgeLocalImages(): void {
         const result = await gcUnreferencedLocalImages(editorState.editorContent)
         await refreshLocalImageUsage()
         if (result.removedCount > 0) {
-            MessageUtil.success(`已清理 ${result.removedCount} 张未引用的本地图片 (释放 ${formatLocalImageBytes(result.removedBytes)})`, 5000)
+            MessageUtil.success(`已清理 ${result.removedCount} 张未引用的本地图片 (释放 ${formatLocalImageBytes(result.removedBytes)})`, 5000, {
+                customClass: mdCustomizerFeedbackClass,
+            })
         } else {
-            MessageUtil.info("当前没有可清理的未引用图片", 4000)
+            MessageUtil.info("当前没有可清理的未引用图片", 4000, { customClass: mdCustomizerFeedbackClass })
         }
     })()
 }
@@ -291,12 +295,15 @@ function handleClearLocalImages(): void {
                     stateManager.updateState(nextContent)
                 }
                 await refreshLocalImageUsage()
-                MessageUtil.success(`已清空 ${result.removedCount} 张本地图片 (释放 ${formatLocalImageBytes(result.removedBytes)})`, 5000)
+                MessageUtil.success(`已清空 ${result.removedCount} 张本地图片 (释放 ${formatLocalImageBytes(result.removedBytes)})`, 5000, {
+                    customClass: mdCustomizerFeedbackClass,
+                })
             })()
         },
         () => {
-            MessageUtil.info("已取消清空", 3000)
+            MessageUtil.info("已取消清空", 3000, { customClass: mdCustomizerFeedbackClass })
         },
+        { modalClass: "md-page-local-image-clear-confirm" },
     )
 }
 
@@ -361,6 +368,16 @@ onBeforeUnmount(() => {
     width: 100%;
     max-width: none;
     min-height: 100dvh;
+}
+
+// Element Plus 的 MessageBox 展示时会重设内联 z-index, 必须通过专属遮罩类覆盖.
+:global(.md-page-local-image-clear-confirm) {
+    z-index: 10001 !important;
+}
+
+// Element Plus 的 Message 会覆盖传入 z-index, 使用专属类确保反馈消息在自定义面板之上.
+:global(.md-page-customizer-feedback) {
+    z-index: 10001 !important;
 }
 
 .md-page-shell {

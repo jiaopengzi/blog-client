@@ -38,10 +38,10 @@ const LOCAL_IMAGE_MARKDOWN_REGEX = /!\[[^\]]*\]\(md-img:[0-9a-f]{8}-[0-9a-f]{4}-
 /** 独占一行的本地图片引用 (整行删除用) */
 const LOCAL_IMAGE_WHOLE_LINE_REGEX = /^[ \t]*!\[[^\]]*\]\(md-img:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\)[ \t]*$/gm
 
-// 存储配额: 单图 5MB (截图通常远小于此), 数量 200 张, 总量 50MB (远低于浏览器 IDB 配额, 防滥用)
+// 存储配额: 单图 5MB (截图通常远小于此), 数量 200 张, 总量 100MB (低于浏览器 IDB 配额, 防滥用)
 export const MAX_LOCAL_IMAGE_SINGLE_BYTES = 5 * 1024 * 1024
 export const MAX_LOCAL_IMAGE_COUNT = 200
-export const MAX_LOCAL_IMAGE_TOTAL_BYTES = 50 * 1024 * 1024
+export const MAX_LOCAL_IMAGE_TOTAL_BYTES = 100 * 1024 * 1024
 
 /** 1x1 透明 gif 占位: 注册表未就绪(如刷新首帧)时避免显示破图图标, hydrate 后重渲染替换 */
 const TRANSPARENT_PIXEL_DATA_URL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"

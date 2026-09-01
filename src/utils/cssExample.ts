@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 自定义样式 CSS 示例
+ * Description : 自定义样式 CSS 示例, 段落默认无首行缩进
  */
 
 const DEFAULT_CSS_EXAMPLE_PREVIEW_SELECTOR = "#preview"
@@ -135,7 +135,7 @@ const ARTICLE_CSS_EXAMPLE = `
 #preview {
   --preview-font-family-text: "roboto", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --preview-font-family-title: "roboto", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --preview-paragraph-indent: 2em;
+  --preview-paragraph-indent: 0;
   --preview-list-indent-step: 2em;
   --preview-list-marker-column-width: 0.5em;
   --preview-list-text-offset: 1.28em;
@@ -528,7 +528,7 @@ const ARTICLE_CSS_EXAMPLE = `
 #preview p {
   margin: 0.75em 0;
   line-height: 1.8em;
-  text-indent: 2em;
+  text-indent: 0;
   overflow-wrap: break-word;
   color: var(--jpz-text-color-primary);
 }

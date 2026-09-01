@@ -3,12 +3,12 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 消息提示 工具类
+ * Description : 消息提示工具类, 支持按调用场景指定消息类名
  */
 
 import "element-plus/theme-chalk/el-message.css"
 
-import { ElMessage } from "element-plus"
+import { ElMessage, type MessageOptions } from "element-plus"
 
 import { MsgType } from "@/components/common"
 
@@ -29,10 +29,11 @@ const DEBOUNCE_WINDOW = 1000
  * @description: 显示成功提示消息.
  * @param msgStr 提示内容.
  * @param duration 消息显示时长 (毫秒), 默认值为 3000.
+ * @param options - 可选消息展示配置, 当前支持 customClass.
  * @return void.
  */
-export function success(msgStr: string, duration: number = 3000): void {
-    showMessage(MsgType.success, msgStr, duration)
+export function success(msgStr: string, duration: number = 3000, options: Partial<Pick<MessageOptions, "customClass">> = {}): void {
+    showMessage(MsgType.success, msgStr, duration, options)
 }
 
 /**
@@ -48,10 +49,11 @@ export function successWaitNext(msgStr: string): void {
  * @description: 显示信息提示消息.
  * @param msgStr 提示内容.
  * @param duration 消息显示时长 (毫秒), 默认值为 3000.
+ * @param options - 可选消息展示配置, 当前支持 customClass.
  * @return void.
  */
-export function info(msgStr: string, duration: number = 3000): void {
-    showMessage(MsgType.info, msgStr, duration)
+export function info(msgStr: string, duration: number = 3000, options: Partial<Pick<MessageOptions, "customClass">> = {}): void {
+    showMessage(MsgType.info, msgStr, duration, options)
 }
 
 /**
@@ -101,7 +103,15 @@ export function errorWaitNext(msgStr: string): void {
     showWaitNextMessage(MsgType.error, msgStr)
 }
 
-function showMessage(msgType: MsgType, msgStr: string, duration: number): void {
+/**
+ * showMessage 显示可自动关闭的消息, 并支持附加场景专属消息类名.
+ * @param msgType 消息类型.
+ * @param msgStr 消息文本.
+ * @param duration 消息显示时长 (毫秒).
+ * @param options 可选消息展示配置, 当前支持 customClass.
+ * @return 无返回值.
+ */
+function showMessage(msgType: MsgType, msgStr: string, duration: number, options: Partial<Pick<MessageOptions, "customClass">> = {}): void {
     const now = Date.now()
 
     // 检查是否在防抖时间窗口内且内容相同
@@ -124,6 +134,7 @@ function showMessage(msgType: MsgType, msgStr: string, duration: number): void {
         message: msgStr,
         type: msgType,
         duration: duration,
+        ...options,
     })
 }
 

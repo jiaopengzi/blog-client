@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : /md 页面自定义样式相关工具函数
+ * Description : /md 页面自定义样式相关工具函数, 包含段落首行缩进开关样式
  */
 
 import type { MdCustomState } from "@/stores/md-custom"
@@ -50,9 +50,9 @@ export function buildMdPresetCss(state: MdCustomState): string {
         rootDeclarations.push(`--jpz-color-primary: ${state.themeColor} !important;`)
         rootDeclarations.push(`--horizontal-divider-color: ${state.themeColor} !important;`)
     }
-    if (state.paragraphIndent === "0") {
-        rootDeclarations.push("--preview-paragraph-indent: 0 !important;")
-        paragraphDeclarations.push("text-indent: 0 !important;")
+    if (state.paragraphIndent === "2em") {
+        rootDeclarations.push("--preview-paragraph-indent: 2em !important;")
+        paragraphDeclarations.push("text-indent: 2em !important;")
     }
     if (!state.showLineNumbers) {
         codeBlockDeclarations.push("padding-left: 1rem !important;")

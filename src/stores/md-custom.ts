@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : /md 页面自定义配置状态管理, 包含默认值、读取、保存和清除函数.
+ * Description : /md 页面自定义配置状态管理, 包含段落首行缩进设置的持久化.
  */
 
 import { LocalStorageKey } from "./local"
@@ -32,7 +32,7 @@ export function getDefaultMdCustomState(): MdCustomState {
         fontFamily: "",
         fontSize: "16px",
         themeColor: "",
-        paragraphIndent: "2em",
+        paragraphIndent: "0",
     }
 }
 
@@ -65,7 +65,7 @@ export function loadMdCustomState(): MdCustomState {
     const fontSize = storedFontSize && storedFontSize.trim() ? storedFontSize : DEFAULT_STATE.fontSize
     const themeColor = localStorage.getItem(LocalStorageKey.MdThemeColor) ?? DEFAULT_STATE.themeColor
     const storedParagraphIndent = localStorage.getItem(LocalStorageKey.MdParagraphIndent)
-    const paragraphIndent = storedParagraphIndent === "0" ? "0" : DEFAULT_STATE.paragraphIndent
+    const paragraphIndent = storedParagraphIndent === "2em" ? "2em" : DEFAULT_STATE.paragraphIndent
 
     return {
         imageCaptionFormat,
