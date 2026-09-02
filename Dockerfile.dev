@@ -36,7 +36,7 @@ RUN apk add --no-cache tzdata libstdc++ libgcc && \
 ENV TZ=Asia/Shanghai
 
 # 仅拷贝 node 二进制(不含 npm/pnpm/corepack, 精简体积; 版本与构建阶段严格一致, musl 架构相同)
-COPY --from=node:24.19.0-alpine /usr/local/bin/node /usr/local/bin/node
+COPY --from=node:24.20.0-alpine /usr/local/bin/node /usr/local/bin/node
 
 # 将 nitro node-server 产物复制到容器中(server: node SSR 进程入口; public 已在构建层挪出,
 # 静态资源只在镜像中保留 html 一份)

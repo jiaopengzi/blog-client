@@ -58,3 +58,4 @@ public/logo.png
 .mimosa
 .codebuddy
 --port
+--host

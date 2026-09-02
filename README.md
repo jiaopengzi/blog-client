@@ -132,7 +132,7 @@ SPA 版是纯静态文件 + nginx; Nuxt 版页面由 SSR 实时渲染, 因此最
 - `NUXT_PUBLIC_BASE_URL=https://jiaopengzi.com` — 正式站点地址
 - `NGINX_SERVER_NAME=jiaopengzi.com` — nginx `server_name` 域名(模板占位符的默认值)
 
-构建层与运行层统一使用 alpine(musl): 运行层基线 `nginx:1.31.3-alpine` 与 SPA 一致; 且 nitro 产物 `.output/server/node_modules` 内的原生依赖二进制(sharp 等)按构建平台的 libc 打包, 必须与运行时一致, 因此构建层用 `node:24.19.0-alpine`, 运行层从同版本 alpine 镜像拷贝 node 二进制. **勿把构建层换成 slim/debian 系**: glibc 构建出的 sharp 在 musl node 下加载失败(ERR_DLOPEN_FAILED), `/_ipx` 缩略图会全部 500.
+构建层与运行层统一使用 alpine(musl): 运行层基线 `nginx:1.31.3-alpine` 与 SPA 一致; 且 nitro 产物 `.output/server/node_modules` 内的原生依赖二进制(sharp 等)按构建平台的 libc 打包, 必须与运行时一致, 因此构建层用 `node:24.20.0-alpine`, 运行层从同版本 alpine 镜像拷贝 node 二进制. **勿把构建层换成 slim/debian 系**: glibc 构建出的 sharp 在 musl node 下加载失败(ERR_DLOPEN_FAILED), `/_ipx` 缩略图会全部 500.
 
 健康检查: `GET /nginx-health`(nginx)与 `GET /VERSION`(node 直出, 探活). SSL 证书挂载到 `/etc/nginx/ssl`(cert.pem / cert.key).
 
