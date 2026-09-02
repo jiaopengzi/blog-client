@@ -15,10 +15,8 @@
         </div>
 
         <el-form ref="formRef" :model="form" :rules="rules" label-width="100px" label-position="top">
-            <el-form-item label="域名" prop="domain_name">
-                <el-input v-model="form.domain_name" placeholder="请输入域名" clearable />
-                <!-- 域名提示信息 -->
-                <div class="domain-hint">{{ domainHint }}</div>
+            <el-form-item label="域名">
+                <el-input :model-value="currentDomain" readonly />
             </el-form-item>
 
             <el-form-item label="验证码" prop="captcha">
@@ -91,7 +89,6 @@ import { billingCenterRegisterAPI, type BillingCenterRegisterRequest } from "@/a
 import { handleResErr, ResponseCode } from "@/api/response"
 import { useCaptchaBtnStatus } from "@/components/hooks/useCaptchaBtnStatus"
 import { MessageUtil } from "@/utils/message"
-import { domainHint } from "../../hooks"
 
 const emit = defineEmits(["register-status"])
 
@@ -130,18 +127,16 @@ const onAgreementScroll = () => {
 // 表单引用
 const formRef = ref<FormInstance>()
 
-// 当前页面域名, 默认填写
+// 当前访问域名仅用于展示, 实际证书域名由后端 Host 配置决定.
 const currentDomain = window.location.hostname
 
 // 表单数据
 const form = reactive<BillingCenterRegisterRequest>({
     captcha: "",
-    domain_name: currentDomain,
 })
 
 // 表单校验规则
 const rules = reactive<FormRules>({
-    domain_name: [{ required: true, message: "请输入域名", trigger: "blur" }],
     captcha: [{ required: true, message: "请输入验证码", trigger: "blur" }],
 })
 
@@ -215,14 +210,6 @@ const handleAgreeAndRegister = debounce(300, async () => {
         color: var(--jpz-color-primary);
         flex-shrink: 0;
     }
-}
-
-.domain-hint {
-    margin: 8px 0;
-    font-size: 13px;
-    color: var(--jpz-color-warning);
-    line-height: 1.6;
-    white-space: pre-line;
 }
 
 .captcha-row {

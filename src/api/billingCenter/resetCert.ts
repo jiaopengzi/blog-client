@@ -14,7 +14,6 @@ import type { BillingCenterResetCertRes } from "./common"
 // 重置证书请求参数
 export interface BillingCenterResetCertRequest {
     captcha: string // 验证码
-    domain_name?: string // 域名, 可选
 }
 
 // 重置证书

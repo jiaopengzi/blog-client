@@ -339,6 +339,9 @@ export enum ResponseCode {
     BillingCenterAccountForbidden = 6223, // 计费中心账户被禁用, 请联系管理员
     BillingCenterOrderMustThanZero = 6224, // 订单金额必须大于 0
     BillingCenterBlogServerVersionTooLow = 6225, // blog-server 版本过旧, 请升级最低要求版本
+    BillingCenterHostInvalid = 6226, // 站点 Host 配置无效
+    BillingCenterDomainMismatch = 6227, // 当前博客域名与已登记域名不一致
+    BillingCenterCSRDomainMismatch = 6228, // 当前博客生成的 CSR 与可信域名不一致
 
     // 验证码相关
     CaptchaSendSuccess = 8000, // 验证码发送成功

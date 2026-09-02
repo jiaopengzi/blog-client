@@ -14,7 +14,6 @@ import type { BillingCenterRegisterRes } from "./common"
 // 注册请求参数
 export interface BillingCenterRegisterRequest {
     captcha: string // 验证码
-    domain_name?: string // 域名, 可选
 }
 
 // 注册计费中心
