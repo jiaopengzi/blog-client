@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : hls 自定义 loader
+ * Description : hls 自定义 loader (适配 hls.js 上下文联合类型)
  */
 
 import type { KeyLoaderContext } from "custom-hls"
@@ -96,19 +96,19 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
         ): Promise<void> {
             const loaderStats: LoaderStats = this.initLoaderStats()
 
+            // key 上下文也有 type, 必须先分流才能使余下分支收窄为 PlaylistLoaderContext.
+            if ("keyInfo" in context && context.keyInfo) {
+                await this.handleKey(context, config, callbacks, loaderStats)
+            }
+
             // 主 m3u8
-            if ("type" in context && context.type === "manifest") {
+            else if (context.type === "manifest") {
                 await this.handleMainM3u8(context, config, callbacks, loaderStats)
             }
 
             // 子 m3u8
-            else if ("type" in context && context.type === "level") {
+            else if (context.type === "level") {
                 await this.handleLevelM3u8(context, config, callbacks, loaderStats)
-            }
-
-            // 判断是否有 keyInfo
-            else if ("keyInfo" in context && context.keyInfo) {
-                await this.handleKey(context, config, callbacks, loaderStats)
             } else {
                 // 对于未加密的视频, 直接调用父类的 load 方法
                 super.load(context, config, callbacks)

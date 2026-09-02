@@ -3,13 +3,14 @@
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 将自定义的KeyLoaderContext接口导出
+ * @Description  : 导出兼容 hls.js 上下文判别字段的 KeyLoaderContext 接口
  */
 
 declare module "custom-hls" {
-    import type { Fragment, KeyLoadedData, LevelKey, Loader, LoaderContext, MediaKeySessionContext } from "hls.js"
+    import type { Fragment, KeyLoadedData, LevelKey, Loader, LoaderContext, LoaderContextType, MediaKeySessionContext } from "hls.js"
 
     export interface KeyLoaderContext extends LoaderContext {
+        type: LoaderContextType.KEY
         keyInfo: KeyLoaderInfo
         frag: Fragment
     }
