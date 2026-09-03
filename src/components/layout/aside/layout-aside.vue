@@ -3,12 +3,13 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 公用侧栏 (阶段 4 终版拆分: 列表页与文章详情页各自组合使用)
+ * Description : 公用侧栏 (阶段 4 终版拆分: 列表页与文章详情页各自组合使用; bf-260903-01 增加登录态校准重拉)
 -->
 
 <!--
  * 补充说明:
  * 侧栏数据 (推荐/热门/标签/归档) 自行拉取; TOC 数据来自 statusStore (文章详情页写入)
+ * 标签 TopN 与月度归档为登录态感知接口 (后端叠加本人私密文章计数), SSR 注水恒为匿名口径, 水合后需按登录态校准
 -->
 
 <template>
@@ -66,7 +67,9 @@ import Toc from "@/components/editor/components/toc"
 import HotPost from "@/components/layout/aside/hot-post"
 import PostTag, { usePostTagData } from "@/components/layout/aside/post-tag"
 import RecommendedRead from "@/components/layout/aside/recommended-read"
+import { RouteNames } from "@/router"
 import { useStatusStore } from "@/stores/status"
+import { useUserStore } from "@/stores/user"
 
 defineOptions({ name: "LayoutAside" })
 
@@ -258,17 +261,55 @@ const loadMissingAsideData = async () => {
     if (isShowHotPost.value && !hasDataHotPost.value) {
         await getHostPost()
     }
-    if (isShowMonthArchive.value && !hasDataMonthArchive.value) {
-        await getPostCountByMonth()
+    await refreshLoginAwareAsideData()
+}
+
+/**
+ * refreshLoginAwareAsideData 刷新登录态感知的侧栏数据 (bf-260903-01 第 2 轮): 登录用户以带 token 的数据覆盖匿名 SSR 注水数据.
+ * 后端 view-top-n / count-by-month 会为登录用户叠加本人私密文章计数, 而 SSR 无法认证, payload 注水恒为匿名口径;
+ * 初次水合或从 layout:false / 后台返回首页时, 已存在的匿名数据不会触发空数据补拉, 因此必须在登录态就绪后主动覆盖.
+ * - 共享 initStores 尚未完成时, 等待其恢复登录态后再决定请求口径;
+ * - 匿名用户仅补拉缺失数据, 保持 SSR 注水不重复请求;
+ * - forceLoginRefresh 为 true 时, 登录用户无论数据是否已存在都重新请求, 覆盖客户端导航遗留的匿名口径;
+ * - 推荐/热门为公开口径接口不随登录态变化, 不重拉; 仅文案数字变化, 无布局位移, 无需骨架屏.
+ * @param forceLoginRefresh - true 表示登录用户必须重新拉取, false 时仅补拉缺失数据.
+ * @returns 无返回值; initStores 或重拉失败时静默沿用现有数据 (请求层已负责错误提示).
+ */
+const refreshLoginAwareAsideData = async (forceLoginRefresh = false): Promise<void> => {
+    try {
+        const { getInitStoresPromise, isInitStoresReady } = await import("@/stores/init")
+        if (!isInitStoresReady()) {
+            await getInitStoresPromise()
+        }
+    } catch {
+        // initStores 异常不阻塞侧栏展示 (与 init-stores.client 插件容错语义一致), 沿用现有数据
+        return
     }
-    if (isShowPostTag.value && !hasDataPostTag.value) {
-        await getTagTopN()
+
+    const isLogin = useUserStore().isLogin
+    const requests: Promise<unknown>[] = []
+
+    if (isShowMonthArchive.value && (!hasDataMonthArchive.value || (forceLoginRefresh && isLogin))) {
+        requests.push(getPostCountByMonth())
+    }
+    if (isShowPostTag.value && (!hasDataPostTag.value || (forceLoginRefresh && isLogin))) {
+        requests.push(getTagTopN())
+    }
+    if (requests.length === 0) {
+        return
+    }
+
+    try {
+        await Promise.all(requests)
+    } catch {
+        // 重拉失败保留现有数据, 避免侧栏因网络抖动清空
     }
 }
 
 // feature01(02-plan): 挂载时仅补拉「本地数据仍为空」的侧栏模块
-// - 水合场景: payload 已回填全部模块, 本地非空, 全部跳过(不重复请求);
-// - 重挂载场景(从 layout:false 页切回): 本地为空, 按本地长度判断仍需拉取(修复重挂载后侧栏为空)
+// - 匿名水合场景: payload 已回填全部模块, 标签/归档不重复请求;
+// - 登录水合或重挂载场景: 登录态就绪后刷新标签/归档, 覆盖匿名 SSR 口径;
+// - 推荐/热门与登录态无关, 仍按本地空数据判断补拉.
 onMounted(() => {
     if (recommendedPost.length === 0) {
         void getRecommendedPost()
@@ -276,12 +317,8 @@ onMounted(() => {
     if (hotPost.length === 0) {
         void getHostPost()
     }
-    if (monthArchiveProps.length === 0) {
-        void getPostCountByMonth()
-    }
-    if (postTags.length === 0) {
-        void getTagTopN()
-    }
+
+    void refreshLoginAwareAsideData(true)
 })
 
 // 布局常驻不重挂载 (onMounted 只执行一次): 跨页导航显示标志 false→true 翻转时补拉缺失数据
@@ -289,6 +326,18 @@ onMounted(() => {
 watch([isShowRecommendedRead, isShowHotPost, isShowPostTag, isShowMonthArchive], () => {
     void loadMissingAsideData()
 })
+
+// 默认布局在详情页与首页之间常驻, 用户中心/后台返回首页时又会带回 Pinia 中旧的匿名 SSR 数据.
+// 因此仅在路由进入首页时, 对已登录用户强制校准标签与归档; 首页内筛选/翻页不触发重复请求.
+watch(
+    () => route.name,
+    (routeName, previousRouteName) => {
+        if (routeName === RouteNames.Home && previousRouteName !== RouteNames.Home) {
+            void refreshLoginAwareAsideData(true)
+        }
+    },
+    { flush: "post" },
+)
 </script>
 
 <style scoped lang="scss">
