@@ -311,6 +311,7 @@ export enum ResponseCode {
     DashboardGetStatsSuccess = 6101, // 获取面板统计数据成功
     DashboardGetTrendSuccess = 6102, // 获取面板按维度统计数据成功
     DashboardGetRemoteVersionSuccess = 6103, // 获取远端版本信息成功
+    DashboardGetPostVisitTopSuccess = 6104, // 获取面板文章访问排行成功
 
     // 计费中心相关
     BillingCenterRequestTimeout = 6200, // 请求超时

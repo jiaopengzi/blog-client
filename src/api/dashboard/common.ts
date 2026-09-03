@@ -14,6 +14,9 @@ export enum TrendCategory {
     OrderPaidAmount = "order_paid_amount", // 支付金额
     UserCount = "user_count", // 用户数量
     MembershipCount = "membership_count", // 会员数量
+    VisitPv = "visit_pv", // 浏览量(PV)
+    VisitUv = "visit_uv", // 访客数(UV)
+    PostVisitPv = "post_visit_pv", // 文章浏览量
 }
 
 // 趋势类别显示
@@ -24,6 +27,9 @@ export const TrendCategoryDisplay: Record<TrendCategory, string> = {
     [TrendCategory.OrderPaidAmount]: "支付金额",
     [TrendCategory.UserCount]: "用户数量",
     [TrendCategory.MembershipCount]: "会员数量",
+    [TrendCategory.VisitPv]: "浏览量(PV)",
+    [TrendCategory.VisitUv]: "访客数(UV)",
+    [TrendCategory.PostVisitPv]: "文章浏览量",
 }
 
 // 趋势类别选项

@@ -9,16 +9,16 @@
     <div class="trend-container">
         <h4>趋势图表信息</h4>
         <div class="trend-select">
-            <!-- 分类选择 -->
+            <!-- 分类选择(popper 不限高, 指标一眼看完不出滚动条) -->
             <div class="trend-select-item">
-                <el-select v-model="valueCategory" placeholder="Select" style="width: 160px">
+                <el-select v-model="valueCategory" placeholder="Select" style="width: 160px" popper-class="trend-select-popper">
                     <el-option v-for="item in optionsCategory" :key="item.value" :label="item.label" :value="item.value" />
                 </el-select>
             </div>
 
             <!-- 时间维度选择 -->
             <div class="trend-select-item">
-                <el-select v-model="valueTime" placeholder="Select" style="width: 160px">
+                <el-select v-model="valueTime" placeholder="Select" style="width: 160px" popper-class="trend-select-popper">
                     <el-option v-for="item in optionsTime" :key="item.name" :label="item.label" :value="item.name" />
                 </el-select>
             </div>
@@ -103,6 +103,28 @@ watch(
 
     .trend-chart {
         margin-top: 0;
+    }
+}
+</style>
+<style lang="scss">
+/*
+ * 下拉 popper 挂载在 body 下, scoped 样式作用不到, 需要非 scoped 块.
+ * 去掉 el-scrollbar 的限高与滚动, 让全部指标/维度选项一眼看完.
+ */
+.trend-select-popper {
+    .el-scrollbar {
+        height: auto;
+        max-height: none;
+    }
+
+    .el-scrollbar__wrap {
+        overflow: visible;
+        max-height: none;
+        height: auto;
+    }
+
+    .el-select-dropdown__list {
+        max-height: none;
     }
 }
 </style>

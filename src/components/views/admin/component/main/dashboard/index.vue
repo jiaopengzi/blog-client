@@ -10,6 +10,7 @@
     <div class="container">
         <DashboardStats />
         <DashboardTrend />
+        <DashboardPostVisitTop />
         <DashboardVersion />
     </div>
 </template>
@@ -19,6 +20,7 @@ import { adminMenuItemMap } from "@/components/views/admin/component/aside"
 
 import DashboardStats from "./stats"
 import DashboardTrend from "./trend"
+import DashboardPostVisitTop from "./post-visit-top"
 import DashboardVersion from "./version"
 
 defineOptions({ name: RouteNames.Dashboard })

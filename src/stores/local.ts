@@ -10,6 +10,7 @@ export enum LocalStorageKey {
     LoginHint = "login_hint", // 登录态提示标记 (feature01 反馈第 1 轮: 列表页据此判定首屏走 SSR 直出还是隐藏式 CSR)
     ArticleEditorVisibility = "article_editor_visibility", // 文章编辑器目录/编辑区/预览区显示状态
     DashboardTrendSelection = "dashboard_trend_selection", // 仪表盘趋势图筛选项
+    DashboardPostVisitTopSelection = "dashboard_post_visit_top_selection", // 仪表盘内容访问排行筛选项
     IsCollapse = "is_collapse", // 侧边栏是否折叠
     IsShowDashboardStats = "is_show_dashboard_stats", // 仪表盘统计信息是否显示敏感数值
     IsShowListOrGridAtMedia = "is_show_list_or_grid_at_media", // 媒体列表是否显示为列表或网格
