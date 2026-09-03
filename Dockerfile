@@ -8,6 +8,9 @@
 # 原因见下方运行阶段"仅拷贝 node 二进制"处注释)
 FROM node:24.20.0-alpine AS builder
 
+# set-env-version 在构建阶段读取 git tag 写入 public/VERSION, Alpine 基础镜像默认不含 git.
+RUN apk add --no-cache git
+
 # 配置 pnpm 可执行目录, 确保后续 RUN 层可以直接调用 pnpm
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
