@@ -19,8 +19,16 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 
 # 从 package.json 解析 pnpm 版本, 并安装精确版本
-RUN PNPM_VERSION="$(node -p 'JSON.parse(require("node:fs").readFileSync("./package.json", "utf8")).packageManager.match(/^pnpm@(.*)$/)[1]')" \
-    && npm install -g "pnpm@${PNPM_VERSION}"
+RUN set -eux; \
+    echo "=== pnpm 安装开始: $(date -Iseconds) ==="; \
+    node --version; \
+    npm --version; \
+    npm config get registry; \
+    PNPM_VERSION="$(node -p 'JSON.parse(require("node:fs").readFileSync("./package.json", "utf8")).packageManager.match(/^pnpm@(.*)$/)[1]')"; \
+    echo "开始安装 pnpm@${PNPM_VERSION}"; \
+    npm install --global --loglevel verbose "pnpm@${PNPM_VERSION}"; \
+    pnpm --version; \
+    echo "=== pnpm 安装完成: $(date -Iseconds) ==="
 
 # 安装依赖项, 在 Docker 冷缓存环境中信任已提交的 lockfile, 避免 pnpm 的二次供应链复验错误拦截 exclusion.
 RUN pnpm install --frozen-lockfile --config.trust-lockfile=true
