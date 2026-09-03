@@ -25,24 +25,19 @@ RUN PNPM_VERSION="$(node -p 'JSON.parse(require("node:fs").readFileSync("./packa
 # 安装依赖项, 在 Docker 冷缓存环境中信任已提交的 lockfile, 避免 pnpm 的二次供应链复验错误拦截 exclusion.
 RUN pnpm install --frozen-lockfile --config.trust-lockfile=true
 
-# 构建期注入后端地址: 使 routeRules 中 /api/** 与 /sitemap* 的 proxy target 固化为容器网络地址
-# (与 nginx 模板的 NUXT_API_BASE 默认值一致, 绕过 nginx 直连 node 端口的流量也能正确转发;
-# 运行时可用 docker run -e NUXT_API_BASE=... 覆盖 SSR 直连地址与 nginx 代理上游, 但 routeRules 需重建镜像才会变)
-ENV NUXT_API_BASE=http://blog-server:5426
-# 构建期注入正式站点地址(canonical/SEO 默认值, 运行时同样可被环境变量覆盖)
-ENV NUXT_PUBLIC_BASE_URL=https://jiaopengzi.com
-
 # 将源代码复制到容器中(.dockerignore 已排除 node_modules/.git 等本地目录)
 COPY . .
 
 # 运行 lint、类型检查、测试和构建命令
 # 对齐 spa 流程: spa 的 pnpm lint 是只读检查(不带 --fix), spa 的 pnpm build 内部含 type-check;
-# nuxt 的 lint script 带 --fix、build 不含 type-check, 故这里显式用等价命令
+# nuxt 的 lint script 带 --fix、build 不含 type-check, 故这里显式用等价命令.
+# pnpm install 的 postinstall 发生在完整源码复制前, 必须在此重新生成 .nuxt, 让 type-check 使用真实的 srcDir、alias 和模块类型.
 # LICENSE 先复制进 public/, 由 nitro 构建自然带入产物(nginx 静态 root 目录可直出);
 # build 后把 public 从 .output 挪出: 镜像里静态资源只保留一份(见运行阶段 symlink 说明)
 # 末尾同层清理 .nuxt 与构建缓存(层 diff 只留产物, 与 Dockerfile.dev 的 bugfix 260830-04 同因:
 # 缩小单层落盘量, 避免磁盘紧张的 runner 在 buildkit 提交层时 EIO)
 RUN cp LICENSE public/LICENSE && \
+    pnpm exec nuxi prepare && \
     pnpm exec oxlint && \
     pnpm type-check && \
     pnpm test && \
