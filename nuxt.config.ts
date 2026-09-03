@@ -280,9 +280,9 @@ export default defineNuxtConfig({
         // 系统初始化/数据库配置页走纯 CSR(表单与重启流程均为客户端语义, 与 SPA 行为一致)
         "/setup": { ssr: false },
         // 首页保持 SWR: payload 已内联于缓存 HTML, hydration 使用同一渲染快照.
-        "/": { swr: 300 },
-        "/category/**": { swr: 300 },
-        "/tag/**": { swr: 300 },
+        "/": { swr: 600 },
+        "/category/**": { swr: 3600 },
+        "/tag/**": { swr: 3600 },
         "/p/**": { swr: 3600 },
         // sitemap 由后端生成(阶段 5 补: 后端为主), 这里仅做同源反代——
         // 等价旧 SPA vite proxy["/sitemap"] 的 rewrite "/api/v1 + 原路径"(dev/preview/生产三态一致)
