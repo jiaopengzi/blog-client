@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 文章详情页 (阶段 4 终版拆分: 头部/面包屑/内容/侧栏/页脚在本页组合; SSR 取数失败不误判 404)
+ * Description : 文章详情页 (阶段 4 终版拆分: 头部/面包屑/内容/侧栏/页脚在本页组合; SSR 取数失败不误判 404; 私密文章客户端复检)
 -->
 
 <!--
@@ -14,17 +14,21 @@
  * SSR 数据经 view-by-id 获取 (含正文), 页面经 post-data prop 驱动 PostDetail 渲染与水合,
  * 密码文章 (2042) 仅含元数据 (正文为空), 密码解锁流程由客户端 PostDetail 处理;
  * bug01(260829-08): SSR 取数不带 token (匿名数据), 登录态首屏 (login_hint=1) 经
- * useDetailLoginRefresh 带 token 复拉, 已购内容以登录态数据为准 (匿名用户仍 SSR 直出)
+ * useDetailLoginRefresh 带 token 复拉, 已购内容以登录态数据为准 (匿名用户仍 SSR 直出);
+ * bug02(260903-02): 私密文章对匿名请求返回 2037 (后端隐藏存在性), SSR 侧无登录标识可判
+ * (token 在 localStorage, refresh_token cookie 的 Path 限定在刷新端点), post:null 不再抛
+ * SSR 404 而渲染空壳+noindex, 客户端复检 (登录态带 token / 匿名重试) 后仍无数据才显示 404
 -->
 
 <template>
     <div>
         <!-- 文章详情 (feature02): 移除全量 ClientOnly, 正文随 SSR 直出;
              自定义元素在 HtmlPreview 内按片段 ClientOnly 渲染 (SSR 仅输出正文 HTML 片段) -->
-        <!-- bug03(260829-05): v-if 守卫 — 文章不存在时 setup 抛 404 中断, $setup 绑定为空,
-             Vue SSR 仍会执行本模板 render, 无守卫时 PostDetail 解析为 undefined 触发
-             "Invalid vnode type" 与 "missing template or render function" 两条告警;
-             数据存在时 detailMeta 恒非空, 守卫不影响正常渲染 -->
+        <!-- bug03(260829-05): v-if 守卫 — 无数据时 $setup 绑定为空, Vue SSR 仍会执行本模板 render,
+             无守卫时 PostDetail 解析为 undefined 触发 "Invalid vnode type" 与
+             "missing template or render function" 两条告警;
+             数据存在时 detailMeta 恒非空, 守卫不影响正常渲染;
+             bug02(260903-02): 空壳(私密/不存在, 待客户端复检)同样落此守卫, 由下方骨架屏占位 -->
         <!-- bug01(260829-08): detail-final-wrapper — 登录态首屏由内联脚本经 data-list-pending 标记
              在首帧绘制前隐藏 (SSR 详情为匿名数据, 已购内容会误显付费态), 复拉完成后移除标记展示;
              匿名首屏不加标记, SSR 详情直接展示. 骨架屏与列表页同机制 (post-list-view) -->
@@ -42,8 +46,10 @@
             />
         </div>
         <!-- 骨架屏: 常驻渲染但默认 CSS 隐藏, 仅登录态首屏(html[data-list-pending])经 CSS 从首帧起展示;
-             匿名首屏直接展示 SSR 详情, 骨架屏保持隐藏 (与列表页骨架屏同机制) -->
-        <div class="detail-skeleton" aria-hidden="true">
+             匿名首屏直接展示 SSR 详情, 骨架屏保持隐藏 (与列表页骨架屏同机制);
+             bug02(260903-02): 空壳详情(私密/不存在, 待客户端复检)也展示,
+             复检出数据后随 detailMeta 有值隐藏, 复检仍无数据则整页切错误页 -->
+        <div class="detail-skeleton" :class="{ 'is-visible': !detailMeta }" aria-hidden="true">
             <div class="skeleton-title"></div>
             <div class="skeleton-meta"></div>
             <div class="skeleton-line"></div>
@@ -119,7 +125,6 @@ interface PostDetailSsrPayload {
 const {
     data: detailData,
     error: detailError,
-    pending,
     refresh,
 } = await useAsyncData<PostDetailSsrPayload>(
     `post-detail-${postId.value}`,
@@ -131,6 +136,7 @@ const {
         if (res.data.code === ResponseCode.PostViewPasswordIsEmpty && res.data.data) {
             return { post: res.data.data, isPasswordPost: true }
         }
+        // 私密文章匿名请求 (2037, 后端隐藏存在性) 与真不存在同码, 均落到空壳待客户端复检
         return { post: null, isPasswordPost: false }
     },
     { watch: [postId] },
@@ -138,7 +144,8 @@ const {
 
 // bug01(260829-08): 登录态首屏复拉 — SSR 详情恒为匿名数据 (服务端不带 token), 已购用户的付费内容
 // 会被误显为付费态; 登录态(login_hint=1)挂载后带 token 复拉覆盖 (未登录/匿名不受影响, SSR 直出保留)
-useDetailLoginRefresh(refresh)
+// bug02(260903-02): 接收复拉流程完成信号, 供下方空壳复检等待 (登录态复拉收尾前不判 404)
+const detailLoginRefreshDone = useDetailLoginRefresh(refresh)
 
 // SEO 层读取的元数据视图 (兼容 usePostSeo 既有签名)
 const detailMeta = computed(() => detailData.value?.post ?? null)
@@ -146,7 +153,7 @@ const detailMeta = computed(() => detailData.value?.post ?? null)
 // 阶段 5: 文章页 SEO (seo_title 优先回退 post_title、canonical/OG、JSON-LD Article 直出)
 usePostSeo(() => detailMeta.value)
 
-// 404 语义: 接口明确「文章不存在」才 404; 密码空 (2042) 走客户端密码流程
+// 取数失败与空壳的分流: 请求失败 ≠ 文章不存在, 两者都不在此处抛 404
 // bug04(260831-01): SSR 直连后端失败 (NUXT_API_BASE 不可达/为空) 时 asyncData 抛错、data 为 null,
 // 此前与「文章不存在」混同判定 404 —— 线上表现为详情页刷新即 404、/_payload.json 同步 404(bug03)。
 // 这里以 error 区分: 请求失败不抛 404, 渲染空详情(v-if 守卫), 客户端挂载后 refresh 走同源 /api
@@ -154,25 +161,57 @@ usePostSeo(() => detailMeta.value)
 // bug03(260831-01 反馈第1轮): 水合期客户端会从 payload 还原 SSR 侧错误对象再打印一次, 浏览器控制台
 // 出现携带内部直连地址(blog-server:5426)的取数失败噪音; 水合中的还原错误不打印(下方 onMounted
 // 重拉仍失败时才在客户端输出), 服务端与水合后的真实客户端错误保持原样打印。
-// 注意 error 分支不得落入 404 判定(嵌套结构): 取数失败 ≠ 文章不存在
 const nuxtApp = useNuxtApp()
 if (detailError.value) {
     if (import.meta.server || !nuxtApp.isHydrating) {
         console.warn(`[post-detail] 取数失败(post_id=${postId.value}): ${detailError.value.message}`)
     }
-} else if (!pending.value && detailMeta.value === null) {
-    throw createError({ statusCode: 404, message: "文章不存在或已删除" })
 }
+
+// bug02(260903-02): 空壳(私密/不存在)不再抛 SSR 404, 理由与链路:
+// 1. 后端对匿名请求私密文章返回 2037 (刻意与「真不存在」同码隐藏存在性), 前端无业务码可区分;
+// 2. SSR 侧无登录标识可判 — token 在 localStorage, refresh_token cookie 的 Path 限定在刷新端点,
+//    页面请求(含 /_payload.json)不携带, SSR 只能渲染匿名结果;
+// 3. 此前 post:null 统一抛 404 的后果: 登录态刷新直接渲染 404 页(本 bug), 客户端导航时
+//    /_payload.json 404 触发 NUXT_E7002 报错, swr 窗口内 404 被缓存.
+// 改为渲染空壳 (v-if 守卫 + 骨架屏) + usePostSeo noindex (对齐 404 的 SEO 效果),
+// 客户端挂载后按下述 onMounted 复检: 登录态经 useDetailLoginRefresh 带 token 补回数据,
+// 复检仍无数据才 showError 404 (复用全局错误页, URL 不变可刷新重试);
+// 壳响应可被 swr 安全缓存 (不含用户数据, 匿名/登录客户端各自复检).
 
 // bug04(260831-01): SSR 取数失败的客户端恢复 —— 水合后重拉(浏览器走同源 /api, 不依赖 SSR 直连链路),
 // 成功后 detailError 重置为 null、detailData 更新, 页面恢复正常渲染; 仍失败时保持空详情, 不误判 404,
 // 并补一条客户端侧 warn(与上方水合期降噪配合: 只有真实发生的客户端失败才在浏览器控制台输出)
+// bug02(260903-02): 空壳复检 — 等登录态复拉流程收尾(匿名立即完成)后复检一次,
+// 仍无数据才显示 404; 复检触发请求失败时同样保持壳与 warn, 不误判 404
 onMounted(async () => {
+    // SSR 取数失败的水合恢复 (bug04)
     if (detailError.value && !detailMeta.value) {
         await refresh()
         if (detailError.value) {
             console.warn(`[post-detail] 客户端重拉仍失败(post_id=${postId.value}): ${detailError.value.message}`)
+            return
         }
+        if (detailMeta.value) return
+    }
+
+    // 空壳复检 (bug02): 有数据(公开/密码文章或已恢复)直接结束
+    if (detailMeta.value) return
+
+    // 等登录态复拉收尾 — 登录态可能已在此期间带 token 补回私密文章数据
+    await detailLoginRefreshDone
+    if (detailMeta.value) return
+
+    // 最终复检: 覆盖匿名客户端导航(useAsyncData 未执行/时序异常)与登录态复拉失败场景;
+    // 登录态此时 token 已恢复, refresh 自动携带
+    await refresh()
+    if (detailError.value) {
+        console.warn(`[post-detail] 客户端重拉仍失败(post_id=${postId.value}): ${detailError.value.message}`)
+        return
+    }
+    if (!detailMeta.value) {
+        // 复检后确认无数据: 显示 404 (showError 渲染全局错误页, 与 catch-all 的 404 视觉一致)
+        showError(createError({ statusCode: 404, message: "文章不存在或已删除" }))
     }
 })
 
@@ -234,6 +273,7 @@ const handleSearch = (val: string) => {
 }
 
 // 骨架屏: 常驻渲染, 默认隐藏; 仅登录态首屏(html[data-list-pending])从首帧起展示
+// bug02(260903-02): 空壳详情(私密/不存在, is-visible)同样展示, 复检出数据后隐藏
 .detail-skeleton {
     display: none;
     min-height: 400px;
@@ -243,7 +283,8 @@ const handleSearch = (val: string) => {
     border-radius: 5px;
 }
 
-:global(html[data-list-pending] .detail-skeleton) {
+:global(html[data-list-pending] .detail-skeleton),
+.detail-skeleton.is-visible {
     display: block;
 }
 

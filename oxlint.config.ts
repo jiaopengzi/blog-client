@@ -62,8 +62,8 @@ export default defineConfig({
         "valid-typeof": "error",
         // 关闭变量声明与外部作用域同名的规则, 允许合理的变量遮蔽.
         "no-shadow": "off",
-        // ofetch 的 FetchResponse/FetchError 内部字段 _data 按官方 API 使用, 允许下划线.
-        "no-underscore-dangle": ["warn", { allow: ["_data"] }],
+        // ofetch 的 _data 与 Element Plus 命令式弹窗的 _context (Vue App 的 _context 同源) 均按官方 API 使用, 允许下划线.
+        "no-underscore-dangle": ["warn", { allow: ["_data", "_context"] }],
 
         // ---------- eslint: pedantic ----------
         // 只写不读的 getter 需配套 setter, 避免属性赋值静默失败.

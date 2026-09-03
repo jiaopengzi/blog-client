@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : SEO 层 composables (阶段 5: useHomeSeo / usePostSeo / useTaxonomySeo)
+ * Description : SEO 层 composables (阶段 5: useHomeSeo / usePostSeo / useTaxonomySeo; 文章空壳 noindex)
  */
 
 /*
@@ -219,7 +219,9 @@ export const usePostSeo = (post: () => PostResByID | null | undefined): void => 
         title: () => `${seoTitle.value} | 焦棚子`,
         meta: () => {
             const p = post()
-            if (!p) return []
+            // bug02(260903-02): 详情空壳(私密/不存在/取数失败)已由 SSR 404 改为 200 壳 + 客户端复检,
+            // 此处以 noindex 阻断收录, 对齐原 404 的 SEO 效果 (私密不外泄, 死链不建索引)
+            if (!p) return [{ name: "robots", content: "noindex, nofollow" }]
             return buildHeadMeta(
                 {
                     title: seoTitle.value,

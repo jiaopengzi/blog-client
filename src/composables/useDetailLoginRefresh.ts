@@ -2,7 +2,7 @@
  * FilePath    : blog-client-nuxt\src\composables\useDetailLoginRefresh.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
- * Description : 详情页登录态复拉校准 (bug01 260829-08)
+ * Description : 详情页登录态复拉校准 (bug01 260829-08 / bug02 260903-02)
  */
 
 /*
@@ -24,35 +24,50 @@ import { useUserStore } from "@/stores/user"
 /**
  * useDetailLoginRefresh 详情页登录态复拉: 登录态首屏以带 token 的客户端数据覆盖匿名 SSR 数据.
  * @param refresh - 页面 useAsyncData 的 refresh (客户端执行时请求层自动携带 token).
- * @returns 无返回值.
+ * @returns 复拉流程完成信号: 登录态为「等 initStores + 带 token 复拉 + 移除首屏标记」全部收尾,
+ *          匿名为立即完成. bug02(260903-02): 详情空壳(私密/不存在)页需 await 本信号后再判 404,
+ *          否则登录态复拉尚未完成就会误判; SSR 侧 onMounted 不执行, 该 Promise 恒 pending, 调用方仅在 onMounted 内使用.
  */
-export function useDetailLoginRefresh(refresh: () => Promise<void> | void) {
+export function useDetailLoginRefresh(refresh: () => Promise<void> | void): Promise<void> {
     // 登录态提示标记 (登录/refresh 成功时写入, 登出时清除; 与列表页同源, 见 stores/user.ts)
     // SSR 侧恒为 false, 水合期间客户端同步读取 (此时 localStorage 可用)
     const hasLoginHint = import.meta.client && typeof localStorage !== "undefined" && localStorage.getItem(LocalStorageKey.LoginHint) === "1"
 
+    // bug02(260903-02): 完成信号 — 匿名路径同样 resolve, 忽略返回值的既有调用方 (page/[customPath]) 行为不变
+    // (resolveDone 在 Promise executor 内必然被赋值, 用明确赋值断言免去 no-op 初值)
+    let resolveDone!: () => void
+    const done = new Promise<void>((resolve) => {
+        resolveDone = resolve
+    })
+
     onMounted(async () => {
-        // 匿名: 无标记, SSR 详情数据直接展示, 不做任何隐藏与复拉
-        if (!hasLoginHint) {
-            return
-        }
-
-        // 登录态: 等待共享 initStores 完成 (登录态经 refresh_token cookie 恢复; 已初始化则立即返回)
         try {
-            const { getInitStoresPromise } = await import("@/stores/init")
-            await getInitStoresPromise()
-        } catch {
-            // initStores 异常不阻塞详情展示 (与 init-stores.client 插件容错语义一致), 沿用 SSR 数据
-        }
+            // 匿名: 无标记, SSR 详情数据直接展示, 不做任何隐藏与复拉
+            if (!hasLoginHint) {
+                return
+            }
 
-        try {
-            if (useUserStore().isLogin) {
-                // 带 token 复拉详情: 已购内容/私有内容以登录态为准 (postData prop 变化驱动 PostDetail 重应用)
-                await refresh()
+            // 登录态: 等待共享 initStores 完成 (登录态经 refresh_token cookie 恢复; 已初始化则立即返回)
+            try {
+                const { getInitStoresPromise } = await import("@/stores/init")
+                await getInitStoresPromise()
+            } catch {
+                // initStores 异常不阻塞详情展示 (与 init-stores.client 插件容错语义一致), 沿用 SSR 数据
+            }
+
+            try {
+                if (useUserStore().isLogin) {
+                    // 带 token 复拉详情: 已购内容/私有内容以登录态为准 (postData prop 变化驱动 PostDetail 重应用)
+                    await refresh()
+                }
+            } finally {
+                // 无论复拉成功与否都移除首屏隐藏标记, 展示详情 (失败时保留 SSR 匿名数据)
+                document.documentElement.removeAttribute("data-list-pending")
             }
         } finally {
-            // 无论复拉成功与否都移除首屏隐藏标记, 展示详情 (失败时保留 SSR 匿名数据)
-            document.documentElement.removeAttribute("data-list-pending")
+            resolveDone()
         }
     })
+
+    return done
 }
