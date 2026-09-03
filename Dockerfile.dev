@@ -16,7 +16,7 @@ COPY . .
 # 创建又删除的内容不会进入层 diff, 把该层落盘量从 ".nuxt + .output + 缓存" 压到产物本身,
 # 缓解 CI 宿主机磁盘临界时 buildkit 提交层写入 metadata_v2.db 报 input/output error
 # (bugfix 260830-04; 运行镜像只 COPY 产物, 清理不影响产物)
-RUN cp LICENSE public/LICENSE && pnpm build && mv .output/public /output-public && rm -rf .nuxt node_modules/.cache node_modules/.vite
+RUN cp LICENSE public/LICENSE && pnpm build && rm -rf .git && mv .output/public /output-public && rm -rf .nuxt node_modules/.cache node_modules/.vite
 
 # 使用与 spa 项目一致的 nginx alpine 镜像(TLS 终端 + 静态资源 + 反向代理)
 FROM nginx:1.31.3-alpine

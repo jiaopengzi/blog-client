@@ -9,9 +9,6 @@ dist
 dist-ssr
 coverage
 
-# git 与本地调试目录(不进镜像; 注意: 排除 .git 后构建时 set-env-version 模块
-# 拿不到 git tag, public/VERSION 会回退为 "dev", 需要真实版本时在 CI 传入 git 上下文)
-.git
 .debug
 .mimosa
 .codebuddy

@@ -50,6 +50,7 @@ RUN cp LICENSE public/LICENSE && \
     pnpm type-check && \
     pnpm test && \
     pnpm build && \
+    rm -rf .git && \
     mv .output/public /output-public && \
     rm -rf .nuxt node_modules/.cache node_modules/.vite
 
