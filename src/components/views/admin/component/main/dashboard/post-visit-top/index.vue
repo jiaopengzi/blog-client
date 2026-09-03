@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 内容访问排行(文章/page 按期间浏览量 TopN, 含主题化交互反馈)
+ * Description : 内容访问排行(文章/page 按期间浏览量 TopN, 整行统一 hover, 无分隔线, podium 徽章层级)
 -->
 <template>
     <div class="post-visit-top-container">
@@ -134,10 +134,11 @@ watch(
 </script>
 <style scoped lang="scss">
 /*
- * 设计说明: 安静的编辑感数据榜.
+ * 设计说明: 安静的编辑感数据榜 (bug02 260903-01 重构).
  * 全部取 theme 体系变量(--jpz-*)并以 color-mix 派生, 跟随 8 套预设与明暗模式;
- * 前三名用主题 primary 徽章收束视线, 其余名次退为细数字; 占比条用伪元素承载,
- * 宽度与颜色均可平滑过渡, hover 时整行反馈(背景 + 标题 + 条同时加深).
+ * 前三名用主题 primary 徽章收束视线, 第 1 名徽章微放大拉开 podium 层级, 其余名次退为细数字;
+ * 占比条用伪元素承载, 宽度按 maxPV 等比; 行间无分隔线(暗色主题下 1px 边色线条观感杂乱);
+ * hover 时整行合并为同一底色(行与占比条同色, 不再保留独立的条色/竖条层级), 仅标题色加深作焦点提示.
  */
 .post-visit-top-container {
     margin-top: 48px;
@@ -200,6 +201,11 @@ watch(
         border-radius: 6px;
         box-shadow: var(--jpz-box-shadow-light);
         padding: 10px 20px;
+        // flex + gap 控制行距, 替代原先的 margin(避免相邻 margin 折叠后行距不可控);
+        // 行距 6px: 行间留有适度呼吸, 又不至于割裂列表的整体性
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
     }
 
     .post-visit-top-row {
@@ -207,23 +213,14 @@ watch(
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 10px 12px;
-        margin: 2px 0;
-        border-radius: 4px;
-        transition:
-            background-color 0.18s ease,
-            box-shadow 0.18s ease;
-
-        // 行分隔线用极淡主题边色, 最后一行不留
-        & + .post-visit-top-row::after {
-            content: "";
-            position: absolute;
-            top: -2px;
-            left: 40px;
-            right: 0;
-            height: 1px;
-            background-color: var(--jpz-border-color-lighter);
-        }
+        // 行高由内容行 (标题 line-height: 2) 撑起后, 上下留白 10px; 左右留白 16px,
+        // hover 背景带左缘与行内容 (徽章/文字) 保持明显间距, 避免贴边局促感 (260903-01 bug02 反馈)
+        padding: 10px 16px;
+        // 背景带圆角 8px: 与列表容器 6px 圆角形成嵌套层次, 视觉更柔和
+        border-radius: 8px;
+        // 行内标题可点, 整行呈现可交互态
+        cursor: pointer;
+        transition: background-color 0.18s ease;
 
         // 浏览量占比条: 伪元素承载, 宽度按 maxPV 等比, 颜色为主题 primary 低浓度派生
         &::before {
@@ -233,21 +230,24 @@ watch(
             bottom: 0;
             left: 0;
             width: calc(var(--row-width, 0) * 1%);
-            border-radius: 4px;
+            // 与行背景圆角一致, 避免占比条端部与行圆角不齐
+            border-radius: 8px;
             background-color: color-mix(in srgb, var(--jpz-color-primary) 10%, var(--jpz-bg-color));
             transition:
                 width 0.25s ease,
-                background-color 0.18s ease;
+                background-color 0.18s ease,
+                opacity 0.18s ease;
             pointer-events: none;
         }
 
-        // 整行交互反馈独立于比例条, 低 PV 条目也能明确看出可操作范围
+        // bug02(260903-01): 整行统一 hover —— 行与占比条合并为同一底色, 不再保留独立的
+        // 条色/inset 竖条层级, 仅标题色加深作焦点提示; hover 时占比条隐藏, 避免高 PV 行上
+        // 出现一条突兀的宽色带 (浅色主题下近白) 横在行中 (260903-01 bug02 反馈)
         &:is(:hover, :focus-within) {
-            background-color: color-mix(in srgb, var(--jpz-color-primary) 8%, var(--jpz-bg-color));
-            box-shadow: inset 3px 0 0 color-mix(in srgb, var(--jpz-color-primary) 78%, var(--jpz-bg-color));
+            background-color: color-mix(in srgb, var(--jpz-color-primary) 16%, var(--jpz-bg-color));
 
             &::before {
-                background-color: color-mix(in srgb, var(--jpz-color-primary) 20%, var(--jpz-bg-color));
+                opacity: 0;
             }
 
             .row-title {
@@ -266,14 +266,14 @@ watch(
     }
 
     .row-rank {
-        width: 22px;
-        height: 22px;
+        width: 24px;
+        height: 24px;
         flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         font-family: "JBMonoWOFF2", monospace;
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 600;
         color: var(--jpz-text-color-placeholder);
 
@@ -287,10 +287,12 @@ watch(
 
     .row-type {
         flex-shrink: 0;
-        font-size: 11px;
+        // 标签文字 12.5px, 胶囊形(圆角 999px), 字距微增提升可读性 (260903-01 bug02 UI 规范)
+        font-size: 12.5px;
         line-height: 1;
-        padding: 3px 7px;
-        border-radius: 3px;
+        letter-spacing: 0.5px;
+        padding: 4px 8px;
+        border-radius: 999px;
         border: 1px solid transparent;
 
         // 文章: primary 派生; 页面: secondary 派生 —— 跟随主题而非硬编码色
@@ -313,20 +315,21 @@ watch(
         text-overflow: ellipsis;
         white-space: nowrap;
         color: var(--jpz-text-color-primary);
-        font-size: 14px;
+        // 标题 15px + 行高 2: 行高撑起整行高度, hover 背景带随之舒展; 字重 500 + 微字距提升可读性 (260903-01 bug02 UI 规范)
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 2;
+        letter-spacing: 0.1px;
         text-decoration: none;
         cursor: pointer;
         transition: color 0.15s ease;
+        padding: 0 10px;
+        border-radius: 4px;
 
+        // hover 文字仅变色 + 描粗 (text-shadow 描粗不触发回流, 避免字重跳变引起宽度抖动), 不再加单独背景盒 (260903-01 bug02 反馈)
         &:hover {
-            text-decoration: underline;
-            text-underline-offset: 3px;
-        }
-
-        &:focus-visible {
-            outline: 2px solid var(--jpz-color-primary);
-            outline-offset: 2px;
-            border-radius: 2px;
+            color: var(--jpz-color-primary);
+            text-shadow: 0 0 0.5px currentColor;
         }
     }
 
@@ -335,14 +338,15 @@ watch(
         min-width: 48px;
         text-align: right;
         font-family: "JBMonoWOFF2", monospace;
-        font-size: 13px;
+        // PV 数字 14px, 颜色提升为 text-color-primary 增强数据可读性 (260903-01 bug02 UI 规范)
+        font-size: 14px;
         font-weight: 600;
-        color: var(--jpz-text-color-regular);
+        color: var(--jpz-text-color-primary);
 
         // 单位弱化, 数字为主
         &::after {
             content: " 次";
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 400;
             color: var(--jpz-text-color-placeholder);
         }

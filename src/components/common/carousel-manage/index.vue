@@ -3,18 +3,29 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 轮播图管理(卡片式布局, 图片链接支持媒体库选择, 复用 ImageInput)
+ * Description : 轮播图管理(卡片式布局, 字段 label 同行左置, 图片链接支持媒体库选择, 复用 ImageInput)
 -->
 
 <!--
  * 补充说明:
- * 每条轮播图为一个独立卡片: 头部为序号 + 删除按钮; 图片链接独占一行(ImageInput 自带
- * 预览行高度较大), 跳转链接与替代文本以响应式双列网格排布, 窄容器自动换为单列
+ * 每条轮播图为一个独立卡片: 头部为序号 + 删除按钮; 字段 label 左置同行显示
+ * (label-position left + 固定 label-width, 与 app-option 页其他表单项一致, bug01 260903-01);
+ * 图片链接独占一行(ImageInput 自带预览行高度较大), 跳转链接与替代文本以响应式双列
+ * 网格排布, 窄容器自动换为单列
 -->
 
 <template>
     <div class="form-page">
-        <el-form :label-position="labelPosition" ref="formRef" :model="formData" :rules="rules" class="form-content" :size="formSize" status-icon>
+        <el-form
+            :label-position="labelPosition"
+            label-width="100px"
+            ref="formRef"
+            :model="formData"
+            :rules="rules"
+            class="form-content"
+            :size="formSize"
+            status-icon
+        >
             <div v-for="(fItem, index) in formData" :key="index" class="item-card">
                 <div class="item-card__header">
                     <span class="item-card__title">轮播图 {{ index + 1 }}</span>
@@ -51,8 +62,8 @@ const { data = [] } = defineProps<{
     data?: CarouselItem[]
 }>()
 
-// 表单 label 位置 top | left | right; top 使各字段 label 对齐不受文字长度影响
-const labelPosition = ref<"left" | "right" | "top">("top")
+// 表单 label 位置 top | left | right; left 配合固定 label-width 与 app-option 页其他表单项一致, 同行显示 (bug01 260903-01)
+const labelPosition = ref<"left" | "right" | "top">("left")
 
 // 表单大小 '' | 'large' | 'default' | 'small'
 const formSize = ref<"" | "default" | "small" | "large">("default")
@@ -136,7 +147,7 @@ defineExpose({
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 4px;
+        margin-bottom: 10px;
     }
 
     .item-card__title {
@@ -146,9 +157,10 @@ defineExpose({
     }
 
     // 跳转链接 + 替代文本双列, 窄容器自动换为单列
+    // 单元格最小 300px: label 左置占 100px 后仍保留可用输入宽度 (bug01 260903-01)
     .item-card__row {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         column-gap: 16px;
     }
 }
