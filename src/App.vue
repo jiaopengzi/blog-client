@@ -30,7 +30,7 @@ import zhCn from "element-plus/es/locale/lang/zh-cn"
 
 import { useResizeObserver } from "@vueuse/core"
 import { storeToRefs } from "pinia"
-import { computed, watch } from "vue"
+import { computed, onMounted } from "vue"
 
 import { useAppLoadingIndicator } from "@/composables/useAppLoadingIndicator"
 import { useDeviceStore } from "@/stores/device"
@@ -45,15 +45,19 @@ import { activeThemeSchemeState, activeThemePresetState } from "@/theme/useTheme
 
 const appLoadingIndicator = useAppLoadingIndicator()
 
-// 反馈第 2 轮: 窗口尺寸变化时同步 device store——等价 SPA App.vue 的 useResizeObserver(appRef)
-// 缺失时 device 停留在初始判定(宽窗口=PC), 缩放窗口后头部导航不切换手机布局、
-// 列表 meta 的三端展示策略(post-item-main 仅 PC/PAD 附加评论/点赞/收藏)也不会随宽度重算
-// 根组件观察 body(随窗口伸缩), 生命周期与应用一致, 无需 stop
+// 反馈第 2 轮: 水合完成后校准设备状态并观察窗口尺寸——SSR 始终使用 PC 默认值, 若在 setup
+// 阶段提前触发 ResizeObserver, PAD/PHONE 的首个客户端 VNode 会与 SSR 不一致. mounted 后立即
+// 校准既不影响后续响应式布局, 也避免 HomeCarousel/HeaderNav 等依赖 device 的水合差异.
 if (import.meta.client) {
     const deviceStore = useDeviceStore()
-    useResizeObserver(document.body, () => {
+    const updateDeviceState = () => {
         deviceStore.updateDevice()
         deviceStore.updateWindowWidth()
+    }
+
+    onMounted(() => {
+        updateDeviceState()
+        useResizeObserver(document.body, updateDeviceState)
     })
 }
 

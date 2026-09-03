@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 根级默认布局 (阶段 4 终版: header/侧栏/footer 常驻, 页面仅提供内容)
+ * Description : 根级默认布局 (阶段 4 终版: header/侧栏/footer 常驻, 页面仅提供内容; 侧栏客户端按设备加载)
 -->
 
 <!--
@@ -26,7 +26,8 @@
                     <slot />
                 </el-main>
 
-                <LayoutAside />
+                <!-- 侧栏仅在水合后按真实窗口类型加载, 避免 SSR 默认 PC 为 PAD/PHONE 请求不可见数据. -->
+                <LayoutAside v-if="isAsideClientReady" />
             </el-container>
         </div>
 
@@ -40,7 +41,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia"
-import { provide, ref } from "vue"
+import { onMounted, provide, ref } from "vue"
 
 import JBreadcrumb from "@/components/common/breadcrumb"
 import LayoutAside from "@/components/layout/aside/layout-aside.vue"
@@ -57,6 +58,11 @@ await useSiteOptions()
 
 const statusStore = useStatusStore()
 const { isShowSearch } = storeToRefs(statusStore)
+const isAsideClientReady = ref(false)
+
+onMounted(() => {
+    isAsideClientReady.value = true
+})
 
 // 搜索框数据流 (页头搜索弹窗 → 列表内容组件, 经 provide/inject 传递)
 const searchData = ref<SearchData>({

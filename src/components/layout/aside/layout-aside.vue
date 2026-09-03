@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 公用侧栏 (阶段 4 终版拆分: 列表页与文章详情页各自组合使用; bf-260903-01 增加登录态校准重拉)
+ * Description : 公用侧栏 (阶段 4 终版拆分: 列表页与文章详情页各自组合使用; bf-260903-01 增加登录态校准重拉与非 PC 请求闸门)
 -->
 
 <!--
@@ -17,7 +17,7 @@
         class="el-aside"
         :class="{ 'is-aside-sticky': isAsideStickyEnabled }"
         :style="{ '--home-aside-sticky-top': asideStickyTop }"
-        v-show="isShowHomeAside && hasDataHomeAside"
+        v-show="isDesktop && isShowHomeAside && hasDataHomeAside"
     >
         <div ref="asideContentRef" class="el-aside-content">
             <!-- 目录 (数据由文章详情页写入 statusStore; 与 SPA 一致仅详情页展示) -->
@@ -60,14 +60,14 @@ import { storeToRefs } from "pinia"
 import { computed, onMounted, ref, useTemplateRef, watch } from "vue"
 
 import { type PostTag as PostTagItem } from "@/api/postTag/view"
-import type { PostResCommon } from "@/api/post/common"
-import MonthArchive, { type MonthArchiveData } from "@/components/common/month-archive"
+import MonthArchive from "@/components/common/month-archive"
 import { useGetData } from "@/components/hooks/useHome/api"
 import Toc from "@/components/editor/components/toc"
 import HotPost from "@/components/layout/aside/hot-post"
 import PostTag, { usePostTagData } from "@/components/layout/aside/post-tag"
 import RecommendedRead from "@/components/layout/aside/recommended-read"
 import { RouteNames } from "@/router"
+import { DeviceType, useDeviceStore } from "@/stores/device"
 import { useStatusStore } from "@/stores/status"
 import { useUserStore } from "@/stores/user"
 
@@ -82,6 +82,9 @@ const route = useRoute()
 const asideContentRef = useTemplateRef<HTMLElement | null>("asideContentRef")
 const asideStickyTop = ref("0px")
 const isAsideStickyEnabled = ref(false)
+const deviceStore = useDeviceStore()
+const { device } = storeToRefs(deviceStore)
+const isDesktop = computed(() => device.value === DeviceType.PC)
 
 // 根据侧栏真实高度更新 sticky 吸附点, 短侧栏吸顶, 长侧栏贴底且避免侧栏内部滚动条
 const updateAsideStickyTop = () => {
@@ -104,8 +107,14 @@ const updateAsideStickyTop = () => {
     isAsideStickyEnabled.value = true
 }
 
+const handleViewportResize = () => {
+    deviceStore.updateDevice()
+    deviceStore.updateWindowWidth()
+    updateAsideStickyTop()
+}
+
 useResizeObserver(asideContentRef, updateAsideStickyTop)
-useEventListener(window, "resize", updateAsideStickyTop)
+useEventListener(window, "resize", handleViewportResize)
 
 const statusStore = useStatusStore()
 
@@ -135,87 +144,8 @@ const { recommendedPost, hotPost, monthArchiveProps, getHostPost, getRecommended
 // 文章标签数据
 const { items: postTags, getTagTopN } = usePostTagData(false)
 
-// 260828-1a: 自定义页(/page/*)在 SSR 阶段不拉取侧栏数据——其页面态(setCustomPage)会隐藏整个侧栏,
-// 但 statusStore 不注水、SSR 按默认态渲染, 若拉取会把"推荐阅读/热门/归档/标签"列表带进 HTML
-// (水合后 onMounted 才切换页面态, 造成无谓的 HTML 膨胀与侧栏闪现)。跳过拉取后 hasData* 保持
-// false → SSR/水合首帧侧栏为空且一致; 客户端 SPA 导航回列表页时由 loadMissingAsideData 补拉
-// 文章详情(/p/*)按 SPA 语义本就展示侧栏, 维持 SSR 直出
-const skipAsideSsr = computed(() => import.meta.server && route.name === "page")
-
-// feature01(02-plan): 侧栏数据 SSR 直出(payload 注水, 客户端水合复用);
-// 客户端导航/重挂载时 SSR handler 直接返回 null, 由 onMounted 的本地空数据判断补拉, 避免双请求
-const { data: asideRecommendedData } = await useAsyncData<PostResCommon[] | null>("aside-recommended", async () => {
-    if (import.meta.client || skipAsideSsr.value) {
-        return null
-    }
-    await getRecommendedPost()
-    return [...recommendedPost]
-})
-
-const { data: asideHotData } = await useAsyncData<PostResCommon[] | null>("aside-hot", async () => {
-    if (import.meta.client || skipAsideSsr.value) {
-        return null
-    }
-    await getHostPost()
-    return [...hotPost]
-})
-
-const { data: asideMonthData } = await useAsyncData<MonthArchiveData[] | null>("aside-month-archive", async () => {
-    if (import.meta.client || skipAsideSsr.value) {
-        return null
-    }
-    await getPostCountByMonth()
-    return [...monthArchiveProps]
-})
-
-const { data: asideTagsData } = await useAsyncData<PostTagItem[] | null>("aside-tags", async () => {
-    if (import.meta.client || skipAsideSsr.value) {
-        return null
-    }
-    await getTagTopN()
-    return [...postTags]
-})
-
-// 应用 SSR 侧栏数据(SSR 渲染与客户端水合共用; 同步回放 statusStore 数据标记, 与 SSR 首帧一致)
-watch(
-    asideRecommendedData,
-    (data) => {
-        if (!data) return
-        Object.assign(recommendedPost, data)
-        statusStore.setHasDataRecommendedRead(data.length > 0)
-    },
-    { immediate: true },
-)
-
-watch(
-    asideHotData,
-    (data) => {
-        if (!data) return
-        Object.assign(hotPost, data)
-        statusStore.setHasDataHotPost(data.length > 0)
-    },
-    { immediate: true },
-)
-
-watch(
-    asideMonthData,
-    (data) => {
-        if (!data) return
-        monthArchiveProps.splice(0, monthArchiveProps.length, ...data)
-        statusStore.setHasDataMonthArchive(data.length > 0)
-    },
-    { immediate: true },
-)
-
-watch(
-    asideTagsData,
-    (data) => {
-        if (!data) return
-        postTags.splice(0, postTags.length, ...data)
-        statusStore.setHasDataPostTag(data.length > 0)
-    },
-    { immediate: true },
-)
+// 侧栏由默认布局在客户端挂载, 数据仅在 PC 端加载, 避免 PAD/PHONE 请求不可见数据;
+// 客户端初始 PC 由 mounted 补拉, PAD/PHONE 切回 PC 由 isDesktop 监听补拉.
 
 // 侧栏点击文章: 直接路由跳转 /p/:id
 const handlePostId = async (postID: string) => {
@@ -254,14 +184,17 @@ const tocHeadingClicked = (index: number) => {
 }
 
 // 拉取「显示标志为 true 且尚无数据」的侧栏模块 (幂等, 已加载的跳过)
-const loadMissingAsideData = async () => {
+const loadMissingAsideData = async (forceLoginRefresh = false) => {
+    if (!isDesktop.value) {
+        return
+    }
     if (isShowRecommendedRead.value && !hasDataRecommendedRead.value) {
         await getRecommendedPost()
     }
     if (isShowHotPost.value && !hasDataHotPost.value) {
         await getHostPost()
     }
-    await refreshLoginAwareAsideData()
+    await refreshLoginAwareAsideData(forceLoginRefresh)
 }
 
 /**
@@ -276,6 +209,10 @@ const loadMissingAsideData = async () => {
  * @returns 无返回值; initStores 或重拉失败时静默沿用现有数据 (请求层已负责错误提示).
  */
 const refreshLoginAwareAsideData = async (forceLoginRefresh = false): Promise<void> => {
+    if (!isDesktop.value) {
+        return
+    }
+
     try {
         const { getInitStoresPromise, isInitStoresReady } = await import("@/stores/init")
         if (!isInitStoresReady()) {
@@ -311,6 +248,13 @@ const refreshLoginAwareAsideData = async (forceLoginRefresh = false): Promise<vo
 // - 登录水合或重挂载场景: 登录态就绪后刷新标签/归档, 覆盖匿名 SSR 口径;
 // - 推荐/热门与登录态无关, 仍按本地空数据判断补拉.
 onMounted(() => {
+    // SSR 默认设备为 PC; 水合完成后再校准断点, 既避免 VNode 不一致, 也保证请求前得到真实设备类型
+    deviceStore.updateDevice()
+    deviceStore.updateWindowWidth()
+    if (!isDesktop.value) {
+        return
+    }
+
     if (recommendedPost.length === 0) {
         void getRecommendedPost()
     }
@@ -325,6 +269,14 @@ onMounted(() => {
 // (如 /page/vip (全部 isShow*=false) → 点击首页 (setHome 全 true) 后侧栏四项齐全)
 watch([isShowRecommendedRead, isShowHotPost, isShowPostTag, isShowMonthArchive], () => {
     void loadMissingAsideData()
+})
+
+// 从 PAD/PHONE 切回 PC 时仅补拉缺失数据. 登录态强制校准只属于跨页面进入首页的路由语义,
+// 不能由尺寸切换触发, 否则已有标签/归档数据会被无意义地重复请求.
+watch(isDesktop, (currentIsDesktop, previousIsDesktop) => {
+    if (currentIsDesktop && !previousIsDesktop) {
+        void loadMissingAsideData()
+    }
 })
 
 // 默认布局在详情页与首页之间常驻, 用户中心/后台返回首页时又会带回 Pinia 中旧的匿名 SSR 数据.
