@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : markdownRenderer 同构管线单测(阶段 4: 段落/锚点/去 H1/alert/XSS/代码高亮/自定义元素白名单/本地图片引用)
+ * Description : markdownRenderer 同构管线单测(阶段 4: 段落/锚点/去 H1/alert/XSS/代码高亮/自定义元素白名单/本地图片引用; bugfix 260916-01 补 alert 与 blockquote 共存用例)
  */
 
 import { describe, expect, it } from "vitest"
@@ -36,6 +36,28 @@ describe("markdownRenderer 同构管线", () => {
         expect(html).toContain("提示内容")
         expect(html).toContain("续写条目1")
         expect(html).toContain("续写条目2")
+    })
+
+    // bugfix 260916-01: marked-alert 把 [!NOTE] 渲染为 div.markdown-alert(非 blockquote), 文章无
+    // blockquote 时合并管线提前返回; 本用例锁住 alert + 段落 + 标题共存时内容完整渲染.
+    it("4.1 alert 块 + 后续段落：无 blockquote 时不进入合并循环, 内容完整渲染", () => {
+        const src = "> [!NOTE]\n> 通知内容\n\n通知后面的普通段落。\n\n## 后续标题"
+        const html = markdownToHtml(src, false)
+        expect(html).toContain("markdown-alert")
+        expect(html).toContain("通知后面的普通段落")
+        expect(html).toContain("后续标题")
+    })
+
+    // bugfix 260916-01: node-html-parser 9.x 的 classList 是 DOMTokenList(只有 contains), 原代码误用
+    // Set 的 has; alert(div) 与 blockquote 共存时合并循环对非 BLOCKQUOTE 元素调 has 抛 TypeError,
+    // 即线上《通知和链接》文章 SSR 500 与文章不渲染的根因.
+    it("4.2 alert 续块 + 独立引用块 + 后续段落：classList API 修复后不再抛错", () => {
+        const src = "> [!WARNING]\n> 警告内容\n\n> 独立引用块\n\n结尾段落"
+        const html = markdownToHtml(src, false)
+        expect(html).toContain("markdown-alert")
+        expect(html).toContain("警告内容")
+        expect(html).toContain("独立引用块")
+        expect(html).toContain("结尾段落")
     })
 
     it("5. XSS：script/onerror/javascript 链接被 sanitize 移除", () => {

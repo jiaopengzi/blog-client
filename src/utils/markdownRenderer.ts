@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : Markdown 同构渲染管线(阶段 4 重写, 双端同一实现)
+ * Description : Markdown 同构渲染管线(阶段 4 重写, 双端同一实现; bugfix 260916-01 修正 node-html-parser 9.x classList API 误用)
  */
 
 /*
@@ -218,17 +218,31 @@ function isElementNode(node: ParsedNode): node is ParsedHTMLElement {
     return node.nodeType === 1
 }
 
+/**
+ * @description: 判断元素是否为引用类容器 (普通 blockquote 或 alert 容器).
+ * @remarks marked-alert 渲染的 alert 是 div.markdown-alert 而非 blockquote, 两种形态都要识别.
+ * @param element - node-html-parser 解析出的顶层元素.
+ * @returns true 表示该元素参与引用块序号对齐.
+ */
 function isAlertOrBlockquote(element: ParsedHTMLElement): boolean {
     const tag = element.tagName
-    return tag === "BLOCKQUOTE" || (element.classList !== undefined && (element.classList as unknown as Set<string>).has("markdown-alert"))
+    // 修正: bugfix 260916-01, node-html-parser 9.x 的 classList 是 DOMTokenList (只有 contains),
+    // 没有 Set 的 has; 原误用 has 会在 alert 与 blockquote 共存时抛 TypeError, 致 SSR 500 与文章不渲染.
+    return tag === "BLOCKQUOTE" || element.classList.contains("markdown-alert")
 }
 
+/**
+ * @description: 判断普通 blockquote 是否可视为前一个 alert 容器的续写块.
+ * @param alertElement - 前一个提示块元素 (可为 div.markdown-alert 或 blockquote).
+ * @param blockquoteElement - 当前普通引用块元素.
+ * @returns 若应并入前一个提示块则返回 true.
+ */
 function isAlertContinuationBlockquote(alertElement: ParsedHTMLElement | null, blockquoteElement: ParsedHTMLElement | null): boolean {
     if (!alertElement || !blockquoteElement) {
         return false
     }
-    const classList = alertElement.classList as unknown as Set<string> | undefined
-    if (!classList || !classList.has("markdown-alert") || blockquoteElement.tagName !== "BLOCKQUOTE") {
+    // 修正: bugfix 260916-01, 同 isAlertOrBlockquote, classList 需用 contains 而非 Set 的 has.
+    if (!alertElement.classList.contains("markdown-alert") || blockquoteElement.tagName !== "BLOCKQUOTE") {
         return false
     }
     const childElements = blockquoteElement.childNodes.filter(isElementNode)
