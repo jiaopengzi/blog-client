@@ -6,10 +6,10 @@
 
 ## 1. 项目定位与验收基线
 
-| 项目 | 路径 | 角色 |
-| --- | --- | --- |
-| `blog-client`（旧 SPA，已上线） | `C:\Users\jiaopengzi\Desktop\blog-client` | **行为基准（标准答案），源码只读** |
-| `blog-client-nuxt`（本项目） | 当前仓库 | **被验收对象**，所有代码修改只发生在这里 |
+| 项目                            | git 记录       | 角色                                     |
+| ------------------------------- | -------------- | ---------------------------------------- |
+| `blog-client`（旧 SPA，已上线） | tag v1.0.1     | **行为基准（标准答案），源码只读**       |
+| `blog-client-nuxt`（本项目）    | tag v1.0.1之后 | **被验收对象**，所有代码修改只发生在这里 |
 
 验收基线：以 SPA 为标准，逐项比对功能、交互、渲染、性能，确保迁移后表现一致。
 
@@ -24,19 +24,19 @@
 
 ## 2. 技术栈与关键版本
 
-| 类别 | 版本 | 备注 |
-| --- | --- | --- |
-| Nuxt | 4.5.2 | `srcDir: "src"`，`compatibilityDate: "2026-08-22"` |
-| Vue | 3.5.41 | — |
-| Vite | 8.2.1 | 内置 Rolldown；`build.minify: "oxc"` |
-| TypeScript | 6.0.3 | — |
-| Pinia | 4.0.3 | 经 `@pinia/nuxt` 1.0.2 |
-| vue-router | 5.2.0 | — |
-| Element Plus | 2.14.4 | 按需导入（unplugin-vue-components + ElementPlusResolver） |
-| oxlint / oxfmt | 1.78.0 / 0.63.0 | 规则在 `oxlint.config.ts`，格式在 `.oxfmtrc.json` |
-| vitest | 4.1.10 | DOM 环境 **happy-dom** 20.11.8 |
-| @nuxt/test-utils | 4.1.0 | 挂载 Nuxt vite 链 |
-| pnpm | 11.21.0 | `.npmrc` 启用 `shell-emulator=true` |
+| 类别             | 版本            | 备注                                                      |
+| ---------------- | --------------- | --------------------------------------------------------- |
+| Nuxt             | 4.5.2           | `srcDir: "src"`，`compatibilityDate: "2026-08-22"`        |
+| Vue              | 3.5.41          | —                                                         |
+| Vite             | 8.2.1           | 内置 Rolldown；`build.minify: "oxc"`                      |
+| TypeScript       | 6.0.3           | —                                                         |
+| Pinia            | 4.0.3           | 经 `@pinia/nuxt` 1.0.2                                    |
+| vue-router       | 5.2.0           | —                                                         |
+| Element Plus     | 2.14.4          | 按需导入（unplugin-vue-components + ElementPlusResolver） |
+| oxlint / oxfmt   | 1.78.0 / 0.63.0 | 规则在 `oxlint.config.ts`，格式在 `.oxfmtrc.json`         |
+| vitest           | 4.1.10          | DOM 环境 **happy-dom** 20.11.8                            |
+| @nuxt/test-utils | 4.1.0           | 挂载 Nuxt vite 链                                         |
+| pnpm             | 11.21.0         | `.npmrc` 启用 `shell-emulator=true`                       |
 
 **`jsdom` 与 `@types/jsdom` 已移除**，DOM 统一 happy-dom。
 
@@ -80,23 +80,23 @@ pnpm run test -- -t "格式化日期包含年月日时分秒和时区偏移"
 
 `src/` 下 1223 个 `.ts`/`.vue`，268 个 `.vue`。
 
-| 目录 | 职责 | 规模 |
-| --- | --- | --- |
-| `src/api/` | 接口层，**一接口一文件**，按业务域分目录 | 229 个 `.ts` |
-| `src/components/` | 组件，按 `common/` `views/` `editor/` `layout/` `player/` 分区 | 235 个 `.vue` + 498 个 `.ts` |
-| `src/pkg/` | 自研封装层：`codemirror/` `marked/` `highlight.js/` `hls/` | 75 个 `.ts` |
-| `src/stores/` | Pinia store，全部显式导入 | 12 个 |
-| `src/pages/` | 文件路由 | 28 个 `.vue` |
-| `src/utils/` | 通用工具 | 78 个 |
-| `src/theme/` | 主题域（预设定义 / 运行时 / 状态 / UI 四层） | 17 个 |
-| `src/composables/` | `useSiteOptions` / `useSeo` / `useAppLoadingIndicator` | 3 个 |
-| `src/middleware/` | 路由中间件（3 个 `.global` + 1 个命名） | 4 个 |
-| `src/plugins/` | Nuxt 插件 | 7 个 |
-| `src/layouts/` | `default.vue` / `bare-shell.vue` | 2 个 |
-| `src/modules/` | 本地 Nuxt 模块 `set-env-version.ts` | 1 个 |
-| `src/customElements/` + `customElementsMount/` | 自定义元素解析与独立 `createApp()` 挂载 | 7 + 10 个 |
-| `src/types/` | 全局 `.d.ts` | 7 个 |
-| `src/server-stubs/` | 服务端替身（`emoji-picker.ts`，`export default {}`） | 1 个 |
+| 目录                                           | 职责                                                           | 规模                         |
+| ---------------------------------------------- | -------------------------------------------------------------- | ---------------------------- |
+| `src/api/`                                     | 接口层，**一接口一文件**，按业务域分目录                       | 229 个 `.ts`                 |
+| `src/components/`                              | 组件，按 `common/` `views/` `editor/` `layout/` `player/` 分区 | 235 个 `.vue` + 498 个 `.ts` |
+| `src/pkg/`                                     | 自研封装层：`codemirror/` `marked/` `highlight.js/` `hls/`     | 75 个 `.ts`                  |
+| `src/stores/`                                  | Pinia store，全部显式导入                                      | 12 个                        |
+| `src/pages/`                                   | 文件路由                                                       | 28 个 `.vue`                 |
+| `src/utils/`                                   | 通用工具                                                       | 78 个                        |
+| `src/theme/`                                   | 主题域（预设定义 / 运行时 / 状态 / UI 四层）                   | 17 个                        |
+| `src/composables/`                             | `useSiteOptions` / `useSeo` / `useAppLoadingIndicator`         | 3 个                         |
+| `src/middleware/`                              | 路由中间件（3 个 `.global` + 1 个命名）                        | 4 个                         |
+| `src/plugins/`                                 | Nuxt 插件                                                      | 7 个                         |
+| `src/layouts/`                                 | `default.vue` / `bare-shell.vue`                               | 2 个                         |
+| `src/modules/`                                 | 本地 Nuxt 模块 `set-env-version.ts`                            | 1 个                         |
+| `src/customElements/` + `customElementsMount/` | 自定义元素解析与独立 `createApp()` 挂载                        | 7 + 10 个                    |
+| `src/types/`                                   | 全局 `.d.ts`                                                   | 7 个                         |
+| `src/server-stubs/`                            | 服务端替身（`emoji-picker.ts`，`export default {}`）           | 1 个                         |
 
 根目录还有 `server/`（`middleware/legacy-redirect.ts`、`routes/robots.txt.ts`、`routes/api/[...].ts`）。
 
@@ -160,10 +160,10 @@ request({ url, method, data, params, headers, timeout, onUploadProgress })
 
 ```ts
 export function resolveApiBase(): string {
-    if (typeof window !== "undefined") return ""                  // 浏览器：同源相对路径 /api
-    const apiBase = tryUseNuxtApp()?.$config?.apiBase              // SSR：runtimeConfig.apiBase
+    if (typeof window !== "undefined") return "" // 浏览器：同源相对路径 /api
+    const apiBase = tryUseNuxtApp()?.$config?.apiBase // SSR：runtimeConfig.apiBase
     if (typeof apiBase === "string" && apiBase) return apiBase
-    return process.env.NUXT_API_BASE || ""                         // 非 Nuxt 运行时（vitest）回退
+    return process.env.NUXT_API_BASE || "" // 非 Nuxt 运行时（vitest）回退
 }
 ```
 
@@ -191,14 +191,14 @@ GET 等幂请求由 ofetch 默认重试覆盖；写方法（`POST`/`PUT`/`PATCH`
 
 ### 7.1 routeRules 明细
 
-| 规则 | 值 | 说明 |
-| --- | --- | --- |
-| `/admin/**` `/s/**` `/md` `/user-info` `/checkout` `/setup` | `ssr: false` | 纯 CSR |
-| `/` | `{}` | SSR，**刻意取消 swr**：后台 app-option 保存的 SEO（head/title/关键字）需下次请求即刻生效，swr 窗口会造成最长 60s 旧 SEO 残留 |
-| `/category/**` `/tag/**` | `swr: 300` | SSR + ISR |
-| `/p/**` | `swr: 3600` | SSR + ISR |
-| `/sitemap.xml` `/sitemap/**` | `proxy` | 反代到后端，sitemap 由后端生成 |
-| `/api/**` | `proxy` | dev/preview/生产三态一致转发 |
+| 规则                                                        | 值           | 说明                                                                                                                         |
+| ----------------------------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `/admin/**` `/s/**` `/md` `/user-info` `/checkout` `/setup` | `ssr: false` | 纯 CSR                                                                                                                       |
+| `/`                                                         | `{}`         | SSR，**刻意取消 swr**：后台 app-option 保存的 SEO（head/title/关键字）需下次请求即刻生效，swr 窗口会造成最长 60s 旧 SEO 残留 |
+| `/category/**` `/tag/**`                                    | `swr: 300`   | SSR + ISR                                                                                                                    |
+| `/p/**`                                                     | `swr: 3600`  | SSR + ISR                                                                                                                    |
+| `/sitemap.xml` `/sitemap/**`                                | `proxy`      | 反代到后端，sitemap 由后端生成                                                                                               |
+| `/api/**`                                                   | `proxy`      | dev/preview/生产三态一致转发                                                                                                 |
 
 此外 `/login` `/register` `/register-admin` `/reset-password` `/unsubscribe` `/social/[...callback]` 未关 SSR 但模板整体包 `ClientOnly`，实际按 CSR 行为。
 
@@ -210,7 +210,9 @@ GET 等幂请求由 ofetch 默认重试覆盖；写方法（`POST`/`PUT`/`PATCH`
 await useSiteOptions()
 const { data: detailData, pending } = await useAsyncData<PostDetailSsrPayload>(
     `post-detail-${postId.value}`,
-    async () => { /* viewPostByIDAPI({ post_id: postId.value }) */ },
+    async () => {
+        /* viewPostByIDAPI({ post_id: postId.value }) */
+    },
     { watch: [postId] },
 )
 usePostSeo(() => detailMeta.value)
@@ -251,22 +253,22 @@ Token 流程：登录 → `userStore.setAccessToken()` → `tabSyncManager` 广�
 
 ### 9.1 路由清单（28 个页面文件）
 
-| 路由 | 文件 | 渲染 |
-| --- | --- | --- |
-| `/` | `index.vue` | SSR |
-| `/category/:slug` `/tag/:slug` | `category/[slug].vue` `tag/[slug].vue` | SSR + swr 300 |
-| `/p/:id` | `p/[id].vue` | SSR + swr 3600 |
-| `/page/:customPath` | `page/[customPath].vue` | SSR（先 slug→id 再取详情） |
-| `/year/:year`、`/year/:year/month/:month` | `year/` 下两个文件 | SSR |
-| `/link-list` | `link-list.vue` | SSR，`layout: false` 自组合 header/footer |
-| `/not-found`、`/user/:username` | `not-found.vue`、`user/[username].vue` | SSR，用 `layout: "bare-shell"` |
-| `/s/:keyword` | `s/[keyword].vue` | 纯 CSR |
-| `/md` `/user-info` `/checkout` `/setup` | 同名 `.vue` | 纯 CSR |
-| `/login` `/register` `/register-admin` `/reset-password` `/unsubscribe` `/social/[...callback]` | 同名 `.vue` | 模板包 `ClientOnly` |
-| `/admin/**` | `admin.vue` + `admin/[...slug].vue` | 纯 CSR |
-| `/test` | `test.vue` | 迁移自 SPA 的极简演示页 |
-| `/__test-404` `/__test-500` `/__test-503` | `__test-*.vue` | 错误渲染探针：`layout: false` + `throw createError({ status })` |
-| `/[...slug]` | `[...slug].vue` | 全站 catch-all 兜底，`throw createError({ statusCode: 404, fatal: true })`，保证返回真 404 而非 200 |
+| 路由                                                                                            | 文件                                   | 渲染                                                                                                |
+| ----------------------------------------------------------------------------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `/`                                                                                             | `index.vue`                            | SSR                                                                                                 |
+| `/category/:slug` `/tag/:slug`                                                                  | `category/[slug].vue` `tag/[slug].vue` | SSR + swr 300                                                                                       |
+| `/p/:id`                                                                                        | `p/[id].vue`                           | SSR + swr 3600                                                                                      |
+| `/page/:customPath`                                                                             | `page/[customPath].vue`                | SSR（先 slug→id 再取详情）                                                                          |
+| `/year/:year`、`/year/:year/month/:month`                                                       | `year/` 下两个文件                     | SSR                                                                                                 |
+| `/link-list`                                                                                    | `link-list.vue`                        | SSR，`layout: false` 自组合 header/footer                                                           |
+| `/not-found`、`/user/:username`                                                                 | `not-found.vue`、`user/[username].vue` | SSR，用 `layout: "bare-shell"`                                                                      |
+| `/s/:keyword`                                                                                   | `s/[keyword].vue`                      | 纯 CSR                                                                                              |
+| `/md` `/user-info` `/checkout` `/setup`                                                         | 同名 `.vue`                            | 纯 CSR                                                                                              |
+| `/login` `/register` `/register-admin` `/reset-password` `/unsubscribe` `/social/[...callback]` | 同名 `.vue`                            | 模板包 `ClientOnly`                                                                                 |
+| `/admin/**`                                                                                     | `admin.vue` + `admin/[...slug].vue`    | 纯 CSR                                                                                              |
+| `/test`                                                                                         | `test.vue`                             | 迁移自 SPA 的极简演示页                                                                             |
+| `/__test-404` `/__test-500` `/__test-503`                                                       | `__test-*.vue`                         | 错误渲染探针：`layout: false` + `throw createError({ status })`                                     |
+| `/[...slug]`                                                                                    | `[...slug].vue`                        | 全站 catch-all 兜底，`throw createError({ statusCode: 404, fatal: true })`，保证返回真 404 而非 200 |
 
 ### 9.2 admin 动态组件映射
 
@@ -276,12 +278,12 @@ Token 流程：登录 → `userStore.setAccessToken()` → `tabSyncManager` 广�
 
 ### 9.3 中间件
 
-| 文件 | 作用 |
-| --- | --- |
-| `admin.global.ts` | `/admin` → `/admin/dashboard`；未知子路径 → `/not-found`；未登录 → `/login?redirect=` |
-| `auth.global.ts` | 保护 `/user-info`、`/checkout` |
-| `legacy.global.ts` | 老链接软导航 301：`/?post_id=` → `/p/:id`、`/:username` → `/user/:username` |
-| `setup.ts` | 已初始化时访问 `/setup` → `/not-found` |
+| 文件               | 作用                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------- |
+| `admin.global.ts`  | `/admin` → `/admin/dashboard`；未知子路径 → `/not-found`；未登录 → `/login?redirect=` |
+| `auth.global.ts`   | 保护 `/user-info`、`/checkout`                                                        |
+| `legacy.global.ts` | 老链接软导航 301：`/?post_id=` → `/p/:id`、`/:username` → `/user/:username`           |
+| `setup.ts`         | 已初始化时访问 `/setup` → `/not-found`                                                |
 
 `nuxt.config.ts` 的 `hooks["pages:extend"]` 把 `year/[year]/month/[month]` 从 `year/[year]` 的 children 中提升为平级路由，否则月归档页会挂载父级页面组件、点击年面包屑后不重挂载。
 
@@ -291,13 +293,13 @@ Token 流程：登录 → `userStore.setAccessToken()` → `tabSyncManager` 广�
 
 模块（`nuxt.config.ts` 的 `modules`）：
 
-| 模块 | 作用 |
-| --- | --- |
-| `@pinia/nuxt` | 状态管理，`storesDirs: []` |
-| `@nuxt/fonts` | 接管本地字体；禁用全部远程 provider；两个自托管字体 `JBMonoWOFF2` / `SmileySans`；`preload: false` |
-| `@nuxt/scripts` | 接管统计脚本（GA 走 registry，百度走通用 `useScript`） |
-| `@nuxt/image` | 文章缩略图 png→webp q80；本项目 `components: false`，用 `useImage()` composable 构建 `/_ipx` 地址 |
-| `@/modules/set-env-version` | 启动时 `git describe --tags --abbrev=0` 写入 `public/VERSION` |
+| 模块                        | 作用                                                                                               |
+| --------------------------- | -------------------------------------------------------------------------------------------------- |
+| `@pinia/nuxt`               | 状态管理，`storesDirs: []`                                                                         |
+| `@nuxt/fonts`               | 接管本地字体；禁用全部远程 provider；两个自托管字体 `JBMonoWOFF2` / `SmileySans`；`preload: false` |
+| `@nuxt/scripts`             | 接管统计脚本（GA 走 registry，百度走通用 `useScript`）                                             |
+| `@nuxt/image`               | 文章缩略图 png→webp q80；本项目 `components: false`，用 `useImage()` composable 构建 `/_ipx` 地址  |
+| `@/modules/set-env-version` | 启动时 `git describe --tags --abbrev=0` 写入 `public/VERSION`                                      |
 
 **`set-env-version` 只写静态资源 `public/VERSION` 供外部探活，不注入 `app.config` / `runtimeConfig` / 客户端产物**（安全决策：版本信息最小暴露）。`src/version.ts` 另读 `package.json` 生成控制台横幅，模块级守卫保证全生命周期只打印一次。
 
@@ -305,15 +307,15 @@ Token 流程：登录 → `userStore.setAccessToken()` → `tabSyncManager` 广�
 
 插件（`src/plugins/`）：
 
-| 文件 | 作用 |
-| --- | --- |
-| `element-injection.ts` | 全局 provide Element Plus 的 ID / ZIndex（覆盖 `error.vue` 路径） |
-| `init-stores.client.ts` | `onNuxtReady` 后初始化 stores，避免 hydration mismatch |
-| `payload-hygiene.ts` | `app:rendered` 剔除 payload 敏感字段 |
-| `theme.client.ts` | 首帧应用 localStorage 主题预设，避免闪烁 |
-| `dev.client.ts` | 开发环境调用 `devRun()` |
-| `directives.ts` | 双端：`v-stable-html` + 全局组件 `j-icon` |
-| `directives.client.ts` | 仅客户端：`v-single-dbl-click` + `v-permission` |
+| 文件                    | 作用                                                              |
+| ----------------------- | ----------------------------------------------------------------- |
+| `element-injection.ts`  | 全局 provide Element Plus 的 ID / ZIndex（覆盖 `error.vue` 路径） |
+| `init-stores.client.ts` | `onNuxtReady` 后初始化 stores，避免 hydration mismatch            |
+| `payload-hygiene.ts`    | `app:rendered` 剔除 payload 敏感字段                              |
+| `theme.client.ts`       | 首帧应用 localStorage 主题预设，避免闪烁                          |
+| `dev.client.ts`         | 开发环境调用 `devRun()`                                           |
+| `directives.ts`         | 双端：`v-stable-html` + 全局组件 `j-icon`                         |
+| `directives.client.ts`  | 仅客户端：`v-single-dbl-click` + `v-permission`                   |
 
 SSR 适配两个必留配置：`nitro.externals.inline: ["element-plus"]` 与 `vite.ssr.noExternal: ["element-plus"]`（resolver 注入的 theme-chalk CSS 副作用导入在 Node 原生 ESM 下会崩）；`nitro.alias["vue3-emoji-picker"]` 指向 `src/server-stubs/emoji-picker.ts`（该包顶层初始化 IndexedDB）。
 
@@ -449,7 +451,6 @@ SSR 适配两个必留配置：`nitro.externals.inline: ["element-plus"]` 与 `v
 测试文件位置：`src/**/__tests__/**`、`src/**/*.test.ts`、`src/**/__test__/**`（如 `src/pkg/codemirror/extension/mdlint/rule/__test__/007.test.ts`）。
 
 终态指标：**77 个测试文件 / 603 个用例全绿，stdout 0 / stderr 0 / 冲突 0 / Warning 0 / DOMException 0**。新增或修改测试后应保持该指标，不得为求"全绿"而放宽断言或扩宽过滤白名单。
-
 
 ## 14. Agent 执行准则
 

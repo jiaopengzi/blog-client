@@ -51,14 +51,7 @@ export default defineVitestConfig({
         hookTimeout: 120000,
         // P1-6: Nuxt 环境灰度——仅 *.nuxt.test.ts 走真实 Nuxt 运行时
         environmentMatchGlobs: [["**/*.nuxt.test.ts", "nuxt"]],
-        exclude: [
-            "**/node_modules/**",
-            "**/vue3-emoji-picker/**",
-            "**/dist/**",
-            "**/.nuxt/**",
-            "**/.output/**",
-            "**/icons/**",
-        ],
+        exclude: ["**/node_modules/**", "**/vue3-emoji-picker/**", "**/dist/**", "**/.nuxt/**", "**/.output/**", "**/icons/**"],
         server: {
             deps: {
                 inline: ["element-plus"],

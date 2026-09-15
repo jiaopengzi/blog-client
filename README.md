@@ -115,14 +115,14 @@ pnpm test         # vitest 单次运行
 
 SPA 版是纯静态文件 + nginx; Nuxt 版页面由 SSR 实时渲染, 因此最终镜像为 **单容器双进程**: `nginx`(80/443, TLS 终端 + 静态资源 + 反向代理) + `node`(`.output/server/index.mjs`, 容器内 `127.0.0.1:7364`, 与开发端口统一), 由 `docker-entrypoint.sh` 编排, 任一进程退出容器即退出.
 
-| 文件 | 作用 |
-| --- | --- |
-| `Dockerfile` | 完整构建(lint + type-check + test + build), 运行层 `nginx:1.31.3-alpine` + node 二进制 |
-| `Dockerfile.env` | 仅安装依赖的基础镜像(`blog-client:env`), 加速迭代构建 |
-| `Dockerfile.dev` | 基于 `blog-client:env` 的快速构建(跳过 lint/test) |
-| `nginx.conf.template` | nginx 主配置模板, 与 SPA 版保持一致, 仅四处 SSR 必要调整(文件头注释有说明); 域名/后端上游用 `${NGINX_SERVER_NAME}` / `${NUXT_API_BASE}` 占位, 容器启动时由 entrypoint 以 envsubst 白名单替换生成 |
-| `redirects.map` | 旧网址 301 重定向映射(可选) |
-| `docker-entrypoint.sh` | 容器入口: 先由模板生成 nginx 主配置并 `nginx -t` 校验, node 就绪后启动 nginx, 双进程互相监控 |
+| 文件                   | 作用                                                                                                                                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Dockerfile`           | 完整构建(lint + type-check + test + build), 运行层 `nginx:1.31.3-alpine` + node 二进制                                                                                                           |
+| `Dockerfile.env`       | 仅安装依赖的基础镜像(`blog-client:env`), 加速迭代构建                                                                                                                                            |
+| `Dockerfile.dev`       | 基于 `blog-client:env` 的快速构建(跳过 lint/test)                                                                                                                                                |
+| `nginx.conf.template`  | nginx 主配置模板, 与 SPA 版保持一致, 仅四处 SSR 必要调整(文件头注释有说明); 域名/后端上游用 `${NGINX_SERVER_NAME}` / `${NUXT_API_BASE}` 占位, 容器启动时由 entrypoint 以 envsubst 白名单替换生成 |
+| `redirects.map`        | 旧网址 301 重定向映射(可选)                                                                                                                                                                      |
+| `docker-entrypoint.sh` | 容器入口: 先由模板生成 nginx 主配置并 `nginx -t` 校验, node 就绪后启动 nginx, 双进程互相监控                                                                                                     |
 
 镜像内置环境变量(均可在 `docker run -e` 覆盖):
 
