@@ -226,7 +226,9 @@ http {
         # 精确匹配优先级高于下方正则, 文件不存在时 nginx 404(不回退 node, 与旧 SPA 静态行为一致)
         location = /favicon.ico {
             root /usr/share/nginx/html;
-            expires 1h;
+            # 260916-02: favicon 缺失时不再向 error_log 写 open() failed 噪音(404 响应行为不变)
+            log_not_found off;
+            expires 1y;
             add_header Cache-Control "public";
         }
 
@@ -235,6 +237,10 @@ http {
         # (_nuxt 文件名带内容 hash 永不变更, fonts 为自托管字体, 均适合 immutable)
         location ~* ^/(?:(?:_nuxt|static|assets|fonts)/.*\.(?:js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|otf|webp|avif|mp4|webm|pdf)|[^/]+\.(ico|svg))$ {
             root /usr/share/nginx/html;
+            # 260916-02: 扫描器/旧 SPA 缓存页持续探测不存在的静态资源(/static/js/sendgrid.js、
+            # /assets/env.js、.js.js 拼接路径等), 此类 404 属预期行为, 不写 open() failed 到
+            # error_log 刷噪音(404 响应行为不变, access_log 本就全局 off)
+            log_not_found off;
             expires 1y;
             add_header Cache-Control "public, immutable";
         }
