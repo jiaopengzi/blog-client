@@ -145,7 +145,11 @@ const registerHotKeys = () => {
         if (hotKey) {
             let intervalId: number | null = null // 用于存储长按的定时器 id
 
-            watch(keys[hotKey]!, (v) => {
+            // bug01(260916-03): 必须捕获 watch 返回的停止函数再入列. 此前写的是裸标识符 stop,
+            // 在浏览器里解析到全局 window.stop, 卸载注销时 forEach((stop) => stop()) 等价于连调
+            // window.stop() (10 个快捷键 × 每个播放器实例), 会中止页面全部在途资源加载 —— 离开
+            // 文章详情页时首页轮播图等在途请求被 ERR_ABORTED 取消且不会重试, 表现为破图.
+            const stopWatch = watch(keys[hotKey]!, (v) => {
                 // v 为 true 时表示按下了快捷键, 为 false 时释放了快捷键
                 // 只有当快捷键功能开启时才响应
                 if (v && localPlayerState.isShortcutKey) {
@@ -167,7 +171,7 @@ const registerHotKeys = () => {
                 }
             })
 
-            registeredWatchers.push(stop)
+            registeredWatchers.push(stopWatch)
         }
     })
 }
