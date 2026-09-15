@@ -3,7 +3,8 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : Nuxt 4 配置文件(SWR 水合快照一致性修复)
+ * Description : Nuxt 4 配置文件(SWR 水合快照一致性修复; bugfix 260916-02 SWR 缓存挂
+ *              lru-cache driver 治理生产内存无限增生)
  */
 
 /*
@@ -318,6 +319,25 @@ export default defineNuxtConfig({
     },
 
     nitro: {
+        // bugfix 260916-02: 生产 SWR 页面缓存的存储治理——nitro 默认不给 cache 挂载点配
+        // driver(生产 storage 无 cache 项, cache 的 fs driver 仅存在于 dev 的 devStorage),
+        // unstorage 根退化为 memory driver 且 swr 条目写入不带 ttl, 缓存 key 含全部 query
+        // 导致条目无限增生, 生产环境已两次引发约 4.6 天周期的 2GB OOM(生产日志实证).
+        // 此处显式挂 lru-cache driver(nitro 内置, @nuxt/scripts 的 nuxt-scripts-cache 同款):
+        // - ttl 2小时(毫秒): 条目到期自动清除(新缓存覆盖同 key 旧缓存, 僵尸条目到期即清),
+        //   远大于最大 swr maxAge(3600s), 冷门页面在窗口内可反复命中缓存;
+        // - max 200: 条目数硬上限——normalize-path.ts 已将缓存 key 与无关 query 解耦
+        //   (仅保留分页参数 page/size), 此上限作为扫描变体的最后兜底
+        //   (单条为完整 SSR HTML 约 50-100KB, 内存上界约 10-20MB);
+        // dev 不受影响(devStorage.cache 仍为 fs driver, 落 .nuxt/cache)
+        storage: {
+            cache: {
+                driver: "lru-cache",
+                max: 200,
+                ttl: 7_200_000,
+            },
+        },
+
         // 降低 Nuxt Nitro server built .output 构建日志.
         logLevel: 1,
 

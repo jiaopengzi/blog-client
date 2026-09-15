@@ -15,7 +15,16 @@
  *              阶段 3 起: 重定向时保留其余 query 参数, 并统一简写翻译
  *              current_page → page、page_size → size(URL 形态语义化, 请求参数名不变)
  *              客户端软导航兜底见 middleware/legacy.global.ts
+ *              260916-02: nitro 自动导入符号改为显式 import, 摆脱 IDE 对
+ *              tsconfig.server.json 归属的依赖, 任意环境可类型检查(行为不变)
  */
+
+// 显式 import(260916-02): h3/ofetch 均为本项目直接依赖且为主入口子路径,
+// 包主入口 import 在任意 tsconfig 归属(含 IDE 游离文件)下均可解析;
+// 刻意不用 nitropack/runtime 的 useRuntimeConfig——其子路径 export 依赖
+// bundler 解析, IDE 游离项目(node10 解析)会报"找不到模块"
+import { createError, defineEventHandler, getRequestURL, sendRedirect } from "h3"
+import { $fetch } from "ofetch"
 
 /*
  * 补充说明(260829-05, 站点上线量小, 两条老链接规则整体移除, 现均落兜底路由返回 404):
@@ -105,7 +114,10 @@ export default defineEventHandler((event) => {
     // 7) /ps/:slug 别名链接 → 服务端解析 → /p/:id
     const slugMatch = pathname.match(/^\/ps\/([^/]+)$/)
     if (slugMatch) {
-        const { apiBase } = useRuntimeConfig()
+        // useRuntimeConfig().apiBase 的值源即 NUXT_API_BASE 环境变量(nuxt.config 的
+        // runtimeConfig.apiBase 默认为空串, 生产/开发均由 env 注入), 此处直读 env 等价,
+        // 同时避免引入 nitropack/runtime 子路径 import(见文件头 import 说明)
+        const apiBase = process.env.NUXT_API_BASE || ""
         return $fetch<{ code: number; data: string }>(`${apiBase}/api/v1/post/post-id`, {
             method: "POST",
             body: { slug: slugMatch[1] },

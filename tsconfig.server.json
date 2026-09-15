@@ -1,0 +1,26 @@
+/*
+ * FilePath    : blog-client-nuxt\tsconfig.server.json
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : server 目录(Nitro 服务端)独立 tsconfig, 供 IDE 归属与 server 侧类型检查使用
+ */
+
+/*
+ * 补充说明(bugfix 260916-02):
+ * Nuxt 生成的 .nuxt/tsconfig.json(app 侧) include 不含 server 目录, 此前 server 目录下的文件
+ * 在 IDE 中无 tsconfig 项目认领(游离文件), nitro 自动导入声明(.nuxt/types/nitro.d.ts 中的
+ * defineEventHandler 与 sendRedirect 等)不生效, 报 "找不到名称 sendRedirect" 与 "参数 event
+ * 隐式具有 any 类型"; 本文件 extends Nitro 生成的 .nuxt/tsconfig.server.json(其 include
+ * 含 server 全目录与 nitro 声明), 与 tsconfig.nuxt.json extends .nuxt 生成物同构.
+ * compilerOptions 两项定制与 tsconfig.nuxt.json 保持一致(见各自文件内注释).
+ */
+
+{
+    "extends": "./.nuxt/tsconfig.server.json",
+    "compilerOptions": {
+        "composite": false,
+        // 对齐 tsconfig.nuxt.json: 迁移代码大量按索引访问数组/对象且无 undefined 防御
+        "noUncheckedIndexedAccess": false
+    }
+}
