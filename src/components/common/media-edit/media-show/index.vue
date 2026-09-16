@@ -52,10 +52,16 @@ const isVideoFile = computed(() => isVideo(data.file_type))
 const videoWidth = ref(480)
 
 // 设置播放器
+// 编辑弹窗内点击上一个/下一个切换媒体时, 视频切视频 isVideoFile 恒为 true 不会触发,
+// 需同时监听 hashId 与 file_url, 对新媒体重新设置播放源
 watch(
-    () => isVideoFile.value,
-    (newVal) => {
-        if (newVal) {
+    [() => isVideoFile.value, () => hashId, () => data.file_url],
+    () => {
+        if (isVideoFile.value) {
+            // 重置播放状态与进度, 新媒体不应继承上一条视频的播放中状态与播放位置
+            playerStateManager.stop()
+            playerStateManager.setCurrentTime(0)
+
             // 设置视频宽度
             playerStateManager.setSize(videoWidth.value, (videoWidth.value * 9) / 16) // 16:9
             playerStateManager.setVideoID(hashId) // 设置视频 hashID
@@ -63,6 +69,9 @@ watch(
             if (!data.is_generate_hls) {
                 playerStateManager.setMediaType(MediaTypes.MP4) // 设置视频类型
                 playerStateManager.setSrc(data.file_url) // 设置视频地址
+            } else {
+                playerStateManager.setMediaType(MediaTypes.HLS) // 设置视频类型
+                playerStateManager.setSrc("") // 清空直链, HLS 由 videoID 加载, 避免残留上一条 MP4 的地址
             }
 
             playerState = playerStateManager.getState()

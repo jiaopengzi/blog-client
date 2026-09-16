@@ -99,6 +99,24 @@ describe("SubtitlesInfo 本地字幕文件选择", () => {
         expect(messageMock.error).not.toHaveBeenCalled()
     })
 
+    it("导入合法字幕后立即触发字幕字段校验 (feat01)", async () => {
+        const wrapper = mountComponent()
+        const input = wrapper.find("input.subtitles-file-input").element as HTMLInputElement
+        const file = new File([VALID_VTT], "demo.vtt", { type: "text/vtt" })
+        await dispatchFileChange(input, file)
+
+        await vi.waitFor(() => {
+            expect(messageMock.success).toHaveBeenCalled()
+        })
+
+        // 导入成功后立即校验字幕字段, 表单项进入校验通过状态, 此前失败校验的红色边框被清除
+        await vi.waitFor(() => {
+            const textarea = wrapper.find("textarea").element as HTMLTextAreaElement
+            const formItem = textarea.closest(".el-form-item")
+            expect(formItem?.classList.contains("is-success")).toBe(true)
+        })
+    })
+
     it("选择非 .vtt / .webvtt 扩展名文件时提示且不写入", async () => {
         const wrapper = mountComponent()
         const input = wrapper.find("input.subtitles-file-input").element as HTMLInputElement

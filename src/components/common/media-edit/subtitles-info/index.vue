@@ -166,6 +166,9 @@ const handleSelectFile = (event: Event) => {
 
         subtitlesForm.subtitles = content
         MessageUtil.success("字幕文件已导入", 3000)
+
+        // 导入成功后立即触发字幕字段校验, 清除此前失败校验残留的红色边框, 避免用户误会
+        subtitlesFormRef.value?.validateField("subtitles")
     })
     reader.addEventListener("error", () => {
         MessageUtil.error("读取字幕文件失败")
