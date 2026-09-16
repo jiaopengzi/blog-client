@@ -8,7 +8,7 @@
 
 import { mount } from "@vue/test-utils"
 import { nextTick } from "vue"
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
 import type { LogoWatermark, TextWatermark } from "@/components/player/types"
 
@@ -20,7 +20,15 @@ const getTextSpans = (wrapper: ReturnType<typeof mount>) => Array.from(wrapper.e
 const getLogoImgs = (wrapper: ReturnType<typeof mount>) => Array.from(wrapper.element.querySelectorAll<HTMLImageElement>(".watermark-container > img"))
 
 const mountComponent = (props: { textWatermark?: TextWatermark; logoWatermark?: LogoWatermark } = {}) => {
-    return mount(VideoWatermark, { props })
+    // attachTo: 随机定位重试链路校验 watermark.isConnected, 需挂到 document 使元素处于已连接状态
+    return mount(VideoWatermark, { props, attachTo: document.body })
+}
+
+// happy-dom 不做真实布局, 容器 clientWidth/clientHeight 恒为 0; 用 defineProperty 覆盖实例属性模拟容器尺寸
+const mockContainerSize = (wrapper: ReturnType<typeof mount>, width: number, height: number) => {
+    const container = wrapper.element
+    Object.defineProperty(container, "clientWidth", { configurable: true, get: () => width })
+    Object.defineProperty(container, "clientHeight", { configurable: true, get: () => height })
 }
 
 describe("VideoWatermark 组件", () => {
@@ -114,5 +122,71 @@ describe("VideoWatermark 组件", () => {
 
         expect(getLogoImgs(wrapper)).toHaveLength(0)
         wrapper.unmount()
+    })
+
+    describe("随机定位 (bugfix 260916-07: 刷新后水印恒在左上角)", () => {
+        afterEach(() => {
+            vi.restoreAllMocks()
+        })
+
+        it("容器尺寸就绪时按随机值定位", async () => {
+            const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5)
+
+            // 挂载时 happy-dom 容器为 0x0 (随机定位进入 rAF 重试); 就绪尺寸后变更 content 触发重渲染重新定位
+            const style = { color: "blue", fontSize: "12px" } as TextWatermark["style"]
+            const wrapper = mountComponent({ textWatermark: { content: "默认水印", style } })
+            mockContainerSize(wrapper, 720, 405)
+            await wrapper.setProps({ textWatermark: { content: "jiaopengzi", style } })
+            await nextTick()
+
+            const span = getTextSpans(wrapper)[0]
+            expect(span?.style.left).toBe("360px") // 0.5 * (720 - 0)
+            expect(span?.style.top).toBe("202.5px") // 0.5 * (405 - 0)
+            expect(randomSpy).toHaveBeenCalled()
+            wrapper.unmount()
+        })
+
+        it("容器尺寸未就绪时不写入 (0,0) 定位且不污染共享 style 对象", async () => {
+            const style: TextWatermark["style"] = { color: "blue", fontSize: "12px" }
+            const wrapper = mountComponent({ textWatermark: { content: "默认水印", style } })
+            await nextTick()
+
+            const span = getTextSpans(wrapper)[0]
+            expect(span).toBeTruthy()
+            expect(span?.style.left).toBe("")
+            expect(span?.style.top).toBe("")
+            expect("left" in (style ?? {})).toBe(false)
+            // 定位完成前先隐藏, 首次可见即为随机位置
+            expect(span?.style.visibility).toBe("hidden")
+            wrapper.unmount()
+        })
+
+        it("容器尺寸经 rAF 重试就绪后完成随机定位", async () => {
+            vi.useFakeTimers({ toFake: ["requestAnimationFrame", "setTimeout", "setInterval"] })
+            const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5)
+
+            try {
+                // 挂载时容器 0x0 (水合早期), 随机定位进入 rAF 重试
+                const style = { color: "blue", fontSize: "12px" } as TextWatermark["style"]
+                const wrapper = mountComponent({ textWatermark: { content: "jiaopengzi", style } })
+                await nextTick()
+
+                const span = getTextSpans(wrapper)[0]
+                expect(span?.style.left).toBe("")
+
+                // 布局就绪 (容器 720x405), 推进一帧 rAF 后完成定位
+                mockContainerSize(wrapper, 720, 405)
+                vi.advanceTimersByTime(16)
+
+                expect(span?.style.left).toBe("360px")
+                expect(span?.style.top).toBe("202.5px")
+                // 定位成功后恢复显示
+                expect(span?.style.visibility).toBe("")
+                expect(randomSpy).toHaveBeenCalled()
+                wrapper.unmount()
+            } finally {
+                vi.useRealTimers()
+            }
+        })
     })
 })

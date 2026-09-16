@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 水印 (响应水印内容变化重渲染)
+ * Description : 水印 (响应水印内容变化重渲染; 随机定位等待容器布局就绪)
 -->
 
 <template>
@@ -54,8 +54,10 @@ const logoWatermarkZindex = computed(() => logoWatermark?.style?.zIndex || "3")
  * @param watermark 水印元素
  * @param style 水印样式
  * @param isRandomPosition 是否随机生成水印位置
+ * @returns 随机定位模式下返回是否已定位; 容器尺寸未就绪 (宽或高 <= 0) 时返回 false 且不写入定位值,
+ *          避免随机结果恒为左上角 (0,0) 并污染共享的 style 对象; 非随机模式恒返回 true
  */
-const setWatermarkStyle = (watermark: HTMLElement | undefined, style: Partial<CSSStyleDeclaration>, isRandomPosition: boolean) => {
+const setWatermarkStyle = (watermark: HTMLElement | undefined, style: Partial<CSSStyleDeclaration>, isRandomPosition: boolean): boolean => {
     const container = containerRef.value
 
     if (container && watermark) {
@@ -79,6 +81,11 @@ const setWatermarkStyle = (watermark: HTMLElement | undefined, style: Partial<CS
 
         // 如果 isRandomPosition 为 true, 则随机生成水印的位置, 且考虑元素自身宽高
         if (isRandomPosition) {
+            // 容器尺寸未就绪 (Nuxt 水合早期 CSS/布局未应用) 时随机结果恒为 (0,0), 交由调用方重试
+            if (containerWidth <= 0 || containerHeight <= 0) {
+                return false
+            }
+
             const left = Math.random() * maxLeft
             const top = Math.random() * maxTop
             style.left = `${left}px`
@@ -88,6 +95,39 @@ const setWatermarkStyle = (watermark: HTMLElement | undefined, style: Partial<CS
             Object.assign(watermark.style, style)
         }
     }
+
+    return true
+}
+
+// 随机定位重试帧数上限, 约 1s (60 帧); 超过后由 5s 定时器兜底重定位
+const RANDOM_POSITION_RETRY_FRAMES = 60
+
+/**
+ * @description: 容器尺寸未就绪时的随机定位重试.
+ * Nuxt 水合早期页面 CSS 尚未应用, 容器测量为 0x0, 随机定位会退化为左上角 (0,0),
+ * 用 rAF 等待布局就绪后再定位; 水印被重渲染替换或已移出 DOM 后停止重试.
+ * @param watermark 水印元素
+ * @param style 水印样式
+ * @param retries 剩余重试帧数
+ */
+const randomPositionWhenReady = (watermark: HTMLElement | undefined, style: Partial<CSSStyleDeclaration>, retries: number) => {
+    // 水印已被重渲染替换或已销毁, 放弃本次重试
+    if (!watermark || !watermark.isConnected || textWatermarkRef.value !== watermark) return
+
+    // 标记自动刷新, 避免 MutationObserver 把程序自身的定位写入当作外部篡改而触发重建 (与 5s 定时器路径同构)
+    isWatermarkAutoRefresh.value = true
+    const positioned = setWatermarkStyle(watermark, style, true)
+    if (positioned) {
+        // 定位完成前水印处于隐藏态, 恢复显示使首次可见即为随机位置
+        watermark.style.visibility = ""
+    }
+    setTimeout(() => {
+        isWatermarkAutoRefresh.value = false
+    }, 0)
+    if (positioned) return
+    if (retries <= 0) return
+
+    requestAnimationFrame(() => randomPositionWhenReady(watermark, style, retries - 1))
 }
 
 const destroyWatermark = (watermark: HTMLElement | undefined) => {
@@ -114,12 +154,22 @@ const appendTextWatermark = () => {
         textWatermarkRef.value = el
 
         if (textWatermark?.style) {
-            setWatermarkStyle(textWatermarkRef.value, textWatermark.style, true)
+            // 容器尺寸未就绪时 setWatermarkStyle 不定位, 由 rAF 重试等到布局就绪 (bugfix 260916-07: 刷新后水印恒在左上角)
+            if (!setWatermarkStyle(textWatermarkRef.value, textWatermark.style, true)) {
+                // 定位完成前先隐藏, 避免水印以无定位的静态位置 (近似左上角) 短暂可见
+                if (textWatermarkRef.value) {
+                    textWatermarkRef.value.style.visibility = "hidden"
+                }
+                randomPositionWhenReady(textWatermarkRef.value, textWatermark.style, RANDOM_POSITION_RETRY_FRAMES)
+            }
             intervalId = setInterval(() => {
                 if (textWatermarkRef.value && textWatermark?.style) {
                     isWatermarkAutoRefresh.value = true
 
-                    setWatermarkStyle(textWatermarkRef.value, textWatermark.style, true)
+                    // 定位成功的兜底路径同时负责恢复隐藏态 (rAF 重试上限耗尽时由此接手)
+                    if (setWatermarkStyle(textWatermarkRef.value, textWatermark.style, true)) {
+                        textWatermarkRef.value.style.visibility = ""
+                    }
 
                     // 异步设置自动刷新水印为 false
                     setTimeout(() => {
