@@ -18,6 +18,9 @@
 - swr 缓存没有限制造成的内存泄漏
 - TypeError: e.classList.has is not a function
 - tag 生成后未及时更新 `public\VERSION`
+- 媒体编辑页面当视频上一个下一个没有更新视频
+
+选择了字幕文件立即触发校验
 
 ### 📦 Build
 
