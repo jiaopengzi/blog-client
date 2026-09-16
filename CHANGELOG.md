@@ -5,6 +5,23 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
+## [v1.1.1] - 2026-09-16
+
+### ⚡️ Perf
+
+- 减少不必要的日志噪音
+
+### 🐞 Fix
+
+- 在编辑器包含 power-bi 组件 管理后台的侧边栏宽度意外变化对齐 SPA
+- 文章详情页面包屑进入首页轮播图图片加载失败
+- swr 缓存没有限制造成的内存泄漏
+- TypeError: e.classList.has is not a function
+
+### 📦 Build
+
+- 依赖升级
+
 ## [v1.1.0] - 2026-09-04
 
 ### ♻️ Refactor
