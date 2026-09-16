@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 水印
+ * Description : 水印 (响应水印内容变化重渲染)
 -->
 
 <template>
@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { useMutationObserver } from "@vueuse/core"
-import { computed, onBeforeUnmount, onMounted, ref, shallowRef, useTemplateRef } from "vue"
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef, useTemplateRef, watch } from "vue"
 
 import type { LogoWatermark, TextWatermark } from "@/components/player/types"
 
@@ -99,6 +99,8 @@ const destroyWatermark = (watermark: HTMLElement | undefined) => {
 
 const appendTextWatermark = () => {
     if (isShowTextWatermark.value) {
+        // 重渲染路径 (destroy 后再次 append) 会重新创建随机位置定时器, 先清理旧的避免叠加泄漏
+        clearInterval(intervalId)
         stopObservation.value = true
         const el = document.createElement("span")
         el.style.position = "absolute"
@@ -185,6 +187,68 @@ const reRenderLogoWatermark = () => {
         appendLogoWatermark()
     }
 }
+
+/**
+ * @description: 销毁文字水印并复位引用, 用于内容变空的场景.
+ * 与 reRenderTextWatermark 的区别: 不再重新 append, 且必须清空 textWatermarkRef,
+ * 否则 MutationObserver 会因水印被移除而将其复活.
+ */
+const removeTextWatermark = () => {
+    stopObservation.value = true
+    clearInterval(intervalId)
+    destroyWatermark(textWatermarkRef.value)
+    textWatermarkRef.value = undefined
+    setTimeout(() => {
+        stopObservation.value = false
+    }, 0)
+}
+
+/**
+ * @description: 销毁 logo 水印并复位引用, 用于地址变空的场景.
+ */
+const removeLogoWatermark = () => {
+    stopObservation.value = true
+    destroyWatermark(logoWatermarkRef.value)
+    logoWatermarkRef.value = undefined
+    setTimeout(() => {
+        stopObservation.value = false
+    }, 0)
+}
+
+// 监听文字水印内容变化, 重新渲染水印 (bugfix 260916-07 bug01)
+// 场景: Nuxt 客户端 stores 延迟到 onNuxtReady 后初始化 (init-stores.client.ts 的 hydration 决策),
+// 视频先以默认水印挂载, 登录态恢复后 content 才变为用户名, 必须重渲染才能显示登录态水印;
+// 旧 SPA 为纯 CSR, store 在视频挂载前就绪, 无此问题时序
+watch(textWatermarkContent, (newVal, oldVal) => {
+    if (newVal === oldVal) return
+
+    if (!newVal) {
+        removeTextWatermark()
+        return
+    }
+
+    if (textWatermarkRef.value) {
+        reRenderTextWatermark()
+    } else {
+        appendTextWatermark()
+    }
+})
+
+// 监听 logo 水印地址变化, 重新渲染水印 (时序场景同文字水印)
+watch(logoWatermarkLogoSrc, (newVal, oldVal) => {
+    if (newVal === oldVal) return
+
+    if (!newVal) {
+        removeLogoWatermark()
+        return
+    }
+
+    if (logoWatermarkRef.value) {
+        reRenderLogoWatermark()
+    } else {
+        appendLogoWatermark()
+    }
+})
 
 // 当 DOM 变化时重新渲染水印
 // 参考 https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver
