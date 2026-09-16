@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\components\common\post-detail\components\comment-list\comment-item\hooks.ts
+ * FilePath    : blog-client\src\components\common\post-detail\components\comment-list\comment-item\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

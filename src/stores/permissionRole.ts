@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\stores\permissionRole.ts
+ * FilePath    : blog-client\src\stores\permissionRole.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\customElementsMount\PowerBI.ts
+ * FilePath    : blog-client\src\customElementsMount\PowerBI.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

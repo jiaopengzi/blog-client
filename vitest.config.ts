@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\vitest.config.ts
+ * FilePath    : blog-client\vitest.config.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

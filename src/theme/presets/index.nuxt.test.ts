@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\theme\presets\index.nuxt.test.ts
+ * FilePath    : blog-client\src\theme\presets\index.nuxt.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

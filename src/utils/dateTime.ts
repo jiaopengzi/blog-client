@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\utils\dateTime.ts
+ * FilePath    : blog-client\src\utils\dateTime.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

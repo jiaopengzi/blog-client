@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\components\hooks\useMedia\formatter.ts
+ * FilePath    : blog-client\src\components\hooks\useMedia\formatter.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

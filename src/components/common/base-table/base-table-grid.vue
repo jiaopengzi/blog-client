@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client-nuxt\src\components\common\base-table\base-table-grid.vue
+ * FilePath    : blog-client\src\components\common\base-table\base-table-grid.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

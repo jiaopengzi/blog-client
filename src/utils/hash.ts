@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\utils\hash.ts
+ * FilePath    : blog-client\src\utils\hash.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client-nuxt\src\components\views\md\component\md-customizer\config-panel\visual-section\index.vue
+ * FilePath    : blog-client\src\components\views\md\component\md-customizer\config-panel\visual-section\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

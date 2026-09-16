@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\api\request\tabSyncManager.ts
+ * FilePath    : blog-client\src\api\request\tabSyncManager.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

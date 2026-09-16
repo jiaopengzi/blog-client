@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\pkg\highlight.js\theme-switcher.ts
+ * FilePath    : blog-client\src\pkg\highlight.js\theme-switcher.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

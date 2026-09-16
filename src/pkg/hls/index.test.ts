@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\pkg\hls\index.test.ts
+ * FilePath    : blog-client\src\pkg\hls\index.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

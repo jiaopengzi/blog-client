@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\components\common\video-toc-tree-base\hooks.ts
+ * FilePath    : blog-client\src\components\common\video-toc-tree-base\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

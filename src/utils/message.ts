@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\utils\message.ts
+ * FilePath    : blog-client\src\utils\message.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

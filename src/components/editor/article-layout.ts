@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\components\editor\article-layout.ts
+ * FilePath    : blog-client\src\components\editor\article-layout.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

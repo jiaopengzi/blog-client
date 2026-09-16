@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\api\post\getPostCountByStatus.ts
+ * FilePath    : blog-client\src\api\post\getPostCountByStatus.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

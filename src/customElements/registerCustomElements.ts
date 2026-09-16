@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\customElements\registerCustomElements.ts
+ * FilePath    : blog-client\src\customElements\registerCustomElements.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

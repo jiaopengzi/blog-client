@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\components\hooks\useDevice\index.ts
+ * FilePath    : blog-client\src\components\hooks\useDevice\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

@@ -9,7 +9,7 @@
 | 项目                            | git 记录       | 角色                                     |
 | ------------------------------- | -------------- | ---------------------------------------- |
 | `blog-client`（旧 SPA，已上线） | tag v1.0.1     | **行为基准（标准答案），源码只读**       |
-| `blog-client-nuxt`（本项目）    | tag v1.0.1之后 | **被验收对象**，所有代码修改只发生在这里 |
+| `blog-client`（本项目）         | tag v1.0.1之后 | **被验收对象**，所有代码修改只发生在这里 |
 
 验收基线：以 SPA 为标准，逐项比对功能、交互、渲染、性能，确保迁移后表现一致。
 
@@ -336,11 +336,11 @@ SSR 适配两个必留配置：`nitro.externals.inline: ["element-plus"]` 与 `v
 
 ### 12.1 文件头（重点，格式已定死）
 
-当前仓库统一格式：分隔符 `/*`（不是 `/**`），字段**无 `@` 前缀**，字段名左对齐到 12 字符宽后接 `: `，路径前缀为 `blog-client-nuxt\`（**不是** `\blog-client\`）。
+当前仓库统一格式：分隔符 `/*`（不是 `/**`），字段**无 `@` 前缀**，字段名左对齐到 12 字符宽后接 `: `，路径前缀为 `blog-client\`（**不是** `\blog-client\`）。
 
 ```ts
 /*
- * FilePath    : blog-client-nuxt\src\plugins\directives.ts
+ * FilePath    : blog-client\src\plugins\directives.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
@@ -352,7 +352,7 @@ SSR 适配两个必留配置：`nitro.externals.inline: ["element-plus"]` 与 `v
 
 1. **新建文件** — 一律用上述模板。`Copyright` 年份新文件写 2026。
 2. **修改已有文件** — 保持该文件现有头注释格式不动，**不要顺手改写**（会造成无关 diff）；仅当文件体改动时同步更新 `Description`。
-3. **批量转换** — 属独立任务，需用户明确指令，不得混在功能改动里执行。转换时路径前缀写 `blog-client-nuxt\`。
+3. **批量转换** — 属独立任务，需用户明确指令，不得混在功能改动里执行。转换时路径前缀写 `blog-client\`。
 
 已知未转换残留（19 个文件，均为旧 `@FilePath` 格式，非阻塞）：
 

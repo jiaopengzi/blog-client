@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\api\user\resetPassword.ts
+ * FilePath    : blog-client\src\api\user\resetPassword.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

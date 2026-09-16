@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\components\views\admin\component\main\order\hooks.ts
+ * FilePath    : blog-client\src\components\views\admin\component\main\order\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

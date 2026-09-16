@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\api\setting\getSocialLogin.ts
+ * FilePath    : blog-client\src\api\setting\getSocialLogin.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\server\plugins\favicon-sync.ts
+ * FilePath    : blog-client\server\plugins\favicon-sync.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

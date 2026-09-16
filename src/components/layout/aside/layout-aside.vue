@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client-nuxt\src\components\layout\aside\layout-aside.vue
+ * FilePath    : blog-client\src\components\layout\aside\layout-aside.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

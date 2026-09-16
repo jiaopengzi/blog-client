@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\stores\status.ts
+ * FilePath    : blog-client\src\stores\status.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\composables\useDetailLoginRefresh.ts
+ * FilePath    : blog-client\src\composables\useDetailLoginRefresh.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Description : 详情页登录态复拉校准 (bug01 260829-08 / bug02 260903-02)

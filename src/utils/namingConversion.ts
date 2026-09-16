@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\utils\namingConversion.ts
+ * FilePath    : blog-client\src\utils\namingConversion.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\plugins\element-injection.ts
+ * FilePath    : blog-client\src\plugins\element-injection.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

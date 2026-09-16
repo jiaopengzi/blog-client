@@ -1,5 +1,5 @@
 /*
- * @FilePath     : \blog-client-nuxt\tsconfig.json
+ * @FilePath     : \blog-client\tsconfig.json
  * @Description  : 根 tsconfig（Nuxt 4 标准形态，无 references —— 计划坑位 7）
  */
 

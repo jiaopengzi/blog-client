@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\server\middleware\legacy-redirect.ts
+ * FilePath    : blog-client\server\middleware\legacy-redirect.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

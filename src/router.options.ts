@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\router.options.ts
+ * FilePath    : blog-client\src\router.options.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

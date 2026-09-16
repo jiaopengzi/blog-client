@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\api\request\ofetchHandlers.ts
+ * FilePath    : blog-client\src\api\request\ofetchHandlers.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

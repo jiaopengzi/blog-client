@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\api\upload\uploadFileBySignedUrl.ts
+ * FilePath    : blog-client\src\api\upload\uploadFileBySignedUrl.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

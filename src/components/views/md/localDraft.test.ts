@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\components\views\md\localDraft.test.ts
+ * FilePath    : blog-client\src\components\views\md\localDraft.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

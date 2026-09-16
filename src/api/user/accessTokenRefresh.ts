@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\api\user\accessTokenRefresh.ts
+ * FilePath    : blog-client\src\api\user\accessTokenRefresh.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

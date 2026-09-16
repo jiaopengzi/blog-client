@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\utils\ssrCache.test.ts
+ * FilePath    : blog-client\src\utils\ssrCache.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

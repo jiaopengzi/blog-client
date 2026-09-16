@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\server\utils\optionAsset.ts
+ * FilePath    : blog-client\server\utils\optionAsset.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

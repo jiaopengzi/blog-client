@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\components\views\user-info\component\info\types.ts
+ * FilePath    : blog-client\src\components\views\user-info\component\info\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.

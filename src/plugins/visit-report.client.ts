@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\plugins\visit-report.client.ts
+ * FilePath    : blog-client\src\plugins\visit-report.client.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

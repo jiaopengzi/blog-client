@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\utils\clipboard\copy-html.ts
+ * FilePath    : blog-client\src\utils\clipboard\copy-html.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

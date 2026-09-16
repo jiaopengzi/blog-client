@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\components\player\state.ts
+ * FilePath    : blog-client\src\components\player\state.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

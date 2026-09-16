@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\customElements\constants.ts
+ * FilePath    : blog-client\src\customElements\constants.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\components\hooks\useCheckCloudConfig\index.ts
+ * FilePath    : blog-client\src\components\hooks\useCheckCloudConfig\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

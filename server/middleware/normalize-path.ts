@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\server\middleware\normalize-path.ts
+ * FilePath    : blog-client\server\middleware\normalize-path.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

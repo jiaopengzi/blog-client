@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\api\post\star.ts
+ * FilePath    : blog-client\src\api\post\star.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\middleware\register-admin.ts
+ * FilePath    : blog-client\src\middleware\register-admin.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

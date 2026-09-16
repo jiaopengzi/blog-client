@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\modules\set-env-version.ts
+ * FilePath    : blog-client\src\modules\set-env-version.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

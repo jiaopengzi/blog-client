@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\components\player\command\constant.ts
+ * FilePath    : blog-client\src\components\player\command\constant.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\utils\stableHtmlDirective.ts
+ * FilePath    : blog-client\src\utils\stableHtmlDirective.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\plugins\directives.ts
+ * FilePath    : blog-client\src\plugins\directives.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

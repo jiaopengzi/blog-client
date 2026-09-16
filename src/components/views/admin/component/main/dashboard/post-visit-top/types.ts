@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\components\views\admin\component\main\dashboard\post-visit-top\types.ts
+ * FilePath    : blog-client\src\components\views\admin\component\main\dashboard\post-visit-top\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

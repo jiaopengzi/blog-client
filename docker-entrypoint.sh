@@ -1,5 +1,5 @@
 #!/bin/sh
-# FilePath    : blog-client-nuxt\docker-entrypoint.sh
+# FilePath    : blog-client\docker-entrypoint.sh
 # Author      : jiaopengzi
 # Blog        : https://jiaopengzi.com
 # Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

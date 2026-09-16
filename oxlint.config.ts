@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\oxlint.config.ts
+ * FilePath    : blog-client\oxlint.config.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

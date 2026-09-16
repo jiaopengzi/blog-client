@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\plugins\dev.client.ts
+ * FilePath    : blog-client\src\plugins\dev.client.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

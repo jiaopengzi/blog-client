@@ -1,4 +1,4 @@
-# blog-client-nuxt
+# blog-client
 
 一个基于 Nuxt 4, Vue3 和 TypeScript 构建的博客系统前端(SSR). 它不仅包含公开博客站点, 还覆盖了登录注册, markdown 写作, 评论互动, **付费阅读** **付费下载** **付费视频** **视频播放**, 以及完整的后台管理能力.
 
@@ -149,7 +149,7 @@ sudo docker run --rm -e NGINX_SERVER_NAME -e NUXT_API_BASE \
 ## 项目结构
 
 ```text
-blog-client-nuxt/
+blog-client/
 ├─ public/                    # 静态资源与 VERSION 文件
 ├─ server/                    # nitro 服务端路由与中间件(legacy 重定向 / robots / api 反代兜底)
 ├─ src/

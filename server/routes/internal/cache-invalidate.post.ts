@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\server\routes\internal\cache-invalidate.post.ts
+ * FilePath    : blog-client\server\routes\internal\cache-invalidate.post.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

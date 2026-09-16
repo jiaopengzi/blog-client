@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\customElementsMount\WechatCaptcha.ts
+ * FilePath    : blog-client\src\customElementsMount\WechatCaptcha.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

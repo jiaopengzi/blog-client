@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client-nuxt\src\components\common\recursive-menu-item\index.vue
+ * FilePath    : blog-client\src\components\common\recursive-menu-item\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

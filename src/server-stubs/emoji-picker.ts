@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\server-stubs\emoji-picker.ts
+ * FilePath    : blog-client\src\server-stubs\emoji-picker.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

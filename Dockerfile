@@ -1,4 +1,4 @@
-# blog-client-nuxt Dockerfile
+# blog-client Dockerfile
 # 构建阶段: Node.js + pnpm 执行 lint/type-check/test/build, 产出 .output(nitro node-server)
 # 运行阶段: nginx:1.31.3-alpine(与 spa 项目严格同版本) + 从官方镜像拷贝的 node 二进制,
 #           单容器内 nginx(80/443 对外) + node(127.0.0.1:7364 SSR) 双进程, 由 docker-entrypoint.sh 编排

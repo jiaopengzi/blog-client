@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client-nuxt\src\components\common\filter-tag-clear\index.vue
+ * FilePath    : blog-client\src\components\common\filter-tag-clear\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

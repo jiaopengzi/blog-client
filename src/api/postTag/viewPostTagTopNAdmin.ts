@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\api\postTag\viewPostTagTopNAdmin.ts
+ * FilePath    : blog-client\src\api\postTag\viewPostTagTopNAdmin.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

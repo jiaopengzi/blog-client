@@ -1,5 +1,5 @@
 /*
- * @FilePath     : \blog-client-nuxt\tsconfig.nuxt.json
+ * @FilePath     : \blog-client\tsconfig.nuxt.json
  * @Description  : Nuxt 独立 tsconfig（供 nuxi typecheck 与 vue-tsc type-check 使用）
  * @说明         : 无 project references，避免 vue-tsc -b 展开 vitest 项目（计划坑位 7）
  */

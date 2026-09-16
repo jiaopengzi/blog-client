@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\customElementsMount\PayKey.ts
+ * FilePath    : blog-client\src\customElementsMount\PayKey.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

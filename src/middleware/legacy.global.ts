@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client-nuxt\src\middleware\legacy.global.ts
+ * FilePath    : blog-client\src\middleware\legacy.global.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
