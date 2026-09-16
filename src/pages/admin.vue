@@ -177,19 +177,47 @@ watch(
         .content {
             height: calc(100vh - 80px);
 
+            // bug01(260916-04): 对齐 SPA 基准 (views/admin/index.vue), aside 用 fixed 脱离 flex 流;
+            // 迁移时丢失该规则导致 aside 成为 flex 子项 (默认 flex-shrink:1), post-write 等页面
+            // 编辑器内容 min-content 超宽 (power-bi iframe 等) 时 flex 行溢出, 侧边栏被压缩至 ~94px;
+            // fixed 布局下侧边栏宽度只由 aside-collapse/aside-no-collapse 决定, 不再受内容影响
             .aside {
+                position: fixed; // 固定位置
+                top: 80px; // 确保在 header 下面
+                left: 0; // 贴在左侧
+                background-color: var(--jpz-bg-color-page);
+                color: var(--jpz-text-color-primary);
+                transition: width 0.3s;
+                height: calc(100vh - 80px); // 确保高度覆盖整个页面
                 overflow-x: hidden;
+            }
+
+            .aside-no-collapse {
+                width: 200px;
+            }
+
+            .aside-collapse {
+                width: 64px;
             }
 
             .main {
                 background-color: var(--jpz-bg-color-page);
+                color: var(--jpz-text-color-primary);
+                flex: 1;
 
                 // bug03(260826-03): padding 归零对齐 SPA 壳层 (其 .main 为 padding:0 + margin-left:200px)
                 // 此前的 10px 16px 10px 10px 令内容区窄 26px, /admin/post-all 表格列 min-width 之和 (1700px)
                 // 超出容器 (1668px) 触发 el-table 内部横向滚动条; 子视图卡片自带间距, 去掉壳层 padding 后
                 // 1920 宽度下表格容器恢复 ≥1700px, 与 SPA 一致无横向滚动条
                 padding: 0;
+                margin: 0;
+                margin-left: 200px; // 确保主内容不覆盖侧边栏
+                transition: margin-left 0.3s;
                 overflow: auto;
+            }
+
+            .aside-collapse + .main {
+                margin-left: 64px; // 当侧边栏折叠时调整主内容的左边距
             }
         }
     }
