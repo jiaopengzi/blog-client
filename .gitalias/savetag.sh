@@ -3,7 +3,7 @@
 # Author      : jiaopengzi
 # Blog        : https://jiaopengzi.com
 # Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
-# Description : 不保护 main 分支场景，直接在 main 上打 Tag 并推送到双仓库，根据 CHANGELOG.md 提交变更并打 Git 标签
+# Description : 不保护 main 分支场景，直接在 main 上打 Tag 并推送到双仓库，根据 CHANGELOG.md 提交变更并打 Git 标签; 提交前将 CHANGELOG 版本号同步写入 public/VERSION (260916-05 方案A)
 
 # 设置 Git 别名命令:
 # 在 .git/config 文件中添加以下内容：
@@ -85,8 +85,17 @@ fi
 COMMIT_MSG="Release: $VERSION"
 
 echo ""
-echo -e "${YELLOW}[1/5] 提交 CHANGELOG.md...${NC}"
-git add CHANGELOG.md
+echo -e "${YELLOW}[1/5] 提交 CHANGELOG.md 与 public/VERSION...${NC}"
+# 版本对齐 (260916-05 方案A): 版本号与 tag 同源 (均出自 CHANGELOG.md 头部提取),
+# 写入 public/VERSION 随 Release commit 一并提交; set-env-version 模块以 git describe 为源,
+# 而 Release commit 先于打 tag, 不在此写入则仓库内 VERSION 恒滞后一个版本.
+# printf 不带换行, 对齐模块 fs.writeFileSync 的写入格式; 文件守卫保持脚本可复用于无此文件的仓库.
+if [ -f public/VERSION ]; then
+    printf '%s' "$VERSION" > public/VERSION
+    git add CHANGELOG.md public/VERSION
+else
+    git add CHANGELOG.md
+fi
 git commit -m "$COMMIT_MSG"
 
 # 如果不在 main 分支，切换到 main

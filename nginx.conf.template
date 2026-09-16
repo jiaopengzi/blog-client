@@ -232,6 +232,18 @@ http {
             add_header Cache-Control "public";
         }
 
+        # VERSION 探活文件(内容为构建时写入的 git tag, 每次发版变化且文件名固定不带 hash).
+        # 260916-05: 管理台 dashboard 运行时拉取同源 /VERSION 做版本对比, 此前该请求落入
+        # 下方 location / 反代 node, 响应无 Cache-Control, 浏览器按 Last-Modified 启发式缓存
+        # (DevTools 显示 from disk cache), 发版后 dashboard 展示陈旧版本号; 精确匹配单独给
+        # no-cache(每次带 ETag/Last-Modified 协商, 未变化时 304), 并由 nginx 静态直出不再代理 node
+        location = /VERSION {
+            root /usr/share/nginx/html;
+            # 与上方 favicon 的噪音治理同因: 文件由镜像构建保证存在, 缺失时不写 error_log
+            log_not_found off;
+            add_header Cache-Control "no-cache";
+        }
+
         # 缓存构建产物与指定目录(_nuxt|static|assets)下的静态资源文件一年,
         # 同时匹配根目录下的 .ico .svg 文件
         # (_nuxt 文件名带内容 hash 永不变更, fonts 为自托管字体, 均适合 immutable)
@@ -263,7 +275,7 @@ http {
 
         # 前端应用配置(nuxt4 SSR)
         # 页面 HTML 由容器内 node 进程(.output/server/index.mjs, 端口 7364, 与开发端口统一)实时渲染,
-        # 未被上方静态规则命中的请求(页面路由 / _payload.json / _ipx 图片处理 / VERSION 等)
+        # 未被上方静态规则命中的请求(页面路由 / _payload.json / _ipx 图片处理 等)
         # 全部代理给 node; HTML 响应头(node 侧控制)不含长缓存, 每次请求均为最新渲染
         location / {
             proxy_pass http://127.0.0.1:7364;

@@ -27,10 +27,12 @@ export function useDashboard() {
 
     /**
      * 拉取同源 /VERSION 中的 git tag 作为客户端版本.
+     * cache: "no-store" 强制绕过浏览器 HTTP 缓存, 避免发版后 disk cache 命中旧版本号
+     * 导致版本对比误判; 服务端 nginx 已对 /VERSION 响应 no-cache, 此处双保险.
      */
     const loadClientVersion = async () => {
         try {
-            const text = await (await fetch("/VERSION")).text()
+            const text = await (await fetch("/VERSION", { cache: "no-store" })).text()
             versionClient.value = text.trim() || "dev"
         } catch {
             versionClient.value = "dev"
