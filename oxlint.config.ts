@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\oxlint.config.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : oxlint 代码检查配置
  */
 
-/*
+/**
  * 补充说明:
  * categories 的 correctness / suspicious / perf 为分组开关, 会整组启用对应分类下全部规则;
  * pedantic / style / restriction / nursery 默认关闭, 其中高价值且当前零命中的规则在 rules

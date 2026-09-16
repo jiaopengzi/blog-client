@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\upload\getFileCountGroupByFileType.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

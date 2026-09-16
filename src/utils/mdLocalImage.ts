@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\mdLocalImage.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : /md 页本地图片存储与渲染引用工具 (IndexedDB + blob URL + 存储配额策略)
  */
 
-/*
+/**
  * 补充说明:
  * 方案选型: 用户截图粘贴的图片不走服务器, 存储选用 IndexedDB 而非 LocalStorage ——
  * LocalStorage 配额约 5MB 且 base64 膨胀 33% 同步 IO 阻塞主线程, 几张截图即触顶并挤占草稿空间;

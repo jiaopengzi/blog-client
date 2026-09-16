@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\composables\useSeo.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : SEO 层 composables (阶段 5: useHomeSeo / usePostSeo / useTaxonomySeo; 文章空壳 noindex)
  */
 
-/*
+/**
  * 补充说明:
  * 参照旧 SPA head-tag (src/components/common/head-tag/index.vue) 的 meta 元素集合;
  * canonical 固定 public.baseUrl (不用请求 Host, 避免反向代理下 canonical 错乱);

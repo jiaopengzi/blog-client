@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\post-content-select-dialog\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

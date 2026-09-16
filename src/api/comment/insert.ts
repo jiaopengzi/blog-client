@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\comment\insert.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

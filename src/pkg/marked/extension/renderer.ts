@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\pkg\marked\extension\renderer.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

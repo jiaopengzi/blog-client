@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\post\pagePathToID.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

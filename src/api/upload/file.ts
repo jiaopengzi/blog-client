@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\upload\file.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

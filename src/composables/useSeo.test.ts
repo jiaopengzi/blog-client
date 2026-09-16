@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\composables\useSeo.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : resolveSeoImage 回退链单元测试(feature01)
  */
 
-/*
+/**
  * 补充说明:
  * 文章缩略图 → 站点配置 logo → 默认 logo(demo-logo.svg),
  * og:image 需要绝对地址

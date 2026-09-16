@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\post-detail\hooks\useInteraction.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

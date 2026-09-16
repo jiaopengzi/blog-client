@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\attribute.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

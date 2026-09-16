@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\pkg\codemirror\extension\theme\tokyonight\light.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

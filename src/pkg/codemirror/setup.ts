@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\pkg\codemirror\setup.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

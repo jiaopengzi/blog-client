@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\editor\utils\vim-ime.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\editor\utils\css-inline.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

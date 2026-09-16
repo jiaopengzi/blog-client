@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\base-config-form\commonRules.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

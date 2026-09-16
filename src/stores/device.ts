@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\stores\device.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

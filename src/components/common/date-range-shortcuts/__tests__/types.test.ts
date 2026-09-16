@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\date-range-shortcuts\__tests__\types.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

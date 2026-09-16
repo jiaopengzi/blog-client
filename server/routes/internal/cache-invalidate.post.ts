@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\server\routes\internal\cache-invalidate.post.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : SSR 渲染缓存失效接口 (feature01 260829-08)
  */
 
-/*
+/**
  * 补充说明:
  * routeRules 的 swr 渲染缓存 (/ 300s, /category /tag 300s, /p 3600s) 由 nitro 的
  * cachedEventHandler(group: "nitro/routes") 写入 cache 存储挂载点; 后台修改站点配置

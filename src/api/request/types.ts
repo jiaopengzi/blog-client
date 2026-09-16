@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\request\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 请求相关类型 (阶段 1 重写: 去除 axios 依赖)
  */
 
-/*
+/**
  * 补充说明:
  * 原文件从 axios 引入 AxiosProgressEvent; 此处改为结构类型,
  * 保持 api 模块签名兼容 (ResPromise/ResResponse 见 @/api/response/types)

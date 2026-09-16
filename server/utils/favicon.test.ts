@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\server\utils\favicon.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

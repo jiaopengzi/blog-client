@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\clipboard\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

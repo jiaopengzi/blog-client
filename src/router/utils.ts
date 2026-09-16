@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\router\utils.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 路由工具 (阶段 3 迁入; SSR 守卫版)
  */
 
-/*
+/**
  * 补充说明:
  * 计划 7.7: router.resolve/push 依赖浏览器路由上下文,
  * Nuxt SSR 下 SPA 路由名不存在且无需同步, 直接跳过; 浏览器端行为不变。

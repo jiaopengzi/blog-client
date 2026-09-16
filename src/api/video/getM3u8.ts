@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\video\getM3u8.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

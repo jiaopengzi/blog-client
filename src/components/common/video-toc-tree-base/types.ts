@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\video-toc-tree-base\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

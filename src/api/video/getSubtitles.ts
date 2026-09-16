@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\video\getSubtitles.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

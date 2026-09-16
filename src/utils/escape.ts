@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\escape.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

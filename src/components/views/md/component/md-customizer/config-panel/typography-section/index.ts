@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\views\md\component\md-customizer\config-panel\typography-section\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

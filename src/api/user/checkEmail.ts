@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\user\checkEmail.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

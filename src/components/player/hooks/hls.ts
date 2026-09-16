@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\player\hooks\hls.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

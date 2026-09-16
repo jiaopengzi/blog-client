@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\alert-tip\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

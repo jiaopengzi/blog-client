@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\postCategory\checkCategorySlug.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

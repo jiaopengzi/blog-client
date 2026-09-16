@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\pkg\codemirror\extension\completion\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\image-input\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

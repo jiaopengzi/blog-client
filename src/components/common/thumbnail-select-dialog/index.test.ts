@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\thumbnail-select-dialog\index.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

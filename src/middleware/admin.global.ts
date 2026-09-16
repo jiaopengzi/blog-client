@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\middleware\admin.global.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : admin 区路由守卫 (复刻 SPA authMiddleware 的 admin 语义)
  */
 
-/*
+/**
  * 补充说明:
  * 1) /admin → /admin/dashboard (与 routeAdmin redirect 一致)
  * 2) 未知 admin 子路径 (不在菜单映射) → 重定向站内 404 (/not-found, 登录与否一致)

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\tsconfig.server.json
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : server 目录(Nitro 服务端)独立 tsconfig, 供 IDE 归属与 server 侧类型检查使用
  */
 
-/*
+/**
  * 补充说明(bugfix 260916-02):
  * Nuxt 生成的 .nuxt/tsconfig.json(app 侧) include 不含 server 目录, 此前 server 目录下的文件
  * 在 IDE 中无 tsconfig 项目认领(游离文件), nitro 自动导入声明(.nuxt/types/nitro.d.ts 中的

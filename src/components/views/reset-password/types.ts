@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\views\reset-password\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

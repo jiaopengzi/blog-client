@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\user\checkUserNameExcludingUserID.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

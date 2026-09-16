@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\stableHtmlDirective.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

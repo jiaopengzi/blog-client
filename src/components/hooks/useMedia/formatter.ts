@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\hooks\useMedia\formatter.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

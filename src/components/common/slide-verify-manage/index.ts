@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\slide-verify-manage\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

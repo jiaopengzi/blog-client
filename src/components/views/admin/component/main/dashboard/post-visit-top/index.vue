@@ -133,7 +133,7 @@ watch(
 )
 </script>
 <style scoped lang="scss">
-/*
+/**
  * 设计说明: 安静的编辑感数据榜 (bug02 260903-01 重构).
  * 全部取 theme 体系变量(--jpz-*)并以 color-mix 派生, 跟随 8 套预设与明暗模式;
  * 前三名用主题 primary 徽章收束视线, 第 1 名徽章微放大拉开 podium 层级, 其余名次退为细数字;
@@ -364,7 +364,7 @@ watch(
 }
 </style>
 <style lang="scss">
-/*
+/**
  * 下拉 popper 挂载在 body 下, scoped 样式作用不到, 需要非 scoped 块(与趋势图表 trend-select-popper 同方案).
  * 去掉 el-scrollbar 的限高与滚动, 让 8 个固定范围选项一眼看完不出滚动条.
  */

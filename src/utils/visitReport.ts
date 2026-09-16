@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\visitReport.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 站点访问上报(PV/UV)工具: 内容页白名单与同路径防抖
  */
 
-/*
+/**
  * 补充说明:
  * 白名单规则与后端 service/visit.go 的 visitReportPathPrefixes 保持同一份语义,
  * 前端过滤减少无效请求, 后端再做双保险校验

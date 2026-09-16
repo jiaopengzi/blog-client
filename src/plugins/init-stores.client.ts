@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\plugins\init-stores.client.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : stores 初始化 (阶段 1 实现)
  */
 
-/*
+/**
  * 补充说明:
  * 对应原项目 src/stores/init.ts 的 initStores() 全逻辑
  * (device/options/permissionRole/user + token 同步 + 权限预热);

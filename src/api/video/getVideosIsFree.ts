@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\video\getVideosIsFree.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

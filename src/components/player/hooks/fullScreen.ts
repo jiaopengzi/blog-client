@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\player\hooks\fullScreen.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

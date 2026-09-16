@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\plugins\directives.client.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 仅客户端全局指令注册 (阶段 0)
  */
 
-/*
+/**
  * 补充说明:
  * 对应原项目 main.ts 中的客户端指令注册
  */

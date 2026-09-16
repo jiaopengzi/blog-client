@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\updateHead.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

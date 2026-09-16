@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\setting\updateDbsPassword.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

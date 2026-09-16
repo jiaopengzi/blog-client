@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\icons\utils.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\server\utils\optionAsset.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : app-option 静态资产镜像共享工具 (bug02 260831-01: favicon/logo 镜像共用)
  */
 
-/*
+/**
  * 补充说明:
  * 从 server/utils/favicon.ts 抽离的公共部分, 供 favicon.ico 与 logo.png 两类运行时镜像复用:
  * - public 目录定位(候选链 + marker 收敛);

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\editor\components\toolbar\components\table\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

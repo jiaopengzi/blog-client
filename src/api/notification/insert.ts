@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\notification\insert.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

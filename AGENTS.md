@@ -339,7 +339,7 @@ SSR 适配两个必留配置：`nitro.externals.inline: ["element-plus"]` 与 `v
 当前仓库统一格式：分隔符 `/*`（不是 `/**`），字段**无 `@` 前缀**，字段名左对齐到 12 字符宽后接 `: `，路径前缀为 `blog-client\`（**不是** `\blog-client\`）。
 
 ```ts
-/*
+/**
  * FilePath    : blog-client\src\plugins\directives.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

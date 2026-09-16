@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\editor\components\resize-handle\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

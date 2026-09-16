@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\theme\useTheme.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 主题切换相关的组合式函数
  */
 
-/*
+/**
  * 补充说明:
  * 迁移自原项目 src/components/hooks/useTheme/index.ts (2025)
  */

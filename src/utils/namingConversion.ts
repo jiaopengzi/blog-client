@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\namingConversion.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

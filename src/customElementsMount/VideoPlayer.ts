@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\customElementsMount\VideoPlayer.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

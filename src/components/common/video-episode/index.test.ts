@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\video-episode\index.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -83,7 +83,7 @@ const iconOf = (el: ReturnType<typeof getItems>[number]) => {
     return el.find(".mock-j-icon").attributes("data-name") || null
 }
 
-/*
+/**
  * icon 显示状态矩阵 (锁定基准, 与 SPA commit 805cd812 行为一致):
  * - isPaid=true (用户已付费)                        => episode-item-paid, icon 不显示
  * - isPaid=false 且全部视频 is_free=true (合集未收费)    => episode-item-paid, icon 不显示

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\hooks\useScroll\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

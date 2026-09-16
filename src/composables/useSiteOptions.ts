@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\composables\useSiteOptions.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 预取站点配置, 供公开页与默认布局共享同一份 asyncData
  */
 
-/*
+/**
  * 补充说明:
  * bug01(260831-01 反馈第1轮): SSR 直连后端失败(部署链路问题, 见计划文件 bug03)时 payload 无
  * site-options 数据, Nuxt 会在水合期(onBeforeMount)自动回源重取; 该请求经同源 /api 多半成功,

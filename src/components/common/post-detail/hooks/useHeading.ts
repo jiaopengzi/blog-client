@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\post-detail\hooks\useHeading.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

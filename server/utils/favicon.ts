@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\server\utils\favicon.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : favicon.ico 运行时镜像同步 (bug05 260831-01 重构: /favicon.ico 不再打包写死, 改为 app-option 配置的服务端镜像)
  */
 
-/*
+/**
  * 补充说明:
  * 背景: /favicon.ico 是浏览器/外部工具(书签/RSS/搜索引擎)的固定约定路径, 不读 HTML 的 <link rel="icon">.
  * 本产品公开部署, favicon 由 admin 的 app-option 配置, 不能在 public/ 打包写死一份 demo 图标.

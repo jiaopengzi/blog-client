@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\post-upsert\thumbnail-tools.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

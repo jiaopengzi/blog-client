@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\plugins\theme.client.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 阶段 0 最小主题应用插件 (仅客户端)
  */
 
-/*
+/**
  * 补充说明:
  * 读取 localStorage 主题预设并应用到文档根节点;
  * 完整主题选择器 (useTheme + 代码块主题联动) 在阶段 3 迁移

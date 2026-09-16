@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\media-add\uploadByEl.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

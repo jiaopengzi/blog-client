@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\customElements\parseHtml.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : parseHtmlToContentParts 双端同构单元测试(feature02)
  */
 
-/*
+/**
  * 补充说明:
  * 客户端路径 (DOMParser, happy-dom) 与服务端路径 (node-html-parser, 桩掉 DOMParser)
  * 必须产出完全一致的片段结构, 这是 SSR 直出正文与 hydration 对齐的前提

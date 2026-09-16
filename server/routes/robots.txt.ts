@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\server\routes\robots.txt.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

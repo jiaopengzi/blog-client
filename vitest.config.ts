@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\vitest.config.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : vitest 测试配置(纯单测 + Nuxt 环境灰度, P1-6 nuxt4-good)
  */
 
-/*
+/**
  * 补充说明:
  * 经 @nuxt/test-utils 的 defineVitestConfig 挂载 Nuxt vite 链(别名/auto-import/
  * 插件); DOM 统一使用 happy-dom(替换 jsdom: 更轻量更快, 与 test-utils 默认一致,

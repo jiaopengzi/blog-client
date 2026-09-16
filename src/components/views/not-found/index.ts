@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\views\not-found\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

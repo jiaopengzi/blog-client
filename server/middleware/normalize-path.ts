@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\server\middleware\normalize-path.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

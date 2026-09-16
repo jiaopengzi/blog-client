@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\middleware\setup.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : /setup 路由守卫 (复刻 SPA setupMiddleware: 已初始化时访问设置页重定向 404)
  */
 
-/*
+/**
  * 补充说明:
  * /setup 为纯 CSR (routeRules ssr:false), 本中间件仅在客户端执行;
  * 项目未初始化 (SetupNotCompleted) 时放行展示数据库配置表单

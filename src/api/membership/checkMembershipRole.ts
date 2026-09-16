@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\membership\checkMembershipRole.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

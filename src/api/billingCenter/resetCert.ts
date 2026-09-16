@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\billingCenter\resetCert.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

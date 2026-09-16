@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\ssrCache.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : SSR 渲染缓存失效通知 (feature01 260829-08)
  */
 
-/*
+/**
  * 补充说明:
  * 后台修改站点配置(app-option/app-nav)或文章/自定义页(新增/编辑/删除)成功后调用,
  * 通知 SSR 端清空 swr 渲染缓存, 下次请求按新数据重新 SSR, 避免缓存窗口期内前后台内容不一致.

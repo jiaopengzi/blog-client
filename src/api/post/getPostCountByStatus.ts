@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\post\getPostCountByStatus.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

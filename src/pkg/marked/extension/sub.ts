@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\pkg\marked\extension\sub.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

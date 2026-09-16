@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\pay-video\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

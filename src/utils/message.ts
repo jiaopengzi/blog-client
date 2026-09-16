@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\message.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

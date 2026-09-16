@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\setting\testEmail.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

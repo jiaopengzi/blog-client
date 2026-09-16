@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\media-edit\subtitles-info\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\faviconSync.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : favicon.ico 镜像同步通知 (bug05 260831-01 重构)
  */
 
-/*
+/**
  * 补充说明:
  * 后台保存站点配置(app-option)成功后调用, 通知 SSR 端按最新 favicon 配置同步 <public>/favicon.ico 镜像
  * (浏览器/外部工具按固定约定路径请求 /favicon.ico, 不读 HTML 的 <link rel="icon">).

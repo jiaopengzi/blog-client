@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\emoji.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -9,7 +9,7 @@
 import type { Completion } from "@codemirror/autocomplete"
 import emojiJson from "emoji.json"
 
-/*
+/**
 emoji 补全列表
 
 [

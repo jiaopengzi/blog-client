@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\queryParam.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\post-detail\components\comment-list\comment-item\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

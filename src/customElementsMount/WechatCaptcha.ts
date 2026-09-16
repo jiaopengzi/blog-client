@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\customElementsMount\WechatCaptcha.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

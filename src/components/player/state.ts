@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\player\state.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

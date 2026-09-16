@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\views\checkout\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

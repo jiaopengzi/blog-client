@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\vitest.setup.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

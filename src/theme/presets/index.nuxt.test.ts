@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\theme\presets\index.nuxt.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : Nuxt 环境灰度示范测试 (P1-6 nuxt4-good)
  */
 
-/*
+/**
  * 补充说明:
  * *.nuxt.test.ts 后缀经 vitest environmentMatchGlobs 走 vitest-environment-nuxt
  * —— 真实 Nuxt 运行时 (auto-imports/composables), 无需手工 stub #imports。

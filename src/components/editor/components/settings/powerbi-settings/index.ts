@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\editor\components\settings\powerbi-settings\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

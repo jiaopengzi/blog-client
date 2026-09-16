@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\views\admin\component\main\coupon\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\setting\getDBs.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

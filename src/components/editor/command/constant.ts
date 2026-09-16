@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\editor\command\constant.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

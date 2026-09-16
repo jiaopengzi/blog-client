@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\dashboard\version.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

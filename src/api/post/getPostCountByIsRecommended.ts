@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\post\getPostCountByIsRecommended.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

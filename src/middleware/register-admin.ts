@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\middleware\register-admin.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 注册管理员路由守卫 (复刻 SPA registerAdminMiddleware)
  */
 
-/*
+/**
  * 补充说明:
  * 首次管理员注册是系统初始化流程的一部分, 不能作为常规公开注册入口:
  * - 进入 /register-admin 时, 后端已存在管理员则跳转站内 404;

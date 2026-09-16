@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\user\resetPassword.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

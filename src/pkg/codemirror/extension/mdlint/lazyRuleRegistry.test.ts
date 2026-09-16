@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\lazyRuleRegistry.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

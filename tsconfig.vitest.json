@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\tsconfig.vitest.json
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 测试专用 tsconfig(仅 IDE 使用; 不被根 tsconfig 引用, 避免 nuxt typecheck 展开)
  */
 
-/*
+/**
  * 补充说明:
  * include 含 .vue; 不引入 unplugin 生成的 components.d.ts(计划坑位 7).
  * 2026-08-29 清理: types 移除 "jsdom"——DOM 环境统一 happy-dom 后 jsdom/@types/jsdom

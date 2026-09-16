@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\request\ofetch.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 请求层测试: XHR 上传进度路径 (onUploadProgress)
  */
 
-/*
+/**
  * 补充说明:
  * fetch/ofetch 无上传进度事件, 调用方传入 onUploadProgress 时请求层改走 XHR
  * 本测试用假 XHR 验证进度上报、响应/错误塑形、请求头行为

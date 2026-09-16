@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\server\middleware\legacy-redirect.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -26,7 +26,7 @@
 import { createError, defineEventHandler, getRequestURL, sendRedirect } from "h3"
 import { $fetch } from "ofetch"
 
-/*
+/**
  * 补充说明(260829-05, 站点上线量小, 两条老链接规则整体移除, 现均落兜底路由返回 404):
  * 1) 原 6b) /t404 → /not-found: SPA 旧 404 路由, 不再保留, /t404 直接 404.
  * 2) 原 6c) /:username → /user/:username: 该形态外链量极少, 用户主页统一走 /user/:username,

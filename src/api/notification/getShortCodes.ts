@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\notification\getShortCodes.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

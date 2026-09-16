@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\hooks\useWebFullscreen\index.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

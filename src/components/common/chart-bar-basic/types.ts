@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\chart-bar-basic\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

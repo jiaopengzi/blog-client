@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\request\base.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 后端 baseURL 解析 (SSR/CSR/单测三态, 无上下文安全回退)
  */
 
-/*
+/**
  * 补充说明:
  * SSR 走 Nuxt runtimeConfig.apiBase (环境变量 NUXT_API_BASE)
  * 浏览器走同源相对路径 (dev 由 nitro.devProxy 转发 /api)

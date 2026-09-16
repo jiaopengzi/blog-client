@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\pay-content\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

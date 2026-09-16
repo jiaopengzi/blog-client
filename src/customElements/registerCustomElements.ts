@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\customElements\registerCustomElements.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

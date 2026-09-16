@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\customElements\constants.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 自定义元素常量 (Names / Attributes / CustomElementAttributes)
  */
 
-/*
+/**
  * 补充说明:
  * 从 registerCustomElements.ts / base.ts 中拆出, 不引用 HTMLElement / customElements,
  * 供服务端同构管线 (utils/markdownRenderer.ts) 安全导入

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\plugins\payload-hygiene.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : SSR payload 瘦身: 剔除客户端 hydration 不需要的 pinia store (bugfix 260825-03)
  */
 
-/*
+/**
  * 补充说明:
  * @pinia/nuxt 在 app:rendered 钩子中把全部 SSR 期间创建的 store 快照写入
  * nuxtApp.payload.pinia. 本插件 (注册于模块插件之后) 在同一钩子中删除以下 store:

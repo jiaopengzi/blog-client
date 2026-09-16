@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\hooks\useBaseTable\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

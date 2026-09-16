@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\rule\__test__\utils.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

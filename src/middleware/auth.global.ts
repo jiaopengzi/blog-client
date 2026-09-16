@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\middleware\auth.global.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 用户区登录守卫 (复刻 SPA authMiddleware 全部分支语义)
  */
 
-/*
+/**
  * 补充说明:
  * 1. 未登录访问 /user-info、/checkout → /login?redirect=<fullPath>
  * 2. 已登录未绑定邮箱且目标不是 /user-info → 弹绑定邮箱弹窗 + 警告 + 跳 /user-info

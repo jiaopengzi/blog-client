@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\plugins\directives.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 双端全局指令/组件注册 (阶段 0)
  */
 
-/*
+/**
  * 补充说明:
  * 对应原项目 main.ts 中的注册; permission 指令依赖 stores, 阶段 6 迁移
  */

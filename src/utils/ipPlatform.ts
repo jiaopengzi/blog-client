@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\ipPlatform.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

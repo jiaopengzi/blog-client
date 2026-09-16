@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\account-form-footer\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

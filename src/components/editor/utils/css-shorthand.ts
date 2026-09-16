@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\editor\utils\css-shorthand.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\user\accessTokenRefresh.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 刷新访问令牌 (阶段 1 重写: axios -> ofetch)
  */
 
-/*
+/**
  * 补充说明:
  * 独立的 ofetch 请求, 不经过 request 拦截器, 避免:
  *   1. handleUserLoggedInElsewhere 误触发 logout → 硬刷新首页

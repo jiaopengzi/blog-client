@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\markdownRenderer.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : Markdown 同构渲染管线(阶段 4 重写, 双端同一实现; bugfix 260916-01 修正 node-html-parser 9.x classList API 误用)
  */
 
-/*
+/**
  * 补充说明:
  * 服务端 SSR 与客户端 hydration 共用本管线: marked 解析 → isomorphic-dompurify
  * sanitize(白名单沿用 markdownSanitizeConfig) → node-html-parser DOM 处理

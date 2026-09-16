@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\middleware\legacy.global.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 老链接重定向的客户端软导航兜底 (阶段 3 起保留其余 query 参数)
  */
 
-/*
+/**
  * 补充说明:
  * 硬导航 (新开页面/爬虫) 由 Nitro 中间件 server/middleware/legacy-redirect.ts 处理;
  * 本中间件处理已打开页面内的 SPA 软导航 (vue-router 层), 保证老链接在站内跳转同样 301

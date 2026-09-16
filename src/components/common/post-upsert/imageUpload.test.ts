@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\post-upsert\imageUpload.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

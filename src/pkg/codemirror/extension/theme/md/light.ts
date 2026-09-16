@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\pkg\codemirror\extension\theme\md\light.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

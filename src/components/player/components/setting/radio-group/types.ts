@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\player\components\setting\radio-group\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\restart-dialog\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

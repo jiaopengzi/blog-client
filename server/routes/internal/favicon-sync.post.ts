@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\server\routes\internal\favicon-sync.post.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : favicon.ico 镜像同步接口 (bug05 260831-01 重构)
  */
 
-/*
+/**
  * 补充说明:
  * admin 保存 app-option 成功后由前端调用(与 invalidateSsrRenderCache 并排, 见 app-option/index.vue),
  * 服务端按最新配置拉取 favicon 落盘 <public>/favicon.ico; 同步逻辑见 server/utils/favicon.ts 文件头.

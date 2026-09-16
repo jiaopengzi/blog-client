@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\pkg\marked\extension\mark.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

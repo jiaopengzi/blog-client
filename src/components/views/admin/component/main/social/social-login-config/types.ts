@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\views\admin\component\main\social\social-login-config\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

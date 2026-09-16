@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\img.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

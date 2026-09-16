@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\player\components\progress-bar\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

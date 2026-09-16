@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\rule\008.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

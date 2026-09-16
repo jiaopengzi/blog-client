@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\pkg\highlight.js\theme-switcher.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

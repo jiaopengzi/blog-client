@@ -1,11 +1,11 @@
-/*
+/**
  * FilePath    : blog-client\src\composables\useDetailLoginRefresh.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Description : 详情页登录态复拉校准 (bug01 260829-08 / bug02 260903-02)
  */
 
-/*
+/**
  * 补充说明:
  * SSR 取数不携带用户 token (请求层 buildHeaders 服务端直接返回), 文章/page 详情首屏必为匿名数据:
  * 已购用户会被 is_paid=false 的匿名数据覆盖, 付费内容仍显示为付费状态.

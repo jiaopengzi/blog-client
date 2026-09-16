@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\router.options.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 用户级 vue-router 配置 (定制 scrollBehavior)
  */
 
-/*
+/**
  * 补充说明:
  * Nuxt 4 约定用户级配置位于 <srcDir>/app/router.options.ts; 本项目 srcDir=src 且 srcDir≠rootDir,
  * dir.app 解析为 srcDir 本身 → 实际路径 <srcDir>/router.options.ts。

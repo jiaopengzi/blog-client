@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\notification\update.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\post\batchOperationPostStatus.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

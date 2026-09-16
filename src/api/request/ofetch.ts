@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\request\ofetch.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 统一请求层 (阶段 1 重写: ofetch 替代 axios)
  */
 
-/*
+/**
  * 补充说明:
  * 计划 1.2/1.3: SSR 与客户端共用同一套 API 函数.
  * - SSR (无 window): baseURL = process.env.NUXT_API_BASE, 直连后端

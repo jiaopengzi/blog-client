@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\avatar-upload\avatarFileName.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

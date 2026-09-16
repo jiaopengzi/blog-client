@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\server\routes\favicon.ico.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : GET /favicon.ico 兜底读取镜像文件 (bug05 260831-01 重构)
  */
 
-/*
+/**
  * 补充说明:
  * public/ 不再打包静态 favicon.ico(公开部署产品, favicon 依赖 app-option 配置),
  * /favicon.ico 由 server/utils/favicon.ts 落盘的镜像文件提供:

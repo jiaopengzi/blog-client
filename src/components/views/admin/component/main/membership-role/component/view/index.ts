@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\views\admin\component\main\membership-role\component\view\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

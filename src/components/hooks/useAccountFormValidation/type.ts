@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\hooks\useAccountFormValidation\type.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

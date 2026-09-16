@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\modules\set-env-version.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 本地模块: 启动时生成 public/VERSION (由原 scripts/set-env-version.js 前置脚本迁入)
  */
 
-/*
+/**
  * 补充说明:
  * Windows 下 pnpm 以 shell 拼接多进程 (node xxx && nuxi dev) 时, Ctrl+C 的信号分发
  * 异常会导致终端卡死; 迁入 Nuxt 生命周期后 pnpm dev 只启动单一 nuxi 进程

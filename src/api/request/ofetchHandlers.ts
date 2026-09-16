@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\request\ofetchHandlers.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 请求处理逻辑 (阶段 1 重写: axios -> ofetch, SSR 环境守卫)
  */
 
-/*
+/**
  * 补充说明:
  * 对应原项目 axiosHandlers.ts. token 刷新/重放、异地登录、setup 检查均为客户端行为,
  * 服务端请求 (无 window) 直接跳过刷新与提示逻辑.

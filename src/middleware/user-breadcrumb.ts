@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\middleware\user-breadcrumb.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 用户公开主页面包屑(路由中间件, 在布局渲染前就位)
  */
 
-/*
+/**
  * 补充说明:
  * 面包屑由布局内的 JBreadcrumb 渲染(layouts/bare-shell.vue), 布局是页面的父级,
  * SSR 时布局子树先于页面 setup 渲染 —— 页面 setup 内再调 updateItems 已经来不及:

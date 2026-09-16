@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\phone-section-nav\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

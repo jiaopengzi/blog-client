@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\nuxt.config.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -7,7 +7,7 @@
  *              lru-cache driver 治理生产内存无限增生)
  */
 
-/*
+/**
  * 补充说明:
  * 决策依据见 blog-client 仓库 .feat/client-260822-02-plan.md
  * D1 Nuxt 4.5 | D4 element-plus 按需导入 | D7 vite@8.2.1(内置 Rolldown)

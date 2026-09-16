@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\server\routes\api\[...].ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : /api 同源代理(阶段 3 补充; 重构为 h3 proxyRequest 流式转发)
  */
 
-/*
+/**
  * 补充说明:
  * dev 模式由 nitro.devProxy 转发 /api; 生产构建无 devProxy,
  * 浏览器端同源 /api 请求需要本路由转发到后端(NUXT_API_BASE)

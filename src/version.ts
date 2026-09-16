@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\version.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 提供版本信息与控制台输出
  */
 
-/*
+/**
  * 补充说明:
  * 安全收敛(2026-08-28 决策): 版本细节最小暴露——gitTag 仅经 public/VERSION
  * 文件对外(外部探活/网关用), gitCommit/buildTime 不再进入客户端产物与

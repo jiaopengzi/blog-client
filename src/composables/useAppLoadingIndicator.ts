@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\composables\useAppLoadingIndicator.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 全局顶部加载条控制器, 以 pending 计数统一管理路由加载与页面内 API 加载
  */
 
-/*
+/**
  * 补充说明:
  * 内置 NuxtLoadingIndicator 一旦需要跨越页面内异步, 就不够可控, 后面直接走手动 pending 计数
  */

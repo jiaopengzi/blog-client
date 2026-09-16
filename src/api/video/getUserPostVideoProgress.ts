@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\video\getUserPostVideoProgress.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

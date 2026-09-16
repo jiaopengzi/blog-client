@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\captcha\send.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

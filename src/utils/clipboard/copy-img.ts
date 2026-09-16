@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\clipboard\copy-img.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

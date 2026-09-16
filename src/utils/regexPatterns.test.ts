@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\utils\regexPatterns.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

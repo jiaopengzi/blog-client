@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\permissionRole\permissionNames.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 权限名枚举 (feature01 260829-08: 自 stores/permissionRole.ts 抽出)
  */
 
-/*
+/**
  * 补充说明:
  * 权限名是后端 has-permission 接口的参数契约(与 ResponseCode 同性质的纯常量),
  * 抽为独立零依赖纯枚举文件后, Nitro server 边界(server/routes/internal/cache-invalidate.post.ts)

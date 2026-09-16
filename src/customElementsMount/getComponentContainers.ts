@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\customElementsMount\getComponentContainers.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\components\hooks\usePostDetail\api.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

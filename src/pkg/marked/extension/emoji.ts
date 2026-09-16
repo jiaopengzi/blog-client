@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\pkg\marked\extension\emoji.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

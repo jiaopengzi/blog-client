@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\stores\editor-defaults.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\theme\presets\definitions\tokyonight-day.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com

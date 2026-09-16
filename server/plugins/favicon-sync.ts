@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\server\plugins\favicon-sync.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 启动时自愈同步 favicon.ico 镜像 (bug05 260831-01 重构)
  */
 
-/*
+/**
  * 补充说明:
  * 服务启动时按后端 app-option 配置同步一次 <public>/favicon.ico, 覆盖两类场景:
  * - 容器重建/镜像文件丢失(Docker 内镜像写在容器可写层, 不随镜像分发);

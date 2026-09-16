@@ -107,7 +107,7 @@ watch(
 }
 </style>
 <style lang="scss">
-/*
+/**
  * 下拉 popper 挂载在 body 下, scoped 样式作用不到, 需要非 scoped 块.
  * 去掉 el-scrollbar 的限高与滚动, 让全部指标/维度选项一眼看完.
  */

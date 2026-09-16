@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\plugins\element-injection.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : Element Plus SSR 注入兜底与命令式弹窗上下文对齐 (bug01 260826-03 / 260903-02)
  */
 
-/*
+/**
  * 补充说明:
  * ID_INJECTION_KEY / ZINDEX_INJECTION_KEY 原在 app.vue setup 内 provide,
  * 仅覆盖应用子树; 全局错误页(error.vue)独立于 app.vue 渲染, 其 SSR 同样会渲染

@@ -1,4 +1,4 @@
-/*
+/**
  * FilePath    : blog-client\src\api\upload\uploadFileBySignedUrl.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
@@ -6,7 +6,7 @@
  * Description : 使用签名 URL 上传文件 (阶段 1 重写: axios -> XMLHttpRequest)
  */
 
-/*
+/**
  * 补充说明:
  * 仅客户端上传场景使用; XHR 提供 upload.onprogress 进度回调 (fetch 无原生进度)
  */
