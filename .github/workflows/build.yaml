@@ -57,7 +57,7 @@ jobs:
 
             # 2. Checkout 代码
             - name: Checkout code
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
 
             # 3. 下载工具到 /home/runner/，使 ROOT_DIR=/home/runner 与 volume 路径一致
             - name: Download blog-tool
