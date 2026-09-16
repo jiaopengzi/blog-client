@@ -17,6 +17,7 @@
 - 文章详情页面包屑进入首页轮播图图片加载失败
 - swr 缓存没有限制造成的内存泄漏
 - TypeError: e.classList.has is not a function
+- tag 生成后未及时更新 `public\VERSION`
 
 ### 📦 Build
 
