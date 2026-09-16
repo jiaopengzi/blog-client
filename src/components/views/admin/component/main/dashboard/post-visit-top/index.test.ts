@@ -21,6 +21,8 @@ describe("postVisitRangeToDimension 的测试", () => {
         [PostVisitRange.LastWeek, "week", false],
         [PostVisitRange.ThisMonth, "month", true],
         [PostVisitRange.LastMonth, "month", false],
+        [PostVisitRange.ThisYear, "year", true],
+        [PostVisitRange.LastYear, "year", false],
     ])("%s 映射为 %s/%s", (range, dimension, isCurrent) => {
         expect(postVisitRangeToDimension(range)).toEqual({ dimension, isCurrent })
     })

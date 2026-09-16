@@ -8,7 +8,7 @@
 
 import { TimeDimension } from "@/api/dashboard/common"
 
-// 排行时间范围枚举(后端仅支持 day/week/month 维度)
+// 排行时间范围枚举(后端仅支持 day/week/month/year 维度)
 export enum PostVisitRange {
     Today = "today",
     Yesterday = "yesterday",
@@ -16,6 +16,8 @@ export enum PostVisitRange {
     LastWeek = "last_week",
     ThisMonth = "this_month",
     LastMonth = "last_month",
+    ThisYear = "this_year",
+    LastYear = "last_year",
 }
 
 // 排行时间范围显示
@@ -26,6 +28,8 @@ export const PostVisitRangeDisplay: Record<PostVisitRange, string> = {
     [PostVisitRange.LastWeek]: "上周",
     [PostVisitRange.ThisMonth]: "本月",
     [PostVisitRange.LastMonth]: "上月",
+    [PostVisitRange.ThisYear]: "今年",
+    [PostVisitRange.LastYear]: "去年",
 }
 
 // 排行筛选本地存储结构
@@ -101,6 +105,10 @@ export function postVisitRangeToDimension(range: PostVisitRange): { dimension: T
             return { dimension: TimeDimension.Month, isCurrent: true }
         case PostVisitRange.LastMonth:
             return { dimension: TimeDimension.Month, isCurrent: false }
+        case PostVisitRange.ThisYear:
+            return { dimension: TimeDimension.Year, isCurrent: true }
+        case PostVisitRange.LastYear:
+            return { dimension: TimeDimension.Year, isCurrent: false }
         default:
             return { dimension: TimeDimension.Day, isCurrent: true }
     }

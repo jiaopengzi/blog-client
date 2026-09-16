@@ -9,9 +9,9 @@
     <div class="post-visit-top-container">
         <h4>内容访问排行</h4>
         <div class="post-visit-top-select">
-            <!-- 时间范围选择 -->
+            <!-- 时间范围选择(popper 不限高, 8 个固定选项一眼看完不出滚动条) -->
             <div class="post-visit-top-select-item">
-                <el-select v-model="valueRange" placeholder="Select" style="width: 120px">
+                <el-select v-model="valueRange" placeholder="Select" style="width: 120px" popper-class="post-visit-top-select-popper">
                     <el-option v-for="item in optionsRange" :key="item.value" :label="item.label" :value="item.value" />
                 </el-select>
             </div>
@@ -360,6 +360,28 @@ watch(
         font-family: "JBMonoWOFF2", monospace;
         text-transform: uppercase;
         letter-spacing: 1px;
+    }
+}
+</style>
+<style lang="scss">
+/*
+ * 下拉 popper 挂载在 body 下, scoped 样式作用不到, 需要非 scoped 块(与趋势图表 trend-select-popper 同方案).
+ * 去掉 el-scrollbar 的限高与滚动, 让 8 个固定范围选项一眼看完不出滚动条.
+ */
+.post-visit-top-select-popper {
+    .el-scrollbar {
+        height: auto;
+        max-height: none;
+    }
+
+    .el-scrollbar__wrap {
+        overflow: visible;
+        max-height: none;
+        height: auto;
+    }
+
+    .el-select-dropdown__list {
+        max-height: none;
     }
 }
 </style>

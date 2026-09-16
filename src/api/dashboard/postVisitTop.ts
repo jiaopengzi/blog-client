@@ -13,7 +13,7 @@ import { TimeDimension } from "./common"
 
 // 获取面板文章访问排行请求类型
 export interface PostVisitTopRequest {
-    dimension: TimeDimension // 时间维度(仅支持 day/week/month)
+    dimension: TimeDimension // 时间维度(仅支持 day/week/month/year)
     is_current?: boolean // 是否为当期
     top_n?: number // 排行数量, 1-100, 缺省 10
 }
