@@ -28,7 +28,7 @@ jobs:
                   fetch-depth: 0
 
             - name: Setup SSH
-              uses: webfactory/ssh-agent@v0.9.1
+              uses: webfactory/ssh-agent@v0.10.0
               with:
                   ssh-private-key: ${{ secrets.GITEE_SSH_PRIVATE_KEY }}
 
