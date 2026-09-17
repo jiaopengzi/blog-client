@@ -8,7 +8,7 @@
 
 <template>
     <div class="pay-video-container" v-if="hasVideo">
-        <div class="pay-video-player">
+        <div class="pay-video-player video-player-box">
             <VideoPlayer :player-state="state">
                 <template #toc>
                     <div class="video-toc" v-if="isShowToc && state.isShowToc">

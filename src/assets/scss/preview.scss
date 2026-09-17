@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : preview样式, 段落无首行缩进
+ * @Description  : preview 样式, 段落无首行缩进; 标题 margin 按亲密性原则统一 top:bottom 约 2.5:1
  */
 
 // ========================================== live sass compiler 插件使用 开始 ==========================================
@@ -36,29 +36,32 @@
     // background-color: var(--jpz-bg-color);
     height: var(--jpz-codemirror-height, 100%);
 
+    // 标题间距遵循亲密性原则: 上边距大于下边距, 让标题在视觉上归属于其引导的内容
+    // margin-top 按层级 2em -> 1.25em 递减 (步长 0.25em), top:bottom 统一约 2.5:1, 形成可预测的垂直节奏
+    // h1 为居中标题取 2:1; 参考 GitHub .markdown-body 与 Tailwind Typography 的间距模型
     h1 {
         font-size: 2em;
         display: table;
         border-bottom: 2px solid var(--jpz-color-primary);
         text-align: center;
-        margin: 1.5em auto 1em; // 居中
+        margin: 1.5em auto 0.75em; // 居中
     }
 
     h2 {
         font-size: 1.6em;
-        margin: 2em 0 0.75em 0;
+        margin: 2em 0 0.8em 0;
         padding-bottom: 0.4em;
         border-bottom: 1px solid var(--jpz-border-color);
     }
 
     h3 {
         font-size: 1.35em;
-        margin: 1.75em 0 0.6em 0;
+        margin: 1.75em 0 0.7em 0;
     }
 
     h4 {
         font-size: 1.15em;
-        margin: 1.5em 0 0.5em 0;
+        margin: 1.5em 0 0.6em 0;
     }
 
     h5,
@@ -78,15 +81,16 @@
         font-weight: 700;
     }
 
-    // 第一个子元素不需要额外的顶部间距
-    > :first-child {
-        margin-top: 0;
-    }
+    // 首元素不需要额外的顶部间距，移除本条规则，避免视频元素贴紧顶部
+    // > :first-child {
+    //     margin-top: 0;
+    // }
 
+    // 小屏端间距等比收敛, 保持与 PC 一致的 top:bottom 比例
     @include respond-to("phone") {
         h1 {
             font-size: 22px;
-            margin: 1.25em auto 0.75em;
+            margin: 1.25em auto 0.6em;
         }
 
         h2 {
@@ -104,15 +108,15 @@
 
     @include respond-to("pad") {
         h1 {
-            margin: 1.25em auto 0.85em;
+            margin: 1.25em auto 0.6em;
         }
 
         h2 {
-            margin: 1.75em 0 0.65em 0;
+            margin: 1.75em 0 0.7em 0;
         }
 
         h3 {
-            margin: 1.5em 0 0.5em 0;
+            margin: 1.5em 0 0.6em 0;
         }
     }
 
