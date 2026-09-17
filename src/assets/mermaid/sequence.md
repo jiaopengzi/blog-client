@@ -33,8 +33,14 @@ sequenceDiagram
     C->>+R: 401 触发刷新
     R->>R: 防抖合并并发刷新
     alt 刷新成功
-        R-->>-C: 重放挂起请求
+        R-->>C: 重放挂起请求
     else 刷新失败
-        R-->>-C: 广播登出
+        R-->>C: 广播登出
     end
+    deactivate R
 ```
+
+> NOTE: alt/else 的两个分支在图中都会被渲染; `-` 去激活标记作用于消息的**源参与者**,
+> 若两个分支都写 `R-->>-C`, 第二个分支会重复去激活已 inactive 的 R, 报错
+> `Trying to inactivate an inactive participant (R)`. 故分支内不携带 `-`, 在 `end` 后
+> 用 `deactivate R` 显式收尾, 激活框覆盖整个 alt 块.
