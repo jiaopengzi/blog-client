@@ -3,18 +3,18 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 目录组件
+ * Description : 目录组件 (260917-01: 激活项自动滚入视野; id 定位改 data-index, 规避正文粘贴同 id 内容的重复 id)
 -->
 
 <template>
-    <nav id="toc" ref="tocRef">
+    <nav class="toc-nav" ref="tocRef">
         <h2 class="toc-title">目录</h2>
         <ul class="toc-list">
-            <!-- 根据 heading.level 动态设置 li 的 id 和 class -->
+            <!-- 根据 heading.level 动态设置 li 的 class; 260917-01: data-index 取代 id, 正文粘贴含 #toc-N 的内容时不再产生重复 id -->
             <li
                 v-for="(heading, index) in headings"
-                :id="`toc-${index}`"
                 :key="index"
+                :data-index="index"
                 :class="`h-level-${heading.level} toc-item`"
                 @click="emitHeadingClicked(index)"
             >
@@ -71,7 +71,7 @@ const highlightHeading = (index: number) => {
     resetHeadingHighlight()
 
     // 添加激活状态
-    const target: HTMLElement | null = tocRef.value.querySelector(`#toc-${index}`)
+    const target: HTMLElement | null = tocRef.value.querySelector(`[data-index="${index}"]`)
     if (target) {
         // 动态计算位置和高度
         const top = target.offsetTop
@@ -81,6 +81,10 @@ const highlightHeading = (index: number) => {
         activeMarkerRef.value.style.top = `${top}px`
         activeMarkerRef.value.style.height = `${height}px`
         target.classList.add("toc-active")
+
+        // 260917-01: 目录列表自身可滚动时(侧栏吸顶 max-height / 沉浸浮动面板),
+        // 激活项可能被滚出列表视野, nearest 仅滚动最近的滚动容器使其可见, 不影响页面滚动位置
+        target.scrollIntoView({ block: "nearest" })
     }
 }
 
@@ -96,12 +100,14 @@ watch(
         await nextTick()
         highlightHeading(newIndex)
     },
-    { flush: "post" }, // 确保在 DOM 更新后执行
+    // 260917-01-feedback#2: immediate 保证晚挂载场景 (沉浸模式浮动目录等) 首帧即高亮当前标题,
+    // 否则 props 已是终态不再变化, watch 永不触发, 面板无高亮无定位
+    { flush: "post", immediate: true }, // 确保在 DOM 更新后执行
 )
 </script>
 
 <style scoped lang="scss">
-#toc {
+.toc-nav {
     padding: 0 1em;
     // 添加不同缩进和样式
     background-color: var(--jpz-bg-color);

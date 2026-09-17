@@ -296,8 +296,10 @@ export const useStatusStore = defineStore("status", {
             this.isShowSearchList = false
             this.detailType = PostDetailType.Page
             this.isShowSearch = true
+            // 260917-01-feedback#3: page 页目录由 TocFloating 右侧浮动承载 (post-detail 挂载),
+            // 侧栏不再渲染目录卡片, 整体关闭 (与 SPA 基线一致); 推荐/热门/标签/归档等社区属性卡片本就不展示
             this.isShowHomeAside = false
-            this.isShowToc = false
+            this.isShowToc = true
             this.isShowRecommendedRead = false
             this.isShowHotPost = false
             this.isShowMonthArchive = false

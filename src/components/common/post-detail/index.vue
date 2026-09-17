@@ -3,7 +3,16 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 文章详情
+ * Description : 文章详情 
+-->
+
+<!--
+ 260917-01: 详情页目录改右侧浮动;
+ feedback#1 修复 hash 定位游标抖动与中文锚点解码;
+ feedback#2 目录点击滚动单点驱动;
+ feedback#3 导航进行中抑制观察器回写防抢占离开/更新导航;
+ feedback#4 滚动跟随同步 URL hash;
+ feedback#5 首次进入未滚动不写锚点
 -->
 
 <template>
@@ -113,12 +122,21 @@
             <div class="immersive-backtop">UP</div>
         </el-backtop>
     </ClientOnly>
+    <!-- 浮动目录 (260917-01-feedback#3): 详情页目录不再放侧栏 (侧栏卡片会与吸顶目录互相遮盖),
+         与沉浸模式一致以右侧浮动面板承载, PC 且有目录数据即挂载 (沉浸/普通共用, immersive prop 区分落位);
+         仅 PC 挂载 (PAD/PHONE 不提供目录); v-if 放在 ClientOnly 上: 条件在 SSR 与水合首帧恒为 false
+         (status store 不注水, tocHtml 水合期为空), 两端一致无 mismatch;
+     -->
+    <ClientOnly>
+        <TocFloating v-if="deviceStore.device === DeviceType.PC && hasTocData" :immersive="isWebFullscreen" />
+    </ClientOnly>
 </template>
 
 <script lang="ts" setup>
 import type { Completion } from "@codemirror/autocomplete"
 import { storeToRefs } from "pinia"
-import { computed, nextTick, onBeforeMount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
+import { computed, nextTick, onBeforeMount, onBeforeUnmount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from "vue-router"
 
 import { type CommentRes } from "@/api/comment/common"
 import type { PostResByID } from "@/api/post/common"
@@ -129,6 +147,7 @@ import { type PostTag } from "@/api/postTag/view"
 import PostMeta from "@/components/common/post-meta"
 import PostPassword from "@/components/common/post-password"
 import PosterShare from "@/components/common/poster-share"
+import TocFloating from "@/components/common/toc-floating"
 import type { EditorState } from "@/components/editor"
 import HtmlPreview from "@/components/editor/components/preview/index.vue"
 import { usePreview } from "@/components/editor/hooks/usePreview"
@@ -191,6 +210,9 @@ const isAdmin = computed(() => {
     return userInfo.value.user.role === RoleName.Administrator
 })
 
+// 260917-01: 沉浸模式浮动目录挂载条件 — 目录数据就绪 (水合后经 handleState 写入 statusStore)
+const hasTocData = computed(() => statusStore.tocHtml.length > 0)
+
 const postDetailRef = useTemplateRef("webFullscreenRef")
 const commentEditorRef = useTemplateRef<CommentEditorRef>("commentEditorRef")
 
@@ -240,21 +262,129 @@ const { handlePaySingle, handlePayVip, handlePayKey, handlePayMembership, isPayL
 
 // 更新文章详情状态
 const handleHeadingShowCurrentAc = (val: number) => {
+    // hash 定位窗口内丢弃观察器回写的中间态索引 (路过标题), 保证目录游标直落 hash 目标 (260917-01-feedback#1)
+    if (isHashPositioning) return
+    // 260917-01-feedback#3: 导航进行中丢弃观察器回写 (见 isRouteNavigationInFlight 说明)
+    if (isRouteNavigationInFlight) return
     handleHeadingShowCurrent(val)
     emit("state", state)
+    // 滚动跟随同步 URL hash (260917-01-feedback#4)
+    syncHashOnScroll(val)
 }
 
 const appLoadingIndicator = useAppLoadingIndicator()
 
+// 260917-01-feedback#1: 带 hash 直链/刷新或目录点击的程序化定位窗口标记.
+// 定位期间正文平滑滚动会路过中间标题, IntersectionObserver 回写的"路过索引"会与定位目标索引
+// 互相覆盖 (游标来回抖动且终态可能错位), 因此窗口内丢弃 heading-show-current 回写, 定位目标唯一权威.
+// 260917-01-feedback#2: 窗口与校正定时器改为可取消 — 快速连续点击目录时, 上一轮残留的 600/1600ms
+// 校正定时器会把页面滚回过期锚点 (与新一轮目标互相拉扯, 即反馈的"来回抖动"), 新定位开始前统一清场
+let isHashPositioning = false
+let hashPositioningTimers: Array<ReturnType<typeof setTimeout>> = []
+
+// 260917-01-feedback#2: 程序化 hash 标记 (解码形态, 含 # 前缀).
+// 目录点击与滚动跟随都会 router.replace 写 hash, 若 route.hash watch 再对此定位会与写入方的滚动
+// 互相拉扯; 写入前先登记, route.hash watch 命中标记即跳过 (浏览器前进/后退无标记, 照常定位)
+let programmaticHashMark = ""
+
+// 260917-01-feedback#3: 路由导航进行中标记 — onBeforeRouteLeave / onBeforeRouteUpdate 在导航管道最前段触发,
+// 此后到组件卸载 (离开) 或路由提交 (同路由更新) 之前, 观察器仍活着且会因布局/滚动变化爆发回写;
+// 期间一切"由本组件驱动写 store / 写 URL"的动作必须停止:
+// ① 写 URL 的 router.replace 会抢占取消尚未提交的导航 (面包屑首页点击失效 + URL 残留详情锚点的根因,
+//    上一篇/下一篇的 scrollTo(0,0) 回写是同机制的竞态变体);
+// ② emit("state") → 页面 handleState 会把点击方刚 setHome 清空的 tocHtml 复活写回 store.
+// 离开导航不重置 (组件必然随导航卸载); 同路由更新 (/p/a → /p/b) 提交后经 fullPath watch 复位,
+// 新文章的目录跟随不受影响
+let isRouteNavigationInFlight = false
+onBeforeRouteLeave(() => {
+    isRouteNavigationInFlight = true
+    // 离场即清场进行中的定位, 残留定时器会在卸载后滚向已不存在的锚点
+    cancelHashPositioning()
+})
+onBeforeRouteUpdate((to, from) => {
+    // 仅路径变化 (/p/a → /p/b 上一篇/下一篇) 才抑制; 同路径的 hash-only 变化由目录点击/滚动跟随
+    // 自身发起 (syncHashProgrammatic 的 replace 同样走本守卫), 若置位会把正常目录跟随间歇性冻结
+    if (to.path === from.path) return
+    isRouteNavigationInFlight = true
+    cancelHashPositioning()
+})
+// 导航提交 (fullPath 变化) 后解除抑制: 离开场景随后卸载无副作用, 更新场景恢复新文章的目录跟随
+watch(
+    () => route.fullPath,
+    () => {
+        isRouteNavigationInFlight = false
+    },
+)
+
+// 定位窗口时长: 覆盖平滑滚动全程 + 直链场景图片异步加载导致的二次校正 (复刻 SPA 的多次校正体验)
+const HASH_POSITIONING_MS = 1600
+
 /**
- * @description: 按当前路由 hash 滚动到对应标题并同步目录高亮 (复刻 SPA: 带 #锚点 访问时先渲染再定位)
- * @returns 无返回值
+ * cancelHashPositioning 清除进行中的 hash 定位: 取消全部校正定时器并解除回写抑制.
+ * @remarks 新的定位 (目录点击 / 前进后退 / 直链) 开始前必须调用, 保证同一时刻只有一个定位目标生效.
+ * @returns 无返回值.
+ */
+const cancelHashPositioning = (): void => {
+    hashPositioningTimers.forEach((timer) => clearTimeout(timer))
+    hashPositioningTimers = []
+    isHashPositioning = false
+}
+
+/**
+ * openHashPositioningWindow 开启定位回写抑制窗口, 到期自动解除.
+ * @remarks 重复调用不叠加定时器 (调用方先 cancelHashPositioning 清场); 到期后交还用户滚动的目录跟随.
+ * @returns 无返回值.
+ */
+const openHashPositioningWindow = (): void => {
+    isHashPositioning = true
+    hashPositioningTimers.push(
+        setTimeout(() => {
+            isHashPositioning = false
+        }, HASH_POSITIONING_MS),
+    )
+}
+
+/**
+ * syncHashProgrammatic 程序化更新 URL hash: 登记标记后 router.replace.
+ * @remarks 标记供 route.hash watch 识别"本进程自己写入的 hash"并跳过重复定位, 避免滚动互相拉扯.
+ * @param hash - 目标 hash (含 # 前缀, 解码形态; 空串表示清除锚点).
+ * @returns 无返回值.
+ */
+const syncHashProgrammatic = (hash: string): void => {
+    programmaticHashMark = hash
+    router.replace({ hash }).catch(() => {})
+}
+
+/**
+ * decodeRouteHashAnchor 解码路由 hash 中的锚点 id.
+ * @remarks 直链中的中文锚点为百分号编码形态 (如 #idx5-3-%E6%B4%9E%E8%A7%81), DOM id 与 tocHtml
+ * 均为解码后 Unicode, 不解码则 getElementById 与 findIndex 全部落空 (等价移植 p/[id].vue 的 decode);
+ * 非法转义序列解码抛错时回退原样, 兼容 #100%sale 一类脏 hash.
+ * @param hash - 路由 hash (含 # 前缀).
+ * @returns 解码后的锚点 id.
+ */
+const decodeRouteHashAnchor = (hash: string): string => {
+    const raw = hash.replace("#", "")
+    try {
+        return decodeURIComponent(raw)
+    } catch {
+        return raw
+    }
+}
+
+/**
+ * @description: 按当前路由 hash 滚动到对应标题并同步目录高亮 (复刻 SPA: 带 #锚点 访问时先渲染再定位).
+ * @remarks 仅服务非程序来源的 hash 变化 (直链/刷新/浏览器前进后退); 目录点击的滚动由 anchorHash watch 驱动.
+ * 入口先清场 (260917-01-feedback#2), 保证快速连续的前进/后退不会残留旧目标的校正定时器.
+ * @returns 无返回值.
  */
 const scrollToRouteHash = (): void => {
     const hash = route.hash
     if (!hash) return
 
-    const anchor = hash.replace("#", "")
+    const anchor = decodeRouteHashAnchor(hash)
+    cancelHashPositioning()
+    isHashPositioning = true
 
     const doScroll = () => {
         const target = document.getElementById(anchor)
@@ -270,12 +400,115 @@ const scrollToRouteHash = (): void => {
     }
 
     // 正文渲染完成后定位; 视频/图片异步加载会持续改变版面高度,
-    // 多次校正保证最终落在目标标题 (复刻 SPA 的先渲染再定位体验)
+    // 多次校正保证最终落在目标标题 (复刻 SPA 的先渲染再定位体验);
+    // 全部定时器入组登记, 新一轮定位 (点击/前进后退) 开始时统一取消 (260917-01-feedback#2)
     nextTick(() => {
         doScroll()
-        setTimeout(doScroll, 600)
-        setTimeout(doScroll, 1600)
+        hashPositioningTimers.push(setTimeout(doScroll, 600))
+        hashPositioningTimers.push(
+            setTimeout(() => {
+                doScroll()
+                // 定位收尾后解除回写抑制, 交还用户滚动的目录跟随
+                isHashPositioning = false
+            }, HASH_POSITIONING_MS),
+        )
     })
+}
+
+/**
+ * syncHashOnScroll 滚动跟随同步 URL hash (260917-01-feedback#4): 目录高亮随滚动变化时地址栏锚点同步更新;
+ * 滚回顶部 (首个目录标题尚未越过视口顶, 即正文引言区) 时清除锚点.
+ * @remarks 仅在定位窗口外执行 (handleHeadingShowCurrentAc 已先行拦截); 经 syncHashProgrammatic 登记,
+ * route.hash watch 不再对此触发定位, 无滚动反馈环.
+ * 260917-01-feedback#5: 顶部一律无锚点 — 首次进入详情页视口内同时可见多个标题, 观察器初始回写
+ * 不是用户滚动, 若放行会"未滚动却自动出现锚点" (首页列表点进详情即被写 #idx3-...);
+ * 只有滚动位置离开顶部后才跟随写锚点, 目录高亮跟随不受影响.
+ * @param index - 观察器回写的当前标题索引 (statusStore.tocHtml 下标).
+ * @returns 无返回值.
+ */
+const syncHashOnScroll = (index: number): void => {
+    const heading = statusStore.tocHtml[index]
+    if (!heading) return
+
+    // 顶部无锚点 (引言区): 高亮停在首项且首个标题整体位于视口顶之下 (260917-01-feedback#4)
+    if (index === 0 && isAboveFirstHeading(heading.anchor)) {
+        if (route.hash) {
+            router.replace({ hash: "" }).catch(() => {})
+        }
+        return
+    }
+
+    // 顶部无锚点 (滚动条在顶): 首屏同时可见多个标题时, 观察器回写的索引可以是非 0 —
+    // 顶部一律不保留锚点; 该分支同时兜住"首次进入未滚动"(hash 为空时是 no-op)与"滚回顶部残留"两种情形
+    // (260917-01-feedback#5)
+    if (isDetailAtScrollTop()) {
+        if (route.hash) {
+            router.replace({ hash: "" }).catch(() => {})
+        }
+        return
+    }
+
+    const targetHash = `#${heading.anchor}`
+    if (`#${decodeRouteHashAnchor(route.hash)}` === targetHash) return
+    syncHashProgrammatic(targetHash)
+}
+
+/**
+ * isDetailAtScrollTop 判断详情页滚动条是否在最顶部.
+ * @remarks 普通模式 window 滚动; 沉浸模式 window 固定不动, 由 #webFullscreenContainer 容器滚动
+ * (postDetailRef 即该容器元素), 两种模式取各自滚动位置判定. 顶部既不写锚点也不保留锚点
+ * (260917-01-feedback#5: 首次进入未滚动不得自动出现锚点, 滚回顶部锚点清除).
+ * @returns true 表示位于顶部.
+ */
+const isDetailAtScrollTop = (): boolean => {
+    if (isWebFullscreen.value) {
+        return (postDetailRef.value?.scrollTop ?? 0) === 0
+    }
+    return window.scrollY === 0
+}
+
+// 顶部清锚兜底 (260917-01-feedback#5): IntersectionObserver 只在交叉状态"变化"时回调,
+// 滚回顶部的最后一段滚动可能不再产生任何交叉变化 (顶部标题早已全部可见), 仅靠回写清锚会残留 hash
+// (实测 /page/test001 回顶残留 #idx2-...); 滚动停止后按位置兜底清除.
+let clearHashAtTopTimer: ReturnType<typeof setTimeout> | null = null
+
+/**
+ * clearHashAtTopWhenSettled 滚动停止 200ms 后检查: 若滚动条在最顶部且 URL 带锚点则清除.
+ * @remarks 定位窗口与导航进行中不清 (滚过顶部的中间态/离开导航的 router 滚顶都会路过顶部);
+ * 双模式通用 — 同时监听 window (普通) 与 #webFullscreenContainer (沉浸) 的 scroll 事件.
+ * @returns 无返回值.
+ */
+const clearHashAtTopWhenSettled = (): void => {
+    if (clearHashAtTopTimer) clearTimeout(clearHashAtTopTimer)
+    clearHashAtTopTimer = setTimeout(() => {
+        clearHashAtTopTimer = null
+        if (isRouteNavigationInFlight || isHashPositioning) return
+        if (isDetailAtScrollTop() && route.hash) {
+            router.replace({ hash: "" }).catch(() => {})
+        }
+    }, 200)
+}
+
+onMounted(() => {
+    window.addEventListener("scroll", clearHashAtTopWhenSettled, { passive: true })
+    postDetailRef.value?.addEventListener("scroll", clearHashAtTopWhenSettled, { passive: true })
+})
+
+onBeforeUnmount(() => {
+    window.removeEventListener("scroll", clearHashAtTopWhenSettled)
+    postDetailRef.value?.removeEventListener("scroll", clearHashAtTopWhenSettled)
+    if (clearHashAtTopTimer) clearTimeout(clearHashAtTopTimer)
+})
+
+/**
+ * isAboveFirstHeading 判断视口当前是否位于首个目录标题上方 (标题顶边尚未越过视口顶).
+ * @remarks 沉浸模式 window 不滚动但标题 rect 同随容器滚动变化, 判定双模式通用.
+ * @param firstAnchor - 首个目录标题的锚点 id.
+ * @returns true 表示处于顶部/引言区 (无锚点); 元素不存在时返回 false (保守保留现有 hash).
+ */
+const isAboveFirstHeading = (firstAnchor: string): boolean => {
+    const firstHeading = document.getElementById(firstAnchor)
+    return !!firstHeading && firstHeading.getBoundingClientRect().top > 0
 }
 
 // 更新文章详情
@@ -353,26 +586,37 @@ const submitPassword = async (password: string) => {
     await updatePostDetailAc(postId.value, password)
 }
 
-// 路由 hash 单独变化 (如浏览器前进/后退带 hash): 内容已渲染时直接定位
+// 路由 hash 单独变化: 仅非程序来源 (直链跳转锚点/浏览器前进后退) 才执行定位;
+// 目录点击与滚动跟随写入的 hash 带 programmaticHashMark 标记, 其滚动/高亮已由写入方处理,
+// 此处再定位会与写入方滚动互相拉扯 (260917-01-feedback#2)
 watch(
     () => route.hash,
     (hash) => {
+        if (hash && `#${decodeRouteHashAnchor(hash)}` === programmaticHashMark) {
+            programmaticHashMark = ""
+            return
+        }
+        programmaticHashMark = ""
         if (!hash) return
         scrollToRouteHash()
     },
 )
 
-// 监听锚点 (Nuxt 路由结构: 直接滚动到目标标题, 不再经 Home+query/hash 中转)
+// 监听锚点 — 目录点击导航的唯一滚动驱动 (260917-01-feedback#2):
+// useTocNavigation 点击只写 store, 由本 watch 统一执行"清场旧定位 → 同步 URL → 平滑滚动 → 开启回写抑制窗口".
+// 此前点击同时触发 hook 直滚 + 本 watch 直滚 + route.hash watch 校正滚动三路滚动,
+// 快速连续点击时旧定时器滚回过期锚点, 页面来回抖动
+// 260917-01-feedback#3: 导航进行中不再响应 — 此时写 URL 的 router.replace 会抢占取消进行中的导航
 watch(
     () => anchorHash.value,
     (newVal) => {
-        if (!newVal) return
+        if (!newVal || isRouteNavigationInFlight) return
 
-        const anchor = newVal.replace("#", "")
+        cancelHashPositioning()
+        syncHashProgrammatic(newVal)
+        openHashPositioningWindow()
 
-        // 复刻 SPA: URL 同步更新为 /p/:id#锚点 (含正文滚动触发的目录高亮同步)
-        router.replace({ hash: newVal }).catch(() => {})
-
+        const anchor = decodeRouteHashAnchor(newVal)
         const target = document.getElementById(anchor)
         if (target) {
             target.scrollIntoView({ behavior: "smooth", block: "start" })

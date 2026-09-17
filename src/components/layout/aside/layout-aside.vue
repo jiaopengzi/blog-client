@@ -3,32 +3,26 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 公用侧栏 (阶段 4 终版拆分: 列表页与文章详情页各自组合使用; bf-260903-01 增加登录态校准重拉与非 PC 请求闸门)
+ * Description : 公用侧栏列表页与文章详情页各自组合使用
 -->
 
 <!--
  * 补充说明:
- * 侧栏数据 (推荐/热门/标签/归档) 自行拉取; TOC 数据来自 statusStore (文章详情页写入)
+ * bf-260903-01 增加登录态校准重拉与非 PC 请求闸门;
+ * 侧栏数据 (推荐/热门/标签/归档) 自行拉取; 详情页目录由 TocFloating 右侧浮动承载 (post-detail 挂载), 不在本侧栏渲染
  * 标签 TopN 与月度归档为登录态感知接口 (后端叠加本人私密文章计数), SSR 注水恒为匿名口径, 水合后需按登录态校准
+ * 260917-01-feedback#3 目录移出侧栏改右侧浮动, 侧栏仅余推荐/热门/标签/归档
 -->
 
 <template>
-    <el-aside
-        class="el-aside"
-        :class="{ 'is-aside-sticky': isAsideStickyEnabled }"
-        :style="{ '--home-aside-sticky-top': asideStickyTop }"
-        v-show="isDesktop && isShowHomeAside && hasDataHomeAside"
-    >
-        <div ref="asideContentRef" class="el-aside-content">
-            <!-- 目录 (数据由文章详情页写入 statusStore; 与 SPA 一致仅详情页展示) -->
-            <Toc
-                v-if="isShowPostDetail && isShowToc && hasDataToc"
-                class="el-aside-item"
-                :headings="tocHtml"
-                :heading-show-current-index="tocHeadingShowCurrentIndex"
-                @heading-clicked="tocHeadingClicked"
-            />
-
+    <el-aside class="el-aside" v-show="isDesktop && isShowHomeAside && hasDataHomeAside">
+        <!-- 卡片单元: 短则吸顶, 长则贴底 (高度基准为本单元真实高度) -->
+        <div
+            ref="asideContentRef"
+            class="el-aside-content"
+            :class="{ 'is-aside-sticky': isAsideStickyEnabled }"
+            :style="{ '--home-aside-sticky-top': asideStickyTop }"
+        >
             <!-- 推荐阅读 -->
             <RecommendedRead
                 v-if="isShowRecommendedRead && hasDataRecommendedRead"
@@ -62,7 +56,6 @@ import { computed, onMounted, ref, useTemplateRef, watch } from "vue"
 import { type PostTag as PostTagItem } from "@/api/postTag/view"
 import MonthArchive from "@/components/common/month-archive"
 import { useGetData } from "@/components/hooks/useHome/api"
-import Toc from "@/components/editor/components/toc"
 import HotPost from "@/components/layout/aside/hot-post"
 import PostTag, { usePostTagData } from "@/components/layout/aside/post-tag"
 import RecommendedRead from "@/components/layout/aside/recommended-read"
@@ -72,9 +65,6 @@ import { useStatusStore } from "@/stores/status"
 import { useUserStore } from "@/stores/user"
 
 defineOptions({ name: "LayoutAside" })
-
-// 目录组件静态导入 (与 SPA main-content 一致): toc 组件仅依赖 vue, 不引入编辑器依赖链;
-// 修复异步组件与 v-if 瞬时切换竞态导致的 DOM 不一致 (insertBefore NotFoundError)
 
 const router = useRouter()
 const route = useRoute()
@@ -86,7 +76,8 @@ const deviceStore = useDeviceStore()
 const { device } = storeToRefs(deviceStore)
 const isDesktop = computed(() => device.value === DeviceType.PC)
 
-// 根据侧栏真实高度更新 sticky 吸附点, 短侧栏吸顶, 长侧栏贴底且避免侧栏内部滚动条
+// 根据卡片单元真实高度更新 sticky 吸附点, 短则吸顶, 长则贴底且避免内部滚动条
+// (260917-01-feedback#3: 目录移出侧栏后仅剩本单元, 高度基准回归单元自身)
 const updateAsideStickyTop = () => {
     const asideContent = asideContentRef.value
     if (!asideContent) {
@@ -119,18 +110,12 @@ useEventListener(window, "resize", handleViewportResize)
 const statusStore = useStatusStore()
 
 const {
-    isShowPostDetail,
     isShowHomeAside,
     isShowRecommendedRead,
     isShowHotPost,
     isShowPostTag,
     isShowMonthArchive,
-    isShowToc,
 
-    tocHtml,
-    tocHeadingShowCurrentIndex,
-
-    hasDataToc,
     hasDataHomeAside,
     hasDataRecommendedRead,
     hasDataHotPost,
@@ -160,27 +145,6 @@ const clickTag = (tag: PostTagItem) => {
 // 侧栏点击月度归档: 跳转 /year/:year/month/:month
 const clickMonthArchive = (row: { year: number; month: number }) => {
     router.push(`/year/${row.year}/month/${row.month}`)
-}
-
-// 目录点击: 设置锚点、同步高亮索引并直接滚动到目标标题
-// (Nuxt 路由结构下不再经 Home+query/hash 中转, 见 post-detail 的锚点监听)
-const tocHeadingClicked = (index: number) => {
-    const headings = statusStore.tocHtml
-    const heading = headings[index]
-    if (!heading) {
-        return
-    }
-
-    statusStore.setAnchorHash(`#${heading.anchor}`)
-    statusStore.tocHeadingShowCurrentIndex = index
-
-    // 复刻 SPA: URL 同步更新为 /p/:id#锚点
-    router.replace({ hash: `#${heading.anchor}` }).catch(() => {})
-
-    const target = document.getElementById(heading.anchor)
-    if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" })
-    }
 }
 
 // 拉取「显示标志为 true 且尚无数据」的侧栏模块 (幂等, 已加载的跳过)
@@ -297,10 +261,19 @@ watch(
     .el-aside {
         width: pc.$width-aside;
         background-color: var(--jpz-bg-color-page);
+        // 260917-01: 拉伸到 container-main 全高, 为内部 sticky 卡片单元提供行程;
+        // sticky 子元素行程受包含块高度限制, 自然高度下几乎无行程;
+        // 背景色与 .content 同为 --jpz-bg-color-page, 全高拉伸不可见;
+        // overflow 必须覆写为 visible: el-aside 基础样式自带 overflow:auto 会形成滚动容器,
+        // 后代 sticky 将相对该(不滚动的)滚动容器吸附而永不生效 (旧实现 sticky 挂在 el-aside 自身故不受影响)
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        overflow: visible;
     }
 
-    .el-aside.is-aside-sticky {
-        position: sticky; // 短侧栏吸顶, 长侧栏按内容高度贴底
+    .el-aside-content.is-aside-sticky {
+        position: sticky; // 短则吸顶, 长则按内容高度贴底 (260917-01: 由 el-aside 下移到本单元)
         top: var(--home-aside-sticky-top, 0px);
     }
 
@@ -315,13 +288,13 @@ watch(
 
 @include respond-to("pad") {
     .el-aside {
-        display: none;
+        display: none; // PAD 维持不展示侧栏 (260917-01 范围确认: 仅 PC 展示目录)
     }
 }
 
 @include respond-to("phone") {
     .el-aside {
-        display: none;
+        display: none; // PHONE 维持不展示侧栏
     }
 }
 </style>

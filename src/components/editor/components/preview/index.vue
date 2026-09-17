@@ -6,6 +6,12 @@
  * Description : 预览组件
 -->
 
+<!--
+ 260917-01
+ feedback#4: 标题观察器注册补 immediate, 修复 SSR 数据水合场景滚动跟随失效;
+ feedback#3: 服务端跳过 rAF 注册, 修复 SSR unhandledRejection
+-->
+
 <template>
     <!-- web 预览 -->
     <div
@@ -795,20 +801,34 @@ watch(
     (newHtml) => {
         if (newHtml) {
             // 注意: 这里使用 nextTick, 确保 html 已经渲染完成
+            // 260917-01-feedback#4: 再等一帧 (rAF) — v-stable-html 的 mounted/updated 钩子会在 flush 后
+            // 整体重写内容 div 的 innerHTML (SSR 节点被替换), 直接在 nextTick 里查询标题会拿到即将
+            // 被替换的游离节点, 观察器随之失效 (滚动跟随高亮/URL 同步整条链路无声断裂);
+            // rAF 严格晚于同任务内的 post-flush 钩子, 保证观察的是重写后的最终节点
             nextTick(() => {
-                // 获取标题
-                getAllHeadings()
+                // 260917-01-feedback#3: SSR (Node) 无 requestAnimationFrame, immediate watch 在服务端
+                // 即触发并在此抛 ReferenceError (unhandledRejection + 次生 NUXT_E8003 日志序列化告警);
+                // 观察器注册是纯客户端行为, 服务端跳过 — 水合时客户端 setup 同样触发 immediate watch 完成注册
+                if (typeof requestAnimationFrame === "undefined") return
+                requestAnimationFrame(() => {
+                    // 获取标题
+                    getAllHeadings()
 
-                // 停止旧的观察者再重新注册, 避免每次内容变化都累积大量无效 observer
-                stopAllHeadingObservers()
+                    // 停止旧的观察者再重新注册, 避免每次内容变化都累积大量无效 observer
+                    stopAllHeadingObservers()
 
-                // 监听标题的可见性变化
-                observeHeadings()
-                scheduleDisplayKatexScale()
-                schedulePreparedCopyAfterRender()
+                    // 监听标题的可见性变化
+                    observeHeadings()
+                    scheduleDisplayKatexScale()
+                    schedulePreparedCopyAfterRender()
+                })
             })
         }
     },
+    // 260917-01-feedback#4: SSR 数据驱动的页面 (/p/** 水合) 在本组件 setup 时 html prop 已是终值,
+    // 非 immediate 的 watch 注册后不再变化永不触发, 标题观察器从未创建 — 滚动跟随高亮/URL 同步整条链路失效
+    // (/page/** 因 html 空值起步的时序差异碰巧可用); immediate 保证首帧已带内容的场景同样完成观察器注册
+    { immediate: true },
 )
 
 // 监控微信预览 html 变化, 在内容更新后重新计算公式缩放

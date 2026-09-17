@@ -25,6 +25,15 @@
  *   修复: hash 滚动一律 "smooth" (含初始加载与跨页导航的 calculatePosition 分支);
  *   带锚点直链/刷新的"从顶部平滑滚入"由 pages/p/[id].vue 注入的 html[data-hash-smooth]
  *   (CSS scroll-behavior) 承接, 见 main.scss 同名规则。
+ *
+ * @bugfix(260917-01-feedback#2/#4): 同路径 hash 滚动收敛到组件侧
+ *   文章详情引入"滚动跟随同步 URL hash"后, 同路径 hash 的路由滚动成为重复驱动并形成级联:
+ *   观察器写 hash → 路由 smooth 滚动 → 触发更多观察器回写 → 再写 hash, 页面加载后自行滚到中部;
+ *   TOC 点击也是 anchorHash watch 与路由滚动两路并存 (feedback#2 抖动的成分之一)。
+ *   修复: 同路径 hash 变化一律不再由路由滚动 — TOC 点击 (anchorHash watch)、浏览器前进/后退与
+ *   正文锚点点击 (route.hash watch → scrollToRouteHash) 均由 post-detail 单点驱动平滑滚动;
+ *   popstate (savedPosition 非空) 仍恢复历史滚动位置, 随后组件侧 watch 校正到锚点。
+ *   初始直链 (from === START_LOCATION) 与跨页导航带 hash 的滚动分支维持不变。
  */
 
 import { START_LOCATION, type RouteLocationNormalized, type RouteLocationNormalizedLoaded, type RouterScrollBehavior } from "vue-router"
@@ -92,24 +101,11 @@ export default {
         const nuxtApp = tryUseNuxtApp()
         const router = nuxtApp?.$router
 
-        // 同路径 hash 变化 (如 user-info tab 切换)
+        // 同路径 hash 变化 (如 user-info tab 切换 / 文章目录锚点):
+        // 260917-01-feedback#2/#4 起路由不再滚动 (组件侧单点驱动, 见文件头 bugfix 说明),
+        // 仅 popstate 恢复历史滚动位置
         if (to.path.replace(/\/$/, "") === from.path.replace(/\/$/, "")) {
-            if (from.hash && !to.hash) {
-                return savedPosition ?? { left: 0, top: 0 }
-            }
-            if (to.hash) {
-                // bug02: hash 元素不存在时 guard, 避免 R0042
-                if (!isHashElementExists(to.hash)) {
-                    return false
-                }
-                // bug02(260826-03): smooth 滚动复刻 SPA (TOC 点击场景)
-                return {
-                    el: to.hash,
-                    top: getHashElementScrollMarginTop(to.hash),
-                    behavior: "smooth",
-                }
-            }
-            return false
+            return savedPosition ?? false
         }
 
         if ((typeof to.meta.scrollToTop === "function" ? to.meta.scrollToTop(to, from) : to.meta.scrollToTop) === false) {
