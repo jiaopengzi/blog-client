@@ -127,8 +127,8 @@ export default defineNuxtConfig({
     // 降低 Nuxt CLI 构建日志噪音, 仅保留 warning 和 error.
     logLevel: "info",
 
-    // P0-1(nuxt4-good): DevTools 仅开发态开启, 生产构建不注入; 迁移验收/性能分析用
-    devtools: { enabled: true },
+    // DevTools 配置: 仅在开发环境启用, 生产环境禁用
+    devtools: { enabled: false },
 
     srcDir: "src",
 
