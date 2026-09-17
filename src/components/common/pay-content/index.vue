@@ -41,7 +41,15 @@
             </div>
         </div>
     </div>
-    <div class="paid" v-if="isShowContent">
+    <div
+        class="paid"
+        v-if="isShowContent"
+        :ref="
+            (el) => {
+                if (el) setPaidContentRef(el as HTMLElement)
+            }
+        "
+    >
         <!-- bug02(260829-05 二轮): 已解锁分支的剧集按"有效解锁态"传入; 合集未收费 (price=0) 时
              isPaid 为 false 但内容已直接展示, 若传裸 isPaid, 剧集会按媒体库 is_free 混合显示
              锁/播放 icon, 与"整个合集可免费观看"矛盾; 未解锁预览分支仍传 isPaid=false 保留 icon -->
@@ -63,7 +71,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, onMounted, watch } from "vue"
+import { computed, onMounted, ref, watch } from "vue"
 
 import { PayStrategy } from "@/api/post/common"
 import JIcon, { IconKeys } from "@/components/common/icons"
@@ -73,6 +81,7 @@ import VideoPlayer, { type PlayerState } from "@/components/player"
 import { Names } from "@/customElements/constants"
 import { parseHtmlToContentParts } from "@/customElements/parseHtml"
 import { type PowerBIState } from "@/customElementsMount/PowerBI"
+import { useMermaidRenderer } from "@/pkg/mermaid"
 import { usePermissionRoleStore } from "@/stores/permissionRole"
 import { fenToYuan } from "@/utils/amount"
 
@@ -118,6 +127,15 @@ const emitPayAction = (event: "pay-single" | "pay-vip"): void => {
 // 内容渲染
 const stateManager = new EditorStateManager()
 
+// 已解锁内容根节点引用, 供 mermaid 占位容器渲染定位 (260917-01)
+const paidContentRef = ref<HTMLElement | null>(null)
+const setPaidContentRef = (el: HTMLElement) => {
+    paidContentRef.value = el
+}
+
+// mermaid 容器渲染调度: 内置防抖与主题切换重渲染, SSR 环境自动 no-op
+const { scheduleMermaidRender } = useMermaidRenderer(() => [paidContentRef.value])
+
 // 角色权限
 const permissionRoleStore = usePermissionRoleStore()
 
@@ -138,6 +156,15 @@ const contentParts = computed(() => {
     if (!html) return []
     return parseHtmlToContentParts(html, postId, isAdminVideo)
 })
+
+// 内容片段更新后调度 mermaid 占位容器渲染 (v-stable-html 重写 innerHTML 会清掉已渲染 SVG, 需重放)
+watch(
+    () => contentParts.value,
+    () => {
+        scheduleMermaidRender()
+    },
+    { immediate: true },
+)
 
 // 是否显示内容
 const isShowContent = computed(() => {

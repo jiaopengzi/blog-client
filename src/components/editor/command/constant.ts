@@ -61,6 +61,7 @@ export enum CommandsKey {
     PowerBi = "powerBi",
     WechatCaptcha = "wechatCaptcha",
     LoginView = "loginView",
+    Mermaid = "mermaid",
 }
 
 // markdown 编辑器单个命令对象的类型
@@ -429,6 +430,14 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             tip: "PowerBI",
             content: '<power-bi src="" maskcolor=""></power-bi>',
             icon: IconKeys.PowerBiUnion,
+        },
+        // mermaid 图表 (260917-01 需求 2: 工具菜单插入围栏代码块模板)
+        [CommandsKey.Mermaid]: {
+            tip: "mermaid",
+            prefix: "\n```mermaid\n",
+            content: "flowchart LR\n    A[Hard] -->|Text| B(Round)\n",
+            suffix: "```\n",
+            icon: IconKeys.Chart,
         },
     }
 }

@@ -200,6 +200,10 @@ export function applyInlineStylesToElement(
     const isKatex = hasClassName(originalEl, "katex")
     if (isKatex) return
 
+    // 260917-01: mermaid svg 挂载节点在复制树中已被替换为自带完整内联样式的 img,
+    // 跳过内联避免把块级容器计算样式覆盖到图片上 (与 katex 跳过逻辑同因)
+    if (hasClassName(originalEl, "jpz-mermaid-svg")) return
+
     const isPreCode = hasClassName(originalEl, "pre-code-container")
     const isHeading = isHeadingElement(originalEl)
 
@@ -546,7 +550,7 @@ export async function processInlineStyleQueue(
         const relevantProperties = getRelevantComputedStyleProperties(originalEl, matchedRules, applyContext)
         const computedStyle = filterInvalidComputedStyles(originalEl, relevantProperties)
 
-        if (!computedStyle || Object.keys(computedStyle).length === 0 || hasClassName(originalEl, "katex")) {
+        if (!computedStyle || Object.keys(computedStyle).length === 0 || hasClassName(originalEl, "katex") || hasClassName(originalEl, "jpz-mermaid-svg")) {
             continue
         }
 

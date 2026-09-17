@@ -61,6 +61,7 @@
         "marked-katex-extension": "5.1.12",
         "marked-mangle": "1.1.13",
         "marked-xhtml": "1.0.15",
+        "mermaid": "12.0.0",
         "node-html-parser": "9.0.4",
         "ofetch": "1.5.1",
         "pinia": "4.0.3",

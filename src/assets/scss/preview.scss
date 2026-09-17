@@ -659,6 +659,90 @@
             display: inline-block;
         }
     }
+
+    // mermaid 图表占位容器 (260917-01): 同步管线只输出源码, 客户端渲染 SVG 注入
+    .jpz-mermaid-container {
+        position: relative;
+        margin: 1em 0;
+        padding: 8px;
+        border: 1px solid var(--jpz-border-color);
+        border-radius: 6px;
+        background-color: var(--jpz-bg-color);
+        text-align: center;
+        // 窄屏超宽图表横向滚动, 防止撑破布局
+        overflow-x: auto;
+    }
+
+    // 源码复制按钮 (260917-01 需求 2), 视觉与代码块 copy-button 保持一致
+    .jpz-mermaid-container .copy-button {
+        font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+        position: absolute;
+        top: 4px;
+        right: 8px;
+        cursor: pointer;
+        background-color: var(--jpz-bg-color);
+        border: none;
+        border-radius: 4px;
+        padding: 2px 5px;
+        z-index: 999;
+        color: var(--jpz-text-color-placeholder);
+        min-width: 4em;
+
+        &:hover {
+            background-color: #e0e0e0;
+        }
+    }
+
+    // 渲染成功/进行中隐藏源码 pre, 图表注入时无源码闪现
+    .jpz-mermaid-container[data-mermaid-status="pending"],
+    .jpz-mermaid-container[data-mermaid-status="rendering"] {
+        // 加载占位高度, 降低 SVG 注入时的布局偏移
+        min-height: 64px;
+
+        .jpz-mermaid-source {
+            display: none;
+        }
+    }
+
+    .jpz-mermaid-container[data-mermaid-status="rendered"] .jpz-mermaid-source {
+        display: none;
+    }
+
+    // 空源码图表整体隐藏
+    .jpz-mermaid-container[data-mermaid-status="empty"] {
+        display: none;
+    }
+
+    .jpz-mermaid-svg {
+        display: flex;
+        justify-content: center;
+
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+    }
+
+    // 错误降级: 展示源码与错误信息, 便于作者修正图表语法
+    .jpz-mermaid-source {
+        margin: 0;
+        padding: 8px;
+        text-align: left;
+        font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+        background-color: var(--code-bg-color);
+        color: var(--code-color);
+        border-radius: 4px;
+        white-space: pre;
+        overflow-x: auto;
+    }
+
+    .jpz-mermaid-error {
+        margin: 0 0 8px;
+        color: var(--jpz-color-danger);
+        font-size: 0.9em;
+        text-align: left;
+        word-break: break-all;
+    }
 }
 
 @include respond-to("pc") {

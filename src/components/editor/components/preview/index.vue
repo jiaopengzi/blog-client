@@ -8,8 +8,9 @@
 
 <!--
  260917-01
- feedback#4: 标题观察器注册补 immediate, 修复 SSR 数据水合场景滚动跟随失效;
- feedback#3: 服务端跳过 rAF 注册, 修复 SSR unhandledRejection
+  mermaid 集成: 内容/宽度/渲染模式变化后调度 pkg/mermaid 渲染占位容器, 主题切换时强制重渲染
+  feedback#4: 标题观察器注册补 immediate, 修复 SSR 数据水合场景滚动跟随失效;
+  feedback#3: 服务端跳过 rAF 注册, 修复 SSR unhandledRejection
 -->
 
 <template>
@@ -160,6 +161,7 @@ import { mountLoginViewOnCustomElements, mountPayContentOnCustomElements } from 
 import { type LoginViewState } from "@/customElementsMount/LoginView"
 import { type PowerBIState } from "@/customElementsMount/PowerBI"
 import { type WechatCaptchaState } from "@/customElementsMount/WechatCaptcha"
+import { MERMAID_CONTAINER_SELECTOR, MERMAID_SOURCE_CLASS, useMermaidRenderer } from "@/pkg/mermaid"
 import { copyText } from "@/utils/clipboard"
 import { shiftArray } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"
@@ -224,6 +226,10 @@ const wechatRef = ref<HTMLElement | null>(null)
 const setWechatRef = (el: HTMLElement | null) => {
     wechatRef.value = el
 }
+
+// mermaid 容器渲染调度 (260917-01): web 预览与微信离屏 staging 节点都要渲染,
+// 复制流水线从 staging 节点克隆, 未渲染则微信复制拿不到 SVG; 主题切换时内部强制重渲染
+const { scheduleMermaidRender } = useMermaidRenderer(() => [previewRef.value, wechatRef.value])
 
 let displayKatexScaleAnimationFrameId = 0 // 缩放 katex 的动画帧 ID
 const COPY_CACHE_DEBOUNCE_MS = 2000 // 复制缓存的防抖时间, 单位毫秒
@@ -431,6 +437,7 @@ watch(
         }
         // 切换到 web 预览: web div 因 v-if 重新挂载, 其 ref 回调会自动更新 previewRef
         scheduleDisplayKatexScale()
+        scheduleMermaidRender()
     },
     { flush: "post" },
 )
@@ -463,6 +470,7 @@ watch(
         }
 
         scheduleDisplayKatexScale()
+        scheduleMermaidRender()
         schedulePreparedCopyAfterRender()
     },
 )
@@ -473,6 +481,12 @@ const handleDelegateClick = async (event: MouseEvent) => {
 
     if (previewRef.value) {
         if (target.tagName.toLowerCase() === "button" && target.classList.contains("copy-button")) {
+            const mermaidContainer = target.closest(MERMAID_CONTAINER_SELECTOR)
+            if (mermaidContainer) {
+                // mermaid 源码复制按钮 (260917-01 需求 2)
+                await handleMermaidSourceCopy(mermaidContainer)
+                return
+            }
             // pre 按钮
             const preElement = target.nextElementSibling as HTMLPreElement
             await handlePreCopy(preElement)
@@ -481,6 +495,24 @@ const handleDelegateClick = async (event: MouseEvent) => {
             const imgElement = target as HTMLImageElement
             updateImageViewer(imgElement)
         }
+    }
+}
+
+/**
+ * @description: 复制 mermaid 容器中的图表源码, 渲染成功与否都可复制.
+ * @param mermaidContainer mermaid 占位容器元素
+ * @return 无返回值
+ */
+const handleMermaidSourceCopy = async (mermaidContainer: Element) => {
+    const sourceElement = mermaidContainer.querySelector(`.${MERMAID_SOURCE_CLASS}`)
+    // 浏览器读取 textContent 自动还原实体; nbsp 防御性还原为空格, 与代码块复制行为一致
+    const textContent = (sourceElement?.textContent ?? "").replace(/\u00a0/g, " ")
+    if (textContent.trim()) {
+        // 复制文本到剪贴板
+        await copyText(textContent)
+        MessageUtil.success("已复制到剪贴板！")
+    } else {
+        MessageUtil.error("复制失败，内容为空！")
     }
 }
 
@@ -820,6 +852,7 @@ watch(
                     // 监听标题的可见性变化
                     observeHeadings()
                     scheduleDisplayKatexScale()
+                    scheduleMermaidRender()
                     schedulePreparedCopyAfterRender()
                 })
             })
@@ -836,6 +869,7 @@ watch(
     () => wechatHtml.value,
     () => {
         scheduleDisplayKatexScale()
+        scheduleMermaidRender()
         schedulePreparedCopyAfterRender()
     },
 )
@@ -909,6 +943,7 @@ watch(
                 mountLoginViewOnCustomElements(previewRef.value as HTMLElement, Names.LoginView, postId, isAdminVideo)
 
                 scheduleDisplayKatexScale()
+                scheduleMermaidRender()
                 schedulePreparedCopyAfterRender()
             })
         }
@@ -917,6 +952,7 @@ watch(
 
 const { stop: stopPreviewResizeObserver } = useResizeObserver(previewRef, () => {
     scheduleDisplayKatexScale()
+    scheduleMermaidRender()
     schedulePreparedCopyAfterRender()
 })
 
@@ -928,6 +964,7 @@ onMounted(async () => {
         // 获取预览容器的 top 值
         getPreviewRefRect()
         scheduleDisplayKatexScale()
+        scheduleMermaidRender()
         schedulePreparedCopyAfterRender()
     })
 })

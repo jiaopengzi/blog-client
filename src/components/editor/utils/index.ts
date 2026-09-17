@@ -21,5 +21,7 @@ export type {
     KatexCaptureContext,
     KatexImageCacheEntry,
     MarkdownHeadingLine,
+    MermaidCaptureContext,
+    MermaidImageCacheEntry,
     RegexCache,
 } from "../types"

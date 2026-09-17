@@ -55,6 +55,19 @@ export interface KatexCaptureContext {
     height: number
 }
 
+// mermaid 图表图片缓存 (260917-01)
+export interface MermaidImageCacheEntry {
+    src: string
+    width: number
+    height: number
+}
+
+export interface MermaidCaptureContext {
+    wrapper: HTMLDivElement
+    width: number
+    height: number
+}
+
 export interface FilteredStyles {
     [key: string]: string
 }

@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 自定义 renderer 主要是为了加类名
+ * Description : 自定义 renderer 主要是为了加类名; mermaid 代码块输出客户端渲染占位容器 (260917-01)
  */
 
 import type { Tokens } from "marked"
@@ -113,6 +113,10 @@ export const renderer = {
      */
     code({ text, lang, escaped }: Tokens.Code) {
         const langString = (lang || "").match(/^\S*/)?.[0]
+        // mermaid 代码块不进 hljs 代码块结构, 输出客户端渲染占位容器 (260917-01)
+        if (langString === "mermaid") {
+            return constructMermaidContainer(escaped ? text : escape(text, true))
+        }
         const sourceHasTrailingEmptyLine = text.endsWith("\n")
         const code = text.replace(/\n$/, "") + "\n"
         if (!langString) {
@@ -272,6 +276,20 @@ function constructWeChatPreCode(htmlStr: string, sourceHasTrailingEmptyLine = fa
     const preBlock = tagStart + copyBtn + wechatPreCodeStart + wechatPreCode + wechatPreCodeEnd + tagEnd
 
     return preBlock
+}
+
+/**
+ * @description: 将 mermaid 代码块转换为客户端渲染占位容器.
+ * @remarks 同步渲染管线 (SSR 与水合共用) 只输出转义源码与状态标记, SVG 由浏览器端 src/pkg/mermaid
+ *          惰性渲染; 容器标签必须用 section 而非带连字符的自定义标签名, 否则会被 DOMPurify 的
+ *          CUSTOM_ELEMENT_HANDLING.tagNameCheck 当作未注册自定义元素整体移除 (260917-01).
+ *          源码复制按钮复用代码块的 copy-button 类名, 微信复制时由 htmlHandleCopyBtns 的既有正则统一剔除 (260917-01 需求 2).
+ * @param escapedCode 已实体转义的 mermaid 图表源码 (hljs 对未注册语言走 plaintext, 到达 renderer 时 escaped 恒为 true).
+ * @return mermaid 占位容器 HTML 字符串.
+ */
+function constructMermaidContainer(escapedCode: string): string {
+    const trimmedCode = escapedCode.replace(/\n$/, "")
+    return `<section class="jpz-mermaid-container" data-mermaid-status="pending"><button type="button" class="copy-button jpz-mermaid-copy-button">MERMAID</button><pre class="jpz-mermaid-source">${trimmedCode}</pre></section>\n`
 }
 
 /**

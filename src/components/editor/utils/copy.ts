@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 复制流水线与 KaTeX 图片捕获
+ * Description : 复制流水线与 KaTeX/mermaid 图片捕获 (260917-01 增加 mermaid)
  */
 
 import { snapdom } from "@zumer/snapdom"
@@ -14,9 +14,10 @@ import { HasParentByClass } from "@/utils/getParentByClass"
 import { MessageUtil } from "@/utils/message"
 import { inlineLocalImagesForCopy } from "@/utils/mdLocalImage"
 import { htmlTagReplace } from "@/utils/tagReplace"
+import { MERMAID_CAPTURE_PADDING, MERMAID_CONTAINER_SELECTOR, MERMAID_SOURCE_CLASS, MERMAID_SVG_CLASS } from "@/pkg/mermaid"
 
 import { applyInlineStylesInBatches, getCssStyleRules, getSortedStyleSheets } from "./css-inline"
-import type { KatexCaptureContext, KatexImageCacheEntry } from "../types"
+import type { KatexCaptureContext, KatexImageCacheEntry, MermaidCaptureContext, MermaidImageCacheEntry } from "../types"
 
 const WECHAT_LIST_PADDING_LEFT_CLASS = "list-paddingleft-1"
 const WECHAT_UNORDERED_LIST_STYLE_TYPES = ["disc", "circle", "square"] as const
@@ -281,6 +282,226 @@ export function getKatexCapturePadding(isKatexDisplay: boolean): { top: number; 
     return isKatexDisplay ? KATEX_CAPTURE_PADDING.display : KATEX_CAPTURE_PADDING.inline
 }
 
+// mermaid 图表图片缓存, 键为图表 SVG 内容与截图尺寸的 JSON 字符串, 值为包含图片 src 和尺寸信息的对象 (260917-01)
+export const mermaidImageCache = new Map<string, MermaidImageCacheEntry>()
+
+/**
+ * @description: 将渲染成功的 mermaid 图表转成图片 为了微信预览.
+ * @remarks 参照 katexToImage 流水线; 仅处理 data-mermaid-status="rendered" 的容器,
+ *          error/empty/pending 容器保持源码降级展示, 不参与截图.
+ * @param container 复制克隆容器.
+ */
+export async function mermaidToImage(container: HTMLElement): Promise<void> {
+    const mermaidContainers = getRenderedMermaidContainers(container)
+
+    if (mermaidContainers.length === 0) {
+        return
+    }
+
+    await waitForDocumentFontsReady()
+
+    await mermaidContainers.reduce<Promise<void>>((previousTask, mermaidContainer, index) => {
+        return previousTask.then(async () => {
+            if (index > 0 && index % COPY_PIPELINE_YIELD_INTERVAL === 0) {
+                await waitForNextRenderFrame()
+            }
+
+            const svgHolder = mermaidContainer.querySelector(`:scope > .${MERMAID_SVG_CLASS}`)
+            if (!(svgHolder instanceof HTMLElement)) {
+                return
+            }
+
+            const captureContext = createMermaidCaptureContext(svgHolder)
+
+            try {
+                if (!captureContext) {
+                    return
+                }
+
+                const cacheKey = getMermaidImageCacheKey(svgHolder, captureContext)
+                const cachedImage = mermaidImageCache.get(cacheKey)
+                const img = cachedImage ? createMermaidImageFromCache(cachedImage) : await createMermaidImageFromCapture(captureContext)
+
+                if (!cachedImage) {
+                    cacheMermaidImage(cacheKey, img, captureContext)
+                }
+
+                applyMermaidImageStyle(img, captureContext)
+
+                // 源码 pre 与复制按钮保留在 DOM 并以内联 display:none 隐藏 (微信会剥离外部样式表);
+                // 不做 remove 以保证样式内联的子节点索引配对不失衡 (同 katex 的 1:1 替换原则);
+                // 微信 staging 源中按钮已被 htmlHandleCopyBtns 正则剔除, 此处仅兜底直复制预览节点的场景
+                const sourceElement = mermaidContainer.querySelector(`:scope > .${MERMAID_SOURCE_CLASS}`)
+                if (sourceElement instanceof HTMLElement) {
+                    sourceElement.style.display = "none"
+                }
+                const copyButton = mermaidContainer.querySelector(":scope > .jpz-mermaid-copy-button")
+                if (copyButton instanceof HTMLElement) {
+                    copyButton.style.display = "none"
+                }
+                svgHolder.parentNode?.replaceChild(img, svgHolder)
+            } finally {
+                captureContext?.wrapper.remove()
+            }
+        })
+    }, Promise.resolve())
+}
+
+/**
+ * @description: 获取容器中已渲染成功的 mermaid 容器.
+ * @param container 复制克隆容器.
+ * @return 已渲染成功的 mermaid 容器数组.
+ */
+export function getRenderedMermaidContainers(container: HTMLElement): HTMLElement[] {
+    return Array.from(container.querySelectorAll<HTMLElement>(`${MERMAID_CONTAINER_SELECTOR}[data-mermaid-status="rendered"]`))
+}
+
+/**
+ * @description: 构建 mermaid 截图所需的离屏包裹容器, 并计算最终截图尺寸.
+ * @remarks 样式冻结复用 katex 的实现 (applyKatexCaptureContextStyle 为通用继承属性冻结),
+ *          避免 SVG 文本脱离预览容器后字体回退; 四周补安全边距防止外框溢出笔画被 snapdom 裁掉.
+ * @param svgHolder mermaid SVG 挂载节点.
+ * @return 截图上下文; 尺寸退化 (宽度小于 2px) 时返回 null 表示放弃该图表的图片化.
+ */
+export function createMermaidCaptureContext(svgHolder: HTMLElement): MermaidCaptureContext | null {
+    const wrapper = document.createElement("div")
+    const captureClone = svgHolder.cloneNode(true) as HTMLElement
+
+    applyKatexCaptureContextStyle(svgHolder, wrapper, captureClone)
+
+    wrapper.style.position = "fixed"
+    wrapper.style.left = "-99999px"
+    wrapper.style.top = "0"
+    wrapper.style.display = "inline-block"
+    wrapper.style.boxSizing = "content-box"
+    wrapper.style.padding = `${MERMAID_CAPTURE_PADDING.top}px ${MERMAID_CAPTURE_PADDING.right}px ${MERMAID_CAPTURE_PADDING.bottom}px ${MERMAID_CAPTURE_PADDING.left}px`
+    wrapper.style.margin = "0"
+    wrapper.style.border = "0"
+    wrapper.style.background = "transparent"
+    wrapper.style.overflow = "visible"
+    wrapper.style.pointerEvents = "none"
+
+    captureClone.style.margin = "0"
+    captureClone.style.overflow = "visible"
+    wrapper.appendChild(captureClone)
+    document.body.appendChild(wrapper)
+
+    const captureRect = wrapper.getBoundingClientRect()
+
+    // 宽度退化为 0 说明该 svg 在离屏环境中无法测出布局 (如 width:100% 场景), 放弃图片化避免产出 1px 坏图
+    if (captureRect.width < 2) {
+        wrapper.remove()
+        return null
+    }
+
+    return {
+        wrapper,
+        width: Math.max(1, Math.ceil(captureRect.width)),
+        height: Math.max(1, Math.ceil(captureRect.height)),
+    }
+}
+
+/**
+ * @description: 读取当前站点正文背景色作为 mermaid 截图底色.
+ * @remarks 暗色主题下图表文字为浅色, 透明底粘贴到微信白底编辑器会隐形, 需要自带底色.
+ * @return 可用的背景色字符串, 读取失败回退白色.
+ */
+export function getMermaidCaptureBackgroundColor(): string {
+    if (typeof document === "undefined") {
+        return "#ffffff"
+    }
+
+    const value = getComputedStyle(document.documentElement).getPropertyValue("--jpz-bg-color").trim()
+    return value || "#ffffff"
+}
+
+/**
+ * @description: 基于离屏截图上下文生成 mermaid 图片.
+ * @param captureContext mermaid 截图上下文.
+ * @return 截图生成的图片元素.
+ */
+export async function createMermaidImageFromCapture(captureContext: MermaidCaptureContext): Promise<HTMLImageElement> {
+    /**
+     * NOTE: @zumer/snapdom 版本锁定在 2.9.0 (见 package.json), 请勿随意升级.
+     * 待 issue https://github.com/zumerlab/snapdom/issues/474 修复后再升级.
+     */
+    const snap = await snapdom(captureContext.wrapper, {
+        embedFonts: true,
+    })
+
+    return snap.toPng({
+        scale: 3,
+        backgroundColor: getMermaidCaptureBackgroundColor(),
+        width: captureContext.width,
+        height: captureContext.height,
+    })
+}
+
+/**
+ * @description: 应用 mermaid 截图图片的展示样式.
+ * @remarks 与 katex 不同, 图表宽度可能超过微信编辑器宽度, 采用 width+max-width+height:auto 组合自适应缩放.
+ * @param img 截图得到的图片元素.
+ * @param captureContext mermaid 截图上下文.
+ * @return void.
+ */
+export function applyMermaidImageStyle(img: HTMLImageElement, captureContext: MermaidCaptureContext): void {
+    img.style.width = `${captureContext.width}px`
+    img.style.maxWidth = "100%"
+    img.style.height = "auto"
+    img.style.display = "block"
+    img.style.margin = "0 auto"
+    img.style.padding = "0"
+    img.style.border = "0"
+}
+
+/**
+ * @description: 生成 mermaid 图片缓存键, 复用相同图表与尺寸的截图结果.
+ * @param svgHolder mermaid SVG 挂载节点.
+ * @param captureContext 当前截图上下文.
+ * @return 缓存键字符串.
+ */
+export function getMermaidImageCacheKey(svgHolder: HTMLElement, captureContext: MermaidCaptureContext): string {
+    // 底色参与缓存键: 明暗主题切换后同一图表需要重新截图
+    return JSON.stringify({
+        svg: svgHolder.innerHTML,
+        width: captureContext.width,
+        height: captureContext.height,
+        backgroundColor: getMermaidCaptureBackgroundColor(),
+    })
+}
+
+/**
+ * @description: 根据缓存的截图结果恢复 mermaid 图片节点.
+ * @param cacheEntry 已缓存的 mermaid 图片信息.
+ * @return 可直接替换挂载节点的图片元素.
+ */
+export function createMermaidImageFromCache(cacheEntry: MermaidImageCacheEntry): HTMLImageElement {
+    const img = document.createElement("img")
+    img.src = cacheEntry.src
+    img.width = cacheEntry.width
+    img.height = cacheEntry.height
+    return img
+}
+
+/**
+ * @description: 缓存 mermaid 图片结果, 供后续复制预生成复用.
+ * @param cacheKey 当前图表的缓存键.
+ * @param img 已生成的图片节点.
+ * @param captureContext 当前截图上下文.
+ * @return void.
+ */
+export function cacheMermaidImage(cacheKey: string, img: HTMLImageElement, captureContext: MermaidCaptureContext): void {
+    if (!img.src) {
+        return
+    }
+
+    mermaidImageCache.set(cacheKey, {
+        src: img.src,
+        width: captureContext.width,
+        height: captureContext.height,
+    })
+}
+
 /**
  * @description: 重置行间公式的字号缩放, 便于重新测量实际宽度.
  * @param formulaElement KaTeX 行间公式元素.
@@ -403,6 +624,9 @@ export async function prepareCopyWithCustomStyle(element: HTMLElement): Promise<
     try {
         // 将 KaTeX 公式转换为图片, 避免脱离预览容器后样式失真
         await katexToImage(clonedElement)
+
+        // 将渲染成功的 mermaid 图表转换为图片, 微信编辑器不支持 svg (260917-01)
+        await mermaidToImage(clonedElement)
 
         // /md 页本地图片为当前会话专属 blob URL, 复制到微信前必须内联, 否则外部编辑器无法读取.
         await inlineLocalImagesForCopy(clonedElement)
