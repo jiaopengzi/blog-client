@@ -5,6 +5,25 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
+## [v1.2.0] - 2026-09-17
+
+### ♻️ Refactor
+
+- 重构目录组件
+  
+### ✨ Feat
+
+- 支持 mermaid
+  
+### 🎨 Style
+
+- 优化用户名称组件的展示方式
+
+### 🐞 Fix
+
+- 处理 snapdom 警告，抽离公用函数消除冗余
+- 视频文字水印刷新时保证随机出现
+  
 ## [v1.1.1] - 2026-09-16
 
 ### ⚡️ Perf
