@@ -79,7 +79,7 @@ const handleUserClick = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 10px;
+    margin-right: 12px; // 头像与右侧文字保持舒适间距
 }
 
 .user-avatar {
@@ -96,10 +96,15 @@ const handleUserClick = () => {
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+    gap: 4px; // 各行(昵称/邮箱/用户名/时间)之间的垂直间距, 避免拥挤
     min-width: 0; // 允许 grid 1fr 列收缩时内容不撑开
 
     .user-title {
-        line-height: 1.1em;
+        // 弹性布局: 昵称与"作者"标签水平排列, 水平间距由 gap 统一控制
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        line-height: 1.4em;
         // 约束最大宽度, 防止长文本溢出父容器
         max-width: 100%;
 
@@ -114,10 +119,10 @@ const handleUserClick = () => {
         .user-email-pointer,
         .user-name-pointer,
         .user-display-name-pointer {
-            margin-right: 5px;
             font-size: 12px;
             // 单行截断: 超出宽度显示省略号, 悬停原生 title 查看全文
             display: block;
+            min-width: 0; // 允许 flex 子项收缩, 截断才能生效
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -134,7 +139,6 @@ const handleUserClick = () => {
         .user-display-name,
         .user-display-name-pointer {
             font-size: 14px;
-            margin-right: 5px;
             font-weight: 700;
         }
     }
@@ -147,6 +151,7 @@ const handleUserClick = () => {
 }
 
 .user-is-post-author {
+    flex-shrink: 0; // 防止昵称过长时"作者"标签被压缩
     padding: 0 4px;
     background-color: var(--jpz-color-secondary);
     color: var(--jpz-text-color-primary);
