@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 复制流水线与 KaTeX/mermaid 图片捕获 (260917-01 增加 mermaid)
+ * Description : 复制流水线与 KaTeX/mermaid 图片捕获
  */
 
 import { snapdom } from "@zumer/snapdom"
@@ -67,12 +67,7 @@ export async function katexToImage(container: HTMLElement, className: string = "
 
             try {
                 const cacheKey = getKatexImageCacheKey(katex, captureContext)
-                const cachedImage = katexImageCache.get(cacheKey)
-                const img = cachedImage ? createKatexImageFromCache(cachedImage) : await createKatexImageFromCapture(captureContext)
-
-                if (!cachedImage) {
-                    cacheKatexImage(cacheKey, img, captureContext)
-                }
+                const img = await getCachedOrCapturedImage(katexImageCache, cacheKey, captureContext, createKatexImageFromCapture)
 
                 applyKatexImageStyle(img, captureContext)
                 katex.parentNode?.replaceChild(img, katex)
@@ -110,6 +105,156 @@ export function waitForNextRenderFrame(): Promise<void> {
     })
 }
 
+type CopyCaptureContext = KatexCaptureContext | MermaidCaptureContext
+type CopyImageCacheEntry = KatexImageCacheEntry | MermaidImageCacheEntry
+
+interface CaptureWrapperPadding {
+    top: number
+    right: number
+    bottom: number
+    left: number
+}
+
+/**
+ * @description: 将离屏测量矩形归一化为截图上下文使用的整数尺寸.
+ * @param captureRect 离屏包裹容器的测量矩形.
+ * @return 向上取整后的宽高.
+ */
+function getCaptureDimensions(captureRect: DOMRect): { width: number; height: number } {
+    return {
+        width: Math.max(1, Math.ceil(captureRect.width)),
+        height: Math.max(1, Math.ceil(captureRect.height)),
+    }
+}
+
+/**
+ * @description: 统一设置离屏截图包裹容器的基础样式与安全边距.
+ * @param wrapper 离屏包裹容器.
+ * @param padding 四周安全边距.
+ * @return void.
+ */
+function applyDetachedCaptureWrapperStyle(wrapper: HTMLDivElement, padding: CaptureWrapperPadding): void {
+    wrapper.style.position = "fixed"
+    wrapper.style.left = "-99999px"
+    wrapper.style.top = "0"
+    wrapper.style.display = "inline-block"
+    wrapper.style.boxSizing = "content-box"
+    wrapper.style.padding = `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`
+    wrapper.style.margin = "0"
+    wrapper.style.border = "0"
+    wrapper.style.background = "transparent"
+    wrapper.style.overflow = "visible"
+    wrapper.style.pointerEvents = "none"
+}
+
+/**
+ * @description: 为待截图节点创建统一的离屏克隆布局, 供后续测量与 snapdom 截图复用.
+ * @remarks 这里复用 applyKatexCaptureContextStyle 冻结关键继承样式, 避免节点脱离原容器后字体与行高回退.
+ * @param sourceElement 原始待截图节点.
+ * @param padding 四周安全边距.
+ * @return 包含包裹容器与测量矩形的结果.
+ */
+function createDetachedCaptureLayout(sourceElement: HTMLElement, padding: CaptureWrapperPadding): { wrapper: HTMLDivElement; captureRect: DOMRect } {
+    const wrapper = document.createElement("div")
+    const captureClone = sourceElement.cloneNode(true) as HTMLElement
+
+    applyKatexCaptureContextStyle(sourceElement, wrapper, captureClone)
+    applyDetachedCaptureWrapperStyle(wrapper, padding)
+
+    captureClone.style.margin = "0"
+    captureClone.style.overflow = "visible"
+    wrapper.appendChild(captureClone)
+    document.body.appendChild(wrapper)
+
+    return {
+        wrapper,
+        captureRect: wrapper.getBoundingClientRect(),
+    }
+}
+
+/**
+ * @description: 基于离屏截图上下文生成 PNG 图片.
+ * @remarks issue https://github.com/zumerlab/snapdom/issues/474 已经修复.
+ *          reconcile: true 逐盒对齐真实 DOM 尺寸, 同时消除 inline 文本与图表文本的 re-wrap 警告.
+ * @param captureContext 通用截图上下文.
+ * @param backgroundColor 输出 PNG 的底色.
+ * @return 截图生成的图片元素.
+ */
+async function createPngImageFromCaptureContext(captureContext: CopyCaptureContext, backgroundColor: string): Promise<HTMLImageElement> {
+    const snap = await snapdom(captureContext.wrapper, {
+        embedFonts: true,
+        reconcile: true,
+    })
+
+    return snap.toPng({
+        scale: 3,
+        backgroundColor,
+        width: captureContext.width,
+        height: captureContext.height,
+    })
+}
+
+/**
+ * @description: 根据缓存的截图结果恢复图片节点.
+ * @param cacheEntry 已缓存的截图图片信息.
+ * @return 可直接替换原节点的图片元素.
+ */
+function createCaptureImageElementFromCache(cacheEntry: CopyImageCacheEntry): HTMLImageElement {
+    const img = document.createElement("img")
+    img.src = cacheEntry.src
+    img.width = cacheEntry.width
+    img.height = cacheEntry.height
+    return img
+}
+
+/**
+ * @description: 从截图结果构建可写入缓存的公共条目.
+ * @param img 已生成的图片节点.
+ * @param captureContext 当前截图上下文.
+ * @return 可缓存条目; 若图片缺少 src 则返回 null.
+ */
+function buildCaptureImageCacheEntry(img: HTMLImageElement, captureContext: CopyCaptureContext): CopyImageCacheEntry | null {
+    if (!img.src) {
+        return null
+    }
+
+    return {
+        src: img.src,
+        width: captureContext.width,
+        height: captureContext.height,
+    }
+}
+
+/**
+ * @description: 优先从缓存恢复截图图片, 未命中时再执行截图并回填缓存.
+ * @param cacheMap 当前类型的截图缓存.
+ * @param cacheKey 当前节点的缓存键.
+ * @param captureContext 当前截图上下文.
+ * @param createImageFromCapture 未命中缓存时的截图函数.
+ * @return 可直接替换原节点的图片元素.
+ */
+async function getCachedOrCapturedImage<TCaptureContext extends CopyCaptureContext, TCacheEntry extends CopyImageCacheEntry>(
+    cacheMap: Map<string, TCacheEntry>,
+    cacheKey: string,
+    captureContext: TCaptureContext,
+    createImageFromCapture: (captureContext: TCaptureContext) => Promise<HTMLImageElement>,
+): Promise<HTMLImageElement> {
+    const cachedImage = cacheMap.get(cacheKey)
+
+    if (cachedImage) {
+        return createCaptureImageElementFromCache(cachedImage)
+    }
+
+    const img = await createImageFromCapture(captureContext)
+    const cacheEntry = buildCaptureImageCacheEntry(img, captureContext)
+
+    if (cacheEntry) {
+        cacheMap.set(cacheKey, cacheEntry as TCacheEntry)
+    }
+
+    return img
+}
+
 /**
  * @description: 获取容器中的所有 KaTeX 根节点.
  * @param container 预览容器.
@@ -133,35 +278,18 @@ export function createKatexCaptureContext(katex: HTMLElement): KatexCaptureConte
      * 直接按原节点尺寸截图时, snapdom 会把这些超出的部分裁掉.
      * 这里通过临时包裹容器补一层上下安全边距, 再对包裹容器截图.
      */
-    const wrapper = document.createElement("div")
-    const captureClone = katex.cloneNode(true) as HTMLElement
-
-    applyKatexCaptureContextStyle(katex, wrapper, captureClone)
-
-    wrapper.style.position = "fixed"
-    wrapper.style.left = "-99999px"
-    wrapper.style.top = "0"
-    wrapper.style.display = "inline-block"
-    wrapper.style.boxSizing = "content-box"
-    wrapper.style.paddingTop = `${capturePadding.top}px`
-    wrapper.style.paddingBottom = `${capturePadding.bottom}px`
-    wrapper.style.margin = "0"
-    wrapper.style.border = "0"
-    wrapper.style.background = "transparent"
-    wrapper.style.overflow = "visible"
-    wrapper.style.pointerEvents = "none"
-
-    captureClone.style.margin = "0"
-    captureClone.style.overflow = "visible"
-    wrapper.appendChild(captureClone)
-    document.body.appendChild(wrapper)
-
-    const captureRect = wrapper.getBoundingClientRect()
+    const { wrapper, captureRect } = createDetachedCaptureLayout(katex, {
+        top: capturePadding.top,
+        right: 0,
+        bottom: capturePadding.bottom,
+        left: 0,
+    })
+    const { width, height } = getCaptureDimensions(captureRect)
 
     return {
         wrapper,
-        width: Math.max(1, Math.ceil(captureRect.width)),
-        height: Math.max(1, Math.ceil(captureRect.height)),
+        width,
+        height,
     }
 }
 
@@ -193,20 +321,7 @@ export function applyKatexCaptureContextStyle(katex: HTMLElement, wrapper: HTMLD
  * @return 截图生成的图片元素.
  */
 export async function createKatexImageFromCapture(captureContext: KatexCaptureContext): Promise<HTMLImageElement> {
-    /**
-     * NOTE: @zumer/snapdom 版本锁定在 2.9.0 (见 package.json), 请勿随意升级.
-     * 待 issue https://github.com/zumerlab/snapdom/issues/474 修复后再升级.
-     */
-    const snap = await snapdom(captureContext.wrapper, {
-        embedFonts: true,
-    })
-
-    return snap.toPng({
-        scale: 3,
-        backgroundColor: "#ffffff00",
-        width: captureContext.width,
-        height: captureContext.height,
-    })
+    return createPngImageFromCaptureContext(captureContext, "#ffffff00")
 }
 
 /**
@@ -247,11 +362,7 @@ export function getKatexImageCacheKey(katex: HTMLElement, captureContext: KatexC
  * @return 可直接替换公式节点的图片元素.
  */
 export function createKatexImageFromCache(cacheEntry: KatexImageCacheEntry): HTMLImageElement {
-    const img = document.createElement("img")
-    img.src = cacheEntry.src
-    img.width = cacheEntry.width
-    img.height = cacheEntry.height
-    return img
+    return createCaptureImageElementFromCache(cacheEntry)
 }
 
 /**
@@ -262,15 +373,11 @@ export function createKatexImageFromCache(cacheEntry: KatexImageCacheEntry): HTM
  * @return void.
  */
 export function cacheKatexImage(cacheKey: string, img: HTMLImageElement, captureContext: KatexCaptureContext): void {
-    if (!img.src) {
-        return
-    }
+    const cacheEntry = buildCaptureImageCacheEntry(img, captureContext)
 
-    katexImageCache.set(cacheKey, {
-        src: img.src,
-        width: captureContext.width,
-        height: captureContext.height,
-    })
+    if (cacheEntry) {
+        katexImageCache.set(cacheKey, cacheEntry)
+    }
 }
 
 /**
@@ -319,12 +426,7 @@ export async function mermaidToImage(container: HTMLElement): Promise<void> {
                 }
 
                 const cacheKey = getMermaidImageCacheKey(svgHolder, captureContext)
-                const cachedImage = mermaidImageCache.get(cacheKey)
-                const img = cachedImage ? createMermaidImageFromCache(cachedImage) : await createMermaidImageFromCapture(captureContext)
-
-                if (!cachedImage) {
-                    cacheMermaidImage(cacheKey, img, captureContext)
-                }
+                const img = await getCachedOrCapturedImage(mermaidImageCache, cacheKey, captureContext, createMermaidImageFromCapture)
 
                 applyMermaidImageStyle(img, captureContext)
 
@@ -364,29 +466,7 @@ export function getRenderedMermaidContainers(container: HTMLElement): HTMLElemen
  * @return 截图上下文; 尺寸退化 (宽度小于 2px) 时返回 null 表示放弃该图表的图片化.
  */
 export function createMermaidCaptureContext(svgHolder: HTMLElement): MermaidCaptureContext | null {
-    const wrapper = document.createElement("div")
-    const captureClone = svgHolder.cloneNode(true) as HTMLElement
-
-    applyKatexCaptureContextStyle(svgHolder, wrapper, captureClone)
-
-    wrapper.style.position = "fixed"
-    wrapper.style.left = "-99999px"
-    wrapper.style.top = "0"
-    wrapper.style.display = "inline-block"
-    wrapper.style.boxSizing = "content-box"
-    wrapper.style.padding = `${MERMAID_CAPTURE_PADDING.top}px ${MERMAID_CAPTURE_PADDING.right}px ${MERMAID_CAPTURE_PADDING.bottom}px ${MERMAID_CAPTURE_PADDING.left}px`
-    wrapper.style.margin = "0"
-    wrapper.style.border = "0"
-    wrapper.style.background = "transparent"
-    wrapper.style.overflow = "visible"
-    wrapper.style.pointerEvents = "none"
-
-    captureClone.style.margin = "0"
-    captureClone.style.overflow = "visible"
-    wrapper.appendChild(captureClone)
-    document.body.appendChild(wrapper)
-
-    const captureRect = wrapper.getBoundingClientRect()
+    const { wrapper, captureRect } = createDetachedCaptureLayout(svgHolder, MERMAID_CAPTURE_PADDING)
 
     // 宽度退化为 0 说明该 svg 在离屏环境中无法测出布局 (如 width:100% 场景), 放弃图片化避免产出 1px 坏图
     if (captureRect.width < 2) {
@@ -394,10 +474,12 @@ export function createMermaidCaptureContext(svgHolder: HTMLElement): MermaidCapt
         return null
     }
 
+    const { width, height } = getCaptureDimensions(captureRect)
+
     return {
         wrapper,
-        width: Math.max(1, Math.ceil(captureRect.width)),
-        height: Math.max(1, Math.ceil(captureRect.height)),
+        width,
+        height,
     }
 }
 
@@ -421,20 +503,7 @@ export function getMermaidCaptureBackgroundColor(): string {
  * @return 截图生成的图片元素.
  */
 export async function createMermaidImageFromCapture(captureContext: MermaidCaptureContext): Promise<HTMLImageElement> {
-    /**
-     * NOTE: @zumer/snapdom 版本锁定在 2.9.0 (见 package.json), 请勿随意升级.
-     * 待 issue https://github.com/zumerlab/snapdom/issues/474 修复后再升级.
-     */
-    const snap = await snapdom(captureContext.wrapper, {
-        embedFonts: true,
-    })
-
-    return snap.toPng({
-        scale: 3,
-        backgroundColor: getMermaidCaptureBackgroundColor(),
-        width: captureContext.width,
-        height: captureContext.height,
-    })
+    return createPngImageFromCaptureContext(captureContext, getMermaidCaptureBackgroundColor())
 }
 
 /**
@@ -476,11 +545,7 @@ export function getMermaidImageCacheKey(svgHolder: HTMLElement, captureContext: 
  * @return 可直接替换挂载节点的图片元素.
  */
 export function createMermaidImageFromCache(cacheEntry: MermaidImageCacheEntry): HTMLImageElement {
-    const img = document.createElement("img")
-    img.src = cacheEntry.src
-    img.width = cacheEntry.width
-    img.height = cacheEntry.height
-    return img
+    return createCaptureImageElementFromCache(cacheEntry)
 }
 
 /**
@@ -491,15 +556,11 @@ export function createMermaidImageFromCache(cacheEntry: MermaidImageCacheEntry):
  * @return void.
  */
 export function cacheMermaidImage(cacheKey: string, img: HTMLImageElement, captureContext: MermaidCaptureContext): void {
-    if (!img.src) {
-        return
-    }
+    const cacheEntry = buildCaptureImageCacheEntry(img, captureContext)
 
-    mermaidImageCache.set(cacheKey, {
-        src: img.src,
-        width: captureContext.width,
-        height: captureContext.height,
-    })
+    if (cacheEntry) {
+        mermaidImageCache.set(cacheKey, cacheEntry)
+    }
 }
 
 /**
@@ -592,6 +653,16 @@ export function getClipboardFriendlyErrorMessage(err: unknown): string {
 }
 
 /**
+ * @description: 统一处理复制流水线中的错误日志与用户提示.
+ * @param err 复制流程抛出的错误.
+ * @return void.
+ */
+function handleCopyPipelineError(err: unknown): void {
+    console.error("无法复制内容", err)
+    MessageUtil.error(getClipboardFriendlyErrorMessage(err), 8000)
+}
+
+/**
  * @description: 复制带有自定义样式的内容(不修改原元素)
  * @param element 要复制的元素
  */
@@ -600,8 +671,7 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
         const html = await prepareCopyWithCustomStyle(element)
         await writePreparedHtmlToClipboard(html)
     } catch (err) {
-        console.error("无法复制内容", err)
-        MessageUtil.error(getClipboardFriendlyErrorMessage(err), 8000)
+        handleCopyPipelineError(err)
     }
 }
 
@@ -670,8 +740,7 @@ export async function writePreparedHtmlToClipboard(html: string): Promise<void> 
 
         MessageUtil.success("内容已复制到剪贴板")
     } catch (err) {
-        console.error("无法复制内容", err)
-        MessageUtil.error(getClipboardFriendlyErrorMessage(err), 8000)
+        handleCopyPipelineError(err)
     }
 }
 
@@ -704,7 +773,7 @@ export function materializeListMarkersForCopy(container: HTMLElement): void {
     )
 
     lists.forEach((list) => {
-        const directListItems = Array.from(list.children).filter((item): item is HTMLLIElement => item instanceof HTMLLIElement)
+        const directListItems = getDirectListItems(list)
 
         if (directListItems.some((listItem) => listItem.classList.contains("task-list-item"))) {
             normalizeTaskListForCopy(list, styleConfig)
@@ -749,13 +818,22 @@ export function parseCopyListStyleNumber(rawValue: string, fallback: number): nu
 }
 
 /**
+ * @description: 获取列表元素的直接子列表项, 统一过滤掉非 li 子节点.
+ * @param list 当前列表元素.
+ * @return 直接子列表项数组.
+ */
+function getDirectListItems(list: HTMLOListElement | HTMLUListElement): HTMLLIElement[] {
+    return Array.from(list.children).filter((item): item is HTMLLIElement => item instanceof HTMLLIElement)
+}
+
+/**
  * @description: 将普通有序/无序列表恢复为微信可识别的原生列表结构.
  * @param list 当前列表元素.
  * @return void.
  */
 export function normalizeRegularListForCopy(list: HTMLOListElement | HTMLUListElement): void {
     const listStyleType = list instanceof HTMLOListElement ? "decimal" : getWechatUnorderedListStyleType(getListNestingDepth(list))
-    const directListItems = Array.from(list.children).filter((item): item is HTMLLIElement => item instanceof HTMLLIElement)
+    const directListItems = getDirectListItems(list)
 
     list.classList.add(WECHAT_LIST_PADDING_LEFT_CLASS)
     list.style.removeProperty("list-style")
@@ -788,7 +866,7 @@ export function normalizeTaskListForCopy(
     list: HTMLOListElement | HTMLUListElement,
     styleConfig: { paragraphIndent: number; textOffset: number; taskListIconWidth: number },
 ): void {
-    const directListItems = Array.from(list.children).filter((item): item is HTMLLIElement => item instanceof HTMLLIElement)
+    const directListItems = getDirectListItems(list)
 
     list.style.removeProperty("list-style")
     list.style.listStyleType = "none"
