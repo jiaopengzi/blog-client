@@ -13,7 +13,8 @@
             <div class="header-main-common">
                 <Logo />
                 <HeaderNav />
-                <Search v-if="isShowSearch" @handle-search="handleSearch" />
+                <!-- 搜索组件内部直接导航 /s/:keyword (bugfix 260918-01 bug02), 不再向上抛事件 -->
+                <Search v-if="isShowSearch" />
                 <!-- 占位 -->
                 <div v-if="!isShowSearch" class="layout-search-placeholder"></div>
                 <ThemePresetSelector :model-value="activeThemePreset" :presets="themePresetOptions" @update:model-value="selectThemePreset" />
@@ -24,7 +25,7 @@
                     <j-icon :name="IconKeys.Menu" custom-class="menu-icon" />
                 </button>
                 <Logo class="phone-item" />
-                <Search v-if="isShowSearch" class="phone-item" @handle-search="handleSearch" />
+                <Search v-if="isShowSearch" class="phone-item" />
                 <!-- 占位 -->
                 <div v-if="!isShowSearch" class="phone-item layout-search-placeholder"></div>
             </div>
@@ -58,10 +59,6 @@ const { isShowSearch = true } = defineProps<{
     isShowSearch?: boolean
 }>()
 
-const emit = defineEmits<{
-    (event: "handle-search", val: string): void
-}>()
-
 const { activeThemePreset, selectThemePreset, themePresetOptions } = useTheme()
 
 const headerVisible = ref(true)
@@ -70,10 +67,6 @@ const phoneNavVisible = ref(false)
 
 const phoneToggleNav = () => {
     phoneNavVisible.value = !phoneNavVisible.value
-}
-
-const handleSearch = (val: string) => {
-    emit("handle-search", val)
 }
 
 // ======================================== 滚动条事件 ========================================

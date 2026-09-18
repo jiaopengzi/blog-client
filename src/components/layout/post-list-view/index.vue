@@ -71,8 +71,6 @@ import type { Pagination } from "@/api/response"
 import PostList from "@/components/common/post-list"
 import { useHome } from "@/components/hooks/useHome"
 import HomeCarousel from "@/components/layout/carousel"
-import { type SearchData } from "@/components/layout/search"
-import { inject, type Ref } from "vue"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
 import { LocalStorageKey } from "@/stores/local"
@@ -142,9 +140,6 @@ const heroTitle = computed(() => {
     return ""
 })
 
-// 搜索框数据流: 由根级布局 (layouts/default.vue) provide, 本组件 inject
-const searchData = inject<Ref<SearchData>>("layoutSearchData", ref<SearchData>({ keyword: "", time: new Date() }))
-
 // 获取列表数据
 const mainReq = reactive<ViewPostRequest>({
     post_category_slug: taxonomyType.value === "category" ? taxonomySlug.value : undefined,
@@ -156,7 +151,6 @@ const mainReq = reactive<ViewPostRequest>({
 
 const {
     pagination,
-    updateRouterPush,
     updateCurrentPage,
     updatePageSize,
     updateByRoute,
@@ -165,7 +159,6 @@ const {
     clickMonthArchive,
     paginationBlockVisibleChange,
     isShowPostListLoading,
-    clearParamsExcept,
     highlightKey,
     getListDataForSsr, // feature01: SSR 首屏列表取数
 } = useHome(mainReq)
@@ -174,24 +167,6 @@ const {
 const handlePostId = async (postID: string) => {
     await router.push(`/p/${postID}`)
 }
-
-// 监听搜索关键字变化, 更新路由
-watch(
-    searchData,
-    async (val: SearchData) => {
-        if (val.keyword === "" || val.keyword.trim() === "") {
-            statusStore.setHome() // 文章列表状态
-            return
-        }
-
-        mainReq.key_word = val.keyword.trim()
-        statusStore.setSearch() // 搜索状态
-
-        clearParamsExcept(["key_word"])
-        await updateRouterPush()
-    },
-    { deep: true },
-)
 
 // 站内切换分类/标签/年月归档时, 同步筛选参数并刷新列表
 watch([taxonomyType, taxonomySlug, archiveYear, archiveMonth], async ([type, slug, year, month]) => {

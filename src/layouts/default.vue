@@ -9,12 +9,13 @@
 <!--
  * 补充说明:
  * 按 Nuxt 布局机制, 跨页导航 (如详情→首页、热门A→B) 布局组件不重挂载,
- * 侧栏数据不再被重复渲染/清空; 搜索框数据经 provide/inject 传给列表内容组件
+ * 侧栏数据不再被重复渲染/清空; 搜索由 Search 组件内部直接导航 /s/:keyword
+ * (bugfix 260918-01 bug02), 原 provide/inject 关键字数据流已移除
 -->
 
 <template>
     <div class="page">
-        <LayoutHeader :is-show-search="isShowSearch" @handle-search="handleSearch" />
+        <LayoutHeader :is-show-search="isShowSearch" />
 
         <div class="content">
             <!-- 面包屑 -->
@@ -41,13 +42,12 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia"
-import { onMounted, provide, ref } from "vue"
+import { onMounted, ref } from "vue"
 
 import JBreadcrumb from "@/components/common/breadcrumb"
 import LayoutAside from "@/components/layout/aside/layout-aside.vue"
 import LayoutFooter from "@/components/layout/footer"
 import LayoutHeader from "@/components/layout/header"
-import { type SearchData } from "@/components/layout/search"
 import { useSiteOptions } from "@/composables/useSiteOptions"
 import { useStatusStore } from "@/stores/status"
 
@@ -63,19 +63,6 @@ const isAsideClientReady = ref(false)
 onMounted(() => {
     isAsideClientReady.value = true
 })
-
-// 搜索框数据流 (页头搜索弹窗 → 列表内容组件, 经 provide/inject 传递)
-const searchData = ref<SearchData>({
-    keyword: "",
-    time: new Date(),
-})
-
-provide("layoutSearchData", searchData)
-
-const handleSearch = (val: string) => {
-    searchData.value.keyword = val
-    searchData.value.time = new Date() // 保证相同关键字搜索时, 重新渲染
-}
 </script>
 
 <style scoped lang="scss">

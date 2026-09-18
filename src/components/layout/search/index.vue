@@ -21,18 +21,21 @@
 import { ref, watch } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
+import { RouteNames } from "@/router"
 
 import SearchDialog from "./search-dialog"
 
 defineOptions({ name: "HeaderSearch" })
 
-const emit = defineEmits<{
-    (event: "handle-search", val: string): void
-}>()
+const router = useRouter()
 
 const handleSearch = (val: string) => {
     searchDialogVisible.value = false
-    emit("handle-search", val)
+    // bugfix(260918-01 bug02): 搜索改为组件内直接导航到 /s/:keyword;
+    // 旧链路经 layout provide/inject 把关键字交给 PostListView 消费, 详情页(/p, /page)与
+    // 自组合 header 的页面(user-info 等)没有挂载 PostListView, 搜索无任何响应.
+    // URL 即状态: 任意页面搜索统一落到搜索页, 列表组件由路由段注入关键字
+    void router.push({ name: RouteNames.Search, params: { keyword: val } })
 }
 
 const searchDialogVisible = ref(false)

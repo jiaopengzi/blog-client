@@ -21,6 +21,7 @@
              若仅菜单项后置注入会丢失测量时机导致不折叠 -->
         <ClientOnly>
             <el-menu
+                :key="menuRenderKey"
                 :mode="isHorizontal ? 'horizontal' : 'vertical'"
                 @select="handleSelect"
                 :default-active="navActiveIndex"
@@ -80,6 +81,12 @@ const horizontalMenuStyle = computed(() => {
 const topLevelMenuItems = computed(() => {
     return Object.values(navObj.value).filter((item) => !item.parentIndex)
 })
+
+// bugfix(260918-01 bug02): el-menu 的 ellipsis 折叠依赖挂载时对完整菜单项的宽度测量;
+// 纯 CSR 页(/s 等)导航数据经 init-stores 异步后置注入, 初次挂载时菜单为空, 折叠失效,
+// 菜单溢出 max-width 后绘制到搜索按钮上方导致不可点击. 菜单项结构(顶层 index 序列)变化时
+// 变更 key 强制重挂载 el-menu, 恢复一次完整的折叠测量时机
+const menuRenderKey = computed(() => topLevelMenuItems.value.map((item) => item.index).join("-"))
 
 const handleSelect = async (index: string) => {
     const href = navObj.value[index]!.href || "/"

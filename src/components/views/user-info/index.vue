@@ -8,7 +8,9 @@
 
 <template>
     <div class="page">
-        <LayoutHeader :is-show-search="false" />
+        <!-- bugfix(260918-01 bug02): 恢复用户中心页搜索入口; 搜索组件内部直接导航 /s/:keyword,
+             自组合 header 场景无需父级接线 (旧 SPA ae8e33a0 曾有意隐藏, 按新需求恢复) -->
+        <LayoutHeader />
         <JBreadcrumb />
         <UserInfo />
         <LayoutFooter />
