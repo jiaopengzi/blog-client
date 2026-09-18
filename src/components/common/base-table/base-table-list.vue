@@ -66,8 +66,21 @@
                     </template>
                 </el-table-column>
 
-                <CustomCol v-else-if="col.isCategories" :col="col" :width="resolveColWidth(col)" @click-item="(item) => emit('click-category', item)" />
-                <CustomCol v-else-if="col.isTags" :col="col" :width="resolveColWidth(col)" @click-item="(item) => emit('click-tag', item)" />
+                <!-- bugfix 260918-04: 分类/标签列透传 tagsItemMaxHeight, 单元格内容过多时限高并出纵向滚动条 -->
+                <CustomCol
+                    v-else-if="col.isCategories"
+                    :col="col"
+                    :width="resolveColWidth(col)"
+                    :tags-item-max-height="tagsItemMaxHeight"
+                    @click-item="(item) => emit('click-category', item)"
+                />
+                <CustomCol
+                    v-else-if="col.isTags"
+                    :col="col"
+                    :width="resolveColWidth(col)"
+                    :tags-item-max-height="tagsItemMaxHeight"
+                    @click-item="(item) => emit('click-tag', item)"
+                />
                 <CustomCol v-else-if="col.isHeading" :col="col" :width="resolveColWidth(col)" />
                 <CustomCol v-else-if="col.isHeadingWithId" :col="col" :width="resolveColWidth(col)" @view-post="(postID) => emit('view-post', postID)" />
                 <CustomCol v-else-if="col.isCopyText" :col="col" :width="resolveColWidth(col)" />

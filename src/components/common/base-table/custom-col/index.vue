@@ -63,8 +63,8 @@
                 @view-post="handleViewPost"
             />
 
-            <!-- 可点击标签: 多分类多标签时自动换行平铺, 不再使用滚动条 -->
-            <div v-if="col.isTags || col.isCategories" class="tag-wrap">
+            <!-- 可点击标签: 多分类多标签时自动换行平铺; 内容过多时容器限高并出纵向滚动条 (bugfix 260918-04) -->
+            <div v-if="col.isTags || col.isCategories" class="tag-wrap" :style="{ maxHeight: tagsItemMaxHeight }">
                 <!-- 注意 key 需要使用 id + 文章数量 -->
                 <TagItem
                     v-for="item in getSortedTagItems(scope.row as TableData)"
@@ -258,7 +258,9 @@ const handleViewWithID = (row: TableData) => {
     }
 }
 
-// 分类/标签容器: flex 换行平铺, 居中对齐, 支持多分类多标签自适应换行
+// 分类/标签容器: flex 换行平铺, 居中对齐, 支持多分类多标签自适应换行;
+// main.scss 的 A1 规则将全部数据单元格统一限高 132px 且 overflow hidden, 换行内容过多时会被直接裁剪,
+// 故容器自身按 tagsItemMaxHeight 限高 (默认 100px, 低于单元格限高) 并允许纵向滚动, 与滚动格式化文本列行为一致
 .tag-wrap {
     display: flex;
     flex-wrap: wrap;
@@ -284,7 +286,9 @@ const handleViewWithID = (row: TableData) => {
     white-space: pre-line;
 }
 
-.scroll-formatter-box {
+// 单元格内滚动容器: 滚动格式化文本与分类/标签容器共用限高纵向滚动与细滚动条样式
+.scroll-formatter-box,
+.tag-wrap {
     width: 100%;
     overflow-y: auto;
     overflow-x: hidden;
@@ -292,16 +296,19 @@ const handleViewWithID = (row: TableData) => {
     scrollbar-gutter: stable;
 }
 
-.scroll-formatter-box::-webkit-scrollbar {
+.scroll-formatter-box::-webkit-scrollbar,
+.tag-wrap::-webkit-scrollbar {
     width: 6px;
 }
 
-.scroll-formatter-box::-webkit-scrollbar-thumb {
+.scroll-formatter-box::-webkit-scrollbar-thumb,
+.tag-wrap::-webkit-scrollbar-thumb {
     background-color: rgba(24, 39, 75, 0.28);
     border-radius: 999px;
 }
 
-.scroll-formatter-box::-webkit-scrollbar-track {
+.scroll-formatter-box::-webkit-scrollbar-track,
+.tag-wrap::-webkit-scrollbar-track {
     background-color: rgba(24, 39, 75, 0.08);
     border-radius: 999px;
 }

@@ -137,4 +137,29 @@ describe("CustomCol", () => {
 
         expect(wrapper.findAll(".tag-item-stub").map((item) => item.text())).toEqual(["Alpha", "beta", "阿里", "上海"])
     })
+
+    it("分类或标签列容器应带最大高度以允许纵向滚动 (bugfix 260918-04)", () => {
+        currentRow = {
+            tags: createTags(),
+        }
+
+        const mountTagCol = (props: Record<string, unknown>) =>
+            mount(CustomCol, {
+                props: { col: { prop: "tags", label: "标签", isTags: true }, ...props },
+                global: {
+                    stubs: {
+                        ElTableColumn: ElTableColumnStub,
+                        TagItem: TagItemStub,
+                    },
+                },
+            })
+
+        // 未显式传入时使用默认 100px
+        const withDefault = mountTagCol({})
+        expect(withDefault.find(".tag-wrap").attributes("style")).toContain("max-height: 100px")
+
+        // 显式传入时使用传入值
+        const withCustom = mountTagCol({ tagsItemMaxHeight: "96px" })
+        expect(withCustom.find(".tag-wrap").attributes("style")).toContain("max-height: 96px")
+    })
 })
