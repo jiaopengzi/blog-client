@@ -3,12 +3,12 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 数据请求
+ * Description : 数据请求 (slug 归一与非法 id 拦截, bugfix 260918-03)
  */
 
 import { reactive } from "vue"
 
-import type { PostResCommon, PostResPagination } from "@/api/post/common"
+import { isValidPostId, type PostResCommon, type PostResPagination } from "@/api/post/common"
 import { getPostCountByMonthAPI, sortPostCountByMonthDesc } from "@/api/post/getPostCountByMonth"
 import { viewPostAPI } from "@/api/post/view"
 import { type ViewPostRequest } from "@/api/post/view"
@@ -18,17 +18,20 @@ import { type QueryParamsOptions } from "@/api/request"
 import { getEmptyPagination, type Pagination, ResponseCode } from "@/api/response"
 import { type MonthArchiveData } from "@/components/common/month-archive"
 import { useStatusStore } from "@/stores/status"
+import { encodeSlugOnce } from "@/utils/slug"
 
 import type { ViewPostReqKey } from "./types"
 
 // 后端按 "URL 转义形态" 的 slug 匹配 (中文标签/分类的 slug 在库中即存为 %E5%A4%9A... 形式):
-// 路径参数经 vue-router 解码为明文, 直接请求会被后端视为未命中而返回全量;
-// 已含 %XX 转义的值 (如标签云 API 返回的 slug) 保持原样, 避免二次转义
+// 直接用明文请求会被后端视为未命中而返回全量, 须编码一次后请求
+// bugfix 260918-03: 旧判断 "已含 %XX 转义则原样保持" (避免标签云 API 返回的转义 slug 二次转义)
+// 对多层编码形态失效——canonical 双重编码使爬虫逐层跟随产生多层 %25 形态 (生产日志实测 380 层),
+// 会原样发给后端; 修正: 统一先完全解码到明文再编码一次, 任意层数 (含标签云转义 slug 与明文) 归一到单层
 const normalizeSlug = (value: string | undefined): string | undefined => {
     if (!value) {
         return value
     }
-    return /%[0-9A-Fa-f]{2}/.test(value) ? value : encodeURIComponent(value)
+    return encodeSlugOnce(value)
 }
 
 export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
@@ -47,6 +50,15 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
             if (key in req && req[key as ViewPostReqKey] === options.noRequestKeys[key as ViewPostReqKey]) {
                 delete req[key as ViewPostReqKey]
             }
+        }
+
+        // bugfix 260918-03: 外部 URL query 透传的字符串 "0"/非正整数 id (如 /tag/:slug?post_tag_id=0,
+        // 搜索引擎索引或第三方构造的链接) 属非法值, 与 260918-02 的 post_id 问题同族, 发请求前统一拦截
+        if ("post_tag_id" in req && !isValidPostId(req.post_tag_id)) {
+            delete req.post_tag_id
+        }
+        if ("post_category_id" in req && !isValidPostId(req.post_category_id)) {
+            delete req.post_category_id
         }
 
         // 如果是关键字查询需要设置高亮字

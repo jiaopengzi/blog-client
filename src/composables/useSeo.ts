@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : SEO 层 composables (阶段 5: useHomeSeo / usePostSeo / useTaxonomySeo; 文章空壳 noindex)
+ * Description : SEO 层 composables (阶段 5: useHomeSeo / usePostSeo / useTaxonomySeo; 文章空壳 noindex; slug 编码归一 bugfix 260918-03)
  */
 
 /**
@@ -18,6 +18,7 @@ import { storeToRefs } from "pinia"
 import { getPostDisplayTime, type PostResByID } from "@/api/post/common"
 import type { HeadProps } from "@/components/common/head-tag/types"
 import { useOptionsStore } from "@/stores/options"
+import { decodeSlugFully, encodeSlugOnce } from "@/utils/slug"
 
 // 站点基准 URL (canonical/og:url/JSON-LD 使用; 生产环境由 NUXT_PUBLIC_BASE_URL 覆盖为正式域名)
 const useBaseUrl = (): string => {
@@ -89,16 +90,19 @@ export const useHomeSeo = (): void => {
 /**
  * @description: 分类/标签页 SEO (title 含分类/标签 slug, 附 BreadcrumbList JSON-LD)
  * @param kind taxonomy 类型 (category/tag)
- * @param slug 路径 slug (URL 转义形态)
+ * @param slug 路径 slug (SSR 端为 URL 编码形态, 爬虫循环跟随曾产生多层编码, 内部统一归一)
  * @returns 无返回值
  */
 export const useTaxonomySeo = (kind: "category" | "tag", slug: string): void => {
     const optionsStore = useOptionsStore()
     const { head } = storeToRefs(optionsStore)
     const baseUrl = useBaseUrl()
-    const displaySlug = computed(() => decodeURIComponent(slug))
+    // bugfix 260918-03: 旧实现 encodeURIComponent(编码形态) 使 canonical 比当前 URL 多一层编码,
+    // 爬虫逐层跟随 canonical 产生多层 %25 形态 (生产日志实测 380 层); 统一归一到明文后仅编码一次,
+    // canonical 恒为单层, 已被收录的多层 URL 也经 canonical 收敛回正确地址
+    const displaySlug = computed(() => decodeSlugFully(slug))
     const pageTitle = computed(() => `${displaySlug.value} | ${head.value.siteName ?? head.value.title ?? "焦棚子"}`)
-    const pageUrl = computed(() => `${baseUrl}/${kind}/${encodeURIComponent(slug)}`)
+    const pageUrl = computed(() => `${baseUrl}/${kind}/${encodeSlugOnce(slug)}`)
     const siteLogo = computed(() => optionsStore.getLogo)
 
     useHead({
@@ -179,7 +183,8 @@ export const useSearchSeo = (keyword: string): void => {
     const baseUrl = useBaseUrl()
 
     const pageTitle = computed(() => `搜索：${keyword} | ${head.value.siteName ?? "焦棚子"}`)
-    const pageUrl = computed(() => `${baseUrl}/s/${encodeURIComponent(keyword)}`)
+    // bugfix 260918-03: keyword 统一归一后仅编码一次, 防御多层编码形态 (与 useTaxonomySeo 同源)
+    const pageUrl = computed(() => `${baseUrl}/s/${encodeSlugOnce(keyword)}`)
     const siteLogo = computed(() => optionsStore.getLogo)
 
     useHead({
