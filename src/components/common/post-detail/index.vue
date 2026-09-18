@@ -12,7 +12,8 @@
  feedback#2 目录点击滚动单点驱动;
  feedback#3 导航进行中抑制观察器回写防抢占离开/更新导航;
  feedback#4 滚动跟随同步 URL hash;
- feedback#5 首次进入未滚动不写锚点
+ feedback#5 首次进入未滚动不写锚点;
+ bugfix 260918-02: 文章 ID 未就绪时不再发出详情/密码验证请求;
 -->
 
 <template>
@@ -139,7 +140,7 @@ import { computed, nextTick, onBeforeMount, onBeforeUnmount, onMounted, reactive
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from "vue-router"
 
 import { type CommentRes } from "@/api/comment/common"
-import type { PostResByID } from "@/api/post/common"
+import { isValidPostId, type PostResByID } from "@/api/post/common"
 import { RoleName } from "@/api/permissionRole/role"
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { type PostCategory } from "@/api/postCategory/view"
@@ -157,6 +158,7 @@ import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 import { useStatusStore } from "@/stores/status"
 import { useUserStore } from "@/stores/user"
+import { MessageUtil } from "@/utils/message"
 
 import DetailBottomSame from "./components/bottom-same"
 import DetailCategoryTag from "./components/category-tag"
@@ -582,6 +584,13 @@ watch(
 )
 
 const submitPassword = async (password: string) => {
+    // bugfix 260918-02: 文章 ID 未就绪 (空串/字符串化 null 等) 时提交密码会发出非法 post_id 请求,
+    // 被后端 ParseUint 拒绝且界面无反馈; 此处提前拦截并给出提示, ID 就绪 (通常刷新后) 再可提交
+    if (!isValidPostId(postId.value)) {
+        MessageUtil.error("文章信息未就绪, 请刷新页面后重试")
+        return
+    }
+
     postIdReq.password = password
     await updatePostDetailAc(postId.value, password)
 }

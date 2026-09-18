@@ -11,6 +11,7 @@ import { type Reactive, reactive, ref } from "vue"
 
 import { CommentPinnedCode, type CommentRes } from "@/api/comment/common"
 import { viewByPostIDAPI, type ViewCommentRequest } from "@/api/comment/viewByPostID"
+import { isValidPostId } from "@/api/post/common"
 import { getEmptyPagination, type Pagination, ResponseCode } from "@/api/response"
 import { usePaginationNoRouter } from "@/components/hooks/usePagination"
 
@@ -46,6 +47,14 @@ export function useCommentList(req: Reactive<ViewCommentRequest>) {
 
     const mentions = ref<Completion[]>([])
     async function getPaginate(): Promise<Pagination<CommentRes>> {
+        // bugfix 260918-02: 文章 ID 未就绪时不发评论分页请求
+        // (自定义页水合期 statusStore.postId 晚于组件挂载赋值, 空值请求被后端 required 拒绝);
+        // ID 就绪后 postId watch 会重新触发本函数正常拉取
+        if (!isValidPostId(req.post_id)) {
+            mentions.value = updateMentions([])
+            return getEmptyPagination<CommentRes>()
+        }
+
         isShowLoading.value = true
         const res = await viewByPostIDAPI(req)
         if (res.data.code === ResponseCode.CommentViewSuccess) {

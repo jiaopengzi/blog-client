@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 文章共用内容
+ * Description : 文章共用内容 (类型/枚举/展示与校验工具)
  */
 
 import { type PgSqlDateTime } from "@/api/common"
@@ -296,7 +296,7 @@ export interface PostResByID extends PostResCommon {
 }
 
 // getPostDisplayTime 获取文章对用户展示的发布时间
-// 优先使用 post_push_time.Time, 无有效发布时间时回退到 created_at, 保证列表, 搜索和详情页展示语义一致
+// 优先使用 post_push_time.Time, 无有效发布时间时回退 created_at, 保证列表, 搜索和详情页展示语义一致
 export function getPostDisplayTime(postData: Pick<PostResCommon, "created_at" | "post_push_time">): string {
     const postPushTime = postData.post_push_time
     if (postPushTime?.Valid && postPushTime.Time) {
@@ -304,6 +304,21 @@ export function getPostDisplayTime(postData: Pick<PostResCommon, "created_at" | 
     }
 
     return postData.created_at
+}
+
+/**
+ * isValidPostId 判断文章 ID 是否为有效的正整数字符串.
+ * @remarks bugfix 260918-02: 详情/评论链路存在文章 ID 未就绪的时序 (store 晚于组件挂载赋值时为空串),
+ * 以及可空值被字符串化 (null/undefined) 的形态; 非法 post_id 发出的请求会被后端 required/ParseUint
+ * 校验拒绝并持续产生 warn 日志. 调用方发请求前用本校验拦截, ID 就绪后再正常拉取.
+ * @param id - 待校验的文章 ID (容忍 null/undefined 等可空输入).
+ * @returns true 表示是有效正整数字符串 ("0" 视为未就绪, 返回 false).
+ */
+export function isValidPostId(id: string | null | undefined): boolean {
+    if (typeof id !== "string" || id === "") {
+        return false
+    }
+    return /^\d+$/.test(id) && Number(id) > 0
 }
 
 // 文章自定义字段

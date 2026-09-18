@@ -9,7 +9,7 @@
 import { storeToRefs } from "pinia"
 import { type Ref, ref, watch } from "vue"
 
-import { CommentStatusCode, getPostDisplayTime, type PostResByID } from "@/api/post/common"
+import { CommentStatusCode, getPostDisplayTime, isValidPostId, type PostResByID } from "@/api/post/common"
 import { type InteractionRequest, postInteractionAPI } from "@/api/post/interaction"
 import { type PostLikeRequest, setPostLikeAPI } from "@/api/post/like"
 import { prevNextPostAPI, type PrevNextRequest, type PrevNextResponse } from "@/api/post/prevNext"
@@ -195,6 +195,13 @@ export function useGetData(manager: EditorStateManager, hash: Ref<string>) {
     }
 
     const getPostDetail = async (req: ViewPostByIDRequest) => {
+        // bugfix 260918-02: 文章 ID 未就绪 (空串/null 等) 时不发详情请求,
+        // 非法 post_id 会被后端 ParseUint/required 拒绝并持续产生 warn 日志 (含密码验证场景)
+        if (!isValidPostId(req.post_id)) {
+            console.warn(`[post-detail] 文章 ID 未就绪, 跳过详情请求(post_id=${String(req.post_id)})`)
+            return
+        }
+
         const res = await viewPostByIDAPI(req)
 
         if (res.data.code === ResponseCode.PostViewByIDSuccess) {
