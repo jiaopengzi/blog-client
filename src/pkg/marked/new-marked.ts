@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 配置 marked
+ * Description : 配置 marked; 不使用 marked-mangle (bugfix 260918-01): 其产出的邮箱实体会被 marked 二次转义为 &amp;#NN; 显示乱码, 且实体无法在 DOMPurify 往返中存活, 混淆目的也无法达成
  */
 
 import "katex/dist/contrib/mhchem.mjs"
@@ -14,7 +14,6 @@ import customHeadingId from "marked-custom-heading-id" // 自定义标题 id
 import markedFootnote from "marked-footnote" // 脚注
 import { markedHighlight } from "marked-highlight" // 代码高亮
 import markedKatex from "marked-katex-extension" // 公式
-import { mangle } from "marked-mangle" // 将邮件链接用 HTML 字符引用混淆
 import { markedXhtml } from "marked-xhtml" // 将 HTML 标签转换为 XHTML, 为 hr, br, img 和 input 等标签补上闭合斜杠
 
 import { emojiExtensionInline } from "./extension/emoji" // 自定义表情
@@ -35,21 +34,12 @@ let markedInstance: Marked | null = null
 const setupMarked = (): Marked => {
     const marked = new Marked()
 
-    marked.use(
-        markedKatex(optionKatex),
-        markedHighlight(optionHighlight),
-        markedFootnote(optionFootnote),
-        customHeadingId(),
-        mangle(),
-        markedXhtml(),
-        markedAlert(),
-        {
-            breaks: true, // 允许换行
-            // useNewRenderer 将在 14 版本中默认使用, 参考 https://github.com/markedjs/marked/issues/3374
-            extensions: [emojiExtensionInline, markExtensionInline, subExtensionInline, supExtensionInline],
-            renderer: renderer,
-        },
-    )
+    marked.use(markedKatex(optionKatex), markedHighlight(optionHighlight), markedFootnote(optionFootnote), customHeadingId(), markedXhtml(), markedAlert(), {
+        breaks: true, // 允许换行
+        // useNewRenderer 将在 14 版本中默认使用, 参考 https://github.com/markedjs/marked/issues/3374
+        extensions: [emojiExtensionInline, markExtensionInline, subExtensionInline, supExtensionInline],
+        renderer: renderer,
+    })
 
     return marked
 }

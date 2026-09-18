@@ -286,9 +286,6 @@ importers:
       marked-katex-extension:
         specifier: 5.1.12
         version: 5.1.12(katex@0.18.7)(marked@18.0.13)
-      marked-mangle:
-        specifier: 1.1.13
-        version: 1.1.13(marked@18.0.13)
       marked-xhtml:
         specifier: 1.0.15
         version: 1.0.15(marked@18.0.13)
@@ -4077,11 +4074,6 @@ packages:
     resolution: {integrity: sha512-DgfH0CFrOuVwVEXNJ+rTtYOtZZECpHhA0bu7xBiACAJI4geeaCZfDq+hiJ1yJx780fDh2HWHlr+NySxuc2DD1w==}
     peerDependencies:
       katex: '>=0.16 <0.19'
-      marked: '>=4 <19'
-
-  marked-mangle@1.1.13:
-    resolution: {integrity: sha512-phz1W/nYMr1T08Q7wqH2aj+PPiK85E69WQGfId+prvryfgjY/Idibx4YUvKaYMDV9rK1qo+/yC+Quu/3gdaBeA==}
-    peerDependencies:
       marked: '>=4 <19'
 
   marked-xhtml@1.0.15:
@@ -9478,10 +9470,6 @@ snapshots:
   marked-katex-extension@5.1.12(katex@0.18.7)(marked@18.0.13):
     dependencies:
       katex: 0.18.7
-      marked: 18.0.13
-
-  marked-mangle@1.1.13(marked@18.0.13):
-    dependencies:
       marked: 18.0.13
 
   marked-xhtml@1.0.15(marked@18.0.13):
