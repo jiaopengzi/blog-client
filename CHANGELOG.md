@@ -14,6 +14,7 @@
 ### ✨ Feat
 
 - 支持 mermaid
+- 优化搜索界面
 
 ### 🎨 Style
 
@@ -29,6 +30,9 @@
 - 向后端传递非法 post_id （"0" 与 "null"） 的问题
 - canonical 双重编码致爬虫 URL 编码无限叠加, 非法 id 与多层 slug 透传后端
 - 后台文章列表的 tag 过多有纵向滚动条
+- url 意外变化
+
+在生成环境浏览器访问或者刷新的 `https://jiaopengzi.com/` 会url自动变成 `https://jiaopengzi.com/?s=%E6%B0%B4%E9%8A%80+%E8%8B%B1%E8%AA%9E`  由于爬虫缓存造成的
 
 ## [v1.1.1] - 2026-09-16
 
