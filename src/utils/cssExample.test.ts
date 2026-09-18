@@ -21,6 +21,7 @@ describe("cssExample", () => {
         expect(css).toContain("counter-reset: preview-ordered-list;")
         expect(css).toContain("padding-left: var(--preview-list-indent-step);")
         expect(css).toContain("#preview ol li > p,")
+        expect(css).toContain("#preview ol li > p,\n#preview ul li > p {\n  margin: 0;\n  text-indent: 0 !important;\n}")
         expect(css).toContain("#preview blockquote p {")
         expect(css).toContain("text-indent: 0;")
         expect(css).not.toContain("text-indent: 2em;")

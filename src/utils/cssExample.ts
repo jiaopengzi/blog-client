@@ -3,8 +3,12 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 自定义样式 CSS 示例, 段落默认无首行缩进, 顶层列表默认无缩进; 含 mermaid 容器样式
+ * Description : 自定义样式 CSS 示例 与 src\assets\scss\preview.scss 保持一致
  */
+
+// 段落默认无首行缩进, 顶层列表默认无缩进;
+// 列表项段落缩进重置加 !important (bugfix 260918-07);
+// 含 mermaid 容器样式
 
 const DEFAULT_CSS_EXAMPLE_PREVIEW_SELECTOR = "#preview"
 
@@ -370,12 +374,14 @@ const ARTICLE_CSS_EXAMPLE = `
 
 /**
  * 列表项中的段落取消首行缩进.
- * 这样松散列表里的 p 不会再把 marker 挤歪.
+ * 这样松散列表里的 p 不会再把 marker 挤歪;
+ * !important 用来对冲首行缩进开关生成的 p 覆盖, 参考 task list 的做法,
+ * 让列表文本偏移只由 --preview-list-text-offset.
  */
 #preview ol li > p,
 #preview ul li > p {
   margin: 0;
-  text-indent: 0;
+  text-indent: 0 !important;
 }
 
 /**
@@ -775,7 +781,7 @@ const ARTICLE_CSS_EXAMPLE = `
 
 /**
  * mermaid 图表占位容器.
- * 同步管线只输出源码, 浏览器端再渲染 SVG 注入, 窄屏超宽图表允许横向滚动 (260918-01 同步).
+ * 同步管线只输出源码, 浏览器端再渲染 SVG 注入, 窄屏超宽图表允许横向滚动.
  */
 #preview .jpz-mermaid-container {
   position: relative;
@@ -790,7 +796,7 @@ const ARTICLE_CSS_EXAMPLE = `
 
 /**
  * mermaid 源码复制按钮.
- * 视觉与代码块 copy-button 保持一致 (260918-01 同步).
+ * 视觉与代码块 copy-button 保持一致.
  */
 #preview .jpz-mermaid-container .copy-button {
   font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
@@ -812,7 +818,7 @@ const ARTICLE_CSS_EXAMPLE = `
 }
 
 /**
- * 渲染成功或进行中时隐藏源码, 图表注入时无源码闪现 (260918-01 同步).
+ * 渲染成功或进行中时隐藏源码, 图表注入时无源码闪现.
  */
 #preview .jpz-mermaid-container[data-mermaid-status="pending"],
 #preview .jpz-mermaid-container[data-mermaid-status="rendering"] {
@@ -826,14 +832,14 @@ const ARTICLE_CSS_EXAMPLE = `
 }
 
 /**
- * 空源码图表整体隐藏 (260918-01 同步).
+ * 空源码图表整体隐藏.
  */
 #preview .jpz-mermaid-container[data-mermaid-status="empty"] {
   display: none;
 }
 
 /**
- * mermaid 渲染出的 SVG 容器 (260918-01 同步).
+ * mermaid 渲染出的 SVG 容器.
  */
 #preview .jpz-mermaid-svg {
   display: flex;
@@ -846,7 +852,7 @@ const ARTICLE_CSS_EXAMPLE = `
 }
 
 /**
- * 错误降级时展示的图表源码 (260918-01 同步).
+ * 错误降级时展示的图表源码.
  */
 #preview .jpz-mermaid-source {
   margin: 0;
@@ -861,7 +867,7 @@ const ARTICLE_CSS_EXAMPLE = `
 }
 
 /**
- * 错误降级时的错误信息 (260918-01 同步).
+ * 错误降级时的错误信息.
  */
 #preview .jpz-mermaid-error {
   margin: 0 0 8px;

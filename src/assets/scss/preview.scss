@@ -3,8 +3,12 @@
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : preview 样式, 段落无首行缩进, 顶层列表默认无缩进仅嵌套列表缩进 (bugfix 260918-01); 标题 margin 按亲密性原则统一 top:bottom 约 2.5:1
+ * @Description  : preview 样式 
  */
+
+// 段落无首行缩进, 顶层列表默认无缩进仅嵌套列表缩进 (bugfix 260918-01);
+// 列表项段落缩进重置加 !important 对冲首行缩进开关 (bugfix 260918-07);
+// 标题 margin 按亲密性原则统一 top:bottom 约 2.5:1
 
 // ========================================== live sass compiler 插件使用 开始 ==========================================
 // 当使用 live sass compiler 插件时查看编译结果需要使用相对路径,不能使用别名 scss 目录下的注释都要检查一遍.
@@ -234,11 +238,13 @@
     }
 
     // 列表整体保留缩进, 但列表项内部段落不再做首行缩进, 避免松散列表错位
+    // !important 对冲 /md 首行缩进开关生成的 .md-page-preview p 覆盖 (bugfix 260918-07);
+    // 参考 task-list 的做法, 列表 marker 与内容的间距只由 --preview-list-text-offset 控制, 不受段落首行缩进影响
     ol,
     ul {
         li > p {
             margin: 0;
-            text-indent: 0;
+            text-indent: 0 !important;
         }
 
         li > p + p {
