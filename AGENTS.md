@@ -191,14 +191,14 @@ GET 等幂请求由 ofetch 默认重试覆盖；写方法（`POST`/`PUT`/`PATCH`
 
 ### 7.1 routeRules 明细
 
-| 规则                                                        | 值           | 说明                                                                                                                         |
-| ----------------------------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| `/admin/**` `/s/**` `/md` `/user-info` `/checkout` `/setup` | `ssr: false` | 纯 CSR                                                                                                                       |
-| `/`                                                         | `{}`         | SSR，**刻意取消 swr**：后台 app-option 保存的 SEO（head/title/关键字）需下次请求即刻生效，swr 窗口会造成最长 60s 旧 SEO 残留 |
-| `/category/**` `/tag/**`                                    | `swr: 300`   | SSR + ISR                                                                                                                    |
-| `/p/**`                                                     | `swr: 3600`  | SSR + ISR                                                                                                                    |
-| `/sitemap.xml` `/sitemap/**`                                | `proxy`      | 反代到后端，sitemap 由后端生成                                                                                               |
-| `/api/**`                                                   | `proxy`      | dev/preview/生产三态一致转发                                                                                                 |
+| 规则                                                        | 值           | 说明                                                                                                       |
+| ----------------------------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------- |
+| `/admin/**` `/s/**` `/md` `/user-info` `/checkout` `/setup` | `ssr: false` | 纯 CSR                                                                                                     |
+| `/`                                                         | `{}`         | SSR，后台 app-option 保存的 SEO（head/title/关键字）需下次请求即刻生效，swr 窗口会造成最长 60s 旧 SEO 残留 |
+| `/category/**` `/tag/**`                                    | `swr: 300`   | SSR + ISR                                                                                                  |
+| `/p/**`                                                     | `swr: 3600`  | SSR + ISR                                                                                                  |
+| `/sitemap.xml` `/sitemap/**`                                | `proxy`      | 反代到后端，sitemap 由后端生成                                                                             |
+| `/api/**`                                                   | `proxy`      | dev/preview/生产三态一致转发                                                                               |
 
 此外 `/login` `/register` `/register-admin` `/reset-password` `/unsubscribe` `/social/[...callback]` 未关 SSR 但模板整体包 `ClientOnly`，实际按 CSR 行为。
 

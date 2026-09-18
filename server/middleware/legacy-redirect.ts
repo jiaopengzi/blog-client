@@ -10,7 +10,10 @@
  *              4) /?post_tag_slug=:s        → /tag/:s
  *              5) /?year=:y&month=:m        → /year/:y/month/:m
  *              5b) /?year=:y(无 month)      → /year/:y
+ *              5c) /?key_word=:kw           → /s/:kw
+ *              5d) /?s=:kw                  → /s/:kw(WordPress 形态搜索链接)
  *              6) /?current_page=:p&page_size=:s → /?page=:p&size=:s(首页分页简写)
+ *              8) 首页未知 query 参数清洗 → 301 剥离(白名单仅 page/size)
  *              7) /ps/:slug                 → 服务端解析 post_id → /p/:id
  *              阶段 3 起: 重定向时保留其余 query 参数, 并统一简写翻译
  *              current_page → page、page_size → size(URL 形态语义化, 请求参数名不变)
@@ -98,6 +101,20 @@ export default defineEventHandler((event) => {
         }
     }
 
+    // 5d) 首页 WordPress 形态搜索参数 → /s/:keyword(bugfix 260918-05)
+    // 垃圾爬虫按 WordPress 站点惯例批量探测 /?s=:kw; 此前该形态直接落到 SSR 渲染出
+    // path 为 /?s=:kw 的首页, 而 nitro 的 swr 渲染缓存(nitro/routes 组)按路径建 key、
+    // 忽略 query, 该渲染结果会写进 / 的共享缓存条目——随后 600s 内所有访问 / 的浏览器
+    // 拿到的 payload.path 均为 /?s=:kw, 客户端水合时 vue-router 以 payload 路径为
+    // 初始路由并 replace, 表现为"访问首页地址栏自动变成 /?s=关键字". 重定向到搜索页
+    // 后既不再产生带 query 的首页渲染(缓存无法被污染), 又让 WP 形态搜索链接真正可用
+    if (pathname === "/" && searchParams.has("s")) {
+        const keyword = searchParams.get("s")
+        if (keyword) {
+            return sendRedirect(event, buildRedirectUrl(`/s/${encodeURIComponent(keyword)}`, ["s"]), 301)
+        }
+    }
+
     // 5b) 首页仅年份归档查询参数(无 month)→ /year/:year(面包屑年链接新方案)
     if (pathname === "/" && searchParams.has("year") && !searchParams.has("month")) {
         const year = searchParams.get("year")
@@ -109,6 +126,20 @@ export default defineEventHandler((event) => {
     // 6) 首页分页参数简写翻译: /?current_page=:p&page_size=:s → /?page=:p&size=:s(无其它旧参数时)
     if (pathname === "/" && (searchParams.has("current_page") || searchParams.has("page_size"))) {
         return sendRedirect(event, buildRedirectUrl("/", []), 301)
+    }
+
+    // 8) 首页未知 query 参数清洗(bugfix 260918-05, 白名单仅 page/size)
+    // 上面的老参数规则各自重定向后, 首页仅剩分页简写 page/size 是合法 query;
+    // 其余任意参数(utm_*、fbclid、垃圾爬虫探测串等)一律 301 剥离, 不进入 SSR 渲染.
+    // 原因: nitro 的 swr 渲染缓存按路径建 key、忽略 query, 任何带 query 的首页 200 渲染
+    // 都会写进 / 的共享缓存条目, 把访问 / 的浏览器的地址栏改写成带该 query 的形态
+    // (机制见 5d 注释). 白名单参数自身的同源污染面可忽略——分页组件 ClientOnly 渲染,
+    // SSR HTML 不产出 /?page= 链接, 爬虫无从发现, 仅能盲猜命中
+    if (pathname === "/") {
+        const unknownKeys = [...searchParams.keys()].filter((key) => key !== "page" && key !== "size")
+        if (unknownKeys.length > 0) {
+            return sendRedirect(event, buildRedirectUrl("/", unknownKeys), 301)
+        }
     }
 
     // 7) /ps/:slug 别名链接 → 服务端解析 → /p/:id

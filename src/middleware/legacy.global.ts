@@ -57,6 +57,12 @@ export default defineNuxtRouteMiddleware((to) => {
         return navigateTo(buildTarget(`/s/${String(to.query.key_word)}`, ["key_word"]), { redirectCode: 301 })
     }
 
+    // /?s=:kw → /s/:kw (bugfix 260918-05: WordPress 形态搜索链接, 与 key_word 规则同构;
+    // 服务端硬导航通道见 legacy-redirect.ts 规则 5d, 此处保证站内软导航同样 301)
+    if (to.path === "/" && to.query.s) {
+        return navigateTo(buildTarget(`/s/${String(to.query.s)}`, ["s"]), { redirectCode: 301 })
+    }
+
     // /?year=:y (无 month) → /year/:y (面包屑年链接新方案)
     if (to.path === "/" && to.query.year && !to.query.month) {
         return navigateTo(buildTarget(`/year/${String(to.query.year)}`, ["year"]), { redirectCode: 301 })
