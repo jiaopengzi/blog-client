@@ -6,6 +6,8 @@
  * Description : 跨标签 token 同步管理器
  */
 
+import { getActivePinia } from "pinia"
+
 import { useUserStore } from "@/stores/user"
 
 /** BroadcastChannel 频道名称, 同源下所有标签页共享同一频道 */
@@ -192,6 +194,11 @@ class TabSyncManager {
      * @throws {void} 无.
      */
     private async handleMessage(message: TabSyncMessage): Promise<void> {
+        // 模块级 BroadcastChannel 监听可能在页面 Pinia 就绪前收到其他标签的同步消息,
+        // 此时 useUserStore 会抛 "no active Pinia" 并成为未捕获 rejection.
+        // 就绪前直接丢弃同步消息: 本标签随后的会话恢复流程会自行刷新令牌, 无功能损失 (bf-260918-01).
+        if (!getActivePinia()) return
+
         switch (message.type) {
             case TabSyncMessageType.REQUEST_TOKEN:
                 await this.handleTokenRequest(message) // 其他标签来要 token → 响应
