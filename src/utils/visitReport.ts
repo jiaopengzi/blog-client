@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 站点访问上报(PV/UV)工具: 内容页白名单与同路径防抖
+ * Description : 站点访问上报(PV/UV)工具: 内容页白名单、同路径防抖与路径归一 (bugfix 260918-03)
  */
 
 /**
@@ -11,6 +11,8 @@
  * 白名单规则与后端 service/visit.go 的 visitReportPathPrefixes 保持同一份语义,
  * 前端过滤减少无效请求, 后端再做双保险校验
  */
+
+import { encodeSlugOnce } from "@/utils/slug"
 
 // PV 采集白名单前缀: 命中前缀或全等 "/" 才上报
 export const VISIT_REPORT_PATH_PREFIXES = ["/p/", "/category/", "/tag/", "/year/", "/s/", "/page/", "/link-list", "/user/"] as const
@@ -57,4 +59,20 @@ export function createVisitReportDeduper() {
     }
 
     return { shouldReport }
+}
+
+/**
+ * normalizeVisitReportPath 将访问路径的每一段归一到单层 URL 编码形态.
+ * @remarks bugfix 260918-03(补充): canonical 双重编码时期被搜索引擎收录的多层编码 URL,
+ * 部署修复后仍会被渲染爬虫零星访问(索引存量消退以天/周计), 原样上报会把同一页面的
+ * 任意层数形态当作不同 path 分散 PV, 后端日志亦持续出现多层巨串;
+ * 归一后同一页面归并到同一规范 path 计数, 统计更准, 日志回归单层.
+ * @param path - 路由路径 (vue-router raw 编码形态, 不含 query 与 hash).
+ * @returns 各路径段归一后的路径; URL 安全字符路径 (纯数字 id/年月/静态段) 原样不变.
+ */
+export function normalizeVisitReportPath(path: string): string {
+    return path
+        .split("/")
+        .map((segment) => (segment === "" ? segment : encodeSlugOnce(segment)))
+        .join("/")
 }

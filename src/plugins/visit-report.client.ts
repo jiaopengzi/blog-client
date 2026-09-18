@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 站点访问上报插件(PV/UV, 仅客户端)
+ * Description : 站点访问上报插件(PV/UV, 仅客户端; 上报前路径归一 bugfix 260918-03)
  */
 
 /**
@@ -13,7 +13,7 @@
  */
 
 import { reportVisitAPI } from "@/api/visit/report"
-import { createVisitReportDeduper, isVisitReportPath } from "@/utils/visitReport"
+import { createVisitReportDeduper, isVisitReportPath, normalizeVisitReportPath } from "@/utils/visitReport"
 
 export default defineNuxtPlugin((nuxtApp) => {
     // plugin 上下文中经 nuxtApp.$router 取路由实例(vue-router 的 useRouter 仅组件 setup 内可用)
@@ -22,18 +22,23 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     /**
      * report 上报一次页面访问; 上报是尽力而为的统计行为, 网络失败静默忽略.
+     * bugfix 260918-03(补充): 上报前把 path 各段归一到单层编码——canonical 双重编码时期
+     * 收录的多层 URL 仍会被渲染爬虫访问, 归一后同一页面的任意层数形态归并到同一规范 path
+     * 计数(白名单判断与防抖同样基于归一 path, 避免多层形态绕过同路径防抖重复计数).
      * @param path - 路由路径.
      */
     const report = (path: string) => {
-        if (!isVisitReportPath(path)) {
+        const normalizedPath = normalizeVisitReportPath(path)
+
+        if (!isVisitReportPath(normalizedPath)) {
             return
         }
 
-        if (!deduper.shouldReport(path, Date.now())) {
+        if (!deduper.shouldReport(normalizedPath, Date.now())) {
             return
         }
 
-        reportVisitAPI({ path }).catch(() => {})
+        reportVisitAPI({ path: normalizedPath }).catch(() => {})
     }
 
     // 首屏: 客户端水合完成后上报当前路径
