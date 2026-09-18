@@ -16,7 +16,8 @@ describe("cssExample", () => {
 
         expect(css).toContain("--preview-paragraph-indent: 0;")
         expect(css).toContain("font-family: var(--preview-font-family-title);")
-        expect(css).toContain("--preview-list-text-offset: 1.28em;")
+        expect(css).toContain("--preview-list-text-offset: 1em;")
+        expect(css).toContain("--preview-task-list-text-offset: 1.6em;")
         expect(css).toContain("counter-reset: preview-ordered-list;")
         expect(css).toContain("padding-left: var(--preview-list-indent-step);")
         expect(css).toContain("#preview ol li > p,")
@@ -26,6 +27,17 @@ describe("cssExample", () => {
         expect(css).toContain("#preview .task-list-item .task-list-icon {")
         expect(css).not.toContain("list-style: decimal;")
         expect(css).not.toContain("margin-left: -1.5em;")
+    })
+
+    it("应包含与 preview.scss 同步的 mermaid 容器样式", () => {
+        const css = cssExample()
+
+        expect(css).toContain("#preview .jpz-mermaid-container {")
+        expect(css).toContain("#preview .jpz-mermaid-container .copy-button {")
+        expect(css).toContain('#preview .jpz-mermaid-container[data-mermaid-status="empty"] {')
+        expect(css).toContain("#preview .jpz-mermaid-svg svg {")
+        expect(css).toContain("#preview .jpz-mermaid-source {")
+        expect(css).toContain("#preview .jpz-mermaid-error {")
     })
 
     it("应支持替换自定义预览根选择器", () => {

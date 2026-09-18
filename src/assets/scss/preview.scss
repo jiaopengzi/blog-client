@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : preview 样式, 段落无首行缩进; 标题 margin 按亲密性原则统一 top:bottom 约 2.5:1
+ * @Description  : preview 样式, 段落无首行缩进, 顶层列表默认无缩进仅嵌套列表缩进 (bugfix 260918-01); 标题 margin 按亲密性原则统一 top:bottom 约 2.5:1
  */
 
 // ========================================== live sass compiler 插件使用 开始 ==========================================
@@ -19,11 +19,12 @@
 #preview-copy {
     --preview-font-family-text: #{pc.$font-family-text};
     --preview-font-family-title: #{pc.$font-family-title};
-    --preview-paragraph-indent: 2em;
-    --preview-list-indent-step: 2em;
-    --preview-list-marker-column-width: 0.5em;
-    --preview-list-text-offset: 1.28em;
-    --preview-task-list-icon-width: 1em;
+    --preview-paragraph-indent: 0; // 顶层段落无首行缩进
+    --preview-list-indent-step: 1em; // 嵌套列表缩进步长
+    --preview-list-marker-column-width: 0.5em; // 列表 marker 列宽
+    --preview-list-text-offset: 1em; // 列表文本偏移量
+    --preview-task-list-text-offset: 1.6em; // task list 文本偏移量
+    --preview-task-list-icon-width: 1.3em; // task list 图标宽度
 
     font-family: var(--preview-font-family-text);
     overflow-x: hidden;
@@ -258,7 +259,7 @@
         list-style-type: none;
         position: relative;
         display: block;
-        padding-left: var(--preview-list-text-offset);
+        padding-left: var(--preview-task-list-text-offset);
         line-height: 2em;
         word-break: break-all;
 

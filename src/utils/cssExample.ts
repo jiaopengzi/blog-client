@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 自定义样式 CSS 示例, 段落默认无首行缩进
+ * Description : 自定义样式 CSS 示例, 段落默认无首行缩进, 顶层列表默认无缩进; 含 mermaid 容器样式
  */
 
 const DEFAULT_CSS_EXAMPLE_PREVIEW_SELECTOR = "#preview"
@@ -136,10 +136,11 @@ const ARTICLE_CSS_EXAMPLE = `
   --preview-font-family-text: "roboto", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --preview-font-family-title: "roboto", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --preview-paragraph-indent: 0;
-  --preview-list-indent-step: 2em;
+  --preview-list-indent-step: 1em;
   --preview-list-marker-column-width: 0.5em;
-  --preview-list-text-offset: 1.28em;
-  --preview-task-list-icon-width: 1em;
+  --preview-list-text-offset: 1em;
+  --preview-task-list-text-offset: 1.6em;
+  --preview-task-list-icon-width: 1.3em;
 
   font-family: var(--preview-font-family-text);
   overflow-x: hidden;
@@ -387,13 +388,13 @@ const ARTICLE_CSS_EXAMPLE = `
 
 /**
  * task list.
- * 这里和普通列表共用同一组正文偏移, 只是 marker 换成 svg 图标.
+ * 正文偏移使用独立的 task list 偏移量 (图标比数字/圆点宽), marker 换成 svg 图标.
  */
 #preview .task-list-item {
   list-style-type: none;
   position: relative;
   display: block;
-  padding-left: var(--preview-list-text-offset);
+  padding-left: var(--preview-task-list-text-offset);
   line-height: 2em;
   word-break: break-all;
 }
@@ -770,6 +771,104 @@ const ARTICLE_CSS_EXAMPLE = `
  */
 #preview .katex-display > .katex {
   display: inline-block;
+}
+
+/**
+ * mermaid 图表占位容器.
+ * 同步管线只输出源码, 浏览器端再渲染 SVG 注入, 窄屏超宽图表允许横向滚动 (260918-01 同步).
+ */
+#preview .jpz-mermaid-container {
+  position: relative;
+  margin: 1em 0;
+  padding: 8px;
+  border: 1px solid var(--jpz-border-color);
+  border-radius: 6px;
+  background-color: var(--jpz-bg-color);
+  text-align: center;
+  overflow-x: auto;
+}
+
+/**
+ * mermaid 源码复制按钮.
+ * 视觉与代码块 copy-button 保持一致 (260918-01 同步).
+ */
+#preview .jpz-mermaid-container .copy-button {
+  font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  cursor: pointer;
+  background-color: var(--jpz-bg-color);
+  border: none;
+  border-radius: 4px;
+  padding: 2px 5px;
+  z-index: 999;
+  color: var(--jpz-text-color-placeholder);
+  min-width: 4em;
+}
+
+#preview .jpz-mermaid-container .copy-button:hover {
+  background-color: #e0e0e0;
+}
+
+/**
+ * 渲染成功或进行中时隐藏源码, 图表注入时无源码闪现 (260918-01 同步).
+ */
+#preview .jpz-mermaid-container[data-mermaid-status="pending"],
+#preview .jpz-mermaid-container[data-mermaid-status="rendering"] {
+  min-height: 64px;
+}
+
+#preview .jpz-mermaid-container[data-mermaid-status="pending"] .jpz-mermaid-source,
+#preview .jpz-mermaid-container[data-mermaid-status="rendering"] .jpz-mermaid-source,
+#preview .jpz-mermaid-container[data-mermaid-status="rendered"] .jpz-mermaid-source {
+  display: none;
+}
+
+/**
+ * 空源码图表整体隐藏 (260918-01 同步).
+ */
+#preview .jpz-mermaid-container[data-mermaid-status="empty"] {
+  display: none;
+}
+
+/**
+ * mermaid 渲染出的 SVG 容器 (260918-01 同步).
+ */
+#preview .jpz-mermaid-svg {
+  display: flex;
+  justify-content: center;
+}
+
+#preview .jpz-mermaid-svg svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/**
+ * 错误降级时展示的图表源码 (260918-01 同步).
+ */
+#preview .jpz-mermaid-source {
+  margin: 0;
+  padding: 8px;
+  text-align: left;
+  font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+  background-color: var(--code-bg-color);
+  color: var(--code-color);
+  border-radius: 4px;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/**
+ * 错误降级时的错误信息 (260918-01 同步).
+ */
+#preview .jpz-mermaid-error {
+  margin: 0 0 8px;
+  color: var(--jpz-color-danger);
+  font-size: 0.9em;
+  text-align: left;
+  word-break: break-all;
 }
 /******************** 文章模块主题结束 ******************/
 `
