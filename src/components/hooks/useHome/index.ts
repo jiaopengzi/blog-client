@@ -23,6 +23,7 @@ import { type MonthArchiveData } from "@/components/common/month-archive"
 import { usePagination } from "@/components/hooks/usePagination"
 import { useBreadcrumbStore } from "@/stores/breadcrumb"
 import { useStatusStore } from "@/stores/status"
+import { decodeSlugFully, encodeSlugOnce } from "@/utils/slug"
 
 import { useRootUtils } from "../useRootUtils"
 import { useGetData } from "./api"
@@ -212,11 +213,13 @@ export function useHome(
             breadcrumbStore.updateItems(key_word, generateBreadcrumbPath())
         }
 
-        // 解析分类
+        // 解析分类 (bf-260919-01: slug 归一后比较——记录中的 slug 为库中存储形态,
+        // 路由注入的为解码后明文, 含空格/中文时精确比较失配)
         if (post_category_slug) {
+            const canonicalCategorySlug = encodeSlugOnce(post_category_slug)
             categoryLoop: for (const item of pagination.records) {
                 for (const category of item.categories ?? []) {
-                    if (category.slug === post_category_slug) {
+                    if (encodeSlugOnce(category.slug) === canonicalCategorySlug) {
                         breadcrumbStore.updateItems(category.name, generateBreadcrumbPath())
                         break categoryLoop
                     }
@@ -224,12 +227,13 @@ export function useHome(
             }
         }
 
-        // 解析标签
+        // 解析标签 (bf-260919-01: 同上, slug 归一后比较)
         if (post_tag_slug) {
+            const canonicalTagSlug = encodeSlugOnce(post_tag_slug)
             let tagFound = false
             tagLoop: for (const item of pagination.records) {
                 for (const tag of item.tags ?? []) {
-                    if (tag.slug === post_tag_slug) {
+                    if (encodeSlugOnce(tag.slug) === canonicalTagSlug) {
                         breadcrumbStore.updateItems(tag.name, generateBreadcrumbPath())
                         tagFound = true
                         break tagLoop
@@ -241,12 +245,13 @@ export function useHome(
             if (!tagFound) {
                 const topNName = await viewPostTagTopNAPI().then((res) => {
                     if (res.data.code === ResponseCode.PostTagViewTopNSuccess) {
-                        const hit = (res.data.data ?? []).find((tag) => tag.slug === post_tag_slug)
+                        const hit = (res.data.data ?? []).find((tag) => encodeSlugOnce(tag.slug) === canonicalTagSlug)
                         if (hit) return hit.name
                     }
                     return ""
                 })
-                breadcrumbStore.updateItems(topNName || post_tag_slug, generateBreadcrumbPath())
+                // bf-260919-01: slug 兜底展示时解码并将历史 "+" 还原为空格(仅展示), 与列表页头一致
+                breadcrumbStore.updateItems(topNName || decodeSlugFully(post_tag_slug).replaceAll("+", " "), generateBreadcrumbPath())
             }
         }
 

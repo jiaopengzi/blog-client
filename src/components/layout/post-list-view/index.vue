@@ -76,6 +76,7 @@ import { useOptionsStore } from "@/stores/options"
 import { LocalStorageKey } from "@/stores/local"
 import { useStatusStore } from "@/stores/status"
 import { useUserStore } from "@/stores/user"
+import { decodeSlugFully, encodeSlugOnce } from "@/utils/slug"
 
 defineOptions({ name: "ListPage" })
 
@@ -121,12 +122,14 @@ const archiveMonth = computed(() => {
 })
 
 // H4(列表页头标题): 纯展示, 仅拼装既有路由信息, 不发起任何请求; 首页返回空串以隐藏页头
+// (标签/分类页头显示名称而非 slug, 由下方 taxonomyDisplayName 从 useHome 的 pagination 反查,
+// 计算属性惰性求值, 引用后置定义的 taxonomyDisplayName 无碍)
 const heroTitle = computed(() => {
     if (taxonomyType.value === "category") {
-        return `分类：${taxonomySlug.value}`
+        return `分类：${taxonomyDisplayName.value}`
     }
     if (taxonomyType.value === "tag") {
-        return `标签：${taxonomySlug.value}`
+        return `标签：${taxonomyDisplayName.value}`
     }
     if (route.name === "year-month") {
         return `${archiveYear.value ?? ""} 年 ${archiveMonth.value ?? ""} 月归档`
@@ -162,6 +165,24 @@ const {
     highlightKey,
     getListDataForSsr, // feature01: SSR 首屏列表取数
 } = useHome(mainReq)
+
+// bf-260919-01: 标签/分类页头显示名称而非 slug —— 自动生成的标签 slug 中空格为 "+"
+// (后端 QueryEscape 形态), 分类 slug 亦多为名称的变形(如 PowerQuery → power-query),
+// 直接显示 slug 与文章标签/分类处显示的名称不一致; 当前列表即该分类/标签的筛选结果,
+// 从列表记录的 categories/tags 中按 slug 归一匹配反查名称;
+// 无记录可反查(空分类/异常 slug)时回退为解码后的 slug, 并将历史 "+" 还原为空格(仅展示)
+const taxonomyDisplayName = computed(() => {
+    const canonical = encodeSlugOnce(taxonomySlug.value)
+    for (const record of pagination.records) {
+        const items: Array<{ name: string; slug: string }> = taxonomyType.value === "category" ? (record.categories ?? []) : (record.tags ?? [])
+        for (const item of items) {
+            if (encodeSlugOnce(item.slug) === canonical) {
+                return item.name
+            }
+        }
+    }
+    return decodeSlugFully(taxonomySlug.value).replaceAll("+", " ")
+})
 
 // 点击文章: 直接路由跳转 /p/:id
 const handlePostId = async (postID: string) => {
