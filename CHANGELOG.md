@@ -5,7 +5,7 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
-## [v1.2.0] - 2026-09-18
+## [v1.2.0] - 2026-09-19
 
 ### ♻️ Refactor
 
@@ -33,6 +33,7 @@
 - 后台文章列表的 tag 过多有纵向滚动条
 - url 意外变化
 - 页面 pinia 就绪前收到跨标签消息会抛未捕获异常，加 getActivePinia() 守卫
+- 转义归一；list-page-hero 中统一使用名称而不是 slug
 
 ## [v1.1.1] - 2026-09-16
 
