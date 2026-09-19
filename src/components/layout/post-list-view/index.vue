@@ -68,6 +68,7 @@ import { onMounted, type Reactive, reactive, ref, watch } from "vue"
 import { type ViewPostRequest } from "@/api/post/view"
 import type { PostResPagination } from "@/api/post/common"
 import type { Pagination } from "@/api/response"
+import { getEmptyPagination } from "@/api/response"
 import PostList from "@/components/common/post-list"
 import { useHome } from "@/components/hooks/useHome"
 import HomeCarousel from "@/components/layout/carousel"
@@ -119,6 +120,26 @@ const archiveMonth = computed(() => {
     const raw = Array.isArray(route.params.month) ? route.params.month[0] : route.params.month
     const value = Number(raw)
     return Number.isFinite(value) ? value : undefined
+})
+
+// bf-260919-02: 年月归档路由段合法性——[year]/[month] 路由段为任意字符串, 非法段
+// (非正整数年份/越界月份)不能静默丢弃筛选参数后回退全量文章, 应与后端"分类/标签 slug
+// 未命中返回无数据"的语义一致: 不发列表请求, 直接展示空态
+const archiveRouteValid = computed(() => {
+    if (route.name !== "year-month" && route.name !== "year-only") {
+        return true
+    }
+    const year = archiveYear.value
+    if (year === undefined || !Number.isInteger(year) || year < 1 || year > 9999) {
+        return false
+    }
+    if (route.name === "year-month") {
+        const month = archiveMonth.value
+        if (month === undefined || !Number.isInteger(month) || month < 1 || month > 12) {
+            return false
+        }
+    }
+    return true
 })
 
 // H4(列表页头标题): 纯展示, 仅拼装既有路由信息, 不发起任何请求; 首页返回空串以隐藏页头
@@ -191,6 +212,12 @@ const handlePostId = async (postID: string) => {
 
 // 站内切换分类/标签/年月归档时, 同步筛选参数并刷新列表
 watch([taxonomyType, taxonomySlug, archiveYear, archiveMonth], async ([type, slug, year, month]) => {
+    // bf-260919-02: 切到非法归档段时清空列表展示空态, 不发全量请求
+    if (!archiveRouteValid.value) {
+        pagination.total = 0
+        pagination.records = []
+        return
+    }
     mainReq.post_category_slug = type === "category" ? slug || undefined : undefined
     mainReq.post_tag_slug = type === "tag" ? slug || undefined : undefined
     if (year === undefined) {
@@ -232,6 +259,12 @@ watch(
         // **注意是非详情页**
         if (!newVal || newVal === oldVal || isShowPostDetail.value) return
         await statusStore.setAnchorHash("") // 清空锚点
+        // bf-260919-02: 非法归档段不拉取列表, 清空既有数据展示空态
+        if (!archiveRouteValid.value) {
+            pagination.total = 0
+            pagination.records = []
+            return
+        }
         await updateByRoute()
     },
 )
@@ -241,6 +274,10 @@ watch(
 const { data: listSsrData } = await useAsyncData<Pagination<PostResPagination> | null>(`list-ssr-${route.fullPath}`, async () => {
     if (import.meta.client) {
         return null
+    }
+    // bf-260919-02: 归档路由段非法时 SSR 直接返回空分页(有数据标记, 首屏沿用不重拉)
+    if (!archiveRouteValid.value) {
+        return getEmptyPagination<PostResPagination>()
     }
     return await getListDataForSsr()
 })
@@ -269,6 +306,12 @@ watch(
 const hasLoginHint = import.meta.client && typeof localStorage !== "undefined" && localStorage.getItem(LocalStorageKey.LoginHint) === "1"
 
 const finalizeInitialList = async () => {
+    // bf-260919-02: 归档路由段非法时首屏直接空态(SSR 已返回空分页), 不发起任何列表请求
+    if (!archiveRouteValid.value) {
+        document.documentElement.removeAttribute("data-list-pending")
+        return
+    }
+
     if (!hasLoginHint) {
         // 匿名: 列表保持可见, 不做任何隐藏与动画; 后台静默完成登录态恢复与校准
         try {
