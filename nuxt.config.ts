@@ -285,6 +285,8 @@ export default defineNuxtConfig({
         "/category/**": { swr: 3600 },
         "/tag/**": { swr: 3600 },
         "/p/**": { swr: 3600 },
+        // 年月归档: /year/:year 与 /year/:year/month/:month 同分类/标签策略
+        "/year/**": { swr: 3600 },
         // sitemap 由后端生成(阶段 5 补: 后端为主), 这里仅做同源反代——
         // 等价旧 SPA vite proxy["/sitemap"] 的 rewrite "/api/v1 + 原路径"(dev/preview/生产三态一致)
         // 生产若由 nginx 直接反代 /sitemap 到后端, 则本规则不会被命中(nginx 先拦截)
@@ -326,14 +328,14 @@ export default defineNuxtConfig({
         // 此处显式挂 lru-cache driver(nitro 内置, @nuxt/scripts 的 nuxt-scripts-cache 同款):
         // - ttl 2小时(毫秒): 条目到期自动清除(新缓存覆盖同 key 旧缓存, 僵尸条目到期即清),
         //   远大于最大 swr maxAge(3600s), 冷门页面在窗口内可反复命中缓存;
-        // - max 200: 条目数硬上限——normalize-path.ts 已将缓存 key 与无关 query 解耦
+        // - max 500: 条目数硬上限——normalize-path.ts 已将缓存 key 与无关 query 解耦
         //   (仅保留分页参数 page/size), 此上限作为扫描变体的最后兜底
-        //   (单条为完整 SSR HTML 约 50-100KB, 内存上界约 10-20MB);
+        //   (单条为完整 SSR HTML 约 50-100KB, 内存上界约 25-50MB);
         // dev 不受影响(devStorage.cache 仍为 fs driver, 落 .nuxt/cache)
         storage: {
             cache: {
                 driver: "lru-cache",
-                max: 200,
+                max: 500,
                 ttl: 7_200_000,
             },
         },

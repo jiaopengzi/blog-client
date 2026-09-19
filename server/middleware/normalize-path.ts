@@ -30,8 +30,8 @@
 import { defineEventHandler, sendRedirect } from "h3"
 
 // swr(swr/isr)页面路由前缀, 与 nuxt.config.ts routeRules 的 swr 规则一一对应
-// (/, /category/**, /tag/**, /p/**); /p/:id/_payload.json 派生路径同样命中
-const SWR_PAGE_RE = /^\/(?:$|category\/|tag\/|p\/)/
+// (/, /category/**, /tag/**, /p/**, /year/**); /p/:id/_payload.json 派生路径同样命中
+const SWR_PAGE_RE = /^\/(?:$|category\/|tag\/|p\/|year\/)/
 
 // 分页参数名(对齐 legacy-redirect 的简写翻译产物 ?page=&size=), 缓存 key 中唯一保留的 query 项
 const PAGINATION_KEYS = new Set(["page", "size"])
