@@ -125,6 +125,21 @@ http {
     client_header_buffer_size 1k;
     large_client_header_buffers 4 4k;
 
+    # 代理缓冲(响应/请求两侧)统一在 http 级全局关闭, 此前为逐 location 重复配置:
+    # - 响应侧 proxy_buffering off: nginx 默认把上游响应读入内存缓冲, 超过 proxy_buffers 即写
+    #   proxy_temp 临时文件并输出 "an upstream response is buffered to a temporary file" warn;
+    #   本站各代理响应(SSR HTML / sitemap.xml / 上传媒体 / API JSON)均无 nginx 层缓存诉求,
+    #   关闭后改为边收边转发, 消除该类 warn 与临时文件 IO;
+    # - 请求侧 proxy_request_buffering off: 默认先把整个请求体读入内存, 超过 client_body_buffer_size
+    #   即写 client_temp 并输出 "a client request body is buffered to a temporary file" warn
+    #   (触发源: 外部扫描器对 WordPress 接口的大请求体 POST, 以及合法的 admin 大文件上传),
+    #   关闭后请求体边收边转发给后端, 不再落盘.
+    # 全局关闭无副作用的前提: 本配置 proxy_pass 均为单上游直连地址(非 upstream 组), 不存在
+    # 跨上游重试; 配置内也无 proxy_cache/proxy_store 依赖响应缓冲. 页面代理(location /)另行
+    # 只放行 GET/HEAD, 见该 location 内注释.
+    proxy_buffering off;
+    proxy_request_buffering off;
+
     # 旧网址重定向映射(map 在请求匹配时按需查表, 不影响性能)
     # 通配符 include 使 redirects.map 文件可选, 不存在时 nginx 不会报错
     map $uri $redirect_uri {
@@ -145,6 +160,11 @@ http {
 
         # 设置编码
         charset utf-8;
+
+        # 借鉴 billing-center: 该 server 仅做 301 跳转, 运行期错误只可能来自扫描器畸形请求
+        # (如向 80 端口发 TLS 握手包), 丢弃运行期错误日志避免刷屏 docker logs;
+        # 启动/配置级错误仍由 http 级 error_log(/dev/stderr warn)输出, 不受此处影响
+        error_log /dev/null crit;
 
         # 将所有 HTTP 请求重定向到 HTTPS
         location / {
@@ -192,6 +212,20 @@ http {
             return 301 $redirect_uri;
         }
 
+        # 本站不是 WordPress, 外部扫描器持续 POST /wp-json/batch/v1(wp batch 撞库)
+        # 等接口; 在此直接断连(444 不回响应), return 444 不读取请求体, 攻击流量不再进入代理链路
+        # (此前行为: 请求体超 16k 写 client_temp 产生 warn, 再代理到 node 渲染无意义的 404);
+        # 本站不存在以 /wp- 开头的路由, 对合法流量零影响
+        location ^~ /wp- {
+            return 444;
+        }
+
+        # 同源防御 PHP 入口探测(xmlrpc.php / wp-login.php 等以 .php 结尾);
+        # 正则 location 优先于普通前缀匹配(/api/ /sitemap /), 本站不存在任何 .php 路由
+        location ~* \.php$ {
+            return 444;
+        }
+
         # 代理到后端服务的 sitemap 接口(上游地址由 entrypoint 按 NUXT_API_BASE 替换)
         location /sitemap {
             # 直接代理到后端服务
@@ -199,8 +233,6 @@ http {
 
             # 复用 proxy 设置
             proxy_http_version 1.1;
-            # sitemap.xml 可能较大, 关闭代理缓冲以避免写 proxy_temp 并产生日志噪音.
-            proxy_buffering off;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -265,8 +297,6 @@ http {
 
             # 复用 proxy 设置
             proxy_http_version 1.1;
-            # 媒体文件体积可能明显大于默认缓冲区, 关闭代理缓冲避免写 proxy_temp 刷 warn.
-            proxy_buffering off;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -282,16 +312,18 @@ http {
         # 未被上方静态规则命中的请求(页面路由 / _payload.json / _ipx 图片处理 等)
         # 全部代理给 node; HTML 响应头(node 侧控制)不含长缓存, 每次请求均为最新渲染
         location / {
+            # 页面路由只接受 GET/HEAD(表单登录/上传等全部业务请求走 /api/ 反代后端);
+            # 扫描器 POST / 、POST /?rest_route=... 等落到此处, 此前请求体先被 nginx 写 client_temp
+            # 产生 warn 再代理到 node 渲染 404; 现 return 444 直接断连且不读请求体,
+            # 同时消除该类 warn 与无意义的 SSR 渲染(if in location 内只含 return, 属安全用法)
+            if ($request_method !~ ^(GET|HEAD)$) {
+                return 444;
+            }
+
             proxy_pass http://127.0.0.1:7364;
 
             # 设置 HTTP 版本(keepalive 连接池, 减少与 node 的连接建立开销)
             proxy_http_version 1.1;
-
-            # 260920-01: SSR HTML 偶发超过 nginx 默认代理缓冲区时, nginx 会把响应体落到
-            # /var/cache/nginx/proxy_temp 并输出 warn 日志("an upstream response is buffered to a temporary file").
-            # 站点页面已由浏览器端与 上游缓存承担, 此处不需要 nginx 再为 SSR HTML 做磁盘缓冲;
-            # 关闭后改为边读边转发, 可消除该类非故障噪音日志并减少临时文件 IO.
-            proxy_buffering off;
 
             # 设置主机头
             proxy_set_header Host $host;
@@ -325,10 +357,6 @@ http {
 
             # 设置 HTTP 版本
             proxy_http_version 1.1;
-
-            # 后端请求日志已由服务端统一记录; 这里不需要 nginx 为 JSON/下载响应做磁盘缓冲,
-            # 关闭后可一并消除较大 API 响应触发的 proxy_temp warning.
-            proxy_buffering off;
 
             # 使用 keepalive 连接池, 减少连接建立开销
             proxy_set_header Connection "";
