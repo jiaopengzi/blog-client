@@ -3,14 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : Nuxt 4 配置文件(SWR 水合快照一致性修复; bugfix 260916-02 SWR 缓存挂
- *              lru-cache driver 治理生产内存无限增生)
- */
-
-/**
- * 补充说明:
- * 决策依据见 blog-client 仓库 .feat/client-260822-02-plan.md
- * D1 Nuxt 4.5 | D4 element-plus 按需导入 | D7 vite@8.2.1(内置 Rolldown)
+ * Description : Nuxt 4 配置文件(SWR 水合快照一致性修复)
  */
 
 import { fileURLToPath, URL } from "node:url"
@@ -331,13 +324,53 @@ export default defineNuxtConfig({
         // - max 500: 条目数硬上限——normalize-path.ts 已将缓存 key 与无关 query 解耦
         //   (仅保留分页参数 page/size), 此上限作为扫描变体的最后兜底
         //   (单条为完整 SSR HTML 约 50-100KB, 内存上界约 25-50MB);
-        // dev 不受影响(devStorage.cache 仍为 fs driver, 落 .nuxt/cache)
+        // dev 不受影响(devStorage.cache 落 .nuxt/cache)
+        //
+        // bf-260919-02: driver 换为自定义包装(server/drivers/swr-lru-cache.ts)——页面空态
+        // (文章空壳/无数据列表)经 SSR 埋标记头 x-swr-no-store, driver 在 setItem 时识别并
+        // 丢弃, 无效/无数据的 SSR 响应不再进 swr 缓存(每次重新渲染); max/ttl 与键空间语义
+        // 与内置 lru-cache 完全一致, 260916-02 的治理参数不变. 缓存层 validate 只认
+        // code >= 400 且 routeRules 无法注入函数, 故取 storage driver 层拦截.
+        // 刻意为 .mjs: nitro 构建 createStorage 对 driver 路径做 node 原生 dynamic import, .ts 无法被 node 加载;
+        // 刻意为 file:// URL 形态(而非 fileURLToPath 的 Windows 盘符路径): node ESM loader
+        // 在 Windows 下拒绝 "C:/..." 形态(被解析为 c: 协议), 仅接受 file:// URL
         storage: {
             cache: {
-                driver: "lru-cache",
+                driver: new URL("./server/drivers/swr-lru-cache.mjs", import.meta.url).href,
                 max: 500,
                 ttl: 7_200_000,
             },
+        },
+
+        // bf-260919-02: dev 的 cache 挂载点对齐同款自定义 driver——nitro 默认给 devStorage
+        // 注入 fs driver(落 .nuxt/cache)不拦截空态标记, 空壳/空列表在 dev 仍会被缓存, 无法
+        // 在 dev 验证"不缓存"行为; 对齐后 dev/生产行为一致(代价: dev 缓存不再落盘, dev 重启
+        // 即清, 与落盘形态的实际使用习惯无冲突)
+        devStorage: {
+            cache: {
+                driver: new URL("./server/drivers/swr-lru-cache.mjs", import.meta.url).href,
+                max: 500,
+                ttl: 7_200_000,
+            },
+        },
+
+        // bf-260919-02: driver 路径的 file:// URL 说明符转绝对路径喂给 rollup——storage 虚拟
+        // 模块经 genImport 生成的静态 import, rollup 无法解析 file:// 形态(会 external 化,
+        // 运行时按构建机绝对路径加载, Docker 容器内必然失败); 转绝对路径后 rollup 将 driver
+        // 代码内联进 server bundle, 部署不再依赖源码路径存在. 与 nitro 构建期 createStorage
+        // 的 node 原生 dynamic import(Windows 下仅接受 file:// URL)互不冲突, 两侧各取所需
+        rollupConfig: {
+            plugins: [
+                {
+                    name: "resolve-file-url-drivers",
+                    resolveId(id: string) {
+                        if (id.startsWith("file://")) {
+                            return fileURLToPath(new URL(id))
+                        }
+                        return null
+                    },
+                },
+            ],
         },
 
         // 降低 Nuxt Nitro server built .output 构建日志.

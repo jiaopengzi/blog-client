@@ -297,6 +297,16 @@ watch(
     { immediate: true },
 )
 
+// bf-260919-02: 无数据列表不进 swr 缓存——无效分类/标签 slug(后端不兜底返回空分页)、
+// 非法归档段(getEmptyPagination)、合法但暂无文章的分类/年月, 统一按 total === 0 埋标记头,
+// 由 server/drivers/swr-lru-cache.ts 在 setItem 时识别丢弃(同 src/pages/p/[id].vue 空壳机制,
+// 覆盖 /、/category/**、/tag/**、/year/** 全部
+// 列表路由(首页全站无文章时同样不缓存空态), 附带收益: 空分类新增首篇文章后立即可见,
+// 无需等 swr 过期; /s/** 等纯 CSR 路由 import.meta.server 恒 false 不受影响
+if (import.meta.server && listSsrData.value?.total === 0) {
+    useRequestEvent()?.node.res.setHeader("x-swr-no-store", "1")
+}
+
 // feature01(反馈第1轮): 首屏列表最终态校准——后端按登录态返回不同记录集/排序, SSR 无法认证(首屏必为匿名数据).
 // - 匿名(本地无 login_hint): 内联脚本不隐藏列表, SSR 列表从首帧起直接展示, 无任何动画;
 //   仅后台静默完成查询参数与面包屑校准.

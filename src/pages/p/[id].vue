@@ -18,6 +18,7 @@
  * bug02(260903-02): 私密文章对匿名请求返回 2037 (后端隐藏存在性), SSR 侧无登录标识可判
  * (token 在 localStorage, refresh_token cookie 的 Path 限定在刷新端点), post:null 不再抛
  * SSR 404 而渲染空壳+noindex, 客户端复检 (登录态带 token / 匿名重试) 后仍无数据才显示 404
+ * bf-260919-02: 空壳 SSR 埋 x-swr-no-store 标记头, 自定义 cache driver 识别后不进 swr 缓存
 -->
 
 <template>
@@ -149,6 +150,16 @@ const detailLoginRefreshDone = useDetailLoginRefresh(refresh)
 
 // SEO 层读取的元数据视图 (兼容 usePostSeo 既有签名)
 const detailMeta = computed(() => detailData.value?.post ?? null)
+
+// bf-260919-02: 空壳(私密文章匿名 2037/真不存在同码)不进 swr 缓存——SSR 埋标记头,
+// 由 server/drivers/swr-lru-cache.ts 在 setItem 时识别丢弃(缓存层 validate 只认 code >= 400,
+// 且 routeRules 无法注入自定义函数, 机制详见 .bug/bf-260919-02-plan.md 方案 E);
+// 私密文章客户端复检链路(登录态带 token 补回/匿名重试后 showError 404)不受影响,
+// 变化仅为每次刷新重新渲染空壳, 不再命中 1 小时内的缓存旧壳; 标记头会随响应
+// 对客户端可见(直出 set 与缓存回放同源, 兼做诊断信号), 仅服务端执行不影响水合
+if (import.meta.server && !detailMeta.value) {
+    useRequestEvent()?.node.res.setHeader("x-swr-no-store", "1")
+}
 
 // 阶段 5: 文章页 SEO (seo_title 优先回退 post_title、canonical/OG、JSON-LD Article 直出)
 usePostSeo(() => detailMeta.value)
