@@ -19,7 +19,7 @@ COPY . .
 RUN cp LICENSE public/LICENSE && pnpm build && rm -rf .git && mv .output/public /output-public && rm -rf .nuxt node_modules/.cache node_modules/.vite
 
 # 使用与 spa 项目一致的 nginx alpine 镜像(TLS 终端 + 静态资源 + 反向代理)
-FROM nginx:1.31.3-alpine
+FROM nginx:1.31.6-alpine
 
 # 运行阶段依赖: tzdata(时区数据), libstdc++/libgcc(node 二进制的运行时库);
 # 同层完成: 时区固定上海 + nginx 缓存目录属主(支持非 root 启动) + 清理镜像自带死文件

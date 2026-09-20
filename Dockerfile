@@ -1,10 +1,10 @@
 # blog-client Dockerfile
 # 构建阶段: Node.js + pnpm 执行 lint/type-check/test/build, 产出 .output(nitro node-server)
-# 运行阶段: nginx:1.31.3-alpine(与 spa 项目严格同版本) + 从官方镜像拷贝的 node 二进制,
+# 运行阶段: nginx:1.31.6-alpine(与 spa 项目严格同版本) + 从官方镜像拷贝的 node 二进制,
 #           单容器内 nginx(80/443 对外) + node(127.0.0.1:7364 SSR) 双进程, 由 docker-entrypoint.sh 编排
 
 # ============================== 构建阶段 ==============================
-# 使用官方 Node.js alpine 镜像作为构建环境(musl; 与运行阶段 nginx:1.31.3-alpine 的 libc 一致,
+# 使用官方 Node.js alpine 镜像作为构建环境(musl; 与运行阶段 nginx:1.31.6-alpine 的 libc 一致,
 # 原因见下方运行阶段"仅拷贝 node 二进制"处注释)
 FROM node:24.21.0-alpine AS builder
 
@@ -59,7 +59,7 @@ RUN cp LICENSE public/LICENSE && \
 
 # ============================== 运行阶段 ==============================
 # 使用与 spa 项目一致的 nginx alpine 镜像(TLS 终端 + 静态资源 + 反向代理)
-FROM nginx:1.31.3-alpine
+FROM nginx:1.31.6-alpine
 
 # 运行阶段依赖: tzdata(时区数据), libstdc++/libgcc(node 二进制的运行时库);
 # 同层完成: 时区固定上海 + nginx 缓存目录属主(支持非 root 启动) + 清理镜像自带死文件
