@@ -41,7 +41,7 @@ minimumReleaseAgeExclude:
     - "@oxlint/binding-win32-ia32-msvc@1.81.0"
     - "@oxlint/binding-win32-x64-msvc@1.81.0"
     - happy-dom@20.12.2
-    - isomorphic-dompurify@4.1.0
+    - isomorphic-dompurify@4.1.0 || 4.3.0
     - oxfmt@0.66.0
     - oxlint@1.81.0
     - "@codemirror/commands@6.11.1"
