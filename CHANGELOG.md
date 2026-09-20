@@ -5,7 +5,7 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
-## [v1.2.0] - 2026-09-19
+## [v1.2.0] - 2026-09-20
 
 ### ♻️ Refactor
 
@@ -34,12 +34,14 @@
 - url 意外变化
 - 页面 pinia 就绪前收到跨标签消息会抛未捕获异常，加 getActivePinia() 守卫
 - 转义归一；list-page-hero 中统一使用名称而不是 slug
+- 分类、标签、年月文章列表不存在显示无数据，不走全量文章兜底
 
 ## [v1.1.1] - 2026-09-16
 
 ### ⚡️ Perf
 
 - 减少不必要的日志噪音
+- 无效页面不走 swr 缓存
 
 ### 🐞 Fix
 
