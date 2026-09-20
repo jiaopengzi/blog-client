@@ -13,7 +13,7 @@
 #   NGINX_SERVER_NAME=jiaopengzi.com NUXT_API_BASE=http://127.0.0.1:5426 \
 #   sudo docker run --rm -e NGINX_SERVER_NAME -e NUXT_API_BASE \
 #     -v $(pwd)/nginx.conf.template:/etc/nginx/nginx.conf.template \
-#     nginx:1.31.3-alpine sh -c "envsubst '\${NGINX_SERVER_NAME} \${NUXT_API_BASE}' \
+#     nginx:1.31.6-alpine sh -c "envsubst '\${NGINX_SERVER_NAME} \${NUXT_API_BASE}' \
 #       < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -t"
 #
 # nuxt4 迁移说明(相对 spa 项目 nginx.conf 的四处必要修改, 其余逐行保持一致):
@@ -199,6 +199,8 @@ http {
 
             # 复用 proxy 设置
             proxy_http_version 1.1;
+            # sitemap.xml 可能较大, 关闭代理缓冲以避免写 proxy_temp 并产生日志噪音.
+            proxy_buffering off;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -263,6 +265,8 @@ http {
 
             # 复用 proxy 设置
             proxy_http_version 1.1;
+            # 媒体文件体积可能明显大于默认缓冲区, 关闭代理缓冲避免写 proxy_temp 刷 warn.
+            proxy_buffering off;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -282,6 +286,12 @@ http {
 
             # 设置 HTTP 版本(keepalive 连接池, 减少与 node 的连接建立开销)
             proxy_http_version 1.1;
+
+            # 260920-01: SSR HTML 偶发超过 nginx 默认代理缓冲区时, nginx 会把响应体落到
+            # /var/cache/nginx/proxy_temp 并输出 warn 日志("an upstream response is buffered to a temporary file").
+            # 站点页面已由浏览器端与 上游缓存承担, 此处不需要 nginx 再为 SSR HTML 做磁盘缓冲;
+            # 关闭后改为边读边转发, 可消除该类非故障噪音日志并减少临时文件 IO.
+            proxy_buffering off;
 
             # 设置主机头
             proxy_set_header Host $host;
@@ -315,6 +325,10 @@ http {
 
             # 设置 HTTP 版本
             proxy_http_version 1.1;
+
+            # 后端请求日志已由服务端统一记录; 这里不需要 nginx 为 JSON/下载响应做磁盘缓冲,
+            # 关闭后可一并消除较大 API 响应触发的 proxy_temp warning.
+            proxy_buffering off;
 
             # 使用 keepalive 连接池, 减少连接建立开销
             proxy_set_header Connection "";
