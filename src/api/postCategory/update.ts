@@ -18,6 +18,7 @@ export interface UpdatePostCategoryRequest {
     thumbnail?: string // 缩略图
     order?: string // 排序
     parent?: string // 父级分类
+    is_topic?: boolean // 是否专题根
 }
 
 export function updatePostCategoryAPI(requestData: UpdatePostCategoryRequest): ResPromise<Res<StreamsStatusRes>> {

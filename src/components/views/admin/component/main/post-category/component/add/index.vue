@@ -30,6 +30,7 @@ const emit = defineEmits<{
 const addForm = reactive<ViewForm>({
     name: "", // 分类名称
     slug: "", // 别名
+    is_topic: false, // 是否专题根, 默认关闭
 })
 
 const btnLoading = ref(false)
@@ -43,6 +44,7 @@ const submitData = async (form: ViewForm) => {
         thumbnail: form.thumbnail,
         order: form.order ? form.order.toString() : "0",
         parent: form.parent ? form.parent.toString() : "0",
+        is_topic: form.is_topic ?? false,
     }
 
     const { data } = await insertPostCategoryAPI(req)

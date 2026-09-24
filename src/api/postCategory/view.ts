@@ -22,6 +22,7 @@ export interface PostCategory extends DataWithImg {
     post_count: string // 文章数量
     post_count_admin: string // 文章数量 (管理员)
     parent: string // 父级分类
+    is_topic: boolean // 是否专题根
 }
 
 export function viewPostCategoryAPI(requestData: PaginationRequest): ResPromise<Res<Pagination<PostCategory>>> {

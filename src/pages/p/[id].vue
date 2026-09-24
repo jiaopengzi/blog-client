@@ -19,6 +19,8 @@
  * (token 在 localStorage, refresh_token cookie 的 Path 限定在刷新端点), post:null 不再抛
  * SSR 404 而渲染空壳+noindex, 客户端复检 (登录态带 token / 匿名重试) 后仍无数据才显示 404
  * bf-260919-02: 空壳 SSR 埋 x-swr-no-store 标记头, 自定义 cache driver 识别后不进 swr 缓存
+ * bf-260924-01(第3轮反馈#4): definePageMeta key 固定为 "post-detail", 同路由切文 (/p/a → /p/b)
+ * 不再整树重挂, 空壳复检由 detailMeta watch 兜底 (onMounted 只覆盖刷新/直链首挂场景)
 -->
 
 <template>
@@ -78,8 +80,12 @@ import type { EditorState } from "@/components/editor"
 import PostDetail from "@/components/common/post-detail"
 import { useStatusStore } from "@/stores/status"
 
-// 路由名与 SPA RouteNames.Post ("post") 对齐 (旧 /post/:id 语义, 301 后由本路由承接)
-definePageMeta({ name: "post" })
+// 路由名与 SPA RouteNames.Post ("post") 对齐 (旧 /post/:id 语义, 301 后由本路由承接);
+// key 固定 (bf-260924-01 第3轮反馈#4): Nuxt 默认 pageKey 为插值路径, /p/a → /p/b 因 key 变化整树重挂
+// (新旧两棵树并行: 旧树守卫读到未 sync 的旧 route 误判程序化切换发全量请求, 新树 watch(postData)
+// immediate 再发 prev-next, 评论列表新旧实例各拉一次), 固定 key 后同路由切文不重挂,
+// 由页面 useAsyncData(watch postId) + postData prop 驱动更新, 与 post-detail 既有守卫设计假定一致
+definePageMeta({ name: "post", key: "post-detail" })
 
 const route = useRoute()
 const router = useRouter()
@@ -195,18 +201,10 @@ if (detailError.value) {
 // 并补一条客户端侧 warn(与上方水合期降噪配合: 只有真实发生的客户端失败才在浏览器控制台输出)
 // bug02(260903-02): 空壳复检 — 等登录态复拉流程收尾(匿名立即完成)后复检一次,
 // 仍无数据才显示 404; 复检触发请求失败时同样保持壳与 warn, 不误判 404
-onMounted(async () => {
-    // SSR 取数失败的水合恢复 (bug04)
-    if (detailError.value && !detailMeta.value) {
-        await refresh()
-        if (detailError.value) {
-            console.warn(`[post-detail] 客户端重拉仍失败(post_id=${postId.value}): ${detailError.value.message}`)
-            return
-        }
-        if (detailMeta.value) return
-    }
-
-    // 空壳复检 (bug02): 有数据(公开/密码文章或已恢复)直接结束
+// bug02(260903-02): 空壳复检链 — 等登录态复拉收尾后终检一次, 仍无数据才显示 404; 复检触发请求失败时
+// 同样保持壳与 warn, 不误判 404. pageKey 固定后 (第3轮反馈#4) 客户端同路由切换到空壳文章页面不重挂,
+// onMounted 不再执行, 复检由下方 detailMeta watch 兜底, 刷新/直链场景仍走 onMounted
+const recheckEmptyDetail = async () => {
     if (detailMeta.value) return
 
     // 等登录态复拉收尾 — 登录态可能已在此期间带 token 补回私密文章数据
@@ -223,6 +221,28 @@ onMounted(async () => {
     if (!detailMeta.value) {
         // 复检后确认无数据: 显示 404 (showError 渲染全局错误页, 与 catch-all 的 404 视觉一致)
         showError(createError({ statusCode: 404, message: "文章不存在或已删除" }))
+    }
+}
+
+onMounted(async () => {
+    // SSR 取数失败的水合恢复 (bug04)
+    if (detailError.value && !detailMeta.value) {
+        await refresh()
+        if (detailError.value) {
+            console.warn(`[post-detail] 客户端重拉仍失败(post_id=${postId.value}): ${detailError.value.message}`)
+            return
+        }
+        if (detailMeta.value) return
+    }
+
+    // 空壳复检 (bug02): 有数据(公开/密码文章或已恢复)直接结束
+    await recheckEmptyDetail()
+})
+
+// 客户端同路由切换到空壳文章 (旧文有数据 → 新文 post:null) 时页面不重挂, onMounted 不再执行, 复检兜底
+watch(detailMeta, (meta, previousMeta) => {
+    if (!meta && previousMeta) {
+        void recheckEmptyDetail()
     }
 })
 

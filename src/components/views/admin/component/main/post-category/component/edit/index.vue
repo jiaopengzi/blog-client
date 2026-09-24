@@ -44,6 +44,7 @@ const submitData = async (form: ViewForm) => {
         thumbnail: form.thumbnail,
         order: form.order ? form.order.toString() : "0",
         parent: form.parent ? form.parent.toString() : "0",
+        is_topic: form.is_topic ?? false,
     }
     const { data } = await updatePostCategoryAPI(req)
 

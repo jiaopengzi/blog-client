@@ -41,6 +41,10 @@
             <el-form-item label="父分类" prop="parent">
                 <el-input v-model="viewDataAc.parent" type="number" placeholder="请输入父分类数字-选填" min="0" />
             </el-form-item>
+            <el-form-item label="专题" prop="is_topic">
+                <el-switch v-model="viewDataAc.is_topic" />
+                <span class="is-topic-tip">开启后该分类作为专题根, 其子分类为专题分组</span>
+            </el-form-item>
         </el-form>
 
         <div class="btn-submit">
@@ -124,5 +128,12 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
 .btn-submit .el-form-item {
     display: inline-block;
+}
+
+// 专题开关的行内说明, 弱化展示避免喧宾夺主
+.is-topic-tip {
+    margin-left: 12px;
+    font-size: 12px;
+    color: var(--el-text-color-secondary);
 }
 </style>

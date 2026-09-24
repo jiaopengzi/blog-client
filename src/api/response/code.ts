@@ -126,6 +126,8 @@ export enum ResponseCode {
     PostViewPasswordIsError = 2043, // 查看文章密码错误
     PayStrategyValidateFailed = 2044, // 付费策略验证失败
     PostIDSuccess = 2045, // 文章 ID 获取成功
+    PostViewTopicNavSuccess = 2046, // 获取专题导航成功
+    PostViewTopicNavIsNone = 2047, // 获取专题导航无数据
 
     // 文章标签相关
     PostTagInsertSuccess = 2100, // 插入文章标签成功

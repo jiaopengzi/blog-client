@@ -49,4 +49,5 @@ export enum LocalStorageKey {
     AdminTablePagination = "admin_table_pagination", // 后台表格分页器每页条数 (按 routeName 分组)
     AdminTableColumnWidth = "admin_table_column_width", // 后台表格列宽 (按 routeName + 列 prop 分组)
     TocFloatingCollapsed = "toc_floating_collapsed", // 沉浸阅读模式浮动目录折叠状态 (260917-01)
+    TopicNavSort = "topic_nav_sort", // 专题导航排序偏好 (时间序/字母序, 260924-01)
 }

@@ -150,6 +150,16 @@ const cols: TableColumn[] = reactive([
         minWidth: 100,
         align: "center",
     },
+    {
+        prop: "is_topic",
+        label: "专题",
+        sortable: true,
+        minWidth: 80,
+        align: "center",
+        formatter: (row: TableData) => {
+            return "is_topic" in row && row.is_topic ? "专题" : "-"
+        },
+    },
 ])
 
 const queryParams = reactive<PaginationRequest>({} as PaginationRequest)
@@ -203,7 +213,7 @@ const editData = reactive<ViewForm>({
 
 const editRow = (index: number, row: TableData) => {
     // 先重置所有字段, 避免切换行时残留旧数据
-    Object.assign(editData, { id: "", name: "", slug: "", description: "", thumbnail: "", order: "", parent: "" })
+    Object.assign(editData, { id: "", name: "", slug: "", description: "", thumbnail: "", order: "", parent: "", is_topic: false })
 
     if ("id" in row) {
         editData.id = row.id.toString()
@@ -225,6 +235,9 @@ const editRow = (index: number, row: TableData) => {
     }
     if ("parent" in row && row.parent !== "") {
         editData.parent = row.parent
+    }
+    if ("is_topic" in row) {
+        editData.is_topic = Boolean(row.is_topic)
     }
     toggleEditDialog()
 }
