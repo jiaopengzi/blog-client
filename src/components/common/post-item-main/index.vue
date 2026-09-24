@@ -14,8 +14,12 @@
         <!-- 右上角斜角提示符-->
         <div class="top-right-tip" v-if="topRightTip">{{ topRightTip }}</div>
 
-        <!-- 左上角分类 -->
-        <el-button class="category" plain @click="clickCategory(postData.categories[0]!)">{{ postData.categories[0]!.name }}</el-button>
+        <!-- 左上角分类 (bugfix 260925-02: 后端对无分类文章返回 categories=null, 直接取 [0] 抛
+             "Cannot read properties of null (reading '0')" 使整页渲染中断; 无分类时不渲染该按钮,
+             保护方式与 PostItemSearch 的分类标签一致) -->
+        <el-button v-if="postData.categories && postData.categories.length > 0" class="category" plain @click="clickCategory(postData.categories[0]!)">{{
+            postData.categories[0]!.name
+        }}</el-button>
 
         <!-- 缩略图 -->
         <div class="thumbnail">
