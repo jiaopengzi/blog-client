@@ -15,7 +15,7 @@ import { useUserStore } from "./user"
 
 /**
  * initStores 初始化应用运行期依赖的 store
- * 执行顺序需要保证 token 同步先于文章详情编辑权限预热, 避免匿名态缓存污染已登录态
+ * 权限预热位于登录态 settle (getUserInfoByToken) 之后, 保证预热口径与最终登录态一致 (bf-260925-01)
  * @returns Promise 在全部 store 初始化完成后结束
  */
 export const initStores = async (): Promise<void> => {
@@ -44,9 +44,14 @@ export const initStores = async (): Promise<void> => {
     }
 
     await permissionRoleStore.update(!isLoadedPermissionRole)
-    await permissionRoleStore.postDetailEditEnable(userStore.accessToken ? PostDetailEditCacheScope.Authenticated : PostDetailEditCacheScope.Anonymous)
 
     await userStore.getUserInfoByToken(!isLogin)
+
+    // bf-260925-01: 权限预热挪到登录态 settle 之后 —— 登录态整页刷新时 token 恢复发生在
+    // getUserInfoByToken 内 (refresh_token 换取), 原顺序 (预热在 getUserInfoByToken 之前) 预热的
+    // 是 Anonymous 口径, 会被详情页 accessToken watch 的 Authenticated 口径覆盖, 白耗一次
+    // has-permission; settle 后按最终登录态预热, 匿名行为不变 (token 恒空仍预热 Anonymous)
+    await permissionRoleStore.postDetailEditEnable(userStore.accessToken ? PostDetailEditCacheScope.Authenticated : PostDetailEditCacheScope.Anonymous)
 }
 
 // 共享初始化 Promise: 客户端插件 (水合后触发) 与路由守卫 (受保护页提前触发) 共用同一份初始化,

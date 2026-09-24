@@ -156,6 +156,7 @@ import { useAppLoadingIndicator } from "@/composables/useAppLoadingIndicator"
 import { usePostDetail } from "@/components/hooks/usePostDetail"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
 import { DeviceType, useDeviceStore } from "@/stores/device"
+import { LocalStorageKey } from "@/stores/local"
 import { useStatusStore } from "@/stores/status"
 import { useUserStore } from "@/stores/user"
 import { MessageUtil } from "@/utils/message"
@@ -536,6 +537,36 @@ const updatePostDetailAc = async (postId: string, password: string = "") => {
 const isClientMounted = ref(false) // 客户端是否已完成水合挂载
 let pendingApplyFlush = false // 水合期间是否有待补发的 state 与面包屑
 
+// bf-260925-01: 登录态首屏 sideEffects 调度 —— 水合早期 token 未恢复 (isLogin=false), 此时按匿名
+// 口径发出的 prev-next/interaction 会被登录复拉 (useDetailLoginRefresh) 后的数据重放覆盖, 浏览器
+// 侧同接口请求两次且第一次纯浪费; 登录态 (login_hint=1, 与 useDetailLoginRefresh 同源信号) 首屏
+// 跳过首发, 等共享 initStores 恢复登录态后按最终口径只发一次; 匿名首屏无复拉流程, 保持立即首发
+const hasLoginHint = import.meta.client && typeof localStorage !== "undefined" && localStorage.getItem(LocalStorageKey.LoginHint) === "1"
+
+// 已发过 sideEffects 的文章 id: 登录复拉会以新数据引用重放 applyPostDataAc (同一篇文章), 去重防重复请求
+let sideEffectsFiredPostId = ""
+// 登录态首屏延迟待发的文章 id (initStores 就绪后由 onMounted 兜底发放)
+let pendingSideEffectsPostId = ""
+
+/**
+ * fireDetailSideEffects 按发放时刻的登录态口径执行详情页 sideEffects (上一篇/下一篇 + 登录态交互状态).
+ * @remarks 同一篇文章只发一次 (登录复拉重放保护); isLogin 由发放时刻的 token 状态决定是否附带交互状态.
+ * @param postId - 目标文章 ID.
+ * @returns 无返回值.
+ */
+const fireDetailSideEffects = (postId: string): void => {
+    if (!postId || sideEffectsFiredPostId === postId) {
+        return
+    }
+    sideEffectsFiredPostId = postId
+
+    const sideEffects: Array<Promise<unknown>> = [getPrevNext({ post_id: postId })]
+    if (userStore.isLogin) {
+        sideEffects.push(updatePostInteraction({ post_id: postId }))
+    }
+    runPostDetailSideEffects(sideEffects)
+}
+
 /**
  * applyPostDataAc 将页面 SSR 数据应用到详情页状态, 并在客户端补发 state 与面包屑.
  * @param data 文章详情数据.
@@ -549,12 +580,14 @@ const applyPostDataAc = async (data: PostResByID) => {
     manager.setHeadingShowCurrentIndex(headingShowCurrentIndex)
 
     // feature02 补: 复刻 updateByRoute 的副作用(上一篇/下一篇 + 登录态交互状态), 仅客户端异步执行
+    // bf-260925-01: 登录态首屏 (token 未恢复) 跳过匿名口径首发并记录待发 (onMounted 兜底);
+    // 匿名首屏或登录态已就绪 (同路由切文/登录复拉后的重放) 立即按当前口径发放
     if (typeof window !== "undefined") {
-        const sideEffects: Array<Promise<unknown>> = [getPrevNext({ post_id: data.id })]
-        if (userStore.isLogin) {
-            sideEffects.push(updatePostInteraction({ post_id: data.id }))
+        if (!hasLoginHint || userStore.isLogin) {
+            fireDetailSideEffects(data.id)
+        } else {
+            pendingSideEffectsPostId = data.id
         }
-        runPostDetailSideEffects(sideEffects)
     }
 
     if (isClientMounted.value) {
@@ -572,6 +605,26 @@ const applyPostDataAc = async (data: PostResByID) => {
         scrollToRouteHash()
     }
 }
+
+// bf-260925-01: 登录态首屏 sideEffects 兜底 —— 等共享 initStores 恢复登录态后按最终口径发放;
+// fireDetailSideEffects 按 postId 去重, 与登录复拉完成后的 applyPostDataAc 重放竞态安全
+// (先到者发放, 后到者跳过); initStores 失败 (token 未恢复) 时按匿名口径兜底, 与匿名数据展示一致
+onMounted(() => {
+    if (!hasLoginHint) {
+        return
+    }
+    void (async () => {
+        try {
+            const { getInitStoresPromise, isInitStoresReady } = await import("@/stores/init")
+            if (!isInitStoresReady()) {
+                await getInitStoresPromise()
+            }
+        } catch {
+            // initStores 异常不阻塞详情展示, 按匿名口径兜底发放
+        }
+        fireDetailSideEffects(pendingSideEffectsPostId || postId.value)
+    })()
+})
 
 // 页面 SSR 数据变化时应用(首次水合 + /p/a → /p/b 路由切换)
 watch(

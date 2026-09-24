@@ -16,6 +16,7 @@
  * 链路递归高亮 (第2轮反馈#1): 当前文章所在分组链从直属分组到根递归保持 active, 展开其他章节折叠原链后仍可辨识当前文章位置;
  * 失败静默: 数据为 null 时卡片不渲染 + console.warn 一次, 正文与侧栏其余部分不受影响;
  * 登录态校准 (D4): SSR 恒匿名口径, 水合后 isInitStoresReady 且已登录则带 token 复拉覆盖 (补本人私密文章, 复刻 bf-260903-01);
+ * 登录态首屏单请求 (bf-260925-01): login_hint=1 且登录态未就绪时 handler 跳过匿名首拉 (undefined 不 settle), onMounted 校准统一拉取, 登录提示过期时匿名兜底;
  * 排序切换 (D3): icon 双态, 默认时间正序 = 后端原数组; 字母序仅前端按组内标题本地重排, 偏好 localStorage 记忆;
  * 分组顺序恒按后端 order, 不参与切换; localeCompare 只在客户端执行, 无水合风险.
 -->
@@ -96,10 +97,26 @@ const collectTreePostIds = (node: PostTopicNavCategory, into: Set<string>): Set<
     return into
 }
 
+// bf-260925-01: 登录态首屏判定信号 (与 useDetailLoginRefresh 同源): 有登录提示且共享 initStores 未完成时,
+// 匿名口径首拉的结果会被 onMounted 登录校准的带 token 复拉覆盖, 首拉跳过省一次请求
+const hasLoginHint = import.meta.client && typeof localStorage !== "undefined" && localStorage.getItem(LocalStorageKey.LoginHint) === "1"
+// 登录态是否已就绪 (initStores 完成后置 true, 解除 handler 的首拉跳过); 匿名恒视为就绪
+let loginStoresReady = !hasLoginHint
+// 本次挂载 handler 是否因登录态未就绪跳过了首拉 (供 onMounted 匿名口径兜底)
+let loginFirstFetchDeferred = false
+
 // 数据自取: 固定 key 单数据槽 (layout-aside 互斥只读同 key); 换文章时先查现有树, 命中同专题直接复用零请求
-const { data: navData } = await useAsyncData<PostTopicNav | null>(
+const { data: navData } = await useAsyncData<PostTopicNav | null | undefined>(
     POST_TOPIC_NAV_DATA_KEY,
     async () => {
+        // bf-260925-01: 登录态首屏 (登录态未就绪) 跳过匿名首拉 —— 返回 undefined 保持未 settle
+        // (settled watch 只对非 undefined 上抛), layout-aside 不误判非专题误拉 4 卡片数据,
+        // 由 onMounted 登录校准统一拉取; 匿名或登录态就绪 (同路由切文) 走正常缓存复用/拉取
+        if (hasLoginHint && !loginStoresReady) {
+            loginFirstFetchDeferred = true
+            return undefined
+        }
+
         const cached = useNuxtData<PostTopicNav>(POST_TOPIC_NAV_DATA_KEY).data.value
         if (cached && collectTreePostIds(cached.root_category, new Set()).has(postId.value)) {
             return cached
@@ -245,16 +262,18 @@ onMounted(() => {
                 await getInitStoresPromise()
             }
         } catch {
-            // initStores 异常不阻塞导航展示, 沿用匿名口径数据
-            return
+            // initStores 异常不阻塞导航展示, 下方按匿名口径兜底拉取
         }
 
-        // 匿名不重复请求 (SSR 注水即匿名口径); 登录用户带 token 复拉, 补本人私密文章后覆盖数据槽
-        if (useUserStore().isLogin) {
-            const fresh = await fetchNav(postId.value)
-            if (fresh) {
-                navData.value = fresh
-            }
+        // 解除 handler 首拉跳过: 后续同路由切文的 useAsyncData(watch postId) 正常复用/拉取
+        loginStoresReady = true
+
+        // 匿名不重复请求 (SSR 注水即匿名口径); 登录用户带 token 复拉, 补本人私密文章后覆盖数据槽;
+        // bf-260925-01: 登录提示过期 (initStores 后仍未登录) 或 initStores 失败时 handler 已跳过首拉,
+        // 匿名口径兜底拉取, 保证卡片判定不受影响; 结果无条件赋值 —— null 是"确认非专题"的有效
+        // 判定 (settled 上抛 false 解锁 layout-aside 的 4 卡片补拉), 登录态首屏跳过首拉时尤需回填
+        if (useUserStore().isLogin || loginFirstFetchDeferred) {
+            navData.value = await fetchNav(postId.value)
             void locateCurrent()
         }
     })()

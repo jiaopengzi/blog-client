@@ -23,6 +23,7 @@ import { emptyPostMetaProps, type PostMetaProps } from "@/components/common/post
 import { EditorStateManager } from "@/components/editor/state"
 import { RouteNames } from "@/router"
 import { DeviceType, useDeviceStore } from "@/stores/device"
+import { LocalStorageKey } from "@/stores/local"
 import { useOptionsStore } from "@/stores/options"
 import { PostDetailEditCacheScope, usePermissionRoleStore } from "@/stores/permissionRole"
 import { useUserStore } from "@/stores/user"
@@ -189,8 +190,14 @@ export function useGetData(manager: EditorStateManager, hash: Ref<string>) {
 
         // 编辑权限同步(feature02, 客户端异步): 不阻塞首帧渲染, 与水合首帧一致(SSR 恒为默认 false),
         // 服务端跳过(不发起权限请求), 客户端水合后异步回写 postMeta.is_author_edit
+        // bf-260925-01: 登录态首屏 (login_hint=1 且 token 未恢复) 跳过 —— 此时 Anonymous 作用域的
+        // has-permission 结果会被 token 恢复后 watch(accessToken) 的 Authenticated 口径覆盖,
+        // 白耗一次请求 (登录复拉重放本函数同样命中跳过); 匿名首屏照旧立即预热
         if (typeof window !== "undefined") {
-            void syncPostDetailEditEnable()
+            const hasLoginHint = localStorage.getItem(LocalStorageKey.LoginHint) === "1"
+            if (!(hasLoginHint && !accessToken.value)) {
+                void syncPostDetailEditEnable()
+            }
         }
     }
 
