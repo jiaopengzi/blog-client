@@ -176,6 +176,13 @@ export class EditorStateManager {
 
     // 设置目录显示当前索引
     setHeadingShowCurrentIndex(index: number): void {
+        // bugfix 260925-03: 索引上界收敛到 tocHtml 域 — 观察器域被组件内部标题污染、或同路由切文后
+        // 旧索引越过新目录长度时, 越界值会让目录面板清空高亮且折叠态回退"目录";
+        // 负值是编辑器滚动同步"首个标题上方"的合法语义 (-1, 见 useCodemirror.handleScroll), 原样保留
+        const tocLength = this.state.tocHtml.length
+        if (tocLength > 0 && index >= tocLength) {
+            index = tocLength - 1
+        }
         this.state.headingShowCurrentIndex = index
     }
 

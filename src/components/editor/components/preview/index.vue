@@ -11,6 +11,12 @@
   mermaid 集成: 内容/宽度/渲染模式变化后调度 pkg/mermaid 渲染占位容器, 主题切换时强制重渲染
   feedback#4: 标题观察器注册补 immediate, 修复 SSR 数据水合场景滚动跟随失效;
   feedback#3: 服务端跳过 rAF 注册, 修复 SSR unhandledRejection
+ bugfix 260925-03: 目录标题域按文章 html 片段容器 (preview-html-part) 收集, 排除组件子树内部标题;
+  视频播放器设置面板的 h3#radio-group-title 与付费内容解锁后的内部标题 (锚点从 idx0 重新生成与外层撞号)
+  混入观察域会使高亮索引越界/错位 (折叠目录回退"目录"、面板高亮清空);
+  观察器入场去重 + 离场清空时保留上一个 best-match, 消除 threshold 反复跨越导致的高亮跳首项;
+  260925-03 后续: 无可见标题且无 best-match 时回写 -1 ("无当前章节", 阅读页引言区清高亮回退"目录"),
+  观察器重建 (切文) 时复位 best-match, 防止新周期首轮回写残留旧文章标题索引
 -->
 
 <template>
@@ -29,7 +35,8 @@
         @mouseleave="onMouseLeave"
     >
         <template v-for="(item, index) in contentParts" :key="index">
-            <div v-if="item.type === 'html'" v-stable-html="item.content"></div>
+            <!-- preview-html-part: 文章自有 html 片段容器标记, 目录标题收集以此为边界 (bugfix 260925-03) -->
+            <div v-if="item.type === 'html'" class="preview-html-part" v-stable-html="item.content"></div>
 
             <!-- 视频播放器（ClientOnly：HLS 播放器仅客户端） -->
             <ClientOnly v-else-if="item.type === Names.VideoPlayer">
@@ -124,6 +131,7 @@
         "
         id="preview-copy"
         :class="previewRootClassName"
+        class="preview-html-part"
         data-preview="wechat"
         v-stable-html="wechatHtml"
         :style="isShowPreviewWechat ? {} : { position: 'absolute', left: '-99999px', top: '0', width: '100%', pointerEvents: 'none', overflow: 'hidden' }"
@@ -648,14 +656,39 @@ const closeElImageViewer = () => {
     unlockBodyScroll()
 }
 
+// 文章自有 html 片段容器的标记类: 目录标题域的 DOM 边界 (bugfix 260925-03)
+const PREVIEW_HTML_PART_CLASS = "preview-html-part"
+
 // 所有的 h 标签响应式变量
-const allHeadings = ref<NodeListOf<HTMLHeadingElement> | null>(null)
+const allHeadings = ref<HTMLHeadingElement[] | null>(null)
 const allHeadingMap: Map<string, HeadingObject> = new Map() // 所有的 h 标签 map
+
+/**
+ * collectArticleHeadingList 收集属于文章目录域的标题元素.
+ * @remarks bugfix 260925-03: 此前直接 querySelectorAll 整个预览子树, 视频播放器设置面板的
+ * h3#radio-group-title 与付费内容解锁后内部 markdown 的标题 (锚点从 idx0 重新生成, 与外层撞号)
+ * 一并混入观察域: 轻则 allHeadingMap 被同 id 内部标题覆盖造成高亮错位, 重则索引越过 tocHtml 域,
+ * 目录面板清空高亮且折叠态回退显示"目录"; 现按片段容器边界收集, 观察域与 tocHtml 严格同源.
+ * 微信预览根节点自身即文章 html 容器 (v-stable-html 直接渲染在根上), 命中标记类时按自身收集.
+ * @param root - 预览根元素 (#preview 或微信预览根).
+ * @returns 文章自有标题元素数组 (文档顺序).
+ */
+const collectArticleHeadingList = (root: HTMLElement): HTMLHeadingElement[] => {
+    if (root.classList.contains(PREVIEW_HTML_PART_CLASS)) {
+        return Array.from(root.querySelectorAll(ScrollElementTagHeading) as NodeListOf<HTMLHeadingElement>)
+    }
+
+    const headingList: HTMLHeadingElement[] = []
+    root.querySelectorAll(`:scope > .${PREVIEW_HTML_PART_CLASS}`).forEach((fragment) => {
+        headingList.push(...(fragment.querySelectorAll(ScrollElementTagHeading) as NodeListOf<HTMLHeadingElement>))
+    })
+    return headingList
+}
 
 // 获取所有的 h 标签函数
 const getAllHeadings = () => {
     if (previewRef.value) {
-        const headings = previewRef.value.querySelectorAll(ScrollElementTagHeading) as NodeListOf<HTMLHeadingElement>
+        const headings = collectArticleHeadingList(previewRef.value)
         allHeadings.value = headings
         allHeadingMap.clear() // 清空 map
         headings.forEach((heading, index) => {
@@ -725,12 +758,15 @@ const isBestMatchHeading = ref<string>("") // 最佳匹配的标题
 
 /**
  * @description: 停止所有已注册的 IntersectionObserver 并清空缓存状态, 防止多次调用 observeHeadings 时累积大量无效 observer
+ * @remarks 260925-03 后续: best-match 一并复位 — 其 id 属于旧一轮观察的 DOM (同路由切文后 allHeadingMap 已换),
+ * 残留会让新周期首轮回写拿旧 id 查新 map 落空 (经 ?? 0 错误高亮首项); 复位后新周期由初始回调重建状态
  * @return void
  */
 const stopAllHeadingObservers = (): void => {
     stopFuncs.forEach((stop) => stop())
     stopFuncs.length = 0
     isIntersectingHeadings.value = []
+    isBestMatchHeading.value = ""
 }
 
 // 遍历 allHeadings 观察每个标题的可见性
@@ -741,36 +777,42 @@ const observeHeadings = () => {
             headingEl,
             ([entry]) => {
                 // 从 isIntersectingHeadings 中移除当前标题
-                let isFromTopShow = false // 是否从上方出现
+                const targetId = entry!.target.id
                 if (entry!.isIntersecting) {
-                    if (entry!.intersectionRect.top === 0) {
-                        isFromTopShow = true
-                    } else {
-                        isFromTopShow = false
-                    }
+                    // bugfix 260925-03: threshold=1 时交叉比例在 1 附近反复跨越会以 isIntersecting=true 多次回调,
+                    // 不去重则同一标题重复入列, 离场过滤时数组被一次性清空, best-match 落空回退索引 0 (高亮跳首项);
+                    // 先移除旧记录再按进入方向插入, 保证数组始终是当前可见标题的集合
+                    isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== targetId)
                     // 如果标题在视口内，设置当前标题索引
-                    if (isFromTopShow) {
+                    // intersectionRect.top === 0 表示标题顶边贴住视口顶 (向下滚动露出), 插到数组开头; 否则插到末尾
+                    if (entry!.intersectionRect.top === 0) {
                         // 将元素插入到数组的开头
-                        isIntersectingHeadings.value.unshift(entry!.target.id)
+                        isIntersectingHeadings.value.unshift(targetId)
                     } else {
                         // 将元素插入到数组的末尾
-                        isIntersectingHeadings.value.push(entry!.target.id)
+                        isIntersectingHeadings.value.push(targetId)
                     }
                     isBestMatchHeading.value = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]!
                 } else {
-                    if (isIntersectingHeadings.value.length === 1) {
-                        isBestMatchHeading.value = isIntersectingHeadings.value[0]!
-                        isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== entry!.target.id)
-                    } else {
-                        isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== entry!.target.id)
-                        // 等于数组最后一个
-                        isBestMatchHeading.value = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]!
+                    isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== targetId)
+                    // 等于数组最后一个; 数组清空 (最后一个可见标题也离场) 时保留上一个 best-match,
+                    // 目录高亮停在最后经过的标题 — 旧实现会置为 undefined, 回写经 ?? 0 错误落到首项
+                    const lastHeadingId = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]
+                    if (lastHeadingId !== void 0) {
+                        isBestMatchHeading.value = lastHeadingId
                     }
                 }
 
                 if (isUserScrollPreview) {
-                    const index = allHeadingMap.get(isBestMatchHeading.value)?.index || 0 // 获取当前标题的索引
-                    emit("heading-show-current", index)
+                    // 260925-03 后续: 引言区初始态 (尚无任何标题进入过视口, best-match 为空) 回写 -1 表示"无当前章节",
+                    // 目录清空高亮且折叠态回退"目录", 与 URL 锚点"引言区无锚点"语义对齐 (阅读页经归一化统一处理);
+                    // best-match 非空而查 map 落空时仍回退 0 (域内收集后不应发生, 纯防御)
+                    if (isBestMatchHeading.value === "") {
+                        emit("heading-show-current", -1)
+                    } else {
+                        const index = allHeadingMap.get(isBestMatchHeading.value)?.index ?? 0 // 获取当前标题的索引
+                        emit("heading-show-current", index)
+                    }
                 }
             },
             {
