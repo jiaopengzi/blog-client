@@ -60,3 +60,4 @@ public/logo.png
 --port
 --host
 .cache
+.pnpm-store-fresh
