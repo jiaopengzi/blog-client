@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 表单验证
+ * Description : 表单验证, 提升静态校验函数
  */
 
 import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
@@ -29,6 +29,28 @@ function checkCommon(value: string, callback: (error?: string | Error | undefine
     return true
 }
 
+// 检查角色是否可用
+function checkRoleValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
+    void rule
+
+    if (!checkCommon(value, callback)) {
+        return
+    }
+    const req: CheckMembershipRoleRequest = {
+        role: value,
+    }
+    checkMembershipRoleAPI(req).then((res) => {
+        if (res.data.code === ResponseCode.MembershipRoleNotExist) {
+            callback()
+            return
+        } else {
+            const errMsg = handleResErr(res, "会员角色不可用")
+            callback(new Error(errMsg))
+            return
+        }
+    })
+}
+
 interface FormValidationOptions {
     form: {
         id?: Ref<string | undefined> // ID
@@ -48,26 +70,6 @@ export function useFormValidation(options: FormValidationOptions): {
     editRules: FormRules<ViewForm>
 } {
     const { form } = options
-
-    // 检查角色是否可用
-    function checkRoleValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        if (!checkCommon(value, callback)) {
-            return
-        }
-        const req: CheckMembershipRoleRequest = {
-            role: value,
-        }
-        checkMembershipRoleAPI(req).then((res) => {
-            if (res.data.code === ResponseCode.MembershipRoleNotExist) {
-                callback()
-                return
-            } else {
-                const errMsg = handleResErr(res, "会员角色不可用")
-                callback(new Error(errMsg))
-                return
-            }
-        })
-    }
 
     // 检查会员角色是否可用(排除 ID)
     function checkRoleExcludingIDValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {

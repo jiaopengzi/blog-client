@@ -50,3 +50,7 @@ minimumReleaseAgeExclude:
     - "@vitest/mocker@5.0.1"
     - "@vitest/spy@5.0.1"
     - vitest@5.0.1
+    - "@lezer/highlight@1.2.4"
+    - "@uiw/codemirror-themes@4.25.12"
+    - "@zumer/snapdom@3.1.1"
+    - vite@8.3.1

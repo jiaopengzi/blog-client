@@ -24,6 +24,18 @@ import CustomCol from "./index.vue"
 
 let currentRow: Record<string, unknown> = {}
 
+function mountTagCol(props: Record<string, unknown>) {
+    return mount(CustomCol, {
+        props: { col: { prop: "tags", label: "标签", isTags: true }, ...props },
+        global: {
+            stubs: {
+                ElTableColumn: ElTableColumnStub,
+                TagItem: TagItemStub,
+            },
+        },
+    })
+}
+
 const ElTableColumnStub = defineComponent({
     name: "ElTableColumn",
     /**
@@ -142,17 +154,6 @@ describe("CustomCol", () => {
         currentRow = {
             tags: createTags(),
         }
-
-        const mountTagCol = (props: Record<string, unknown>) =>
-            mount(CustomCol, {
-                props: { col: { prop: "tags", label: "标签", isTags: true }, ...props },
-                global: {
-                    stubs: {
-                        ElTableColumn: ElTableColumnStub,
-                        TagItem: TagItemStub,
-                    },
-                },
-            })
 
         // 未显式传入时使用默认 100px
         const withDefault = mountTagCol({})

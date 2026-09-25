@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 表单验证
+ * Description : 表单验证, 提升静态校验函数
  */
 
 import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
@@ -49,37 +49,39 @@ function checkCommon(value: string, callback: (error?: string | Error | undefine
     return true
 }
 
+// 检查优惠券代码是否可用
+function checkCodeValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
+    void rule
+
+    // 调用共用校验函数
+    if (!checkCommon(value, callback)) {
+        return
+    }
+
+    // 请求参数
+    const req: CheckCouponCodeRequest = {
+        code: value,
+    }
+
+    // 调用后端接口
+    checkCouponCodeAPI(req).then((res) => {
+        if (res.data.code === ResponseCode.CouponCodeNotExist) {
+            callback()
+            return
+        } else {
+            const errMsg = handleResErr(res, "优惠券不可用")
+            callback(new Error(errMsg))
+            return
+        }
+    })
+}
+
 // 表单验证
 export function useFormValidation(options: FormValidationOptions): {
     addRules: FormRules<ViewForm>
     editRules: FormRules<ViewForm>
 } {
     const { form } = options
-
-    // 检查优惠券代码是否可用
-    function checkCodeValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 调用共用校验函数
-        if (!checkCommon(value, callback)) {
-            return
-        }
-
-        // 请求参数
-        const req: CheckCouponCodeRequest = {
-            code: value,
-        }
-
-        // 调用后端接口
-        checkCouponCodeAPI(req).then((res) => {
-            if (res.data.code === ResponseCode.CouponCodeNotExist) {
-                callback()
-                return
-            } else {
-                const errMsg = handleResErr(res, "优惠券不可用")
-                callback(new Error(errMsg))
-                return
-            }
-        })
-    }
 
     // 检查优惠券码是否可用(排除 ID)
     function checkCodeExcludingIDValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {

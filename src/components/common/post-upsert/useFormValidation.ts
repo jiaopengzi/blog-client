@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 表单验证逻辑
+ * Description : 表单验证逻辑, 提升静态校验函数
  */
 
 import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
@@ -174,34 +174,73 @@ function checkThumbnailValidator(rule: unknown, value: string, callback: (error?
     callback()
 }
 
+/**
+ * @description: 校验文章标题字段
+ * @param rule 表单规则, 当前校验中未使用
+ * @param value 当前输入值
+ * @param callback 校验完成回调
+ * @return void
+ */
+function checkPostTitleValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
+    void rule
+
+    // 不能为空
+    if (!value) {
+        callback(new Error("文章标题不能为空"))
+        return
+    }
+
+    // 首尾不能包含空格
+    if (value.match(RegexPatterns.IsTrim)) {
+        callback(new Error("首尾不能包含空格"))
+        return
+    }
+
+    // 长度不能超过 255
+    if (value.length > titleLength) {
+        callback(new Error("文章标题长度不能超过 255"))
+        return
+    }
+
+    callback()
+}
+
+/**
+ * @description: 校验 SEO 标题字段
+ * @param rule 表单规则, 当前校验中未使用
+ * @param value 当前输入值
+ * @param callback 校验完成回调
+ * @return void
+ */
+function checkSeoTitleValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
+    void rule
+
+    // 若为空, 则直接返回
+    if (!value) {
+        callback()
+        return
+    }
+
+    // 首尾不能包含空格
+    if (value.match(RegexPatterns.IsTrim)) {
+        callback(new Error("首尾不能包含空格"))
+        return
+    }
+
+    // 长度不能超过 255
+    if (value.length > titleLength) {
+        callback(new Error("SEO 标题长度不能超过 255"))
+        return
+    }
+
+    callback()
+}
+
 // 表单验证
 export function useFormValidation(options: FormValidationOptions): {
     rules: FormRules<UpsertPostForm>
 } {
     const { form, postContentError } = options
-
-    // 检查文章标题是否可用
-    function checkPostTitleValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 不能为空
-        if (!value) {
-            callback(new Error("文章标题不能为空"))
-            return
-        }
-
-        // 首尾不能包含空格
-        if (value.match(RegexPatterns.IsTrim)) {
-            callback(new Error("首尾不能包含空格"))
-            return
-        }
-
-        // 长度不能超过 255
-        if (value.length > titleLength) {
-            callback(new Error("文章标题长度不能超过 255"))
-            return
-        }
-
-        callback()
-    }
 
     // 检查文章内容是否可用
     function checkPostContentValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
@@ -242,29 +281,6 @@ export function useFormValidation(options: FormValidationOptions): {
         // 长度不能超过 64
         if (value.length > 64) {
             callback(new Error("文章密码长度不能超过 64"))
-            return
-        }
-
-        callback()
-    }
-
-    // 检查 SEO 标题是否可用
-    function checkSeoTitleValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 若为空, 则直接返回
-        if (!value) {
-            callback()
-            return
-        }
-
-        // 首尾不能包含空格
-        if (value.match(RegexPatterns.IsTrim)) {
-            callback(new Error("首尾不能包含空格"))
-            return
-        }
-
-        // 长度不能超过 255
-        if (value.length > titleLength) {
-            callback(new Error("SEO 标题长度不能超过 255"))
             return
         }
 
