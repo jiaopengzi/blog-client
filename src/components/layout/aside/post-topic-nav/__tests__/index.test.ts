@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 专题导航组件测试 (树渲染/当前高亮/空数据不渲染/排序切换含记忆/点击跳转含禁用预取/手风琴互斥/文章切换链重算/链路递归 active)
+ * Description : 专题导航组件测试 (树渲染/当前高亮/空数据不渲染/排序切换含记忆/点击跳转含禁用预取/手风琴互斥/文章切换链重算/链路递归 active/校准流路由失效保护)
  */
 
 import { flushPromises, mount } from "@vue/test-utils"
@@ -11,23 +11,35 @@ import { describe, expect, it, beforeEach, vi } from "vitest"
 import { defineComponent, reactive } from "vue"
 
 import type { PostTopicNav as TopicNavData } from "@/api/post/topicNav"
+import { ResponseCode } from "@/api/response"
 import { LocalStorageKey } from "@/stores/local"
 
 // 可变测试状态: useAsyncData 以普通对象模拟 (data.value 语义), 用例按需注入导航数据
 const state = vi.hoisted(() => ({
     navData: null as TopicNavData | null,
     route: null as { params: { id: string }; name: string } | null,
+    // 登录校准流相关 (bf-260925-01 反馈#1/#2): isLogin 供 user store 替身读取, viewTopicNavAPI 供校准 fetch 受控注入
+    isLogin: false,
+    viewTopicNavAPI: null as ((req: { post_id: string }) => Promise<{ data: { code: number; msg: string; data: TopicNavData | null } }>) | null,
 }))
 
 // 组件源码中 useAsyncData/useRoute 经 Nuxt 自动导入解析到 #app/composables/*, 非 nuxt 环境以受控替身提供
 // data 必须为真实 computed: 模板 unref 只解包 ref/computed, 普通对象会让 navData.root_category 取值为 undefined
+// data 为可写 computed (bf-260925-01 反馈#1): 登录校准流对数据槽赋值 (navData.value = ...) 时写回 state, 供守卫用例断言
 // route 为 reactive 对象: postId computed 与展开链 watch 随 params.id 变化响应 (模拟客户端文章切换)
 vi.mock("#app/composables/asyncData", async (importOriginal) => {
     const actual = (await importOriginal()) as Record<string, unknown>
     const { computed } = await import("vue")
     return {
         ...actual,
-        useAsyncData: () => ({ data: computed(() => state.navData) }),
+        useAsyncData: () => ({
+            data: computed({
+                get: () => state.navData,
+                set: (v: TopicNavData | null) => {
+                    state.navData = v
+                },
+            }),
+        }),
     }
 })
 
@@ -36,6 +48,26 @@ vi.mock("#app/composables/router", async (importOriginal) => {
     return {
         ...actual,
         useRoute: () => state.route,
+    }
+})
+
+// 登录校准流依赖全局 initStores/user store (bf-260925-01 反馈#2): 单测环境无 active Pinia,
+// 真实 store 流会在用例结束后继续执行并抛 getActivePinia unhandled rejection, 以最小替身隔离
+vi.mock("@/stores/init", () => ({
+    isInitStoresReady: () => true,
+    getInitStoresPromise: () => Promise.resolve(),
+}))
+
+vi.mock("@/stores/user", () => ({
+    useUserStore: () => ({ isLogin: state.isLogin }),
+}))
+
+// 校准 fetch 的 API 受控注入 (bf-260925-01 反馈#1): 默认返回无数据码, 用例可替换为挂起 Promise 模拟在途
+vi.mock("@/api/post/topicNav", async (importOriginal) => {
+    const actual = (await importOriginal()) as Record<string, unknown>
+    return {
+        ...actual,
+        viewTopicNavAPI: (req: { post_id: string }) => state.viewTopicNavAPI!(req),
     }
 })
 
@@ -128,6 +160,8 @@ describe("PostTopicNav 组件", () => {
         localStorage.clear()
         state.navData = mockNav
         state.route = reactive({ params: { id: "990001" }, name: "post" })
+        state.isLogin = false
+        state.viewTopicNavAPI = vi.fn(async () => ({ data: { code: ResponseCode.PostViewTopicNavIsNone, msg: "", data: null } }))
     })
 
     it("树渲染: 卡片标题为专题根名称, 分组带序号, 当前文章链外分组折叠", async () => {
@@ -284,6 +318,33 @@ describe("PostTopicNav 组件", () => {
         expect(links[1]!.element.tagName.toLowerCase()).toBe("span")
         expect(links[1]!.attributes("data-to")).toBeUndefined()
         expect(links[1]!.classes()).toContain("is-current")
+    })
+
+    it("校准流路由失效保护 (bf-260925-01 反馈#1): 登录校准 fetch 在途切文, 晚到的旧文章树被丢弃不覆盖数据槽", async () => {
+        state.isLogin = true
+        let releaseFetch!: (value: { data: { code: number; msg: string; data: TopicNavData | null } }) => void
+        state.viewTopicNavAPI = () =>
+            new Promise((resolve) => {
+                releaseFetch = resolve
+            })
+
+        const wrapper = mountTopicNav()
+        await flushPromises()
+
+        // 校准 fetch 在途 (挂起), 模拟用户快速切换文章: 新文章的数据由 useAsyncData(watch postId) 路径负责
+        state.route!.params.id = "990006"
+        await flushPromises()
+
+        // 晚到的旧文章树 resolve: 守卫丢弃 (发起时锁定 990001 ≠ 当前 990006), 数据槽保持现有树
+        const staleNav = JSON.parse(JSON.stringify(mockNav)) as TopicNavData
+        staleNav.root_category.name = "旧文章树"
+        releaseFetch({ data: { code: ResponseCode.PostViewTopicNavSuccess, msg: "", data: staleNav } })
+        await flushPromises()
+
+        expect(state.navData).toBe(mockNav)
+        expect(wrapper.find(".topic-nav-title").text()).toBe("测试专题A")
+        // 当前高亮随新文章 (990006 = 共享文章), 不因晚到旧树丢失
+        expect(wrapper.find(".topic-nav-post.is-current").text()).toBe("共享文章")
     })
 
     it("数据 key 常量: 组件与 layout-aside 互斥读取共用同一固定 key", () => {

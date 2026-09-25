@@ -17,6 +17,7 @@
  * 失败静默: 数据为 null 时卡片不渲染 + console.warn 一次, 正文与侧栏其余部分不受影响;
  * 登录态校准 (D4): SSR 恒匿名口径, 水合后 isInitStoresReady 且已登录则带 token 复拉覆盖 (补本人私密文章, 复刻 bf-260903-01);
  * 登录态首屏单请求 (bf-260925-01): login_hint=1 且登录态未就绪时 handler 跳过匿名首拉 (undefined 不 settle), onMounted 校准统一拉取, 登录提示过期时匿名兜底;
+ * 校准流失效守卫 (bf-260925-01 反馈#1/#2): 校准异步流卸载即终止; 校准 fetch 发起时锁定文章 ID, await 期间切文/卸载则丢弃晚到的旧文章树, 不覆盖 useAsyncData 新路径写入的数据槽;
  * 排序切换 (D3): icon 双态, 默认时间正序 = 后端原数组; 字母序仅前端按组内标题本地重排, 偏好 localStorage 记忆;
  * 分组顺序恒按后端 order, 不参与切换; localeCompare 只在客户端执行, 无水合风险.
 -->
@@ -38,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, provide, ref, useTemplateRef, watch } from "vue"
+import { computed, nextTick, onMounted, onUnmounted, provide, ref, useTemplateRef, watch } from "vue"
 
 import { type PostTopicNav, type PostTopicNavCategory, viewTopicNavAPI } from "@/api/post/topicNav"
 import { ResponseCode } from "@/api/response"
@@ -248,6 +249,13 @@ watch(
 )
 
 // ---------- 登录态校准 (D4, 复刻 bf-260903-01 refreshLoginAwareAsideData 模式) ----------
+// 校准流失效信号 (bf-260925-01 反馈#1/#2): 异步流跨 await 后组件可能已卸载, 继续执行会在
+// store 已销毁的环境抛错 (测试 unhandled rejection 的来源), 卸载后一切后续步骤终止
+let calibrationDisposed = false
+onUnmounted(() => {
+    calibrationDisposed = true
+})
+
 onMounted(() => {
     // 排序偏好恢复: SSR 无 localStorage, 此处客户端读取 (首帧已按时间序渲染, 保持水合一致)
     const savedSort = localStorage.getItem(LocalStorageKey.TopicNavSort)
@@ -265,6 +273,11 @@ onMounted(() => {
             // initStores 异常不阻塞导航展示, 下方按匿名口径兜底拉取
         }
 
+        // 组件已卸载: 终止校准流, 不再触碰 store 与数据槽
+        if (calibrationDisposed) {
+            return
+        }
+
         // 解除 handler 首拉跳过: 后续同路由切文的 useAsyncData(watch postId) 正常复用/拉取
         loginStoresReady = true
 
@@ -273,7 +286,16 @@ onMounted(() => {
         // 匿名口径兜底拉取, 保证卡片判定不受影响; 结果无条件赋值 —— null 是"确认非专题"的有效
         // 判定 (settled 上抛 false 解锁 layout-aside 的 4 卡片补拉), 登录态首屏跳过首拉时尤需回填
         if (useUserStore().isLogin || loginFirstFetchDeferred) {
-            navData.value = await fetchNav(postId.value)
+            // 路由失效保护 (bf-260925-01 反馈#1): 发起时锁定文章 ID, await 期间用户切文则丢弃晚到的
+            // 旧文章树 —— 新文章的判定与数据由 useAsyncData(watch postId) 路径负责, 晚到覆盖会造成
+            // 旧树错显 + 当前文章高亮丢失 + settled(false) 误隐藏 4 卡片
+            const requestPostId = postId.value
+            const result = await fetchNav(requestPostId)
+            if (calibrationDisposed || postId.value !== requestPostId) {
+                return
+            }
+
+            navData.value = result
             void locateCurrent()
         }
     })()
