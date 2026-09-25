@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 右侧浮动目录
+ * Description : 右侧浮动目录 (260925-05: 顶部与侧栏顶部等高, 高度不越过 footer; 滚动区四角圆角与面板外框统一)
 -->
 
 <!--
@@ -89,9 +89,9 @@ const currentHeadingText = computed(() => {
 <style scoped lang="scss">
 .toc-floating {
     position: fixed;
-    // 普通详情模式: 避开 fixed header(88px), 与侧栏卡片吸顶同基准 (260917-01-feedback#3);
+    // 260925-05: 顶部与侧栏顶部等高 (header + 面包屑 = 侧栏内容起点), 不再压到面包屑行;
     // 沉浸层 1000 之上 (web__fullscreen 遮蔽侧栏), 与 immersive-backtop 同级区间, 低于 header(999) 被沉浸层覆盖、低于 el-overlay(2000) 不挡弹窗
-    top: calc(#{pc.$height-header} + 16px);
+    top: calc(#{pc.$height-header} + #{pc.$height-breadcrumb});
     right: 24px;
     z-index: 1001;
     display: flex;
@@ -167,9 +167,19 @@ const currentHeadingText = computed(() => {
 
 // 整个 Toc 作为滚动内容, 高亮 marker 随内容同滚保持对齐;
 // 右上角收起按钮占位, 避免遮住首个目录条目
+// 260925-05: 面板只落在 main 内容区垂直范围内 — 底部预留 footer 高度(滚到底时 footer 顶 = 视口底 - footer 高),
+// 超长目录不再盖住 footer 与右下角回到顶部按钮 (留 16px 视觉间隙)
 .toc-floating-body {
-    max-height: calc(100vh - 120px);
+    max-height: calc(100vh - #{pc.$height-header} - #{pc.$height-breadcrumb} - #{pc.$height-footer} - 16px);
     padding-right: 24px;
     overflow-y: auto;
+    // 260925-05: 滚动容器是内容的实际裁剪盒, 自身不带圆角时目录背景/条目会以直角顶出面板圆角外框;
+    // 取面板圆角 5px 减 1px 边框的同心理想值, 四角与外框圆角视觉统一
+    border-radius: 4px;
+}
+
+// 沉浸模式: footer 被沉浸层覆盖, 无需 footer 预留, 恢复视口级高度上限
+.toc-floating--immersive .toc-floating-body {
+    max-height: calc(100vh - 120px);
 }
 </style>

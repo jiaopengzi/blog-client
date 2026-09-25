@@ -3,13 +3,18 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 网页全屏 hook
+ * Description : 网页全屏 hook (260925-05: 进出时同步 body 标记类, 供布局隐藏全局 UP 回顶按钮)
  */
 
 import { onMounted, onUnmounted, ref, unref } from "vue"
 
 // 全屏样式类名, 需要在全局样式设定样式
 const WEB_FULLSCREEN_CLASS = "web__fullscreen"
+
+// body 标记类: 布局层用它隐藏全局 UP 回顶按钮 (260925-05)
+// el-backtop 的显示状态在进入全屏后残留 (html overflow:hidden 不触发其 scroll 重算),
+// 抬高按钮 z-index 后若不隐藏会浮于沉浸层之上, 且与沉浸层内专属 backtop 重复
+const BODY_WEB_FULLSCREEN_ACTIVE_CLASS = "web-fullscreen-active"
 
 /**
  * UseWebFullscreenOptions 网页全屏 hook 的可选配置
@@ -40,6 +45,7 @@ export const useWebFullscreen = (target: MaybeElementRef, options: UseWebFullscr
 
         targetElement.classList.add(WEB_FULLSCREEN_CLASS)
         document.documentElement.style.overflow = "hidden"
+        document.body.classList.add(BODY_WEB_FULLSCREEN_ACTIVE_CLASS)
     }
 
     // 清除全屏样式
@@ -48,6 +54,7 @@ export const useWebFullscreen = (target: MaybeElementRef, options: UseWebFullscr
 
         targetElement.classList.remove(WEB_FULLSCREEN_CLASS)
         document.documentElement.style.overflow = ""
+        document.body.classList.remove(BODY_WEB_FULLSCREEN_ACTIVE_CLASS)
     }
 
     // 进入全屏

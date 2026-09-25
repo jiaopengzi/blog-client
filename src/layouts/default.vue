@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 根级默认布局 (阶段 4 终版: header/侧栏/footer 常驻, 页面仅提供内容; 侧栏客户端按设备加载)
+ * Description : 根级默认布局 (阶段 4 终版: header/侧栏/footer 常驻, 页面仅提供内容; 侧栏客户端按设备加载; 260925-05: UP 回顶 z 抬至浮动目录之上且沉浸时隐藏)
 -->
 
 <!--
@@ -69,7 +69,8 @@ onMounted(() => {
 // 返回顶部容器
 .backtop-container {
     // 位置参考 main.scss 中的 z-index 管理
-    z-index: 1000;
+    // 260925-05: 1000→1002, 需高于浮动目录面板(1001), 展开的长目录不再遮挡 UP 按钮; 仍低于 el-overlay(2000) 与 message(3000)
+    z-index: 1002;
 
     .backtop {
         height: 100%;
@@ -78,6 +79,12 @@ onMounted(() => {
         line-height: 40px;
         color: var(--jpz-color-primary);
     }
+}
+
+// 260925-05: 网页全屏 (沉浸阅读/编辑器全屏) 时隐藏布局级 UP — 沉浸层(1000)内有专属 immersive-backtop,
+// 且抬高 z-index 后若不隐藏, 按钮(1002)会浮于沉浸层之上; body 类由 useWebFullscreen 进出时切换
+.web-fullscreen-active .backtop-container {
+    display: none;
 }
 
 .content {

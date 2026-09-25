@@ -916,8 +916,9 @@ onBeforeMount(async () => {
 
 // 沉浸阅读模式下的回到顶部按钮
 // 需要 z-index 高于 .web__fullscreen(1000), 确保在沉浸阅读覆盖层之上可见
+// 260925-05: 1001→1002, 同时高于浮动目录面板(1001), 展开的长目录不再遮挡沉浸层 UP 按钮
 .immersive-backtop-container {
-    z-index: 1001;
+    z-index: 1002;
 
     .immersive-backtop {
         height: 100%;
