@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 目录组件 (260917-01: 激活项自动滚入视野; id 定位改 data-index, 规避正文粘贴同 id 内容的重复 id)
+ * Description : 目录组件 (260917-01: 激活项自动滚入视野; id 定位改 data-index, 规避正文粘贴同 id 内容的重复 id; 260925-04: 激活项滚入视野改为只滚目录自身滚动容器, 不再连带页面滚动条)
 -->
 
 <template>
@@ -56,6 +56,33 @@ const resetHeadingHighlight = (): void => {
     activeMarkerRef.value.style.height = "0px"
 }
 
+/**
+ * scrollActiveItemIntoView 将激活目录项滚入目录自身滚动容器的视野.
+ * @remarks bugfix 260925-04: 原生 scrollIntoView({block:"nearest"}) 会遍历全部可滚动的祖先链,
+ * admin 写作页的 main.el-main (页面级滚动容器) 也在链上 — 激活项低于其可视区时最右侧页面滚动条被连带拖动,
+ * 与用户手动滚动相互拉扯造成来回抖动 (260917-01 注释"不影响页面滚动位置"的判断有误, 实测可拉动页面);
+ * 现仅调整最近的滚动容器 (编辑器侧栏 .md-toc / 浮动目录面板 .toc-floating-body), 外层滚动容器一律不动.
+ * @param target - 待滚入视野的目录项元素.
+ * @returns 无返回值.
+ */
+const scrollActiveItemIntoView = (target: HTMLElement): void => {
+    let el: HTMLElement | null = target.parentElement
+    while (el && el !== document.body && el !== document.documentElement) {
+        // overflowY 为 auto/scroll/overlay 且存在实际溢出才视为滚动容器; 阈值 1px 排除子像素取整噪音
+        if (/(auto|scroll|overlay)/.test(window.getComputedStyle(el).overflowY) && el.scrollHeight - el.clientHeight > 1) {
+            const containerRect = el.getBoundingClientRect()
+            const targetRect = target.getBoundingClientRect()
+            if (targetRect.top < containerRect.top) {
+                el.scrollTop -= containerRect.top - targetRect.top
+            } else if (targetRect.bottom > containerRect.bottom) {
+                el.scrollTop += targetRect.bottom - containerRect.bottom
+            }
+            return
+        }
+        el = el.parentElement
+    }
+}
+
 // 点击标题触发事件
 const emitHeadingClicked = (index: number) => {
     emit("heading-clicked", index)
@@ -82,9 +109,9 @@ const highlightHeading = (index: number) => {
         activeMarkerRef.value.style.height = `${height}px`
         target.classList.add("toc-active")
 
-        // 260917-01: 目录列表自身可滚动时(侧栏吸顶 max-height / 沉浸浮动面板),
-        // 激活项可能被滚出列表视野, nearest 仅滚动最近的滚动容器使其可见, 不影响页面滚动位置
-        target.scrollIntoView({ block: "nearest" })
+        // 260917-01: 目录列表自身可滚动时(侧栏吸顶 max-height / 沉浸浮动面板), 激活项可能被滚出列表视野,
+        // 需滚入视野; 260925-04: 改用 scrollActiveItemIntoView, 只滚目录自身滚动容器, 不连带页面滚动条
+        scrollActiveItemIntoView(target)
     }
 }
 
