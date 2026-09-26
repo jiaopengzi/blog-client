@@ -17,6 +17,12 @@ node_modules/
 .nitro/
 .cache/
 
+# unplugin 生成物(根目录形态, 260926): vitest 的 vite root 是项目根, unplugin-vue-components
+# 扫描命中 src/components 后把全量项目组件声明写到根目录 dts; build(vite root=src/)的活产物
+# 在 src/ 下(已跟踪). 根目录两文件无任何 tsconfig 消费, 仅本地存在, 锚定忽略以免误导
+/components.d.ts
+/auto-imports.d.ts
+
 # build
 dist
 dist-ssr

@@ -189,10 +189,11 @@ export default defineNuxtConfig({
 
     // 与原项目一致: 组件全部显式导入, 关闭 Nuxt 组件目录自动扫描,
     // 避免 icons/index.ts 与 index.vue 同名冲突(NUXT_B3011).
-    // 2026-08-29 修正注释: 此前称 "unplugin-vue-components 仅负责 element-plus" 与事实不符——
-    // 该插件仍扫描 src/components 全量组件并写入 components.d.ts(57KB, 235 个项目组件,
-    // 按 directoryAsNamespace 拼名如 CommonAccountFormFooter); 运行时不受影响,
-    // 因 components:false 已关闭 Nuxt 侧自动注册, 所有组件均为显式 import.
+    // 2026-09-26 修正注释: 依赖升级(unplugin-vue-components 32.x)后, 插件默认扫描目录
+    // src/components 改为相对 vite root(src/)解析, 实际落在不存在的 src/src/components,
+    // 项目组件不再进入 dts——类型产物 src/components.d.ts 只含 El* 与 Router 条目.
+    // 运行时不受影响: components:false 已关闭 Nuxt 侧自动注册, 项目组件均为显式 import,
+    // 模板 el-* 标签由 ElementPlusResolver 按需注入.
     components: false,
 
     // 与原项目一致: 工具/store/composable 全部显式导入,

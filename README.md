@@ -2,7 +2,7 @@
 
 一个基于 Nuxt 4, Vue3 和 TypeScript 构建的博客系统前端(SSR). 它不仅包含公开博客站点, 还覆盖了登录注册, markdown 写作, 评论互动, **付费阅读** **付费下载** **付费视频** **视频播放**, 以及完整的后台管理能力.
 
-由已上线的纯 SPA 项目 [blog-client](https://github.com/jiaopengzi/blog-client) 迁移而来, 页面渲染升级为 SSR + ISR(swr), 交互行为与 SPA 版保持一致.
+前身为纯 SPA 项目 [blog-client](https://github.com/jiaopengzi/blog-client), 已完整迁移至 Nuxt 4(SSR + ISR)并发布至 v1.3.0, 本仓库是唯一维护主线, 旧 SPA 仓库仅作历史参照.
 
 效果展示：[https://jiaopengzi.com](https://jiaopengzi.com)
 
@@ -72,10 +72,11 @@ pnpm dev          # 开发服务器(端口 7364)
 pnpm dev:fresh    # 清理 nuxt 缓存后重新启动
 pnpm build        # 生产构建(产出 .output)
 pnpm preview      # 本地预览生产构建
-pnpm type-check   # vue-tsc 全量类型检查
-pnpm lint         # oxlint 检查(--fix)
-pnpm fmt          # oxfmt 格式化 src/
+pnpm type-check   # vue-tsc 全量类型检查(app 与 server 两个 tsconfig 工程)
+pnpm lint         # oxlint 检查并自动修复(oxlint --fix; 只读检查用 pnpm exec oxlint)
+pnpm fmt          # oxfmt 格式化全仓
 pnpm test         # vitest 单次运行
+pnpm cc           # lint + fmt + test + type-check + build 全链验收
 ```
 
 ## 与后端联调
@@ -109,6 +110,7 @@ pnpm test         # vitest 单次运行
 - `NUXT_DOMAIN` — 监听域名或 IP(默认 `0.0.0.0`)
 - `NUXT_CLIENT_HTTP_PORT` / `NUXT_CLIENT_HTTPS_PORT` — 前端端口(默认 7364)
 - `NUXT_HTTPS_KEY` / `NUXT_HTTPS_CERT` — HTTPS 证书路径(社交登录需要)
+- `NUXT_MAX_NAVIGATOR_HARDWARE_CONCURRENCY` — 分片哈希 Worker 并发上限(默认 4)
 - `NITRO_PORT` / `PORT` — `pnpm preview` 的监听端口
 
 ## Docker 部署
@@ -151,17 +153,19 @@ sudo docker run --rm -e NGINX_SERVER_NAME -e NUXT_API_BASE \
 ```text
 blog-client/
 ├─ public/                    # 静态资源与 VERSION 文件
-├─ server/                    # nitro 服务端路由与中间件(legacy 重定向 / robots / api 反代兜底)
+├─ server/                    # nitro 服务端层(legacy 重定向 / robots / favicon / internal 接口 / api 反代兜底 / swr 缓存 driver)
 ├─ src/
 │  ├─ api/                    # 按领域拆分的接口调用(一接口一文件)
-│  ├─ components/             # 通用组件, 编辑器, 播放器等(common/views/editor/layout/player)
+│  ├─ components/             # 通用组件, 编辑器, 播放器等(common/views/editor/layout/player/hooks)
 │  ├─ composables/            # useSiteOptions / useSeo 等
+│  ├─ customElements/         # 自定义元素解析(与 customElementsMount/ 独立挂载配套)
 │  ├─ layouts/                # default / bare-shell
-│  ├─ middleware/             # 路由中间件(admin/auth/legacy/setup)
+│  ├─ middleware/             # 路由中间件(admin/auth/legacy/setup 等全局与命名中间件)
 │  ├─ modules/                # 本地 Nuxt 模块(set-env-version)
 │  ├─ pages/                  # 文件路由(28 个页面)
 │  ├─ pkg/                    # 编辑器, Markdown, HLS 等内置功能模块封装
-│  ├─ plugins/                # Nuxt 插件(指令注册 / stores 初始化 / payload 瘦身等)
+│  ├─ plugins/                # Nuxt 插件(指令注册 / stores 初始化 / payload 瘦身 / 访问上报等)
+│  ├─ server-stubs/           # 服务端替身(浏览器专属依赖)
 │  ├─ stores/                 # Pinia 状态管理(显式导入)
 │  ├─ theme/                  # 主题域(预设 / 运行时 / 状态 / UI)
 │  └─ utils/                  # 通用工具
