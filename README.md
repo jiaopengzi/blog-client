@@ -6,6 +6,9 @@
 
 效果展示：[https://jiaopengzi.com](https://jiaopengzi.com)
 
+- [部署文档](https://jiaopengzi.com/p/7691892531658753)
+- [系列部署视频教程](https://www.bilibili.com/video/BV1Rkuw69EyS)
+
 ## 功能概览
 
 ### [🚀点击我！体验在线编辑器](https://jiaopengzi.com/md)
