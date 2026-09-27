@@ -2,7 +2,7 @@
 # Author      : jiaopengzi
 # Blog        : https://jiaopengzi.com
 # Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
-# Description : CI/CD - 同步代码到 Gitee
+# Description : CI/CD - 同步代码到 Gitee, 增强 host key 获取稳定性
 
 name: Sync Gitee
 
@@ -33,28 +33,46 @@ jobs:
                   ssh-private-key: ${{ secrets.GITEE_SSH_PRIVATE_KEY }}
 
             - name: Add Gitee host key
+              shell: bash
               run: |
                   mkdir -p ~/.ssh
-                  ssh-keyscan -H -t rsa gitee.com >> ~/.ssh/known_hosts
+                  touch ~/.ssh/known_hosts
+                  temp_known_hosts="$(mktemp)"
+
+                  # GitHub runner 到 gitee.com:22 偶发超时; 重试并要求拿到非空 host key 再继续.
+                  for attempt in 1 2 3; do
+                    if ssh-keyscan -T 10 -H -t rsa,ecdsa,ed25519 gitee.com > "$temp_known_hosts" 2>/dev/null && [ -s "$temp_known_hosts" ]; then
+                      cat "$temp_known_hosts" >> ~/.ssh/known_hosts
+                      echo "gitee host keys added on attempt ${attempt}"
+                      rm -f "$temp_known_hosts"
+                      chmod 700 ~/.ssh
+                      chmod 600 ~/.ssh/known_hosts
+                      exit 0
+                    fi
+
+                    echo "ssh-keyscan attempt ${attempt} failed; retrying..." >&2
+                    sleep 3
+                  done
+
+                  rm -f "$temp_known_hosts"
+                  echo "failed to fetch gitee host keys after 3 attempts" >&2
+                  exit 1
 
             # debug steps removed - environment is verified; proceeding to push
 
             - name: Push to Gitee
+              shell: bash
               run: |
                   # 覆盖（先移除再添加），避免因已存在 remote 报错
                   git remote remove gitee >/dev/null 2>&1 || true
                   git remote add gitee git@gitee.com:jiaopengzi/blog-client.git
-                  # 先判断远端是否已经存在 main；首次同步空仓库时直接创建 main
-                  if git ls-remote --exit-code --heads gitee main >/dev/null 2>&1; then
-                    # 远端已有 main 时，先抓取再用 --force-with-lease 做保守覆盖
-                    git fetch gitee main --prune || true
-                    if git push --force-with-lease gitee HEAD:main; then
-                      echo "push succeeded with --force-with-lease"
-                    else
-                      echo "--force-with-lease failed, falling back to --force for main"
-                      git push --force gitee HEAD:main
-                    fi
+                  # 固定从 origin/main 同步, 兼容 workflow_dispatch 下的 detached HEAD.
+                  git fetch origin main:refs/remotes/origin/main
+                  git fetch gitee main || true
+
+                  remote_main_sha=$(git rev-parse -q --verify refs/remotes/gitee/main || true)
+                  if [[ -n "$remote_main_sha" ]]; then
+                    git push --force-with-lease=refs/heads/main:"$remote_main_sha" gitee refs/remotes/origin/main:refs/heads/main
                   else
-                    # 空仓库首次同步，直接创建远端 main
-                    git push -u gitee HEAD:main
+                    git push gitee refs/remotes/origin/main:refs/heads/main
                   fi
