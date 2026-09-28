@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 统计脚本加载器回归测试, 覆盖百度跨域兼容及 GA 加载隔离
+ * Description : 统计脚本加载器回归测试, 覆盖百度 CORS/Referer 兼容及 GA 加载隔离
  */
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime"
@@ -35,7 +35,7 @@ describe("StatScripts", () => {
         vi.unstubAllGlobals()
     })
 
-    it("百度脚本禁用 CORS 属性并在加载前初始化命令队列", () => {
+    it("百度脚本移除默认 CORS 和 Referrer 限制并在加载前初始化命令队列", () => {
         useScriptMock.mockImplementationOnce(() => {
             expect(analyticsWindow["_hmt"]).toEqual([])
         })
@@ -47,6 +47,7 @@ describe("StatScripts", () => {
             {
                 src: `https://hm.baidu.com/hm.js?${baiduId}`,
                 crossorigin: false,
+                referrerpolicy: false,
             },
             {
                 trigger: "onNuxtReady",

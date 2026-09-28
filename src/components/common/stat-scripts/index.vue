@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 统计脚本加载器(@nuxt/scripts registry 版, 兼容百度非 CORS 脚本端点)
+ * Description : 统计脚本加载器(@nuxt/scripts registry 版, 兼容百度 CORS/Referer 要求)
 -->
 
 <!--
@@ -57,6 +57,8 @@ if (import.meta.client) {
                 src: `https://hm.baidu.com/hm.js?${baiduId}`,
                 // bugfix 260928-01: hm.js 不返回 CORS 响应头, 需移除默认的 crossorigin="anonymous".
                 crossorigin: false,
+                // 百度在缺少 Referer 时返回空脚本, 移除默认 no-referrer 以保持官方接入语义.
+                referrerpolicy: false,
             },
             {
                 trigger: "onNuxtReady",
