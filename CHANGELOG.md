@@ -5,12 +5,16 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
-## [v1.3.0] - 2026-09-26
+## [v1.3.0] - 2026-09-28
 
 ### ✨ Feat
 
 - 专题文章标题树导航
+
+### 🐞 Fix
+
 - nginx 配置修复
+- 百度统计跨域错误
 
 ## [v1.2.0] - 2026-09-20
 
