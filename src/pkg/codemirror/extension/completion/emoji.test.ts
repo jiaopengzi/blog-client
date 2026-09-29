@@ -56,4 +56,15 @@ describe("emojiOverride", () => {
     it("普通文本不触发 emoji 补全", () => {
         expect(emojiOverride(createCompletionContext("smile"))).toBeNull()
     })
+
+    it("已闭合的 emoji 短码后继续输入普通文本时不触发补全", () => {
+        expect(emojiOverride(createCompletionContext(":smile: kai"))).toBeNull()
+    })
+
+    it("已闭合短码后开始新的 emoji 输入时仍会触发补全", () => {
+        const result = emojiOverride(createCompletionContext(":smile: :ka"))
+
+        expect(result).not.toBeNull()
+        expect(result?.from).toBe(8)
+    })
 })
