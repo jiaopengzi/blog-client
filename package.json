@@ -11,6 +11,8 @@
         "build": "node --no-deprecation ./node_modules/nuxt/bin/nuxt.mjs build",
         "preview": "nuxi preview",
         "postinstall": "nuxt prepare",
+        "check:emoji-github-aliases": "node ./scripts/generate-emoji-github-aliases.mjs --check",
+        "generate:emoji-github-aliases": "node ./scripts/generate-emoji-github-aliases.mjs",
         "type-check": "vue-tsc --noEmit -p tsconfig.nuxt.json --composite false && vue-tsc --noEmit -p tsconfig.server.json --composite false",
         "lint": "oxlint --fix",
         "fmt": "oxfmt --write",

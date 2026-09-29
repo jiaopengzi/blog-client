@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : marked 配置的单元测试
+ * Description : marked 配置的单元测试, 覆盖 GitHub 风格 emoji alias 等回归场景
  */
 
 import { describe, expect, it } from "vitest"
@@ -24,6 +24,14 @@ describe("createMarked 函数", () => {
         expect(html).toContain("<h1")
         expect(html).toContain("标题")
         expect(html).toContain("<code>code</code>")
+    })
+
+    it("应将 GitHub 风格 emoji alias 解析为真实字符, 并保留未知短码", () => {
+        const html = createMarked()
+            .parse(":smile: :grinning: :heart_eyes: :thumbsup: :broken_heart: :thinking_face: :relaxed: :zany_face: :unknown:")
+            .toString()
+
+        expect(html).toContain("😄 😀 😍 👍 💔 🤔 ☺️ 🤪 :unknown:")
     })
 
     it("应保留 shell 语言标识, 并保留空行与逐行 code 节点", () => {
