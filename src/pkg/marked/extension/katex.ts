@@ -3,21 +3,17 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 公式扩展配置 https://katex.org/docs/options
+ * Description : 公式扩展配置, 严格模式回调类型与 KaTeX 官方定义保持同步 https://katex.org/docs/options
  */
 
-import type { KatexOptions } from "katex" // 公式
-
-type KatexStrictErrorCode = "unknownSymbol" | "unicodeTextInMathMode" | "mathVsTextUnits" | "commentAtEnd" | "htmlExtension" | "newLineInDisplayMode"
-
-type KatexStrictHandler = (errorCode: KatexStrictErrorCode, errorMsg: string, token: unknown) => boolean | "error" | "warn" | "ignore" | undefined
+import type { KatexOptions, StrictFunction } from "katex" // 公式; 复用官方回调类型以覆盖升级后新增的错误码.
 
 /**
  * handleKatexStrict 按错误码细分 KaTeX 严格模式行为.
  * @param errorCode KaTeX 严格模式错误码.
  * @returns 当前错误码对应的处理策略.
  */
-const handleKatexStrict: KatexStrictHandler = (errorCode, _errorMsg, _token) => {
+const handleKatexStrict: StrictFunction = (errorCode) => {
     if (errorCode === "unicodeTextInMathMode") {
         return "ignore"
     }

@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 工具栏组件, 文件导入导出入口位于帮助按钮之前
+ * Description : 工具栏组件, 文件入口位于帮助按钮之前, 缺省入口由计算属性控制
 -->
 
 <template>
@@ -45,13 +45,13 @@
             </button>
         </template>
         <!-- 自定义工具栏省略帮助按钮时, 仍保留文件操作入口. -->
-        <slot v-if="!toolbarBtns.some((btn) => btn.name === CommandsKey.Help)" name="file-transfer" />
+        <slot v-if="!hasHelpButton" name="file-transfer" />
     </div>
 </template>
 
 <script lang="ts" setup>
 import { useResizeObserver } from "@vueuse/core"
-import { onMounted, onUnmounted, ref, useTemplateRef } from "vue"
+import { computed, onMounted, onUnmounted, ref, useTemplateRef } from "vue"
 import { type EmojiExt } from "vue3-emoji-picker"
 
 import { CommandsKey } from "../../command"
@@ -70,6 +70,9 @@ const { toolbarBtns } = defineProps<{
     toolbarBtns: EditorToolbarButton[] // 工具栏按钮列表
     vimMode?: boolean // Vim 当前启用状态
 }>()
+
+// 自定义工具栏省略帮助按钮时仍保留文件入口; 在脚本中派生, 避免模板回调内的枚举被误推导为 Ref.
+const hasHelpButton = computed(() => toolbarBtns.some((btn) => btn.name === CommandsKey.Help))
 
 // 子组件传参
 const emit = defineEmits<{

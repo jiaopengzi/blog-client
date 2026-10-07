@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 账号相关
+ * Description : 页头账号展示, 全局水合完成后共享登录态初始化
 -->
 
 <template>
@@ -25,7 +25,8 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia"
-import { onBeforeMount } from "vue"
+
+import { onNuxtReady } from "#app"
 
 import UserInfoDropdown from "@/components/common/user-info-dropdown"
 import { RouteNames } from "@/router"
@@ -36,7 +37,9 @@ defineOptions({ name: "HeaderAccount" })
 const userStore = useUserStore()
 const { isLogin } = storeToRefs(userStore)
 
-onBeforeMount(async () => {
+// bugfix 261007-01: 页头 beforeMount 早于异步正文水合, 此时启动 initStores 会提前改写 device/options.
+// 必须与初始化插件一样等待全局水合完成, 避免生产手机端轮播高度, 头像尺寸与 SSR 快照不一致.
+onNuxtReady(async () => {
     // Nuxt 迁移适配(bugfix 260825-02 bug01): SPA 由 auth 中间件在首帧渲染前 await initStores,
     // 账号组件挂载时登录态已就绪; Nuxt 为修复 hydration mismatch 将 initStores 推迟到水合完成后
     // (onNuxtReady). 若此处直接调用 getUserInfoByToken, 会先于 initStores 的角色列表加载完成执行,

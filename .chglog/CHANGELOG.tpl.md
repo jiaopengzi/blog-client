@@ -11,10 +11,10 @@
 {{ range .Commits -}}
 
 - {{ if .Scope }}**{{ .Scope }}:** {{ end }}{{ .Subject }}
-  {{ end }}
-  {{ end -}}
-  {{ end -}}
-  {{ end -}}
+    {{ end }}
+    {{ end -}}
+    {{ end -}}
+    {{ end -}}
 
 {{ range .Versions }}
 <a name="{{ .Tag.Name }}"></a>
@@ -28,8 +28,8 @@
 {{ range .Commits -}}
 
 - {{ if .Scope }}**{{ .Scope }}:** {{ end }}{{ .Subject }}
-  {{ end }}
-  {{ end -}}
+    {{ end }}
+    {{ end -}}
 
 {{- if .NoteGroups -}}
 {{ range .NoteGroups -}}

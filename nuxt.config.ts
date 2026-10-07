@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : Nuxt 4 配置文件(SWR 水合快照一致性修复)
+ * Description : Nuxt 4 配置文件(SWR 水合快照一致性与 Nuxt 4.6 服务端渲染/Pinia 单实例内联)
  */
 
 import { fileURLToPath, URL } from "node:url"
@@ -399,8 +399,12 @@ export default defineNuxtConfig({
 
         // element-plus 内联到服务端构建: resolver 注入的 theme-chalk css 副作用导入需要
         // vite-node/rolldown 处理(Node 原生 ESM 加载外部化依赖时无法解析 .css 会崩溃)
+        // Nuxt 4.6 经 nuxt/internal/* 引入渲染器; 显式内联以保留 import.meta.dev 转换与虚拟 manifest 注入.
+        // 否则当前 Nitro dev 链会交给 Node 直接加载, SSR/CSR 页面均报 manifest/precomputed 缺失.
+        // bugfix 261007-01: Pinia 插件的绝对路径导入与业务 store 的包名导入必须一起内联.
+        // 否则 Nitro 仅内联前者, 两份 Pinia 的注入 Symbol 不同, preview SSR 读取 _s 时抛 500.
         externals: {
-            inline: ["element-plus"],
+            inline: ["element-plus", "nuxt/internal", "pinia"],
         },
 
         alias: {

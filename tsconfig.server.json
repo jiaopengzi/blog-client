@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : server 目录(Nitro 服务端)独立 tsconfig, 供 IDE 归属与 server 侧类型检查使用
+ * Description : server 目录独立 tsconfig, 保留 Nuxt 构建缓存中的 Nitro 声明以稳定类型检查
  */
 
 /**
@@ -22,5 +22,8 @@
         "composite": false,
         // 对齐 tsconfig.nuxt.json: 迁移代码大量按索引访问数组/对象且无 undefined 防御
         "noUncheckedIndexedAccess": false
-    }
+    },
+    // Nuxt 4.6 build 将 Nitro 声明移到 node_modules/.cache, 但生成配置同时排除 node_modules.
+    // 仅保留 dist 排除, 让继承的显式 include 生效; 不扩大 include, 不关闭服务端严格检查.
+    "exclude": ["dist"]
 }
