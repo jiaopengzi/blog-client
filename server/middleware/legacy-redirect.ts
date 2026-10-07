@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 老链接 301 重定向(Nitro 服务端中间件, 爬虫优先于 SSR 命中):
+ * Description : 老链接 301 重定向(Nitro 服务端中间件, 261007-02: 保留已编码的路径段, 避免二次编码):
  *              1) /?post_id=:id            → /p/:id
  *              2) /post/:id                 → /p/:id
  *              3) /?post_category_slug=:s   → /category/:s
@@ -37,6 +37,12 @@ import { $fetch } from "ofetch"
  * 兜底 404 由 pages/[...slug].vue 承接(真 404 状态码, 非 200).
  */
 
+/**
+ * 将旧链接转为站内规范路径, 对解码后的 query 编码一次, 对 pathname 保留已有编码.
+ * @param event - h3 请求事件.
+ * @returns 旧链接的 301 响应, 非旧链接继续后续中间件.
+ * @throws 别名查无文章或解析失败时抛出受控 404; 其他请求错误沿用原有处理.
+ */
 export default defineEventHandler((event) => {
     const url = getRequestURL(event)
     const { pathname, searchParams } = url
@@ -63,9 +69,11 @@ export default defineEventHandler((event) => {
     }
 
     // 2) /post/:id 路径形式(SPA 旧 redirect 路由)
+    //    bugfix 261007-02: URL.pathname 已是编码形态, 不同于 searchParams 的解码值.
+    //    再次 encodeURIComponent 会将 /post/%31 改成 /p/%2531, 导致文章 ID 改变.
     const postMatch = pathname.match(/^\/post\/([^/]+)$/)
     if (postMatch) {
-        return sendRedirect(event, buildRedirectUrl(`/p/${encodeURIComponent(postMatch[1])}`, []), 301)
+        return sendRedirect(event, buildRedirectUrl(`/p/${postMatch[1]}`, []), 301)
     }
 
     // 3) 首页分类查询参数 → 独立分类页

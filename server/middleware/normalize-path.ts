@@ -3,7 +3,8 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 请求路径规范化与缓存 key 治理 (Nitro 服务端中间件, 按文件名字典序排在
+ * Description : 请求路径规范化与缓存 key 治理 (261007-02: 保留原始 URL 编码并合并混合前导分隔符, 保证同源重定向;
+ *               Nitro 服务端中间件, 按文件名字典序排在
  *               legacy-redirect 之后执行——双斜杠规范化晚于旧链接重定向无碍, h3 的
  *               getRequestURL 自带同类规范化; 而缓存 key 覆写必须在其后, 否则
  *               legacy-redirect 经 getRequestURL 读不到原始 query, 旧链接重定向会失效):
@@ -74,12 +75,25 @@ function extractPaginationQuery(queryString: string): string {
     return parts.length > 0 ? `?${parts.join("&")}` : ""
 }
 
+/**
+ * 规范化前导正反斜杠并治理 SWR 缓存 key, 保留重定向 URL 的编码与渲染请求的 query.
+ * @param event - h3 请求事件, originalUrl 为中间件链入口保存的原始编码 URL.
+ * @returns 前导双斜杠请求的 301 响应, 否则继续后续中间件; 不捕获或隐藏下游错误.
+ */
 export default defineEventHandler((event) => {
+    const req = event.node.req
+    const rawUrl = req.originalUrl ?? req.url ?? "/"
+
     // 1) 双斜杠规范化: 301 到单斜杠形态(保留其余 path 与 query), middleware return 短路
     //    后续 layer——静默改写 event._path/req.url 会被 h3 app 循环在进入下一 layer 前
     //    用入口捕获的原始 path 重置, 不可行(见文件头说明)
-    if (event.path.startsWith("//")) {
-        return sendRedirect(event, event.path.replace(/^\/+/, "/"), 301)
+    //    bugfix 261007-02: event.path 已经 h3 解码, %0a/中文会成为换行/Unicode,
+    //    直接写入 Location 会触发 ERR_INVALID_CHAR. 从原始 URL 判断并构造目标,
+    //    保留 path/query 的编码, 不二次编码 %, 不改动 query 内的 https:// 等斜杠.
+    //    同时合并前导反斜杠: 浏览器会把 /\\host 解释为协议相对地址, 只移除正斜杠
+    //    会让 //\\host 变成跨域跳转. 仅处理开头连续的分隔符, 与 h3 getRequestURL 对齐.
+    if (/^[/\\]{2}/.test(rawUrl)) {
+        return sendRedirect(event, rawUrl.replace(/^[/\\]+/, "/"), 301)
     }
 
     // 2) swr 页面缓存 key 治理: 覆写 originalUrl(cachedEventHandler 的 key 优先读它,
@@ -88,8 +102,6 @@ export default defineEventHandler((event) => {
     //    注意必须基于 originalUrl 自身(请求原始编码形态)重建: event.path 已被 h3 的
     //    _decodePath 解码(中文等非 ASCII 路径), 若用解码形态拼接, 同一路径的编码/解码
     //    形态会 hash 出两个不同缓存 key, 中文 slug 的分类/标签页将失去 query 变体共享
-    const req = event.node.req as { originalUrl?: string }
-    const rawUrl = req.originalUrl ?? ""
     const rawQueryIndex = rawUrl.indexOf("?")
     if (rawQueryIndex > 0) {
         const rawPathname = rawUrl.slice(0, rawQueryIndex)
