@@ -159,4 +159,5 @@ export enum IconKeys {
     PowerBiUnion = "power-bi-union",
     PowerBi = "power-bi",
     Captcha = "captcha",
+    ImportExport = "import-export",
 }

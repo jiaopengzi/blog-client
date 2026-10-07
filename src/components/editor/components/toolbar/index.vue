@@ -3,44 +3,49 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 工具栏组件
+ * Description : 工具栏组件, 文件导入导出入口位于帮助按钮之前
 -->
 
 <template>
     <div ref="toolbarRef" id="toolbar">
-        <button v-for="btn in toolbarBtns" type="button" :key="btn.name" class="toolbar-btn" @mousedown.prevent @click="emitToolbarBtnClicked(btn)">
-            <!-- 付费 -->
-            <BarPay v-if="btn.name === CommandsKey.PayContent" :icon="btn.icon" @pay-select="handlePaySelect" />
+        <template v-for="btn in toolbarBtns" :key="btn.name">
+            <slot v-if="btn.name === CommandsKey.Help" name="file-transfer" />
+            <button type="button" class="toolbar-btn" @mousedown.prevent @click="emitToolbarBtnClicked(btn)">
+                <!-- 付费 -->
+                <BarPay v-if="btn.name === CommandsKey.PayContent" :icon="btn.icon" @pay-select="handlePaySelect" />
 
-            <!-- 标题 -->
-            <BarHeading v-else-if="btn.name === CommandsKey.Heading" :icon="btn.icon" @heading-select="handleHeadingSelect" />
+                <!-- 标题 -->
+                <BarHeading v-else-if="btn.name === CommandsKey.Heading" :icon="btn.icon" @heading-select="handleHeadingSelect" />
 
-            <!-- emoji表情 -->
-            <BarEmoji v-else-if="btn.name === CommandsKey.Emoji" :icon="btn.icon" @emoji-picker-selected="handleEmojiPickerSelected" />
+                <!-- emoji表情 -->
+                <BarEmoji v-else-if="btn.name === CommandsKey.Emoji" :icon="btn.icon" @emoji-picker-selected="handleEmojiPickerSelected" />
 
-            <!-- 表格 -->
-            <BarTable v-else-if="btn.name === CommandsKey.Table" :icon="btn.icon" @table-row-col="handleTableRowCol" />
+                <!-- 表格 -->
+                <BarTable v-else-if="btn.name === CommandsKey.Table" :icon="btn.icon" @table-row-col="handleTableRowCol" />
 
-            <!-- 提示 -->
-            <BarAlert v-else-if="btn.name === CommandsKey.Alert" :icon="btn.icon" @alert-select="handleAlertSelect" />
+                <!-- 提示 -->
+                <BarAlert v-else-if="btn.name === CommandsKey.Alert" :icon="btn.icon" @alert-select="handleAlertSelect" />
 
-            <!-- vim -->
-            <BarVim
-                v-else-if="btn.name === CommandsKey.Vim"
-                :icon="btn.icon"
-                :vim-mode="vimMode"
-                @vim-mode-change="handleVimModeChange"
-                @vim-settings="handleVimSettings"
-            />
+                <!-- vim -->
+                <BarVim
+                    v-else-if="btn.name === CommandsKey.Vim"
+                    :icon="btn.icon"
+                    :vim-mode="vimMode"
+                    @vim-mode-change="handleVimModeChange"
+                    @vim-settings="handleVimSettings"
+                />
 
-            <!-- 工具 -->
-            <BarTool v-else-if="btn.name === CommandsKey.Tool" :icon="btn.icon" @tool-select="handleToolSelect" @tool-settings="handleToolSettings" />
+                <!-- 工具 -->
+                <BarTool v-else-if="btn.name === CommandsKey.Tool" :icon="btn.icon" @tool-select="handleToolSelect" @tool-settings="handleToolSettings" />
 
-            <!-- 其他 bar -->
-            <el-tooltip v-else effect="dark" :content="btn.display" :hide-after="0" :show-after="300">
-                <j-icon :name="btn.icon" custom-class="iconfont" />
-            </el-tooltip>
-        </button>
+                <!-- 其他 bar -->
+                <el-tooltip v-else effect="dark" :content="btn.display" :hide-after="0" :show-after="300">
+                    <j-icon :name="btn.icon" custom-class="iconfont" />
+                </el-tooltip>
+            </button>
+        </template>
+        <!-- 自定义工具栏省略帮助按钮时, 仍保留文件操作入口. -->
+        <slot v-if="!toolbarBtns.some((btn) => btn.name === CommandsKey.Help)" name="file-transfer" />
     </div>
 </template>
 

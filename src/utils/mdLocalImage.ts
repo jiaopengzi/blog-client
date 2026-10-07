@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : /md 页本地图片存储与渲染引用工具 (IndexedDB + blob URL + 存储配额策略)
+ * Description : /md 页本地图片存储、渲染引用与只读导出工具 (IndexedDB + blob URL + 存储配额策略)
  */
 
 /**
@@ -189,6 +189,19 @@ export async function putLocalImage(file: File): Promise<string> {
  */
 export function getAllLocalImages(): Promise<LocalImageRecord[]> {
     return withStore("readonly", (store) => store.getAll() as IDBRequest<LocalImageRecord[]>)
+}
+
+/**
+ * getLocalImageBlob 按引用读取原始图片, 导出不依赖可能已过期的 blob URL 或触发垃圾回收.
+ * @param id - Markdown 中的本地图片 id.
+ * @returns 原始图片 Blob; 记录缺失或数据库不可用时抛错, 避免静默导出破图.
+ */
+export async function getLocalImageBlob(id: string): Promise<Blob> {
+    const record = await withStore("readonly", (store) => store.get(id) as IDBRequest<LocalImageRecord | undefined>)
+    if (!record?.blob) {
+        throw new Error(`本地图片不存在: ${id}, 请恢复图片后重试`)
+    }
+    return record.blob
 }
 
 /**

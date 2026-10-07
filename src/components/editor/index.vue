@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 编辑器
+ * Description : 编辑器, 支持文章 Markdown 导入与内嵌本地图片导出
 -->
 
 <template>
@@ -25,7 +25,11 @@
                 @vim-mode-change="setVimMode"
                 @vim-settings="openSettingsDialog"
                 @toolbar-height="updateMdContainerStyle"
-            />
+            >
+                <template #file-transfer>
+                    <FileTransfer v-if="state.mode === 'post'" :markdown="state.editorContent" @import="replaceContent" />
+                </template>
+            </Toolbar>
         </div>
 
         <!-- 编辑器容器 -->
@@ -143,6 +147,7 @@ import { DeviceType, useDeviceStore } from "@/stores/device"
 import { CommandsKey } from "./command"
 
 import EditorCodemirror, { type CodemirrorRef } from "./components/codemirror"
+import FileTransfer from "./components/file-transfer"
 import HtmlPreview from "./components/preview/index.vue"
 import type { HtmlPreviewRef } from "./components/preview/types"
 import EditorResizeHandle from "./components/resize-handle"
@@ -472,8 +477,8 @@ const updateEditorDoc = (editorDoc: string) => {
 }
 
 /**
- * 将外部修复后的完整内容回写到编辑器与预览状态
- * @param editorDoc 修复后的 Markdown 内容
+ * 将外部修复或文件导入的完整内容回写到编辑器与预览状态.
+ * @param editorDoc 修复或导入后的 Markdown 内容.
  * @returns 无返回值
  */
 const replaceContent = (editorDoc: string) => {

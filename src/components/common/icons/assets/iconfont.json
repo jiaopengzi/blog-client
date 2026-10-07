@@ -6,6 +6,13 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
+      "icon_id": "9400174",
+      "name": "import-export",
+      "font_class": "import-export",
+      "unicode": "e7a2",
+      "unicode_decimal": 59298
+    },
+    {
       "icon_id": "27253672",
       "name": "captcha",
       "font_class": "captcha",
