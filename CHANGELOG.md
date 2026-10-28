@@ -5,7 +5,7 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
-## [v1.3.0] - 2026-10-07
+## [v1.3.0] - 2026-10-28
 
 ### ✨ Feat
 
@@ -18,6 +18,11 @@
 - nginx 配置修复
 - 百度统计跨域错误和 Referer 策略
 - 修复 URL 重定向编码异常与混合斜杠跨域跳转
+- 使用有序列表原生编号
+
+### 📦 Build
+
+- 依赖更新
 
 ## [v1.2.0] - 2026-09-20
 
