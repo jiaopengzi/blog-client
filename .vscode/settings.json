@@ -92,6 +92,7 @@
         "LASTEXITCODE",
         "leqno",
         "lezer",
+        "libc",
         "linewise",
         "listhen",
         "localtime",

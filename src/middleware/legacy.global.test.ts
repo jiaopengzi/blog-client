@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 老链接软导航的动态路径段编码回归测试.
+ * Description : 老链接软导航的动态路径段编码及真实路由导航回归测试.
  */
 
 import type { RouteMiddleware } from "#app"
@@ -40,10 +40,11 @@ const router = createRouter({
 /**
  * 执行首页老链接中间件并由真实路由解析目标.
  * @param query 已解码的旧链接查询参数.
- * @returns 路由解析结果; 中间件未发起重定向时断言失败.
+ * @returns 目标路由解析结果的 Promise; 中间件未发起重定向时断言失败.
  */
-const resolveLegacyTarget = (query: Record<string, string>) => {
-    const route = router.resolve({ path: "/", query })
+const resolveLegacyTarget = async (query: Record<string, string>) => {
+    await router.push({ path: "/", query })
+    const route = router.currentRoute.value
     legacyMiddleware(route, route)
     expect(mocks.navigateTo).toHaveBeenCalledTimes(1)
     expect(mocks.navigateTo.mock.calls[0]?.[1]).toEqual({ redirectCode: 301 })
@@ -64,40 +65,43 @@ describe("老链接软导航动态段编码", () => {
         ["s", "/s/"],
     ] as const
 
-    it.each(branches)("%s 的特殊字符保持为单个动态段", (key, prefix) => {
-        for (const value of ["a?b", "a#b", "a/b", "中文", "%0a", "a\nb"]) {
-            mocks.navigateTo.mockClear()
-            const target = resolveLegacyTarget({ [key]: value, current_page: "2", page_size: "10", keep: "a?b#c" })
-            expect(target.path).toBe(`${prefix}${encodeURIComponent(value)}`)
-            expect(target.params.value).toBe(value)
-            expect(target.query).toEqual({ page: "2", size: "10", keep: "a?b#c" })
-            expect(target.hash).toBe("")
-        }
+    const specialCharacterCases = branches.flatMap(([key, prefix]) =>
+        ["a?b", "a#b", "a/b", "中文", "%0a", "a\nb"].map((value) => [key, prefix, value] as const),
+    )
+
+    it.each(specialCharacterCases)("%s (%s) 的 %s 保持为单个动态段", async (key, prefix, value) => {
+        const target = await resolveLegacyTarget({ [key]: value, current_page: "2", page_size: "10", keep: "a?b#c" })
+        expect(target.path).toBe(`${prefix}${encodeURIComponent(value)}`)
+        expect(target.params.value).toBe(value)
+        expect(target.query).toEqual({ page: "2", size: "10", keep: "a?b#c" })
+        expect(target.hash).toBe("")
     })
 
-    it("年月归档的两个动态段分别编码", () => {
-        const target = resolveLegacyTarget({ year: "20?26", month: "10/#%0a", current_page: "2" })
+    it("年月归档的两个动态段分别编码", async () => {
+        const target = await resolveLegacyTarget({ year: "20?26", month: "10/#%0a", current_page: "2" })
         expect(target.path).toBe("/year/20%3F26/month/10%2F%23%250a")
         expect(target.params).toEqual({ value: "20?26", month: "10/#%0a" })
         expect(target.query).toEqual({ page: "2" })
     })
 
-    it("纯分页简写翻译保持原有语义", () => {
-        const target = resolveLegacyTarget({ current_page: "3", page_size: "20" })
+    it("纯分页简写翻译保持原有语义", async () => {
+        const target = await resolveLegacyTarget({ current_page: "3", page_size: "20" })
         expect(target.fullPath).toBe("/?page=3&size=20")
     })
 
-    it("非首页的同名查询参数不触发老链接重定向", () => {
-        const route = router.resolve({
+    it("非首页的同名查询参数不触发老链接重定向", async () => {
+        await router.push({
             path: "/s/test",
             query: { post_id: "1", post_category_slug: "2", post_tag_slug: "3", year: "2026", month: "10", key_word: "a", s: "b", current_page: "2" },
         })
+        const route = router.currentRoute.value
         expect(legacyMiddleware(route, route)).toBeUndefined()
         expect(mocks.navigateTo).not.toHaveBeenCalled()
     })
 
-    it("无旧参数的首页不发起重定向", () => {
-        const route = router.resolve("/")
+    it("无旧参数的首页不发起重定向", async () => {
+        await router.push("/")
+        const route = router.currentRoute.value
         expect(legacyMiddleware(route, route)).toBeUndefined()
         expect(mocks.navigateTo).not.toHaveBeenCalled()
     })

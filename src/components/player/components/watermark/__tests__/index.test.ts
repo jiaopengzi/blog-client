@@ -3,35 +3,60 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : VideoWatermark 组件测试 (水印内容变化重渲染)
+ * Description : VideoWatermark 组件测试 (水印内容变化及 jsdom 类型兼容)
  */
 
 import { mount } from "@vue/test-utils"
 import { nextTick } from "vue"
-import { afterEach, describe, expect, it, vi } from "vitest"
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest"
 
 import type { LogoWatermark, TextWatermark } from "@/components/player/types"
 
 import VideoWatermark from "../index.vue"
 
-// 水印元素是命令式 appendChild 创建的, 不在 Vue 虚拟树内, 统一经 DOM 查询断言
-const getTextSpans = (wrapper: ReturnType<typeof mount>) => Array.from(wrapper.element.querySelectorAll<HTMLSpanElement>(".watermark-container > span"))
+type ElementWrapper = { readonly element: Element }
 
-const getLogoImgs = (wrapper: ReturnType<typeof mount>) => Array.from(wrapper.element.querySelectorAll<HTMLImageElement>(".watermark-container > img"))
+// 水印元素是命令式 appendChild 创建的, 不在 Vue 虚拟树内, 统一经 DOM 查询断言
+const getTextSpans = (wrapper: ElementWrapper) => Array.from(wrapper.element.querySelectorAll<HTMLSpanElement>(".watermark-container > span"))
+
+const getLogoImgs = (wrapper: ElementWrapper) => Array.from(wrapper.element.querySelectorAll<HTMLImageElement>(".watermark-container > img"))
 
 const mountComponent = (props: { textWatermark?: TextWatermark; logoWatermark?: LogoWatermark } = {}) => {
     // attachTo: 随机定位重试链路校验 watermark.isConnected, 需挂到 document 使元素处于已连接状态
     return mount(VideoWatermark, { props, attachTo: document.body })
 }
 
-// happy-dom 不做真实布局, 容器 clientWidth/clientHeight 恒为 0; 用 defineProperty 覆盖实例属性模拟容器尺寸
-const mockContainerSize = (wrapper: ReturnType<typeof mount>, width: number, height: number) => {
+// jsdom 不做真实布局, 容器 clientWidth/clientHeight 恒为 0; 用 defineProperty 覆盖实例属性模拟容器尺寸
+const mockContainerSize = (wrapper: ElementWrapper, width: number, height: number) => {
     const container = wrapper.element
     Object.defineProperty(container, "clientWidth", { configurable: true, get: () => width })
     Object.defineProperty(container, "clientHeight", { configurable: true, get: () => height })
 }
 
 describe("VideoWatermark 组件", () => {
+    let mockedInnerText = false
+
+    beforeAll(() => {
+        if (!("innerText" in HTMLSpanElement.prototype)) {
+            Object.defineProperty(HTMLSpanElement.prototype, "innerText", {
+                configurable: true,
+                get(this: HTMLSpanElement) {
+                    return this.textContent ?? ""
+                },
+                set(this: HTMLSpanElement, value: string) {
+                    this.textContent = value
+                },
+            })
+            mockedInnerText = true
+        }
+    })
+
+    afterAll(() => {
+        if (mockedInnerText) {
+            Reflect.deleteProperty(HTMLSpanElement.prototype, "innerText")
+        }
+    })
+
     it("挂载时渲染文字水印与 logo 水印", async () => {
         const wrapper = mountComponent({ textWatermark: { content: "默认水印" }, logoWatermark: { imgUrl: "https://example.com/logo.png" } })
         await nextTick()
@@ -132,7 +157,7 @@ describe("VideoWatermark 组件", () => {
         it("容器尺寸就绪时按随机值定位", async () => {
             const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5)
 
-            // 挂载时 happy-dom 容器为 0x0 (随机定位进入 rAF 重试); 就绪尺寸后变更 content 触发重渲染重新定位
+            // 挂载时 jsdom 容器为 0x0 (随机定位进入 rAF 重试); 就绪尺寸后变更 content 触发重渲染重新定位
             const style = { color: "blue", fontSize: "12px" } as TextWatermark["style"]
             const wrapper = mountComponent({ textWatermark: { content: "默认水印", style } })
             mockContainerSize(wrapper, 720, 405)

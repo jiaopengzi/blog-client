@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 目录组件测试 (260917-01: data-index 定位 + 激活项滚入视野; 260925-04: 激活项只滚目录自身滚动容器, 不连带页面滚动条)
+ * Description : 目录组件测试 (激活项定位及滚动容器隔离)
  */
 
 import { mount } from "@vue/test-utils"
@@ -26,12 +26,12 @@ const mountToc = (headingShowCurrentIndex = 0) => {
 }
 
 describe("EditorToc 组件", () => {
-    let scrollIntoViewSpy: ReturnType<typeof vi.fn>
+    let scrollIntoViewSpy = vi.fn<Element["scrollIntoView"]>()
 
     beforeEach(() => {
-        // happy-dom 的 scrollIntoView 为空实现, 统一替换为 spy;
+        // jsdom 不实现 scrollIntoView, 统一替换为 spy;
         // 260925-04 后组件不再调用它 (原生实现会连带滚动页面级滚动容器), spy 用于断言"绝不被调用"
-        scrollIntoViewSpy = vi.fn()
+        scrollIntoViewSpy = vi.fn<Element["scrollIntoView"]>()
         Element.prototype.scrollIntoView = scrollIntoViewSpy
     })
 

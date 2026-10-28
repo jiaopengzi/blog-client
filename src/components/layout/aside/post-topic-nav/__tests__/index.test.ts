@@ -3,11 +3,11 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 专题导航组件测试 (树渲染/当前高亮/空数据不渲染/排序切换含记忆/点击跳转含禁用预取/手风琴互斥/文章切换链重算/链路递归 active/校准流路由失效保护)
+ * Description : 专题导航组件测试 (树渲染/排序/手风琴/文章切换/校准流及滚动定位)
  */
 
 import { flushPromises, mount } from "@vue/test-utils"
-import { describe, expect, it, beforeEach, vi } from "vitest"
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
 import { defineComponent, reactive } from "vue"
 
 import type { PostTopicNav as TopicNavData } from "@/api/post/topicNav"
@@ -156,7 +156,23 @@ const findGroupHead = (wrapper: ReturnType<typeof mountTopicNav>, name: string) 
     wrapper.findAll(".topic-nav-group-head").find((item) => item.find(".topic-nav-group-name").text() === name)
 
 describe("PostTopicNav 组件", () => {
+    const scrollIntoView = vi.fn()
+    const originalScrollIntoView = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "scrollIntoView")
+
+    beforeAll(() => {
+        Object.defineProperty(HTMLElement.prototype, "scrollIntoView", { configurable: true, value: scrollIntoView })
+    })
+
+    afterAll(() => {
+        if (originalScrollIntoView) {
+            Object.defineProperty(HTMLElement.prototype, "scrollIntoView", originalScrollIntoView)
+        } else {
+            Reflect.deleteProperty(HTMLElement.prototype, "scrollIntoView")
+        }
+    })
+
     beforeEach(() => {
+        scrollIntoView.mockClear()
         localStorage.clear()
         state.navData = mockNav
         state.route = reactive({ params: { id: "990001" }, name: "post" })
@@ -176,6 +192,10 @@ describe("PostTopicNav 组件", () => {
         const groups = wrapper.findAll(".topic-nav-group-name").map((item) => item.text())
         expect(groups).toEqual(["章节一", "章节一-子节", "章节二"])
         expect(wrapper.findAll(".topic-nav-group-index")[0]!.text()).toBe("1.")
+        await wrapper.find(".topic-nav-sort").trigger("click")
+        await flushPromises()
+        expect(scrollIntoView).toHaveBeenCalledWith({ block: "nearest", behavior: "instant" })
+        expect(scrollIntoView.mock.contexts).toContain(wrapper.find(".topic-nav-post.is-current").element)
     })
 
     it("手风琴默认链: 当前文章所在分组链展开, 其余折叠 (aria-expanded)", async () => {

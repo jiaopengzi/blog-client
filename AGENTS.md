@@ -1,8 +1,7 @@
 # AGENTS.md
 
 > 读者：自动化 / Agent 编码助手。
-> 内容原则：只写「可执行命令 + 可验证约定」。所有命令、配置、路径、数字均可在 `package.json`、`nuxt.config.ts`、`vitest.config.ts`、`oxlint.config.ts`、`oxfmt` 配置（`.oxfmtrc.json`）、`tsconfig*.json` 中溯源，禁止凭印象编写。
-> Nuxt 4 最佳实践优化的待办与进度不在此文件，见 `.spa2nuxt/nuxt4-good.md`。
+> 内容原则：只写「可执行命令 + 可验证约定」。命令、配置、路径和数字须能从 `package.json`、Nuxt/Vitest/TypeScript 配置、`src/`、`server/`、Docker 与 Nginx 文件或实际验收结果溯源，禁止凭印象编写。
 
 ## 1. 项目定位与验收基线
 
@@ -43,25 +42,13 @@ Uncaught TypeError: Cannot read properties of undefined (reading 'toLowerCase')
 
 处置：报错可安全忽略；如需消除，更新或停用该扩展，或排查浏览器内派发合成键盘事件的其他扩展。
 
-## 2. 技术栈与关键版本
-
-| 类别             | 版本            | 备注                                                      |
-| ---------------- | --------------- | --------------------------------------------------------- |
-| Nuxt             | 4.5.2           | `srcDir: "src"`，`compatibilityDate: "2026-08-22"`        |
-| Vue              | 3.5.43          | —                                                         |
-| Vite             | 8.3.1           | 内置 Rolldown；`build.minify: "oxc"`                      |
-| TypeScript       | 6.0.3           | —                                                         |
-| Pinia            | 4.0.3           | 经 `@pinia/nuxt` 1.0.2                                    |
-| vue-router       | 5.3.1           | —                                                         |
-| Element Plus     | 2.14.6          | 按需导入（unplugin-vue-components + ElementPlusResolver） |
-| oxlint / oxfmt   | 1.85.0 / 0.70.0 | 规则在 `oxlint.config.ts`，格式在 `.oxfmtrc.json`         |
-| vitest           | 5.0.1           | DOM 环境 **happy-dom** 20.14.5                            |
-| @nuxt/test-utils | 4.3.2           | 挂载 Nuxt vite 链                                         |
-| pnpm             | 12.6.0          | `.npmrc` 启用 `shell-emulator=true`                       |
-
-**`jsdom` 与 `@types/jsdom` 已移除**，DOM 统一 happy-dom。
+测试 DOM 统一使用 `jsdom`；`@types/jsdom` 非直接依赖，DOM 全局类型来自 TypeScript 的 DOM lib。
 
 Nuxt 官方模块：`@pinia/nuxt`、`@nuxt/fonts`、`@nuxt/scripts`、`@nuxt/image`，外加本地模块 `@/modules/set-env-version`。
+
+## 2. 技术栈
+
+项目使用 Nuxt 4、Vue 3、TypeScript、Pinia、Vue Router、Element Plus、ofetch 和 Vitest；依赖及 pnpm 的精确版本以 `package.json` 和 `pnpm-lock.yaml` 为准。容器构建与运行使用同版本 Node Alpine，见 §15。
 
 ## 3. 常用命令
 
@@ -73,7 +60,7 @@ pnpm dev              # nuxi dev
 pnpm dev:fresh        # nuxi cleanup && nuxi dev
 pnpm build            # node --no-deprecation ./node_modules/nuxt/bin/nuxt.mjs build
 pnpm preview          # nuxi preview
-pnpm type-check       # vue-tsc 双工程: tsconfig.nuxt.json(app) + tsconfig.server.json(server/)
+pnpm type-check       # vue-tsc 三工程: tsconfig.nuxt.json(app) + tsconfig.server.json(server/) + tsconfig.vitest.json(测试与工具)
 pnpm lint             # oxlint --fix（注意: 会写文件; 只读检查用 pnpm exec oxlint）
 pnpm fmt              # oxfmt --write（全仓, 按 ignorePatterns 排除）
 pnpm test             # vitest run（CI 风格单次）
@@ -81,7 +68,7 @@ pnpm testOnline       # vitest（监视模式）
 pnpm cc               # lint + fmt + test + type-check + build 全链机器验收
 ```
 
-注意：`type-check` 是 `vue-tsc --noEmit` 分别跑 `tsconfig.nuxt.json` 与 `tsconfig.server.json` 两个工程，**不是** `nuxi typecheck`；`lint:fix` 脚本已移除（`lint` 本身即 `--fix`）。
+注意：`type-check` 是 `vue-tsc --noEmit` 分别跑 `tsconfig.nuxt.json`、`tsconfig.server.json` 和 `tsconfig.vitest.json`，**不是** `nuxi typecheck`；`lint:fix` 脚本已移除（`lint` 本身即 `--fix`）。
 
 运行单个测试文件：
 
@@ -99,19 +86,19 @@ pnpm run test -- -t "格式化日期包含年月日时分秒和时区偏移"
 
 ## 4. 目录结构速查
 
-`src/` 下 1273 个 `.ts`/`.vue`，273 个 `.vue`。
+`src/` 下 1286 个 `.ts`/`.vue`，其中 1012 个 `.ts`、274 个 `.vue`（含测试与声明文件）。
 
 | 目录                                           | 职责                                                                             | 规模                         |
 | ---------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------- |
 | `src/api/`                                     | 接口层，**一接口一文件**，按业务域分目录                                         | 233 个 `.ts`                 |
-| `src/components/`                              | 组件，按 `common/` `views/` `editor/` `layout/` `player/` `hooks/` 分区          | 240 个 `.vue` + 519 个 `.ts` |
-| `src/pkg/`                                     | 自研封装层：`codemirror/` `marked/` `highlight.js/` `hls/`                       | 78 个 `.ts`                  |
-| `src/stores/`                                  | Pinia store，全部显式导入                                                        | 11 个                        |
+| `src/components/`                              | 组件，按 `common/` `views/` `editor/` `layout/` `player/` `hooks/` 分区          | 241 个 `.vue` + 527 个 `.ts` |
+| `src/pkg/`                                     | 自研封装层：`codemirror/` `marked/` `highlight.js/` `hls/` `mermaid/`            | 79 个 `.ts`                  |
+| `src/stores/`                                  | 状态与初始化模块，全部显式导入                                                   | 11 个运行时文件 + 2 个测试   |
 | `src/pages/`                                   | 文件路由                                                                         | 28 个 `.vue`                 |
-| `src/utils/`                                   | 通用工具                                                                         | 89 个                        |
+| `src/utils/`                                   | 通用工具                                                                         | 91 个 `.ts`                  |
 | `src/theme/`                                   | 主题域（预设定义 / 运行时 / 状态 / UI 四层）                                     | 16 个                        |
-| `src/composables/`                             | `useSiteOptions` / `useSeo` / `useAppLoadingIndicator` / `useDetailLoginRefresh` | 4 个                         |
-| `src/middleware/`                              | 路由中间件（3 个 `.global` + 4 个命名）                                          | 7 个                         |
+| `src/composables/`                             | `useSiteOptions` / `useSeo` / `useAppLoadingIndicator` / `useDetailLoginRefresh` | 4 个运行时文件 + 1 个测试    |
+| `src/middleware/`                              | 路由中间件（3 个 `.global` + 4 个命名）                                          | 7 个运行时文件 + 1 个测试    |
 | `src/plugins/`                                 | Nuxt 插件                                                                        | 8 个                         |
 | `src/layouts/`                                 | `default.vue` / `bare-shell.vue`                                                 | 2 个                         |
 | `src/modules/`                                 | 本地 Nuxt 模块 `set-env-version.ts`                                              | 1 个                         |
@@ -119,9 +106,9 @@ pnpm run test -- -t "格式化日期包含年月日时分秒和时区偏移"
 | `src/types/`                                   | 全局 `.d.ts`                                                                     | 7 个                         |
 | `src/server-stubs/`                            | 服务端替身（`emoji-picker.ts`，`export default {}`）                             | 1 个                         |
 
-根目录 `server/`（Nitro 服务端，13 个文件）：`middleware/`（`legacy-redirect.ts`、`normalize-path.ts`）、`plugins/favicon-sync.ts`、`routes/`（`robots.txt.ts`、`favicon.ico.ts`、`api/[...].ts` 反代兜底、`internal/cache-invalidate.post.ts`、`internal/favicon-sync.post.ts`）、`utils/`（`favicon.ts`、`optionAsset.ts`）、`drivers/swr-lru-cache.mjs`（swr 缓存 driver，见 §7.3），另有 2 个配套 `.test.ts`。
+根目录 `server/`（Nitro 服务端，14 个文件，含 3 个测试）：`middleware/`（`legacy-redirect.ts`、`normalize-path.ts`）、`plugins/favicon-sync.ts`、`routes/`（`robots.txt.ts`、`favicon.ico.ts`、`api/[...].ts` 反代兜底、`internal/cache-invalidate.post.ts`、`internal/favicon-sync.post.ts`）、`utils/`（`favicon.ts`、`optionAsset.ts`）、`drivers/swr-lru-cache.mjs`（swr 缓存 driver，见 §7.3）。
 
-`src/components/` 分区占比：`common/` 101、`views/admin/` 78、`views/`（非 admin）21、`editor/` 17、`layout/` 16、`player/` 7、`hooks/`（纯 `.ts`，组件共用 hook）50。
+`src/components/` 的 `.vue` 分区：`common/` 101、`views/admin/` 78、`views/`（非 admin）21、`editor/` 18、`layout/` 16、`player/` 7；`hooks/` 为 50 个 `.ts` 文件。
 
 ## 5. 核心架构约定（最易踩坑，优先读本节）
 
@@ -135,9 +122,9 @@ imports: { dirs: [] },    // 避免 stores 目录被 unimport 扫描产生 Dupli
 pinia: { storesDirs: [] },
 ```
 
-**这是本项目最大的反直觉约定。** Nuxt 默认自动导入组件与工具，这里全部关闭。组件、工具、composable、store 必须显式 `import`，否则不会报错、只会静默拿到 `undefined`。
+**这是本项目最大的反直觉约定。** 项目组件不自动注册，项目工具、composable、store 不扫描自动导入，必须显式 `import`；Nuxt/Vue 内建自动导入仍可使用。缺少项目组件导入可能静默失效。
 
-`unplugin-vue-components` 只负责 Element Plus 按需导入（`ElementPlusResolver` + `directoryAsNamespace: true`）：模板里的 `<el-*>` 标签由 resolver 自动注册（全仓 150+ 个 `.vue` 直用，无需显式 import），`ElMessage` / `ElMessageBox` 等命令式 API 需显式 import（另有 8 个文件同时显式导入了部分 El 组件，属既有写法）。其类型产物为 `src/components.d.ts`（约 8 KB，只含 `El*` 与 `RouterLink` / `RouterView` 条目，**不含任何项目组件**；260926 核对：依赖升级后插件默认扫描目录相对 vite root（`src/`）解析为不存在的 `src/src/components`，项目组件不再进入 dts——运行时无影响，项目组件本就全部显式 import）。`src/auto-imports.d.ts`（unplugin-auto-import 产物，声明块为空）同理落在 `src/` 下。另注意：vitest 的 vite root 是项目根，`pnpm test` 时两插件会把**另一形态**的 dts 重新生成到根目录（`components.d.ts` 收录全量项目组件，约 59 KB——扫描目录相对项目根能命中 `src/components`，与 build 链相对 `src/` 解析的结果不同）。根目录两文件无任何 tsconfig 消费（`tsconfig.vitest.json` 显式不引入），260926 起已从 git 移除跟踪并锚定 `.gitignore` 忽略，勿再提交。
+`unplugin-vue-components` 负责 Element Plus 按需导入（`ElementPlusResolver` + `directoryAsNamespace: true`）：模板里的 `<el-*>` 标签由 resolver 自动注册，`ElMessage` / `ElMessageBox` 等命令式 API 需显式 import。构建生成的 `src/components.d.ts` 包含 Element Plus 与 Router 声明，`src/auto-imports.d.ts` 的声明块为空；项目组件仍必须显式导入。Vitest 可能在项目根生成另一形态的 `components.d.ts` / `auto-imports.d.ts`，两者已由 `.gitignore` 忽略，勿提交；Nuxt 生成的应用配置会通过根目录 `*.d.ts` 包含它们，不能依据其类型声明推断项目组件已在运行时自动注册。`tsconfig.vitest.json` 不显式引入根目录生成声明。
 
 ### 5.2 目录即组件 + 就近同名 ts
 
@@ -167,6 +154,7 @@ components/editor/
 - `pkg/marked/` — `new-marked.ts` + 九个扩展（emoji / footnote / highlight / katex / mark / sub / sup / todo-list / renderer）
 - `pkg/highlight.js/` — 高亮装配 + `theme-switcher.ts`
 - `pkg/hls/` — HLS 播放装配
+- `pkg/mermaid/` — 图表惰性加载、渲染、主题联动与错误降级
 
 ## 6. 请求层
 
@@ -188,8 +176,8 @@ export function resolveApiBase(): string {
 }
 ```
 
-- SSR 直连后端（`NUXT_API_BASE`，默认 `http://10.10.2.222:5426`）
-- 浏览器走同源 `/api`：dev 由 `nitro.devProxy` 转发，preview / 生产由 `routeRules["/api/**"].proxy` 转发
+- SSR 优先读取 `runtimeConfig.apiBase`（由 `NUXT_API_BASE` 提供），非 Nuxt 上下文回退环境变量；两者都未设置时返回空字符串
+- 浏览器走同源 `/api`：dev 的 `nitro.devProxy` 目标为 `http://10.10.2.222:5426/api`；preview / 生产的 `routeRules["/api/**"].proxy` 使用构建时的 `NUXT_API_BASE`，未设置时回退 `http://10.10.2.222:5426`
 - 绝对地址（`^https?://`）不拼接 baseURL
 
 ### 6.2 token 仅客户端注入
@@ -202,7 +190,7 @@ fetch / ofetch 无法监听上传进度：浏览器端且调用方传入 `onUplo
 
 ### 6.4 重试策略
 
-GET 等幂请求由 ofetch 默认重试覆盖；写方法（`POST`/`PUT`/`PATCH`/`DELETE`）默认不重试，仅对"无响应"的网络错误补一次；有响应（4xx/5xx）不重试，避免服务端已处理但响应丢失时重复提交。
+GET 等幂请求由 ofetch 默认重试覆盖；写方法（`POST`/`PUT`/`PATCH`/`DELETE`）默认不重试，仅浏览器端对"无响应"的网络错误补一次；有响应（4xx/5xx）不重试。网络错误仍可能发生在服务端已处理后，写接口需依靠自身幂等设计避免重复提交。
 
 ### 6.5 其他
 
@@ -240,7 +228,7 @@ usePostSeo(() => detailMeta.value)
 if (!pending.value && detailMeta.value === null) throw createError({ statusCode: 404, fatal: true })
 ```
 
-列表类页面（首页 / 分类 / 标签 / 归档）走 `PostListView`，**列表数据由客户端 hooks 拉取**，SSR 只直出站壳与 SEO；登录态用户经 `data-list-pending` 标记 + 骨架屏避免重排抖动，匿名访问直接展示 SSR 列表供 SEO。
+列表类页面（首页 / 分类 / 标签 / 归档）走 `PostListView`：SSR 用 `useAsyncData` 和 `getListDataForSsr()` 预取匿名列表并写入 payload，水合复用；客户端路由切换和登录态校准由 hooks 拉取。登录态用户经 `data-list-pending` 标记 + 骨架屏避免重排抖动，匿名访问直接展示 SSR 列表供 SEO。
 
 `/user/:username` 是"SSR 只做存在性校验"模式：`if (!pending.value && profile.value == null) throw createError({ statusCode: 404, fatal: true })`，视图包 `<ClientOnly>`。
 
@@ -280,7 +268,7 @@ Token 流程：登录 → `userStore.setAccessToken()` → `tabSyncManager` 广�
 | 路由                                                                                            | 文件                                   | 渲染                                                                                                |
 | ----------------------------------------------------------------------------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | `/`                                                                                             | `index.vue`                            | SSR                                                                                                 |
-| `/category/:slug` `/tag/:slug`                                                                  | `category/[slug].vue` `tag/[slug].vue` | SSR + swr 300                                                                                       |
+| `/category/:slug` `/tag/:slug`                                                                  | `category/[slug].vue` `tag/[slug].vue` | SSR + swr 3600                                                                                      |
 | `/p/:id`                                                                                        | `p/[id].vue`                           | SSR + swr 3600                                                                                      |
 | `/page/:customPath`                                                                             | `page/[customPath].vue`                | SSR（先 slug→id 再取详情）                                                                          |
 | `/year/:year`、`/year/:year/month/:month`                                                       | `year/` 下两个文件                     | SSR                                                                                                 |
@@ -306,7 +294,7 @@ Token 流程：登录 → `userStore.setAccessToken()` → `tabSyncManager` 广�
 | ------------------------- | --------------------------------------------------------------------------------------- |
 | `admin.global.ts`         | `/admin` → `/admin/dashboard`；未知子路径 → `/not-found`；未登录 → `/login?redirect=`   |
 | `auth.global.ts`          | 保护 `/user-info`、`/checkout`                                                          |
-| `legacy.global.ts`        | 老链接软导航 301：`/?post_id=` → `/p/:id`、`/:username` → `/user/:username`             |
+| `legacy.global.ts`        | 首页旧查询参数软导航 301，动态路径段显式编码；`/:username` 不再重定向                   |
 | `register-admin.ts`       | 已存在管理员时访问 `/register-admin` → `/not-found`（复刻 SPA registerAdminMiddleware） |
 | `setup.ts`                | 已初始化时访问 `/setup` → `/not-found`                                                  |
 | `not-found-breadcrumb.ts` | 站内 404 页面包屑，在布局渲染前就位                                                     |
@@ -345,7 +333,7 @@ Token 流程：登录 → `userStore.setAccessToken()` → `tabSyncManager` 广�
 | `directives.ts`          | 双端：`v-stable-html` + 全局组件 `j-icon`                                                       |
 | `directives.client.ts`   | 仅客户端：`v-single-dbl-click` + `v-permission`                                                 |
 
-SSR 适配两个必留配置：`nitro.externals.inline: ["element-plus"]` 与 `vite.ssr.noExternal: ["element-plus"]`（resolver 注入的 theme-chalk CSS 副作用导入在 Node 原生 ESM 下会崩）；`nitro.alias["vue3-emoji-picker"]` 指向 `src/server-stubs/emoji-picker.ts`（该包顶层初始化 IndexedDB）。
+SSR 适配必留配置：`nitro.externals.inline: ["element-plus", "nuxt/internal", "pinia"]` 与 `vite.ssr.noExternal: ["element-plus"]`；分别保证 Element Plus CSS、Nuxt 内部渲染器和 Pinia 注入实例正确处理。`nitro.alias["vue3-emoji-picker"]` 指向 `src/server-stubs/emoji-picker.ts`（该包顶层初始化 IndexedDB）。
 
 ## 11. 主题域 `src/theme/`
 
@@ -364,7 +352,7 @@ SSR 适配两个必留配置：`nitro.externals.inline: ["element-plus"]` 与 `v
 
 ### 12.1 文件头（重点，格式已定死）
 
-当前仓库统一格式：分隔符 `/*`（不是 `/**`），字段**无 `@` 前缀**，字段名左对齐到 12 字符宽后接 `: `，路径前缀为 `blog-client\`（**不是** `\blog-client\`）。
+当前仓库统一格式：分隔符 `/**`，字段**无 `@` 前缀**，字段名左对齐到 12 字符宽后接 `: `，路径前缀为 `blog-client\`（**不是** `\blog-client\`）。
 
 ```ts
 /**
@@ -415,9 +403,9 @@ SSR 适配两个必留配置：`nitro.externals.inline: ["element-plus"]` 与 `v
 "vueCompilerOptions": { "strictTemplates": false },  // 避免 el-tooltip placement 等模板字面量大面积 TS2322
 ```
 
-**不要"顺手"打开这两项**，会引发成百上千处报错。`tsconfig.json` 只有一行 `extends: "./tsconfig.nuxt.json"`（无 project references）。
+**不要"顺手"打开这两项**，会引发成百上千处报错。`tsconfig.json` 继承 `tsconfig.nuxt.json`，覆盖 `exclude` 以让 IDE 识别测试文件，并通过 `files` 纳入 `vitest.config.ts`、`vitest.setup.ts`、`oxlint.config.ts`；不使用 project references。
 
-`tsconfig.nuxt.json` 的 `exclude` 掉 src 侧全部 `*.test.ts` / `__tests__`（src 测试不参与 `pnpm type-check`）；根 `server/` 侧的 `.test.ts` 随 `tsconfig.server.json`（extends nitro 生成物 `.nuxt/tsconfig.server.json`，无 exclude）参与第二段 type-check。测试文件的类型感知由 `tsconfig.vitest.json` 在 IDE 侧提供。
+`tsconfig.nuxt.json` 排除 src 侧 `*.test.ts` / `__tests__`；`tsconfig.server.json` 检查根 `server/`，包括服务端测试；`tsconfig.vitest.json` 检查 src 测试与工具配置，并通过 `files` 显式引入 `.nuxt/nuxt.d.ts` 和 `.nuxt/nuxt.node.d.ts`，避免覆盖 `include` 后丢失 Nuxt 声明。三者均由 `pnpm type-check` 执行。更新测试类型配置时不得通过排除文件、放宽严格项或过滤诊断来掩盖错误。
 
 ### 12.5 Import 顺序
 
@@ -468,24 +456,24 @@ SSR 适配两个必留配置：`nitro.externals.inline: ["element-plus"]` 与 `v
 
 三个实证坑（都已付出过调试成本，勿回退）：
 
-1. **`environmentOptions` 的键名必须是 `happyDOM`（大写 DOM）**，写成 `happyDom` 会被 vitest **静默忽略**，配置不生效。当前开了 `settings.handleDisabledFileLoadingAsSuccess: true`（happy-dom 对禁用加载的外链 `<script>` 直接派发 load 事件，从源头不抛 `DOMException [NotSupportedError]`）。
+1. DOM 测试使用 `environment: "jsdom"`，Nuxt 运行时还必须设置 `environmentOptions.nuxt.domEnvironment: "jsdom"`，否则 Nuxt 测试仍默认使用 happy-dom。纯计算测试按 `vitest.config.ts` 的 `nodeTestPatterns` 分配到独立 Node 项目，并从 jsdom 项目排除；加入新文件前需确认不依赖浏览器环境。所有项目保持文件隔离。
 2. **不要重复挂 `@vitejs/plugin-vue`**——`defineVitestConfig` 的 Nuxt vite 链已含 vue 插件，双插件叠加会对带 `[...]` 的路由文件产生空 SFC 解析错误。
 3. **`Components` 插件必须 `dirs: []`**，与主应用 `components: false` 哲学一致；默认扫描会跨目录撞名（Edit/Add/View/Header 等 flat 命名）产生大量命名冲突告警。
 
-其他：`hookTimeout: 120000`（`setupNuxt` 首启拉起完整应用超过默认 10s）；`environmentMatchGlobs: [["**/*.nuxt.test.ts", "nuxt"]]`，目前仅 `src/theme/presets/index.nuxt.test.ts` 走真实 Nuxt 运行时；`server.deps.inline: ["element-plus"]`；`exclude` 含 `**/icons/**`、`**/vue3-emoji-picker/**`。
+其他：`hookTimeout: 120000`（`setupNuxt` 首启拉起完整应用超过默认 10s）；`defineVitestConfig` 按 `.nuxt.test.ts` 后缀分配 Nuxt 测试，目前仅 `src/theme/presets/index.nuxt.test.ts` 走真实 Nuxt 运行时；`server.deps.inline: ["element-plus"]`；`exclude` 含 `**/icons/**`、`**/vue3-emoji-picker/**`。
 
-`vitest.setup.ts` 集中放置全局 `vi.mock(...)`（如 `vue3-emoji-picker`）与 console 精准过滤白名单（KaTeX quirks 告警、vim 回退路径 warn、`initStores 执行异常` 404 warn、`DOMException` 实例/字符串双形态、剪贴板成功 log、统计脚本加载 info、`<Suspense>` 实验特性 info）。新增测试优先复用该文件。
+`vitest.setup.ts` 为 jsdom / Nuxt 项目提供 `vi.mock(...)`（如 `vue3-emoji-picker`）与 console 精准过滤白名单（`initStores 执行异常` 404 warn、剪贴板成功 log、统计脚本加载 info、`<Suspense>` 实验特性 info）；独立 Node 项目使用 `extends: false`，不继承该 setup。新增测试优先复用已有测试设施。
 
 测试文件位置：`src/**/__tests__/**`、`src/**/*.test.ts`、`src/**/__test__/**`（如 `src/pkg/codemirror/extension/mdlint/rule/__test__/007.test.ts`）。
 
-终态指标：**101 个测试文件 / 806 个用例全绿（2026-09-26 实测 47s），stdout 0 / stderr 0 / 冲突 0 / Warning 0 / DOMException 0**。新增或修改测试后应保持该指标，不得为求"全绿"而放宽断言或扩宽过滤白名单。
+终态指标：**108 个测试文件 / 998 个用例全绿**，无测试告警或未捕获异常。新增或修改测试后应保持全绿，不得为求"全绿"而放宽断言或扩宽过滤白名单；Vitest 的性能建议是提示，不代表测试失败。
 
 ## 14. Agent 执行准则
 
 改代码后按序验证：
 
-1. `pnpm lint`（改动文件）+ `pnpm type-check`（全量零报错）
-2. `pnpm test`（全量，保持全绿 + stdout/stderr 双零）
+1. `pnpm lint`（全仓 `--fix`，会写文件）+ `pnpm type-check`（三工程零报错）
+2. `pnpm test`（全量，保持全绿且无非预期输出、告警或未捕获异常）
 3. 涉及路由 / 构建配置时补 `pnpm build`
 4. 起 `pnpm dev`（7364）做浏览器验收：无 hydration mismatch、无 Vue 警告、无未捕获异常
 5. 停止 dev server，交用户 review
@@ -495,5 +483,13 @@ SSR 适配两个必留配置：`nitro.externals.inline: ["element-plus"]` 与 `v
 - 新增 / 修复尽量补齐同目录 `*.test.ts` 或 `__tests__` 用例，复用 `vitest.setup.ts` 的全局 mock
 - 不提交产物：`dist/`、`node_modules/`、`coverage/`、`.nuxt/`、`.output/` 保持忽略
 - 不自行 commit / push
+
+## 15. Docker 构建与运行
+
+- `Dockerfile` 为正式构建：复制源码后执行 `pnpm exec nuxi prepare`、只读 `pnpm exec oxlint`、`pnpm type-check`、`pnpm test`、`pnpm build`；`Dockerfile.env` 预装依赖，`Dockerfile.dev` 基于该镜像只执行构建，不替代完整验收。
+- 构建阶段与运行阶段 Node 均使用同版本 Alpine/musl；运行阶段基于 `nginx:1.31.8-alpine`，避免构建出的 sharp 等原生依赖与运行时 libc 不匹配。更新 Node 时同步检查三个 Dockerfile 中的镜像版本。
+- `docker-entrypoint.sh` 仅对 `NGINX_SERVER_NAME`、`NUXT_API_BASE` 执行 envsubst，先 `nginx -t`，再启动 Node 与 Nginx 并监控进程；不要全量替换 Nginx 的 `$host` 等运行时变量。
+- Node 默认监听 `7364`，`nginx.conf.template` 的 Node 反代端口固定为 `127.0.0.1:7364`；调整 `NITRO_PORT` 时必须同步调整模板。`NUXT_API_BASE` 供 SSR 与 Nginx 上游使用。
+- 运行镜像把 `.output/public` 链接到 `/usr/share/nginx/html`，Nginx 与 Nitro 共用静态资源；保持目录可写及软链接，避免静态资源、favicon 同步失败。`redirects.map` 虽在 Nginx 配置中为可选 include，Dockerfile 的 `COPY` 仍要求构建上下文包含该文件。
 
 -- End of AGENTS.md --

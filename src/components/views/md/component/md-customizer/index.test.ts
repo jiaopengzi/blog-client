@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : /md 自定义弹窗组件测试, 默认关闭首行缩进
+ * Description : /md 自定义弹窗组件测试, 验证编辑器重置和有效样式示例
  */
 
 import { mount } from "@vue/test-utils"
@@ -18,7 +18,7 @@ const { saveMdCustomStateMock, clearMdCustomStateMock, setImageCaptionFormatMock
         clearMdCustomStateMock: vi.fn(),
         setImageCaptionFormatMock: vi.fn(),
         setHljsThemeMock: vi.fn().mockResolvedValue(void 0),
-        cssExampleMock: vi.fn((previewSelector?: string) => (previewSelector ? `example-css:${previewSelector}` : "example-css")),
+        cssExampleMock: vi.fn((previewSelector?: string) => `${previewSelector || ".preview"} { color: red; }`),
     }
 })
 
@@ -102,7 +102,7 @@ const MdCustomizerEditorPanelStub = defineComponent({
     template: `
         <div>
             <div class="editor-doc">{{ doc }}</div>
-            <button class="editor-change" @click="$emit('update-editor-doc', 'doc:manual-css')">change</button>
+            <button class="editor-change" @click="$emit('update-editor-doc', 'doc:.preview { color: blue; }')">change</button>
             <button class="insert-example" @click="$emit('insert-css-example')">insert</button>
         </div>
     `,
@@ -141,7 +141,7 @@ describe("MdCustomizer", () => {
         await wrapper.find(".editor-change").trigger("click")
         await nextTick()
 
-        expect(wrapper.find(".editor-doc").text()).toBe("doc:manual-css")
+        expect(wrapper.find(".editor-doc").text()).toBe("doc:.preview { color: blue; }")
 
         await wrapper.find(".reset-trigger").trigger("click")
         await Promise.resolve()
@@ -172,7 +172,7 @@ describe("MdCustomizer", () => {
         await nextTick()
 
         expect(cssExampleMock).toHaveBeenCalledWith(".md-page-preview")
-        expect(wrapper.find(".editor-doc").text()).toBe("doc:example-css:.md-page-preview")
-        expect(saveMdCustomStateMock).toHaveBeenLastCalledWith({ customCss: "example-css:.md-page-preview" })
+        expect(wrapper.find(".editor-doc").text()).toBe("doc:.md-page-preview { color: red; }")
+        expect(saveMdCustomStateMock).toHaveBeenLastCalledWith({ customCss: ".md-page-preview { color: red; }" })
     })
 })

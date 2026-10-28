@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : Vim 扩展工具测试
+ * Description : Vim 扩展工具及剪贴板行为与测试状态隔离
  */
 
 import { EditorState } from "@codemirror/state"
@@ -71,9 +71,7 @@ beforeEach(() => {
         },
     })
 
-    Vim.mapclear("normal")
-    Vim.mapclear("visual")
-    Vim.mapclear("operatorPending")
+    applyVimMappings([])
 })
 
 afterEach(() => {
@@ -283,7 +281,13 @@ describe("applyVimMappings", () => {
     })
 
     it("原生 clipboard 写入失败时会回退到 execCommand, 不会递归卡死", async () => {
-        vi.resetModules()
+        const createRange = document.createRange.bind(document)
+        vi.spyOn(document, "createRange").mockImplementation(() => {
+            const range = createRange()
+            range.getClientRects = () => [] as unknown as DOMRectList
+            range.getBoundingClientRect = () => new DOMRect()
+            return range
+        })
 
         // 本用例刻意触发回退路径, 源码会 console.warn 提示语——静音预期告警保持输出干净,
         // 并顺带断言回退提示确实发出(锁行为)
@@ -308,39 +312,22 @@ describe("applyVimMappings", () => {
             value: execCommandMock,
         })
 
-        const vimModule = await import("./vim")
-        vimModule.applyVimMappings([{ lhs: "yy", rhs: '"+yy' }])
-
-        const parent = document.createElement("div")
-        document.body.appendChild(parent)
-
-        const view = new EditorView({
-            parent,
-            state: EditorState.create({
-                doc: "alpha\n",
-                extensions: [vimModule.createVimExtension(), drawSelection()],
-            }),
-        }) as EditorView & {
-            cm: Parameters<typeof vimModule.Vim.handleKey>[0]
-        }
-
-        mountedEditor = view
+        applyVimMappings([{ lhs: "yy", rhs: '"+yy' }])
+        const view = createTestVimView("alpha\n")
         view.contentDOM.focus()
 
         expect(document.activeElement).toBe(view.contentDOM)
 
-        vimModule.Vim.handleKey(view.cm, "y", "user")
-        vimModule.Vim.handleKey(view.cm, "y", "user")
+        Vim.handleKey(view.cm, "y", "user")
+        Vim.handleKey(view.cm, "y", "user")
         await flushClipboardActions()
+        await new Promise((resolve) => setTimeout(resolve, 0))
 
         expect(originalWriteTextMock).toHaveBeenCalledTimes(1)
         expect(execCommandMock).toHaveBeenCalledWith("copy")
         expect(warnSpy.mock.calls.some((call) => String(call[0]).includes("Falling back to execCommand"))).toBe(true)
         expect(document.activeElement).toBe(view.contentDOM)
 
-        vimModule.Vim.mapclear("normal")
-        vimModule.Vim.mapclear("visual")
-        vimModule.Vim.mapclear("operatorPending")
         warnSpy.mockRestore()
     })
 })

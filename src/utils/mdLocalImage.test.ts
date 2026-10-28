@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : /md 页本地图片工具单测, 覆盖注册表、引用、配额策略和引用剥离.
+ * Description : /md 页本地图片工具单测, 覆盖注册表、引用、配额策略和 jsdom 文件读取.
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest"
@@ -75,7 +75,9 @@ describe("mdLocalImage 本地图片引用", () => {
         const container = document.createElement("div")
         container.innerHTML = `<img src="${localImageUrl}" /><img src="https://example.com/image.png" />`
         registerLocalImageUrl(IMAGE_ID_A, localImageUrl)
-        const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(new Blob(["image"], { type: "image/png" })))
+        const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue({
+            blob: async () => new Blob(["image"], { type: "image/png" }),
+        } as Response)
 
         await inlineLocalImagesForCopy(container)
 

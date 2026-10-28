@@ -1,8 +1,10 @@
 /**
  * @FilePath     : \blog-client\tsconfig.json
- * @Description  : 根 tsconfig（Nuxt 4 标准形态，无 references —— 计划坑位 7）
+ * @Description  : IDE 根 tsconfig（包含测试与工具配置，无 references —— 计划坑位 7）
  */
 
 {
-    "extends": "./tsconfig.nuxt.json"
+    "extends": "./tsconfig.nuxt.json",
+    "files": ["vitest.config.ts", "vitest.setup.ts", "oxlint.config.ts"],
+    "exclude": ["dist", ".output"]
 }

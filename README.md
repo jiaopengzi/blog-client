@@ -75,7 +75,7 @@ pnpm dev          # 开发服务器(端口 7364)
 pnpm dev:fresh    # 清理 nuxt 缓存后重新启动
 pnpm build        # 生产构建(产出 .output)
 pnpm preview      # 本地预览生产构建
-pnpm type-check   # vue-tsc 全量类型检查(app 与 server 两个 tsconfig 工程)
+pnpm type-check   # vue-tsc 全量类型检查(app、server、测试与工具配置三个 tsconfig 工程)
 pnpm lint         # oxlint 检查并自动修复(oxlint --fix; 只读检查用 pnpm exec oxlint)
 pnpm fmt          # oxfmt 格式化全仓
 pnpm test         # vitest 单次运行
@@ -122,7 +122,7 @@ SPA 版是纯静态文件 + nginx; Nuxt 版页面由 SSR 实时渲染, 因此最
 
 | 文件                   | 作用                                                                                                                                                                                             |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Dockerfile`           | 完整构建(lint + type-check + test + build), 运行层 `nginx:1.31.6-alpine` + node 二进制                                                                                                           |
+| `Dockerfile`           | 完整构建(lint + type-check + test + build), 运行层 `nginx:1.31.8-alpine` + node 二进制                                                                                                           |
 | `Dockerfile.env`       | 仅安装依赖的基础镜像(`blog-client:env`), 加速迭代构建                                                                                                                                            |
 | `Dockerfile.dev`       | 基于 `blog-client:env` 的快速构建(跳过 lint/test)                                                                                                                                                |
 | `nginx.conf.template`  | nginx 主配置模板, 与 SPA 版保持一致, 仅四处 SSR 必要调整(文件头注释有说明); 域名/后端上游用 `${NGINX_SERVER_NAME}` / `${NUXT_API_BASE}` 占位, 容器启动时由 entrypoint 以 envsubst 白名单替换生成 |
@@ -137,7 +137,7 @@ SPA 版是纯静态文件 + nginx; Nuxt 版页面由 SSR 实时渲染, 因此最
 - `NUXT_PUBLIC_BASE_URL=https://jiaopengzi.com` — 正式站点地址
 - `NGINX_SERVER_NAME=jiaopengzi.com` — nginx `server_name` 域名(模板占位符的默认值)
 
-构建层与运行层统一使用 alpine(musl): 运行层基线 `nginx:1.31.6-alpine` 与 SPA 一致; 且 nitro 产物 `.output/server/node_modules` 内的原生依赖二进制(sharp 等)按构建平台的 libc 打包, 必须与运行时一致, 因此构建层用 `node:24.21.0-alpine`, 运行层从同版本 alpine 镜像拷贝 node 二进制. **勿把构建层换成 slim/debian 系**: glibc 构建出的 sharp 在 musl node 下加载失败(ERR_DLOPEN_FAILED), `/_ipx` 缩略图会全部 500.
+构建层与运行层统一使用 alpine(musl): 运行层基线 `nginx:1.31.8-alpine` 与 SPA 一致; 且 nitro 产物 `.output/server/node_modules` 内的原生依赖二进制(sharp 等)按构建平台的 libc 打包, 必须与运行时一致, 因此构建层用 `node:24.22.1-alpine`, 运行层从同版本 alpine 镜像拷贝 node 二进制. **勿把构建层换成 slim/debian 系**: glibc 构建出的 sharp 在 musl node 下加载失败(ERR_DLOPEN_FAILED), `/_ipx` 缩略图会全部 500.
 
 健康检查: `GET /nginx-health`(nginx)与 `GET /VERSION`(node 直出, 探活). SSL 证书挂载到 `/etc/nginx/ssl`(cert.pem / cert.key).
 
@@ -147,7 +147,7 @@ nginx 配置验证(需先做与 entrypoint 相同的占位符替换; 示例 NUXT
 NGINX_SERVER_NAME=jiaopengzi.com NUXT_API_BASE=http://127.0.0.1:5426 \
 sudo docker run --rm -e NGINX_SERVER_NAME -e NUXT_API_BASE \
   -v $(pwd)/nginx.conf.template:/etc/nginx/nginx.conf.template \
-  nginx:1.31.6-alpine sh -c "envsubst '\${NGINX_SERVER_NAME} \${NUXT_API_BASE}' \
+  nginx:1.31.8-alpine sh -c "envsubst '\${NGINX_SERVER_NAME} \${NUXT_API_BASE}' \
     < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -t"
 ```
 
@@ -181,7 +181,7 @@ blog-client/
 
 ### 应用启动
 
-Nuxt 接管应用入口, 自动导入已全部关闭(`components: false`, `imports.dirs: []`), 组件 / 工具 / store 一律显式 `import`.
+Nuxt 接管应用入口, 项目组件自动注册及项目目录自动导入已关闭(`components: false`, `imports.dirs: []`), 项目组件 / 工具 / store 一律显式 `import`; Nuxt 和 Vue 内建自动导入仍可使用.
 
 ### 渲染策略
 

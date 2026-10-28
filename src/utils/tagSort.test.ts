@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 标签与分类排序工具的单元测试
+ * Description : 标签与分类排序工具及分类数据契约的单元测试
  */
 
 import { describe, expect, it } from "vitest"
@@ -145,6 +145,7 @@ describe("sortPostTaxonomiesByCount", () => {
                 post_count: "8",
                 post_count_admin: "8",
                 parent: "0",
+                is_topic: false,
                 img: { url: "", width: 0, height: 0 },
             },
             {
@@ -158,6 +159,7 @@ describe("sortPostTaxonomiesByCount", () => {
                 post_count: "8",
                 post_count_admin: "8",
                 parent: "0",
+                is_topic: false,
                 img: { url: "", width: 0, height: 0 },
             },
             {
@@ -171,6 +173,7 @@ describe("sortPostTaxonomiesByCount", () => {
                 post_count: "8",
                 post_count_admin: "8",
                 parent: "0",
+                is_topic: false,
                 img: { url: "", width: 0, height: 0 },
             },
             {
@@ -184,6 +187,7 @@ describe("sortPostTaxonomiesByCount", () => {
                 post_count: "8",
                 post_count_admin: "8",
                 parent: "0",
+                is_topic: false,
                 img: { url: "", width: 0, height: 0 },
             },
             {
@@ -197,6 +201,7 @@ describe("sortPostTaxonomiesByCount", () => {
                 post_count: "8",
                 post_count_admin: "8",
                 parent: "0",
+                is_topic: false,
                 img: { url: "", width: 0, height: 0 },
             },
         ]

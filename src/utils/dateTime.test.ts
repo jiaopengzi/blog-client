@@ -3,12 +3,16 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : dateTime 的单元测试
+ * Description : dateTime 的 Node 环境单元测试
  */
 
 import { describe, expect, it } from "vitest"
 
 import { displayDurationTime, formatDurationTime, formatLocalISO } from "@/utils/dateTime"
+
+it("纯日期计算在 Node 环境运行", () => {
+    expect(typeof window).toBe("undefined")
+})
 
 describe("formatLocalISO", () => {
     it("格式化日期包含年月日时分秒和时区偏移", () => {

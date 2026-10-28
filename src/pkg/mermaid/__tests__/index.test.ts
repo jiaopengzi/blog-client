@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : mermaid 装配层渲染逻辑测试 (260917-01, mermaid 模块以 mock 替身注入)
+ * Description : mermaid 装配层渲染与主题缓存隔离测试
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
@@ -25,9 +25,7 @@ vi.mock("mermaid", () => {
     }
 })
 
-import { activeThemePresetState } from "@/theme/useTheme"
-
-import { getMermaidThemeByScheme, renderMermaidInContainer } from "../index"
+import { getMermaidThemeByScheme } from "../index"
 
 const createMermaidContainerHtml = (source: string): string => {
     // 与 renderer.constructMermaidContainer 输出保持一致 (含源码复制按钮)
@@ -42,9 +40,15 @@ describe("getMermaidThemeByScheme - 主题映射", () => {
 })
 
 describe("renderMermaidInContainer - 容器渲染", () => {
-    beforeEach(() => {
+    let activeThemePresetState: typeof import("@/theme/useTheme").activeThemePresetState
+    let renderMermaidInContainer: typeof import("../index").renderMermaidInContainer
+
+    beforeEach(async () => {
+        vi.resetModules()
         renderMock.mockReset()
         initializeMock.mockReset()
+        activeThemePresetState = (await import("@/theme/useTheme")).activeThemePresetState
+        renderMermaidInContainer = (await import("../index")).renderMermaidInContainer
     })
 
     afterEach(() => {

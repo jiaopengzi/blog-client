@@ -1,12 +1,12 @@
 # blog-client Dockerfile
 # 构建阶段: Node.js + pnpm 执行 lint/type-check/test/build, 产出 .output(nitro node-server)
-# 运行阶段: nginx:1.31.6-alpine(与 spa 项目严格同版本) + 从官方镜像拷贝的 node 二进制,
+# 运行阶段: nginx:1.31.8-alpine(与 spa 项目严格同版本) + 从官方镜像拷贝的 node 二进制,
 #           单容器内 nginx(80/443 对外) + node(127.0.0.1:7364 SSR) 双进程, 由 docker-entrypoint.sh 编排
 
 # ============================== 构建阶段 ==============================
-# 使用官方 Node.js alpine 镜像作为构建环境(musl; 与运行阶段 nginx:1.31.6-alpine 的 libc 一致,
+# 使用官方 Node.js alpine 镜像作为构建环境(musl; 与运行阶段 nginx:1.31.8-alpine 的 libc 一致,
 # 原因见下方运行阶段"仅拷贝 node 二进制"处注释)
-FROM node:24.21.0-alpine AS builder
+FROM node:24.22.1-alpine AS builder
 
 # set-env-version 在构建阶段读取 git tag 写入 public/VERSION, Alpine 基础镜像默认不含 git.
 RUN apk add --no-cache git
@@ -59,7 +59,7 @@ RUN cp LICENSE public/LICENSE && \
 
 # ============================== 运行阶段 ==============================
 # 使用与 spa 项目一致的 nginx alpine 镜像(TLS 终端 + 静态资源 + 反向代理)
-FROM nginx:1.31.6-alpine
+FROM nginx:1.31.8-alpine
 
 # 运行阶段依赖: tzdata(时区数据), libstdc++/libgcc(node 二进制的运行时库);
 # 同层完成: 时区固定上海 + nginx 缓存目录属主(支持非 root 启动) + 清理镜像自带死文件
@@ -75,7 +75,7 @@ RUN apk add --no-cache tzdata libstdc++ libgcc && \
     rm -rf /usr/share/nginx/html
 ENV TZ=Asia/Shanghai
 
-# 仅拷贝 node 二进制(不含 npm/pnpm/corepack, 精简体积; 与构建阶段同为 24.21.0 官方 musl 构建)
+# 仅拷贝 node 二进制(不含 npm/pnpm/corepack, 精简体积; 与构建阶段同为 24.22.1 官方 musl 构建)
 #
 # libc 一致性约束(为什么构建与运行都用 alpine 而不是 slim):
 # - nitro 产物 .output/server/node_modules 内含按构建平台解析的原生依赖二进制, 典型如
@@ -84,7 +84,7 @@ ENV TZ=Asia/Shanghai
 #   alpine(musl)时, sharp 会 ERR_DLOPEN_FAILED, /_ipx 缩略图请求全部 500;
 # - 本项目依赖树的原生模块均提供 musl 预构建(sharp/rolldown/oxlint/oxfmt/@parcel/watcher,
 #   见 pnpm-lock.yaml 的 *-musl 条目; esbuild 为 Go 静态链接二进制, 天然跨 libc), alpine 全链路可行
-COPY --from=node:24.21.0-alpine /usr/local/bin/node /usr/local/bin/node
+COPY --from=node:24.22.1-alpine /usr/local/bin/node /usr/local/bin/node
 
 # 将 nitro node-server 产物复制到容器中(server: node SSR 进程入口; public 已在构建层挪出,
 # 静态资源只在镜像中保留 html 一份)

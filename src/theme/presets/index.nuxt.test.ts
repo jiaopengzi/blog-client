@@ -3,12 +3,12 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : Nuxt 环境灰度示范测试 (P1-6 nuxt4-good)
+ * Description : Nuxt jsdom 环境及主题预设测试 (P1-6 nuxt4-good)
  */
 
 /**
  * 补充说明:
- * *.nuxt.test.ts 后缀经 vitest environmentMatchGlobs 走 vitest-environment-nuxt
+ * *.nuxt.test.ts 后缀经 defineVitestConfig 分组走 vitest-environment-nuxt
  * —— 真实 Nuxt 运行时 (auto-imports/composables), 无需手工 stub #imports。
  * 覆盖主题预设数据完整性 + 260828 的 G1 映射约束回归
  */
@@ -19,6 +19,10 @@ import { defaultThemePresetId, getThemePreset, isValidThemePresetId, themePreset
 import { buildThemePresetStyleContent } from "@/theme/runtime"
 
 describe("theme presets (nuxt environment)", () => {
+    it("Nuxt 测试运行时使用 jsdom", () => {
+        expect(window.navigator.userAgent).toMatch(/jsdom/i)
+    })
+
     it("预设列表包含默认预设且 id 唯一", () => {
         expect(themePresetList.length).toBeGreaterThan(1)
         const ids = themePresetList.map((preset) => preset.id)
