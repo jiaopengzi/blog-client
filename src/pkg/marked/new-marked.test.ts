@@ -3,10 +3,12 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : marked 配置的单元测试, 覆盖 GitHub 风格 emoji alias 等回归场景
+ * Description : marked 配置的单元测试, 覆盖 emoji 及列表中块级内容和续接编号
  */
 
 import { describe, expect, it } from "vitest"
+
+import listExample from "@/assets/example/ul-ol-todo-list.md?raw"
 
 import createMarked from "./new-marked"
 
@@ -24,6 +26,38 @@ describe("createMarked 函数", () => {
         expect(html).toContain("<h1")
         expect(html).toContain("标题")
         expect(html).toContain("<code>code</code>")
+    })
+
+    it.each([
+        ["有序列表中的块级内容", "ol", "ul", 3],
+        ["无序列表中的块级内容", "ul", "ol", 2],
+    ])("%s 应将缩进的块级内容保留在列表项内", (heading, listTag, nestedTag, itemCount) => {
+        const container = document.createElement("div")
+        container.innerHTML = createMarked().parse(listExample).toString()
+        const title = Array.from(container.querySelectorAll("h2")).find((element) => element.textContent === heading)
+        const list = title?.nextElementSibling
+
+        expect(list?.tagName.toLowerCase()).toBe(listTag)
+        expect(list?.children).toHaveLength(itemCount)
+        const firstItem = list?.firstElementChild
+        expect(firstItem?.querySelectorAll(":scope > p")).toHaveLength(2)
+        expect(firstItem?.querySelector(":scope > .pre-code-container")).toBeTruthy()
+        expect(firstItem?.querySelector(":scope > blockquote")).toBeTruthy()
+        expect(firstItem?.querySelector(`:scope > ${nestedTag}`)?.children).toHaveLength(2)
+    })
+
+    it("独立段落应拆分列表并保留后续列表的起始序号", () => {
+        const container = document.createElement("div")
+        container.innerHTML = createMarked().parse(listExample).toString()
+        const title = Array.from(container.querySelectorAll("h2")).find((element) => element.textContent === "独立内容后的有序列表")
+        const firstList = title?.nextElementSibling as HTMLOListElement
+        const paragraph = firstList.nextElementSibling
+        const secondList = paragraph?.nextElementSibling as HTMLOListElement
+
+        expect(firstList.start).toBe(10)
+        expect(paragraph?.tagName).toBe("P")
+        expect(secondList.start).toBe(12)
+        expect(secondList.children).toHaveLength(2)
     })
 
     it("应将 GitHub 风格 emoji alias 解析为真实字符, 并保留未知短码", () => {

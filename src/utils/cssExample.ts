@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 自定义样式 CSS 示例 与 src\assets\scss\preview.scss 保持一致
+ * Description : 自定义样式 CSS 示例, 与预览样式及原生有序列表编号保持一致
  */
 
 // 段落默认无首行缩进, 顶层列表默认无缩进;
@@ -263,13 +263,12 @@ const ARTICLE_CSS_EXAMPLE = `
 
 /**
  * 有序列表.
- * 这里不再使用浏览器原生数字 marker, 统一改成自绘, 方便和 task list 图标对齐.
+ * 使用原生数字 marker, 保留列表的起始序号.
  */
 #preview ol {
-  list-style: none;
+  list-style: decimal;
   padding-left: var(--preview-paragraph-indent);
   margin: 0.75em 0;
-  counter-reset: preview-ordered-list;
 }
 
 /**
@@ -298,27 +297,11 @@ const ARTICLE_CSS_EXAMPLE = `
 }
 
 /**
- * 有序列表项递增计数器.
+ * 有序列表使用原生 marker 并保留文本缩进.
  */
 #preview ol > li:not(.task-list-item) {
-  counter-increment: preview-ordered-list;
-}
-
-/**
- * 有序列表 marker.
- * 使用固定宽度列来承载数字, 可以避免浏览器默认数字右对齐产生的漂移.
- */
-#preview ol > li:not(.task-list-item)::before {
-  content: counter(preview-ordered-list) ".";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: var(--preview-list-marker-column-width);
-  text-align: right;
-  line-height: inherit;
-  color: var(--jpz-text-color-primary);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  margin-left: var(--preview-list-text-offset);
+  padding-left: 0;
 }
 
 /**
@@ -640,10 +623,6 @@ const ARTICLE_CSS_EXAMPLE = `
 
 #preview .markdown-alert ol > li:not(.task-list-item),
 #preview .markdown-alert ul > li:not(.task-list-item) {
-  color: inherit;
-}
-
-#preview .markdown-alert ol > li:not(.task-list-item)::before {
   color: inherit;
 }
 

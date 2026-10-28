@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : preview 样式 
+ * @Description  : preview 样式, 有序列表使用原生编号
  */
 
 // 段落无首行缩进, 顶层列表默认无缩进仅嵌套列表缩进 (bugfix 260918-01);
@@ -153,10 +153,9 @@
 
     // 有序列表
     ol {
-        list-style: none;
+        list-style: decimal;
         padding-left: var(--preview-paragraph-indent);
         margin: 0.75em 0;
-        counter-reset: preview-ordered-list;
     }
 
     // 无序列表样式
@@ -179,22 +178,9 @@
         color: var(--jpz-text-color-primary);
     }
 
-    // 有序列表使用 counter 绘制 marker, 避免浏览器原生 marker 的右对齐造成视觉偏移
     ol > li:not(.task-list-item) {
-        counter-increment: preview-ordered-list;
-
-        &::before {
-            content: counter(preview-ordered-list) ".";
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: var(--preview-list-marker-column-width);
-            text-align: right;
-            line-height: inherit;
-            color: var(--jpz-text-color-primary);
-            font-variant-numeric: tabular-nums;
-            white-space: nowrap;
-        }
+        margin-left: var(--preview-list-text-offset);
+        padding-left: 0;
     }
 
     // 一级无序列表使用实心圆 marker
@@ -544,10 +530,6 @@
 
         ol > li:not(.task-list-item),
         ul > li:not(.task-list-item) {
-            color: inherit;
-        }
-
-        ol > li:not(.task-list-item)::before {
             color: inherit;
         }
 

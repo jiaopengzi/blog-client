@@ -3,14 +3,34 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : cssExample 的单元测试, 包含无首行缩进断言
+ * Description : cssExample 的单元测试, 包含列表样式及编号断言
  */
 
+import { readFileSync } from "node:fs"
+
+import { compileString } from "sass"
 import { describe, expect, it } from "vitest"
 
 import { cssExample } from "./cssExample"
 
 describe("cssExample", () => {
+    it("实际预览样式应使用原生有序编号并保留无序列表样式", () => {
+        const styleUrl = new URL("../assets/scss/preview.scss", import.meta.url)
+        const source = readFileSync(styleUrl, "utf8")
+        const css = compileString(
+            `@use "./platform/_phone.scss" as phone;
+             @use "./platform/_pad.scss" as pad;
+             @use "./platform/_pc.scss" as pc;
+             @use "./mixin.scss" as *;
+             ${source}`,
+            { url: styleUrl },
+        ).css
+
+        expect(css).toMatch(/#preview ol,\s*#preview-copy ol\s*\{\s*list-style: decimal;/)
+        expect(css).toMatch(/#preview ul,\s*#preview-copy ul\s*\{\s*list-style: none;/)
+        expect(css).not.toContain("preview-ordered-list")
+    })
+
     it("应包含与预览列表一致的变量化列表样式", () => {
         const css = cssExample()
 
@@ -18,7 +38,9 @@ describe("cssExample", () => {
         expect(css).toContain("font-family: var(--preview-font-family-title);")
         expect(css).toContain("--preview-list-text-offset: 1em;")
         expect(css).toContain("--preview-task-list-text-offset: 1.6em;")
-        expect(css).toContain("counter-reset: preview-ordered-list;")
+        expect(css).toContain("list-style: decimal;")
+        expect(css).toContain("margin-left: var(--preview-list-text-offset);")
+        expect(css).not.toContain("counter-reset: preview-ordered-list;")
         expect(css).toContain("padding-left: var(--preview-list-indent-step);")
         expect(css).toContain("#preview ol li > p,")
         expect(css).toContain("#preview ol li > p,\n#preview ul li > p {\n  margin: 0;\n  text-indent: 0 !important;\n}")
@@ -26,7 +48,6 @@ describe("cssExample", () => {
         expect(css).toContain("text-indent: 0;")
         expect(css).not.toContain("text-indent: 2em;")
         expect(css).toContain("#preview .task-list-item .task-list-icon {")
-        expect(css).not.toContain("list-style: decimal;")
         expect(css).not.toContain("margin-left: -1.5em;")
     })
 
@@ -62,9 +83,7 @@ describe("cssExample", () => {
         expect(result).toContain("#preview .markdown-alert code,")
         expect(result).toContain("#preview .markdown-alert strong,")
         expect(result).toContain("#preview .markdown-alert ul > li:not(.task-list-item) {")
-        expect(result).toContain("#preview .markdown-alert ol > li:not(.task-list-item)::before {")
         expect(result).toContain("#preview .markdown-alert ul > li:not(.task-list-item)::before {")
-        expect(result).toContain("#preview .markdown-alert ol > li:not(.task-list-item)::before {\n  color: inherit;\n}")
         expect(result).toContain("#preview .markdown-alert ul > li:not(.task-list-item)::before {\n  color: inherit;\n  background-color: currentColor;\n}")
         expect(result).toContain("#preview .markdown-alert a {")
         expect(result).toContain("text-decoration-color: currentColor;")
