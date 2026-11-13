@@ -10,13 +10,8 @@
     <div v-if="!isVerified" class="wechat-captcha-lock">
         <div class="wechat-captcha-info">
             <div class="wechat-captcha-title">关注微信公众号获取验证码</div>
-            <div class="wechat-captcha-name">
-                公众号：<span class="wechat-captcha-name-highlight">{{ name }}</span>
-            </div>
-            <div class="wechat-captcha-tip">
-                在公众号中回复“<span class="reply-keyword">{{ reply }}</span
-                >”获取验证码后输入查看隐藏内容。
-            </div>
+            <div class="wechat-captcha-name">公众号：<span class="wechat-captcha-name-highlight">{{ name }}</span></div>
+            <div class="wechat-captcha-tip">在公众号中回复“<span class="reply-keyword">{{ reply }}</span>”获取验证码后输入查看隐藏内容。</div>
             <div class="wechat-captcha-form">
                 <input v-model="inputCode" class="wechat-captcha-input" type="text" placeholder="请输入验证码" @keydown.enter.prevent="handleVerify" />
                 <button type="button" class="wechat-captcha-btn" @click="handleVerify">验证</button>

@@ -30,10 +30,7 @@
 
             <div class="error-hero__actions">
                 <button type="button" class="error-hero__btn error-hero__btn--primary" @click="emitHome()">
-                    <template v-if="autoHome"
-                        ><span class="error-hero__countdown">{{ countdown }}</span
-                        >s 后自动返回首页</template
-                    >
+                    <template v-if="autoHome"><span class="error-hero__countdown">{{ countdown }}</span>s 后自动返回首页</template>
                     <template v-else>回到首页</template>
                 </button>
                 <button type="button" class="error-hero__btn" @click="handleBack">返回上一页</button>

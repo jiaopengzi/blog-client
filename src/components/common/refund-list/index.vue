@@ -17,16 +17,17 @@
             </el-table-column>
         </el-table>
         <p class="amount-info" v-if="isAllRefunded">
-            支付总金额：<span class="amount">{{ fenToYuan(totalPaidAmount, true) }}</span
-            >，已退款金额：<span class="refund">{{ fenToYuan(totalPaidAmount - computedFinal(totalPaidAmount, items), true) }}</span
+            支付总金额：<span class="amount">{{ fenToYuan(totalPaidAmount, true) }}</span>，已退款金额：<span class="refund">{{
+                fenToYuan(totalPaidAmount - computedFinal(totalPaidAmount, items), true)
+            }}</span
             >，已全部退款。
         </p>
 
         <p class="amount-info" v-else>
-            支付总金额：<span class="amount">{{ fenToYuan(totalPaidAmount, true) }}</span
-            >，已退款金额：<span class="refund">{{ fenToYuan(totalPaidAmount - computedFinal(totalPaidAmount, items), true) }}</span
-            >，剩余可退款金额：<span class="final-amount">{{ fenToYuan(computedFinal(totalPaidAmount, items), true) }}</span
-            >。
+            支付总金额：<span class="amount">{{ fenToYuan(totalPaidAmount, true) }}</span>，已退款金额：<span class="refund">{{
+                fenToYuan(totalPaidAmount - computedFinal(totalPaidAmount, items), true)
+            }}</span
+            >，剩余可退款金额：<span class="final-amount">{{ fenToYuan(computedFinal(totalPaidAmount, items), true) }}</span>。
         </p>
     </div>
 </template>

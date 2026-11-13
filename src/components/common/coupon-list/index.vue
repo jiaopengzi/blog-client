@@ -20,8 +20,9 @@
             </el-table-column>
         </el-table>
         <p class="amount-info">
-            订单总金额：<span class="amount">{{ fenToYuan(totalAmount, true) }}</span
-            >，优惠金额：<span class="discount">{{ fenToYuan(totalAmount - computedFinal(totalAmount, items), true) }}</span
+            订单总金额：<span class="amount">{{ fenToYuan(totalAmount, true) }}</span>，优惠金额：<span class="discount">{{
+                fenToYuan(totalAmount - computedFinal(totalAmount, items), true)
+            }}</span
             >，最终支付金额：<span class="final-amount">{{ fenToYuan(computedFinal(totalAmount, items), true) }}</span>
         </p>
     </div>

@@ -94,9 +94,7 @@ onUnmounted(() => {
     <ClientOnly>
         <div class="unsubscribe-page">
             <p class="text-info">{{ textInfo }}</p>
-            <p v-if="isShowCountdown" class="countdown-text">
-                将在 <span class="countdown">{{ countdown }}</span> 秒后，返回首页。
-            </p>
+            <p v-if="isShowCountdown" class="countdown-text">将在 <span class="countdown">{{ countdown }}</span> 秒后，返回首页。</p>
         </div>
 
         <FooterStatistics v-if="optionsStore.isShowFooterStatistics" />

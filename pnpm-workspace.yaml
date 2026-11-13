@@ -66,3 +66,4 @@ minimumReleaseAgeExclude:
     - "@cropper/elements@2.3.0"
     - "@cropper/utils@2.3.0"
     - cropperjs@2.3.0
+    - "@vitejs/plugin-vue@6.0.11"

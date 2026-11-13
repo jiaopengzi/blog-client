@@ -25,14 +25,12 @@
         <!-- 支付金额 -->
         <div class="payment">
             <p class="discount" v-if="isShowDiscount">
-                订单金额<span class="total-number">{{ fenToYuan(totalAmount) }}</span
-                >元，优惠金额<span class="discount-number">{{ fenToYuan(discountAmount) }}</span
+                订单金额<span class="total-number">{{ fenToYuan(totalAmount) }}</span>元，优惠金额<span class="discount-number">{{
+                    fenToYuan(discountAmount)
+                }}</span
                 >元。
             </p>
-            <p class="final-amount">
-                支付<span class="final-number">{{ fenToYuan(finalAmount) }}</span
-                >元。
-            </p>
+            <p class="final-amount">支付<span class="final-number">{{ fenToYuan(finalAmount) }}</span>元。</p>
         </div>
 
         <!-- 优惠券 -->

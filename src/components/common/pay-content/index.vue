@@ -14,24 +14,16 @@
                 <PostVideo class="no-pay-video" :post-id="postId" :is-admin-video="isAdminVideo" :toc="videoToc" :is-paid="isPaid" />
                 <div class="text">
                     <span>{{ protectedTargetText }}</span
-                    ><template v-if="isShowPriceTip"
-                        >，需付费<span class="price">{{ priceText }}</span
-                        >元解锁{{ unlockActionText }}</template
-                    >。
+                    ><template v-if="isShowPriceTip">，需付费<span class="price">{{ priceText }}</span>元解锁{{ unlockActionText }}</template>。
                 </div>
             </div>
             <div v-else class="text">
                 <span>{{ protectedTargetText }}</span
-                ><template v-if="isShowPriceTip"
-                    >，需付费<span class="price">{{ priceText }}</span
-                    >元解锁{{ unlockActionText }}</template
-                >。
+                ><template v-if="isShowPriceTip">，需付费<span class="price">{{ priceText }}</span>元解锁{{ unlockActionText }}</template>。
             </div>
 
             <div v-if="isShowVipTip" class="text-vip">
-                <span v-if="displayRoles.length > 0">
-                    拥有 <span class="role-highlight">{{ displayRoles.join("、") }}</span> 身份可免费查看。
-                </span>
+                <span v-if="displayRoles.length > 0"> 拥有 <span class="role-highlight">{{ displayRoles.join("、") }}</span> 身份可免费查看。 </span>
                 <span v-else>升级为 VIP 会员，畅享海量专属内容。</span>
             </div>
 

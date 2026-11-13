@@ -9,10 +9,7 @@
 <template>
     <div class="media-add-container">
         <div class="description">
-            <p>
-                HLS 选项开启时，才能设置加密和收费；当前HLS状态为<span class="hls-status">{{ isShowSwitch ? "开启" : "关闭" }}</span
-                >。
-            </p>
+            <p>HLS 选项开启时，才能设置加密和收费；当前HLS状态为<span class="hls-status">{{ isShowSwitch ? "开启" : "关闭" }}</span>。</p>
             <p>在【网站配置】>【文件上传配置】>【FFmpeg 上传配置】可设置 HLS 的启用的选项。</p>
             <p>建议：收费视频加密，免费视频不加密。</p>
         </div>

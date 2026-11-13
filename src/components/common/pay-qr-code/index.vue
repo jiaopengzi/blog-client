@@ -13,10 +13,7 @@
         <iframe class="qr-code" v-if="payType === PayType.Alipay" :src="qrCodeUrl" width="200" height="204" @load="onIframeLoaded"></iframe>
         <QrCode class="qr-code" v-if="payType === PayType.WechatPay" :options="{ data: qrCodeUrl, width: 200, height: 200 }" />
 
-        <p class="final-amount">
-            支付<span class="final-number">{{ amount }}</span
-            >元
-        </p>
+        <p class="final-amount">支付<span class="final-number">{{ amount }}</span>元</p>
 
         <div class="pay-type">
             <j-icon :name="payIconName(payType)" customClass="pay-icon" />
