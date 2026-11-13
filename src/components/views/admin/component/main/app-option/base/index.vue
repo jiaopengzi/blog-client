@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 网站选项基础组件
+ * Description : 网站选项基础组件, 保持多行输入框清除按钮定位稳定
 -->
 
 <template>
@@ -262,6 +262,11 @@ defineExpose({
     background-color: var(--jpz-bg-color);
     border-radius: 6px;
     box-shadow: var(--jpz-box-shadow-light);
+
+    // Element Plus 基础图标样式可能后加载, 提高优先级以免清除按钮回到文档流.
+    :deep(.el-textarea__clear) {
+        position: absolute;
+    }
 }
 
 .title {
