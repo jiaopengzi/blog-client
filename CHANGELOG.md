@@ -5,7 +5,7 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
-## [v1.3.0] - 2026-10-28
+## [v1.3.0] - 2026-11-13
 
 ### ✨ Feat
 
@@ -19,6 +19,7 @@
 - 百度统计跨域错误和 Referer 策略
 - 修复 URL 重定向编码异常与混合斜杠跨域跳转
 - 使用有序列表原生编号
+- 多行 input 框开启 clearable 后会意外的在 input 框外展示
 
 ### 📦 Build
 
