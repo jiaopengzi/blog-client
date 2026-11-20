@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : Nuxt 4 配置文件(SWR 水合快照一致性与 Nuxt 4.6 服务端渲染/Pinia 单实例内联)
+ * Description : Nuxt 4 配置文件(SWR 水合、服务端渲染、Pinia 与全局样式入口)
  */
 
 import { fileURLToPath, URL } from "node:url"
@@ -203,6 +203,9 @@ export default defineNuxtConfig({
     },
 
     css: [
+        // 基础图标与输入框样式按顺序从全局入口加载, 保留输入框自带的清除按钮定位.
+        "element-plus/theme-chalk/base.css",
+        "element-plus/theme-chalk/el-input.css",
         "element-plus/theme-chalk/dark/css-vars.css", // element-plus 暗黑主题 css 变量
         // 命令式 API(ElMessage/ElMessageBox) 不经过模板编译, unplugin-vue-components 不会为其
         // 注入样式; 显式引入对应组件样式(对齐 SPA 中 unplugin-auto-import 的样式注入行为),

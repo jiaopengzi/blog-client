@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 全局样式 
+ * @Description  : 全局样式与滚动条规则
  */
 
 @use "reset-css"; // live sass compiler 插件使用时注释掉
@@ -66,48 +66,61 @@ html {
     --jpz-mark-bg-color: #fff3b0;
     --jpz-mark-color: #1e2858;
 
-    // 全局滚动条样式
-    ::-webkit-scrollbar-thumb {
-        background-color: var(--scrollbar-thumb-bg);
-    }
-
     @include respond-to("pc") {
-        ::-webkit-scrollbar {
-            width: pc.$scrollbar-y-width;
-            height: pc.$scrollbar-x-height;
-        }
-        ::-webkit-scrollbar-thumb {
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            border-radius: 3px;
-        }
+        --scrollbar-y-width: #{pc.$scrollbar-y-width};
+        --scrollbar-x-height: #{pc.$scrollbar-x-height};
+        --scrollbar-thumb-radius: 4px;
+        --scrollbar-track-radius: 3px;
     }
 
     @include respond-to("pad") {
-        ::-webkit-scrollbar {
-            width: pad.$scrollbar-y-width;
-            height: pad.$scrollbar-x-height;
-        }
-        ::-webkit-scrollbar-thumb {
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            border-radius: 3px;
-        }
+        --scrollbar-y-width: #{pad.$scrollbar-y-width};
+        --scrollbar-x-height: #{pad.$scrollbar-x-height};
+        --scrollbar-thumb-radius: 10px;
+        --scrollbar-track-radius: 3px;
     }
 
     @include respond-to("phone") {
-        ::-webkit-scrollbar {
-            width: phone.$scrollbar-y-width;
-            height: phone.$scrollbar-x-height;
+        --scrollbar-y-width: #{phone.$scrollbar-y-width};
+        --scrollbar-x-height: #{phone.$scrollbar-x-height};
+        --scrollbar-thumb-radius: 10px;
+        --scrollbar-track-radius: 3px;
+    }
+
+    ::-webkit-scrollbar {
+        width: var(--scrollbar-y-width, auto);
+        height: var(--scrollbar-x-height, auto);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--scrollbar-thumb-bg);
+        border-radius: var(--scrollbar-thumb-radius, 0);
+        transition: var(--scrollbar-thumb-transition, initial);
+    }
+
+    ::-webkit-scrollbar-track {
+        border-radius: var(--scrollbar-track-radius, 0);
+    }
+
+    // 原生文本域沿用全局滚动条规则, 参数取自 Element Plus 文档示例.
+    :where(textarea) {
+        --scrollbar-y-width: 6px;
+        --scrollbar-x-height: 6px;
+        --scrollbar-thumb-radius: 10px;
+        --scrollbar-track-radius: 10px;
+        --scrollbar-thumb-bg: rgba(0, 0, 0, 0.2);
+        --scrollbar-thumb-hover-bg: rgba(0, 0, 0, 0.3);
+        --scrollbar-thumb-transition: all 0.2s ease-in-out;
+
+        &::-webkit-scrollbar-thumb:hover {
+            background-color: var(--scrollbar-thumb-hover-bg);
+            cursor: pointer;
         }
-        ::-webkit-scrollbar-thumb {
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            border-radius: 3px;
-        }
+    }
+
+    &.dark :where(textarea) {
+        --scrollbar-thumb-bg: rgba(255, 255, 255, 0.2);
+        --scrollbar-thumb-hover-bg: rgba(255, 255, 255, 0.4);
     }
 
     // // todo list 复选框样式
