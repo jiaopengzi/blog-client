@@ -487,7 +487,7 @@ SSR 适配必留配置：`nitro.externals.inline: ["element-plus", "nuxt/interna
 ## 15. Docker 构建与运行
 
 - `Dockerfile` 为正式构建：复制源码后执行 `pnpm exec nuxi prepare`、只读 `pnpm exec oxlint`、`pnpm type-check`、`pnpm test`、`pnpm build`；`Dockerfile.env` 预装依赖，`Dockerfile.dev` 基于该镜像只执行构建，不替代完整验收。
-- 构建阶段与运行阶段 Node 均使用同版本 Alpine/musl；运行阶段基于 `nginx:1.31.8-alpine`，避免构建出的 sharp 等原生依赖与运行时 libc 不匹配。更新 Node 时同步检查三个 Dockerfile 中的镜像版本。
+- 构建阶段与运行阶段 Node 均使用同版本 Alpine/musl；运行阶段基于 `nginx:1.31.9-alpine`，避免构建出的 sharp 等原生依赖与运行时 libc 不匹配。更新 Node 时同步检查三个 Dockerfile 中的镜像版本。
 - `docker-entrypoint.sh` 仅对 `NGINX_SERVER_NAME`、`NUXT_API_BASE` 执行 envsubst，先 `nginx -t`，再启动 Node 与 Nginx 并监控进程；不要全量替换 Nginx 的 `$host` 等运行时变量。
 - Node 默认监听 `7364`，`nginx.conf.template` 的 Node 反代端口固定为 `127.0.0.1:7364`；调整 `NITRO_PORT` 时必须同步调整模板。`NUXT_API_BASE` 供 SSR 与 Nginx 上游使用。
 - 运行镜像把 `.output/public` 链接到 `/usr/share/nginx/html`，Nginx 与 Nitro 共用静态资源；保持目录可写及软链接，避免静态资源、favicon 同步失败。`redirects.map` 虽在 Nginx 配置中为可选 include，Dockerfile 的 `COPY` 仍要求构建上下文包含该文件。
