@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : vitest 测试配置(Node 纯计算测试及 jsdom/Nuxt 测试分组)
+ * Description : vitest 测试分组与 jsdom 工作线程池配置
  */
 
 /**
@@ -20,6 +20,9 @@ import type { ViteUserConfig } from "vitest/config"
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
 import Components from "unplugin-vue-components/vite"
 import { defineVitestConfig } from "@nuxt/test-utils/config"
+
+// 同一调度组的项目共用并发上限, 减少同时初始化 jsdom 的资源竞争.
+const maxWorkers = "33%"
 
 const nodeTestPatterns = [
     "src/utils/{attribute,cssExample,cssValidator,dateTime,escape,obj,regexPatterns,slug,tagSort,unit,version}.test.ts",
@@ -40,6 +43,7 @@ const nuxtVitestConfig = defineVitestConfig({
         }),
     ],
     test: {
+        maxWorkers,
         setupFiles: [fileURLToPath(new URL("./vitest.setup.ts", import.meta.url))],
         environment: "jsdom",
         environmentOptions: {
@@ -65,12 +69,22 @@ const nuxtVitestConfig = defineVitestConfig({
  */
 async function createVitestConfiguration(environment: Parameters<typeof nuxtVitestConfig>[0]): Promise<ViteUserConfig> {
     const config = (await nuxtVitestConfig(environment)) as ViteUserConfig
+    const projects = config.test!.projects ?? []
+
+    // jsdom 在线程内复用环境模块, 每个文件仍使用独立的 VM 上下文和 window.
+    // Nuxt 测试环境没有实现 setupVM, 保留默认池.
+    for (const project of projects) {
+        if (typeof project === "object" && "test" in project && project.test?.environment === "jsdom") {
+            project.test.pool = "vmThreads"
+        }
+    }
+
     config.test!.projects = [
-        ...(config.test!.projects ?? []),
+        ...projects,
         {
             extends: false,
             resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
-            test: { name: "node", environment: "node", include: nodeTestPatterns },
+            test: { name: "node", environment: "node", include: nodeTestPatterns, maxWorkers },
         },
     ]
     return config

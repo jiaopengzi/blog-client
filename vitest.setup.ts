@@ -3,10 +3,17 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : vitest 全局 setup, 包含类型安全的预期日志处理与模块 mock
+ * Description : vitest 全局 setup, 包含 VM 环境兼容、预期日志处理与模块 mock
  */
 
+import { ReadableStream } from "node:stream/web"
+
 import { vi } from "vitest"
+
+// jsdom 的 VM 全局没有 ReadableStream, isomorphic-dompurify 的 Node 入口经 jsdom 加载 undici 时需要它.
+if (typeof globalThis.ReadableStream === "undefined") {
+    Object.defineProperty(globalThis, "ReadableStream", { value: ReadableStream, configurable: true, writable: true })
+}
 
 const originalConsoleWarn = console.warn.bind(console)
 console.warn = (...args: unknown[]) => {
